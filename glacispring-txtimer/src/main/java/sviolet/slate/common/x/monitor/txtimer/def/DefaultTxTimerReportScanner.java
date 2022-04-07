@@ -21,7 +21,7 @@ package sviolet.slate.common.x.monitor.txtimer.def;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.shepherdviolet.glacimon.java.file.FileUtils;
+import com.github.shepherdviolet.glacimon.java.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

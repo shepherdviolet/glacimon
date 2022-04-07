@@ -17,10 +17,9 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.captcha;
+package com.github.shepherdviolet.glacimon.java.graph.captcha;
 
-import com.github.shepherdviolet.glacimon.java.captcha.ImageCaptchaUtils;
-import com.github.shepherdviolet.glacimon.java.file.FileUtils;
+import com.github.shepherdviolet.glacimon.java.io.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

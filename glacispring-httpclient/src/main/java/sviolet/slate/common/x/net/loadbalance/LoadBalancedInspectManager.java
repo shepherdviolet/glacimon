@@ -26,7 +26,7 @@ import sviolet.slate.common.x.net.loadbalance.inspector.TelnetLoadBalanceInspect
 import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
-import com.github.shepherdviolet.glacimon.java.lifecycle.CloseableManageUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableManageUtils;
 
 import java.io.Closeable;
 import java.util.ArrayList;

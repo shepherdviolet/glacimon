@@ -17,9 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.lifecycle;
-
-import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
+package com.github.shepherdviolet.glacimon.java.misc;
 
 import java.io.Closeable;
 import java.util.Collections;

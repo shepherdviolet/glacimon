@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.file;
+package com.github.shepherdviolet.glacimon.java.io;
 
 import java.io.InputStream;
 

@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.java.crypto.base;
 
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.misc.PlatformUtils;
-import com.github.shepherdviolet.glacimon.java.file.FileUtils;
+import com.github.shepherdviolet.glacimon.java.io.FileUtils;
 
 import java.io.*;
 import java.nio.MappedByteBuffer;

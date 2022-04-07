@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import sviolet.slate.common.x.monitor.txtimer.def.DefaultTxTimerReportRepository;
 import sviolet.slate.common.x.monitor.txtimer.def.DefaultTxTimerReportScanner;
-import com.github.shepherdviolet.glacimon.java.file.FileUtils;
+import com.github.shepherdviolet.glacimon.java.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

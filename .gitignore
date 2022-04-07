@@ -1,0 +1,27 @@
+
+# gradle
+.gradle/
+/build/
+*/build/
+*/*/build/
+
+# maven
+/target/
+*/target/
+*/*/target/
+
+# idea
+.idea/
+*.iml
+/out/
+*/out/
+*/*/out/
+
+# eclipse
+.settings/
+.project
+.classpath
+
+# system
+.DS_Store
+Thumbs.db

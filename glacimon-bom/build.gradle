@@ -1,0 +1,11 @@
+
+dependencies {
+    constraints {
+        //将library工程加入BOM
+        rootProject.subprojects.findAll({ it.PROJECT_GROUP in ['library-java', 'library-spring'] }).forEach {
+            // 构建名默认是子工程名, 也可以在子工程的gradle.properties中配置upload_artifact_id来指定构建名
+            def artifactId = it.hasProperty('upload_artifact_id') ? it.upload_artifact_id : it.name
+            api "$project_group_id:$artifactId:$project_version"
+        }
+    }
+}

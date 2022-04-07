@@ -1,0 +1,97 @@
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 配置
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// java库工程通用配置 (根据组别筛选)
+configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-java'] }) {
+
+    apply plugin: 'java-library'
+//    apply plugin: 'java'
+
+    // compat android
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    // encoding
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+
+    // 可选: 测试案例随机并发跑(对大工程有益)
+//    tasks.withType(Test) {
+//        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+//        //慎用: 当测试案例非常多而且非常繁重时启用, 每X个测试Fork一个VM出来(注意这个值不可以设置太小, Fork开销很大)
+//        //forkEvery = 100
+//        //可选: 关闭测试报告
+//        //reports.html.enabled = false
+//        //reports.junitXml.enabled = false
+//    }
+
+    // 可选: 编译进程Fork(对大工程有益)
+//    tasks.withType(JavaCompile) {
+//        options.fork = true
+//    }
+
+}
+
+// spring库工程通用配置 (根据组别筛选)
+configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-spring'] }) {
+
+    apply plugin: 'java-library'
+//    apply plugin: 'java'
+
+    // compat android
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    // encoding
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+
+    // 可选: 测试案例随机并发跑(对大工程有益)
+//    tasks.withType(Test) {
+//        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+//        //慎用: 当测试案例非常多而且非常繁重时启用, 每X个测试Fork一个VM出来(注意这个值不可以设置太小, Fork开销很大)
+//        //forkEvery = 100
+//        //可选: 关闭测试报告
+//        //reports.html.enabled = false
+//        //reports.junitXml.enabled = false
+//    }
+
+    // 可选: 编译进程Fork(对大工程有益)
+//    tasks.withType(JavaCompile) {
+//        options.fork = true
+//    }
+
+}
+
+// BOM工程通用配置 (根据组别筛选)
+configure(subprojects.findAll { it.PROJECT_GROUP == 'public-bom' }) {
+
+    apply plugin: 'java-platform'
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 示例
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// 所有工程通用配置(包括Root工程)
+//allprojects {
+//
+//    // 示例: 如果子工程的gradle.properties里配了参数"flag", 就执行
+//    if (project.hasProperty("flag")) {
+//        ...
+//    }
+//
+//}
+
+// 所有子工程通用配置
+//subprojects {
+//
+//}
+
+// 部分工程通用配置: 名称筛选
+//configure(subprojects.findAll { it.name.startsWith('prefix-') }) {
+//
+//}

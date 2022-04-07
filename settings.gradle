@@ -1,0 +1,16 @@
+
+/*
+ * *********************************************************************************************************************
+ *
+ * Gradle Advanced Modularity | Gradle 高级模块化
+ *
+ * Author: Shepherd Violet
+ * Docs:   gradle/advanced-modularity/README.md
+ *
+ * *********************************************************************************************************************
+ */
+
+// Gradle Advanced Modularity | Gradle 高级模块化
+// [DO NOT MODIFY] In 'settings.gradle' script, parse the list of subprojects declared in 'settings.json' and add them to the gradle build.
+// [请勿修改] 在 'settings.gradle' 脚本中, 解析 'settings.json' 中声明的子工程清单, 将它们加入gradle构建.
+apply from: 'gradle/advanced-modularity/on-settings.gradle'

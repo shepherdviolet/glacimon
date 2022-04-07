@@ -1,0 +1,20 @@
+{
+  "public-java": {
+    "glacijava-spi-api": "glacijava-spi-api",
+    "glacijava-spi-core": "glacijava-spi-core",
+    "glacijava-common": "glacijava-common",
+    "glacijava-crypto": "glacijava-crypto",
+    "glacijava-trace": "glacijava-trace"
+  },
+  "public-spring": {
+  },
+  "private-java": {
+    "glacijava-misc": "glacijava-misc",
+    "glacijava-spi-test": "glacijava-spi-test"
+  },
+  "private-spring": {
+  },
+  "public-bom": {
+    "glacimon-bom": "glacimon-bom"
+  }
+}

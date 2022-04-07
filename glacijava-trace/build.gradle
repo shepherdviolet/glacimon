@@ -1,0 +1,28 @@
+
+dependencies {
+    //import bom
+//    api platform(project(':thistle-bom'))//只对未指定版本的依赖生效
+//    api platform("com.github.shepherdviolet:thistle-bom:$version_thistle")//只对未指定版本的依赖生效
+//    api enforcedPlatform("com.github.shepherdviolet:thistle-bom:$version_thistle")//强制覆盖依赖版本
+
+    //required
+    [
+            project(':thistle-common') { group project_group_id; version project_version },
+            "com.github.shepherdviolet:glaciion-core:$version_glaciion",
+
+    ].forEach{ api it }
+
+    //compile only
+    [
+            "org.slf4j:slf4j-api:$version_slf4j",
+
+    ].forEach{ compileOnly it; testImplementation it }
+
+    //test
+    [
+            "junit:junit:$version_junit",
+            "org.mockito:mockito-core:$version_mockito",
+
+    ].forEach{ testImplementation it }
+
+}

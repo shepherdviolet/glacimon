@@ -1,0 +1,71 @@
+
+// Gradle Advanced Modularity | Gradle 高级模块化
+// [DO NOT MODIFY] Initialization script before build
+// [请勿修改] 构建前的初始化脚本
+apply from: 'gradle/advanced-modularity/before-build.gradle'
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 配置
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Gradle构建脚本本身的配置
+buildscript {
+
+    // 加载自定义properties文件
+    ext {
+        // 读取配置文件
+        def customProperties = new Properties()
+        file("gradle-local.properties").withInputStream { stream -> customProperties.load(stream) }
+        //file("gradle-other.properties").withInputStream { stream -> customProperties.load(stream) }
+
+        // 将配置放入公共配置, 在gradle中可直接引用
+        customProperties.each {
+            rootProject.extensions.add("$it.key", it.value)
+        }
+
+        // 示例: 设置默认值: 判断配置项是否存在, 需要使用rootProject.extensions.findByName('name'). 而确保配置项存在的情况下, 可直接引用
+        //upload_mavenVersion = rootProject.extensions.findByName('upload_mavenVersion') != null ? upload_mavenVersion : version_projectVersionName + '-SNAPSHOT'
+    }
+
+    // 构建脚本用的依赖仓库
+    repositories {
+        maven { url repository_localRepositoryPath } // 本地仓库, 可选
+        maven { url 'https://plugins.gradle.org/m2/' } // Gradle插件库, 可选
+        mavenCentral() // https://repo1.maven.org/maven2/
+        //maven { url 'https://jitpack.io' }
+        //maven { url 'http://repo.spring.io/plugins-release/' }
+    }
+
+    // 构建脚本用的依赖(插件)
+    dependencies {
+        classpath localGroovy() // [Gradle Advanced Modularity] Depends on groovy, avoid importing groovy package errors
+//        classpath "org.springframework.boot:spring-boot-gradle-plugin:$version_spring_boot"
+    }
+
+}
+
+// 所有工程通用配置
+allprojects {
+
+    group project_group_id
+    version project_version
+
+    // 工程的依赖仓库
+    repositories {
+        maven { url repository_localRepositoryPath } // 本地仓库, 可选
+        mavenCentral() // https://repo1.maven.org/maven2/
+        //maven { url 'https://jitpack.io' }
+    }
+
+    // 禁用Gradle6.0开始生成的module文件(类似于Maven的POM)
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false
+    }
+
+}
+
+// 子工程通用配置
+apply from: 'build-common.gradle'
+
+// Maven仓库上传配置
+apply from: 'build-upload.gradle'

@@ -1,0 +1,22 @@
+
+dependencies {
+
+    //required
+    [
+            project(':glaciion-core') { group project_group_id; version project_version },
+
+    ].forEach{ implementation it }
+
+    //compile only
+    [].forEach{ compileOnly it; testImplementation it }
+
+    //test
+    [
+            fileTree(include: ['*.jar'], dir: 'libs'),
+            "junit:junit:$version_junit",
+            "org.mockito:mockito-core:$version_mockito",
+            "ch.qos.logback:logback-classic:$version_logback",
+
+    ].forEach{ testImplementation it }
+
+}

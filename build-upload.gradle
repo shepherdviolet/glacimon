@@ -1,0 +1,174 @@
+/*
+ * MAVEN上传(中心库/私有库/本地库)
+ *
+ * 必须:在C:\Users\<user>\.gradle\gradle.properties中配置如下信息
+ * signing.keyId=XXXXXXXX(gpg -K 查看私钥ID)
+ * signing.password=XXXXXXXX(私钥保存的秘钥)
+ * signing.secretKeyRingFile=C:/Users/<user>/AppData/Roaming/gnupg/secring.gpg
+ * sonatype_user=sonatype用户名
+ * sonatype_password=sonatype密码
+ *
+ * 可选:私有库配置
+ * private_release_url=私有库RELEASE地址
+ * private_snapshot_url=私有库SNAPSHOT地址
+ * private_user=私有库用户名
+ * private_password=私有库密码
+ *
+ * 在gradle-local.properties中选择上传到中心库还是本地库
+ *
+ * 发布到指定库: gradlew publish
+ * 发布到~/.m2库: gradlew publishToMavenLocal
+ *
+ * 参考文档:https://docs.gradle.org/current/userguide/publishing_maven.html
+ * 参考文档:https://docs.gradle.org/current/userguide/signing_plugin.html#signing_plugin
+ */
+
+// 库模块/BOM模块
+configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spring', 'public-bom'] }) {
+
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId = project.group
+                // 构建名默认是子工程名, 也可以在子工程的gradle.properties中配置upload_artifact_id来指定构建名
+                artifactId = project.hasProperty('upload_artifact_id') ? project.upload_artifact_id : project.name
+                version = project.version
+                // 配置: 此处可以配置POM信息
+                pom {
+                    name = project.name
+                    description = 'Comprehensive Java library'
+                    url = 'https://github.com/shepherdviolet/glacimon'
+                    licenses {
+                        license {
+                            name = 'The Apache Software License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'shepherdviolet'
+                            name = 'Shepherd Violet'
+                            email = 'shepherdviolet@163.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git@github.com:shepherdviolet/glacimon.git'
+                        developerConnection = 'git@github.com:shepherdviolet/glacimon.git'
+                        url = 'scm:git@github.com:shepherdviolet/glacimon.git'
+                    }
+                }
+            }
+        }
+        repositories {
+            // 配置: 此处可配置仓库地址
+            maven {
+                if (upload_target == 'maven') {
+                    // 中央库
+                    def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+                    def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+                    url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                    credentials {
+                        username = sonatype_user
+                        password = sonatype_password
+                    }
+                } else if (upload_target == 'private') {
+                    // 私有库, 例如: http://localhost:8081/nexus/content/repositories/reponame/
+                    def releasesRepoUrl = private_release_url
+                    def snapshotsRepoUrl = private_snapshot_url
+                    url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                    credentials {
+                        username = private_user
+                        password = private_password
+                    }
+                } else {
+                    // 本地
+                    def releasesRepoUrl = repository_localRepositoryPath
+                    def snapshotsRepoUrl = repository_localRepositoryPath
+                    url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                }
+            }
+        }
+    }
+
+    if (upload_target != 'local') {
+
+        // 签名
+        signing {
+            sign publishing.publications.mavenJava
+        }
+
+    }
+
+}
+
+// 库模块
+configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spring'] }) {
+
+    if (upload_target != 'local') {
+
+        // 编译时产生源代码jar
+        task sourcesJar(type: Jar) {
+            from sourceSets.main.allJava
+            archiveClassifier.set 'sources'
+        }
+
+        // 编译时产生JAVADOC
+        task javadocJar(type: Jar) {
+            from javadoc
+            archiveClassifier.set 'javadoc'
+        }
+
+        javadoc {
+            // 禁用JAVA8的JAVADOC检查
+            if (JavaVersion.current().isJava8Compatible()) {
+                options.addStringOption('Xdoclint:none', '-quiet')
+            }
+            // JAVA9 启用H5文档
+            if (JavaVersion.current().isJava9Compatible()) {
+                options.addBooleanOption('html5', true)
+            }
+        }
+
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                // 添加Java
+                from components.java
+                // 添加源码/JavaDoc
+                if (upload_target != 'local') {
+                    artifact sourcesJar
+                    artifact javadocJar
+                }
+                // 自动处理依赖版本
+                versionMapping {
+                    usage('java-api') {
+                        fromResolutionOf('runtimeClasspath')
+                    }
+                    usage('java-runtime') {
+                        fromResolutionResult()
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+// BOM模块
+configure(subprojects.findAll { it.PROJECT_GROUP in ['public-bom'] }) {
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                // 添加BOM
+                from components.javaPlatform
+            }
+        }
+    }
+
+}

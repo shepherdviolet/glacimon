@@ -1,0 +1,19 @@
+
+dependencies {
+
+    //required
+    [
+            project(':glaciion-api') { group project_group_id; version project_version },
+
+    ].forEach{ api it }
+
+    //compile only
+    [
+            "org.slf4j:slf4j-api:$version_slf4j",
+
+    ].forEach{ compileOnly it; testImplementation it }
+
+    //test
+    [].forEach{ testImplementation it }
+
+}

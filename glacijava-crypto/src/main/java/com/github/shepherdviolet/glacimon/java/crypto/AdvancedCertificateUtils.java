@@ -26,7 +26,6 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.operator.OperatorCreationException;
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
-import sviolet.thistle.util.crypto.base.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

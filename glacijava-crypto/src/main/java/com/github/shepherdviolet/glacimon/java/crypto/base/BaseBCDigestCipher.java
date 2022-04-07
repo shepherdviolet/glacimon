@@ -19,7 +19,6 @@
 
 package com.github.shepherdviolet.glacimon.java.crypto.base;
 
-import com.github.shepherdviolet.glacimon.java.util.crypto.base.CryptoConstants;
 import org.bouncycastle.crypto.Digest;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 

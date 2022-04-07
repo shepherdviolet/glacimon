@@ -19,7 +19,6 @@
 
 package com.github.shepherdviolet.glacimon.java.crypto.base;
 
-import com.github.shepherdviolet.glacimon.java.util.crypto.base.CryptoConstants;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.CryptoException;

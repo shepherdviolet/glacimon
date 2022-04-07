@@ -1,0 +1,7 @@
+
+# MapXBean
+sviolet.slate.common.x.conversion.mapxbean.MxbObjectInstantiator
+sviolet.slate.common.x.conversion.mapxbean.MxbTypeMapperProvider
+sviolet.slate.common.x.conversion.mapxbean.MxbTypeMapperCenter
+sviolet.slate.common.x.conversion.mapxbean.MxbCollectionMapper
+sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudger

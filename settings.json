@@ -7,12 +7,18 @@
     "glacijava-trace": "glacijava-trace"
   },
   "public-spring": {
+    "glacispring-common": "glacispring-common",
+    "glacispring-helper": "glacispring-helper",
+    "glacispring-httpclient": "glacispring-httpclient",
+    "glacispring-mapxbean": "glacispring-mapxbean",
+    "glacispring-txtimer": "glacispring-txtimer"
   },
   "private-java": {
     "glacijava-misc": "glacijava-misc",
     "glacijava-spi-test": "glacijava-spi-test"
   },
   "private-spring": {
+    "glacispring-misc": "glacispring-misc"
   },
   "public-bom": {
     "glacimon-bom": "glacimon-bom"

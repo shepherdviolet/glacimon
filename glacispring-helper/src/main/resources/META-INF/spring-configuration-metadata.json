@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "slate.common",
+      "type": "sviolet.slate.common.springboot.autoconfig.SlateCommonProperties",
+      "sourceType": "sviolet.slate.common.springboot.autoconfig.SlateCommonProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "slate.common.ez-sentinel.rule-data",
+      "type": "java.lang.String",
+      "sourceType": "sviolet.slate.common.helper.sentinel.EzSentinelConfiguration",
+      "description": "Annotation: sviolet.slate.common.helper.sentinel.EnableEzSentinel",
+      "defaultValue": ""
+    }
+  ],
+  "hints": [
+  ]
+}

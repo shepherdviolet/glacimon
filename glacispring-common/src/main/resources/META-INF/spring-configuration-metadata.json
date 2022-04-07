@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "slate.common",
+      "type": "sviolet.slate.common.springboot.autoconfig.SlateCommonProperties",
+      "sourceType": "sviolet.slate.common.springboot.autoconfig.SlateCommonProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "slate.common.servlet-context-listener-enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "sviolet.slate.common.springboot.autoconfig.SlateServletContextListenerConfig",
+      "description": "Properties: sviolet.slate.common.springboot.autoconfig.SlateCommonProperties",
+      "defaultValue": true
+    }
+  ],
+  "hints": [
+  ]
+}

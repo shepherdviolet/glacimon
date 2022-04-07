@@ -1,0 +1,6 @@
+
+# MapXBean
+@priority=0
+logEnabled=false
+indivisibleTypes=sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible1,\
+sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible2

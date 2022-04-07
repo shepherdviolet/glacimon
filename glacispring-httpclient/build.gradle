@@ -1,0 +1,34 @@
+
+dependencies {
+    //import bom
+//    api platform(project(':thistle-bom'))//只对未指定版本的依赖生效
+//    api platform("com.github.shepherdviolet:thistle-bom:$version_thistle")//只对未指定版本的依赖生效
+//    api enforcedPlatform("com.github.shepherdviolet:thistle-bom:$version_thistle")//强制覆盖依赖版本
+
+    //required
+    [
+            project(':slate-common') { group project_group_id; version project_version },
+            project(':slate-txtimer') { group project_group_id; version project_version },
+            "com.squareup.okhttp3:okhttp:$version_okhttp",
+
+    ].forEach{ api it }
+
+    //compile only
+    [
+            "ch.qos.logback:logback-classic:$version_logback",
+            "com.google.code.gson:gson:$version_gson",
+            "org.springframework.boot:spring-boot-autoconfigure:$version_spring_boot",
+            "com.ctrip.framework.apollo:apollo-client:$version_apollo",
+            //version alignment
+            "org.yaml:snakeyaml:$version_snakeyaml",
+
+    ].forEach{ compileOnly it; testImplementation it }
+
+    //test
+    [
+            "junit:junit:$version_junit",
+            "org.mockito:mockito-core:$version_mockito",
+
+    ].forEach{ testImplementation it }
+
+}

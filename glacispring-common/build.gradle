@@ -1,0 +1,32 @@
+
+dependencies {
+    //import bom
+//    api platform(project(':thistle-bom'))//只对未指定版本的依赖生效
+//    api platform("com.github.shepherdviolet:thistle-bom:$version_thistle")//只对未指定版本的依赖生效
+//    api enforcedPlatform("com.github.shepherdviolet:thistle-bom:$version_thistle")//强制覆盖依赖版本
+
+    //required
+    [
+            "com.github.shepherdviolet:thistle-common:$version_thistle",
+            "org.springframework:spring-context:$version_spring",
+            "org.slf4j:slf4j-api:$version_slf4j",
+
+    ].forEach{ api it }
+
+    //compile only
+    [
+            "javax.servlet:javax.servlet-api:$version_servlet",
+            "org.springframework:spring-jdbc:$version_spring",
+            "org.springframework.boot:spring-boot-autoconfigure:$version_spring_boot",
+            "ch.qos.logback:logback-classic:$version_logback",
+
+    ].forEach{ compileOnly it; testImplementation it }
+
+    //test
+    [
+            "junit:junit:$version_junit",
+            "org.mockito:mockito-core:$version_mockito",
+
+    ].forEach{ testImplementation it }
+
+}

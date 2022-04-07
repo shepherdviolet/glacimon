@@ -1,0 +1,8 @@
+
+# TxTimer
+@priority=-8
+reportInterval=5
+pageLines=20
+mapInitCap=128
+hashLockNum=16
+updateAttempts=10

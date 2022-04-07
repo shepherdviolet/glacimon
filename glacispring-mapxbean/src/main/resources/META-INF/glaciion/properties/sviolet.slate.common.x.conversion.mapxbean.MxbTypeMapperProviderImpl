@@ -1,0 +1,7 @@
+
+# MapXBean
+@priority=-8
+dateFormat=yyyy-MM-dd HH:mm:ss.SSS
+# Nullable, e.g. GMT+08:00
+timeZone=
+logEnabled=false

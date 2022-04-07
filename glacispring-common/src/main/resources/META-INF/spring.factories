@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+sviolet.slate.common.springboot.autoconfig.SlateCommonAutoConfiguration

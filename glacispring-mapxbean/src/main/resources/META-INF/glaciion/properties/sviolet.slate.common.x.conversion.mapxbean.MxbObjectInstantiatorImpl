@@ -1,0 +1,5 @@
+
+# MapXBean
+@priority=-8
+cacheEnabled=true
+logEnabled=false

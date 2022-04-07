@@ -65,24 +65,22 @@ public class DefinitionLoaderTest extends AbstractTest {
                 return o1.toString().hashCode() - o2.toString().hashCode();
             }
         });
-        assertEquals("[" +
-                        "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl2', rank=1}, " +
+        assertEquals("[MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl3', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl5', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl7', rank=1}, " +
+                        "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl6', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl2', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl2', rank=2}, " +
-                        "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl6', rank=1}, " +
                         "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl1', rank=1}, " +
                         "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl1', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl4', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl6', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl6', rank=2}, " +
+                        "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl5', rank=1}, " +
+                        "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl5', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl1', rank=1}, " +
-                        "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl5', rank=1}, " +
-                        "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl5', rank=1}, " +
                         "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl8', rank=1}, " +
-                        "MultipleDefinition{isDisable=false, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl3', rank=1}" +
-                        "]",
+                        "MultipleDefinition{isDisable=true, interfaceType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin', implementationType='com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl2', rank=1}]",
                 String.valueOf(result));
     }
 
@@ -99,10 +97,10 @@ public class DefinitionLoaderTest extends AbstractTest {
             }
         });
         assertEquals("[" +
-                        "PropertiesDefinition{bindType='com.github.shepherdviolet.glacimon.java.spi.test.SampleServiceImpl2', priority=1, properties={dateFormat=yyyy-MM-dd HH:mm:ss.SSS, logEnabled=true}}, " +
-                        "PropertiesDefinition{bindType='com.github.shepherdviolet.glacimon.java.spi.test.SampleServiceImpl2', priority=2, properties={dateFormat=yyyy-MM-dd HH:mm:ss, logEnabled=false}}" +
+
+                        "PropertiesDefinition{bindType='com.github.shepherdviolet.glacimon.java.spi.test.SampleServiceImpl2', priority=2, properties={dateFormat=yyyy-MM-dd HH:mm:ss, logEnabled=false}}, " +
+                        "PropertiesDefinition{bindType='com.github.shepherdviolet.glacimon.java.spi.test.SampleServiceImpl2', priority=1, properties={dateFormat=yyyy-MM-dd HH:mm:ss.SSS, logEnabled=true}}" +
                         "]",
                 String.valueOf(result));
     }
-
 }

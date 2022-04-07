@@ -35,7 +35,7 @@ public class PreLoadTest extends AbstractTest {
     public void preload(){
         GlacimonSpi.preload();
         assertEquals(
-                Integer.valueOf(313571409),
+                Integer.valueOf(-299922357),
                 GlacimonSpi.getPreloadCheckSum());
     }
 

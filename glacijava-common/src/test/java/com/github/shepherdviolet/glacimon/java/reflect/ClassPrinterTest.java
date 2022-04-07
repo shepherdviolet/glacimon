@@ -34,14 +34,14 @@ public class ClassPrinterTest {
     @Test
     public void test() throws IllegalAccessException {
         Assert.assertEquals("#### Class #########################################################################################\n" +
-                        "public class sviolet.thistle.util.reflect.ClassPrinterTest$SuperElectronicCar\n" +
-                        "        extends sviolet.thistle.util.reflect.ClassPrinterTest$ElectronicCar\n" +
+                        "public class com.github.shepherdviolet.glacimon.java.reflect.ClassPrinterTest$SuperElectronicCar\n" +
+                        "        extends com.github.shepherdviolet.glacimon.java.reflect.ClassPrinterTest$ElectronicCar\n" +
                         "        implements java.util.concurrent.Callable {\n" +
                         "    // Fields\n" +
                         "    private java.lang.String name = nameValue1\n" +
                         "    private static final java.lang.String sfName = sfNameValue1\n" +
                         "    // Constructors\n" +
-                        "    public SuperElectronicCar(sviolet.thistle.util.reflect.ClassPrinterTest) {...}\n" +
+                        "    public SuperElectronicCar(com.github.shepherdviolet.glacimon.java.reflect.ClassPrinterTest) {...}\n" +
                         "    // Methods\n" +
                         "    public java.lang.Object call() throws java.lang.Exception {...}\n" +
                         "    public void close() throws java.io.IOException {...}\n" +
@@ -51,8 +51,8 @@ public class ClassPrinterTest {
                         "    public void run() {...}\n" +
                         "}\n" +
                         "++++ Super Class +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
-                        "protected static abstract class sviolet.thistle.util.reflect.ClassPrinterTest$ElectronicCar\n" +
-                        "        extends sviolet.thistle.util.reflect.ClassPrinterTest$Car\n" +
+                        "protected static abstract class com.github.shepherdviolet.glacimon.java.reflect.ClassPrinterTest$ElectronicCar\n" +
+                        "        extends com.github.shepherdviolet.glacimon.java.reflect.ClassPrinterTest$Car\n" +
                         "        implements java.io.Closeable, java.lang.Runnable {\n" +
                         "    // Fields\n" +
                         "    private java.lang.String name = nameValue2\n" +
@@ -67,7 +67,7 @@ public class ClassPrinterTest {
                         "    public void run() {...}\n" +
                         "}\n" +
                         "++++ Super Class +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n" +
-                        "private static class sviolet.thistle.util.reflect.ClassPrinterTest$Car\n" +
+                        "private static class com.github.shepherdviolet.glacimon.java.reflect.ClassPrinterTest$Car\n" +
                         "        extends java.lang.Object\n" +
                         "        implements java.util.concurrent.Executor {\n" +
                         "    // Fields\n" +

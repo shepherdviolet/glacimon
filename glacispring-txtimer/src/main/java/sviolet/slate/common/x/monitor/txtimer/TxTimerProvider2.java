@@ -19,14 +19,14 @@
 
 package sviolet.slate.common.x.monitor.txtimer;
 
-import com.github.shepherdviolet.glaciion.api.annotation.SingleServiceInterface;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.SingleServiceInterface;
 
 /**
  * <p>TxTimer简单的交易耗时统计 扩展点</p>
  *
  * <p>实现:耗时统计/结果输出</p>
  *
- * <p>使用扩展点之前, 请先仔细阅读文档: https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md</p>
+ * <p>使用扩展点之前, 请先仔细阅读文档: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md</p>
  *
  * @see TxTimer
  * @author S.Violet

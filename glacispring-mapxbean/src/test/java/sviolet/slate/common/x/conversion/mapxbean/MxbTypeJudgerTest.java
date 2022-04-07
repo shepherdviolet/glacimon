@@ -33,7 +33,7 @@ public class MxbTypeJudgerTest {
 
     @Test
     public void isIndivisible(){
-        LogbackHelper.setLevel("com.github.shepherdviolet.glaciion", Level.INFO);
+        LogbackHelper.setLevel("com.github.shepherdviolet.glacimon.java.spi", Level.INFO);
 
         Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(MyEnum.A.getClass()));
         Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(MyEnum.class));
@@ -62,7 +62,7 @@ public class MxbTypeJudgerTest {
 
     @Test
     public void isBean(){
-        LogbackHelper.setLevel("com.github.shepherdviolet.glaciion", Level.INFO);
+        LogbackHelper.setLevel("com.github.shepherdviolet.glacimon.java.spi", Level.INFO);
 
         //Judged by type
         Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyEnum.A.getClass(), true, true));
@@ -97,7 +97,7 @@ public class MxbTypeJudgerTest {
     }
 
     /**
-     * Mark indivisible in test/resources/META-INF/glaciion/properties/sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerImpl
+     * Mark indivisible in test/resources/META-INF/glacimonspi/properties/sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerImpl
      */
     public static class MyIndivisible1 {
 
@@ -113,7 +113,7 @@ public class MxbTypeJudgerTest {
     }
 
     /**
-     * Mark indivisible in test/resources/META-INF/glaciion/properties/sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerImpl
+     * Mark indivisible in test/resources/META-INF/glacimonspi/properties/sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerImpl
      */
     public static class MyIndivisible2 {
 

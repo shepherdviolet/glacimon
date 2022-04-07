@@ -1,10 +1,10 @@
-# Glaciion 实现类声明周期
+# GlacimonSpi 实现类声明周期
 
 ```text
 实现类能够监听自身的创建和销毁事件(服务加载器被卸载). 
 ```
 
-[返回首页](https://github.com/shepherdviolet/glaciion/blob/master/docs/index-cn.md)
+[返回首页](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)
 
 <br>
 
@@ -58,5 +58,5 @@ public class SampleServiceImpl implements SampleService, CloseableImplementation
 }
 ```
 
-* 当实例对应的服务加载器被卸载时, closed值会变为true, 见[关于缓存](https://github.com/shepherdviolet/glaciion/blob/master/docs/about-cache-cn.md)
+* 当实例对应的服务加载器被卸载时, closed值会变为true, 见[关于缓存](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/about-cache-cn.md)
 * 当服务加载器(SingleServiceLoader/MultipleServiceLoader)被调用closed方法后, closed值会变为true

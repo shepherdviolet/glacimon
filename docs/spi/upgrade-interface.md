@@ -1,19 +1,19 @@
-# Glaciion Upgrade Interface
+# GlacimonSpi Upgrade Interface
 
 ```text
 The interface should be kept as constant as possible. If the method is modified, implementations based on the old version 
-interface will be incompatible. In order to meet the interface upgrade requirements, Glaciion supports adding methods to 
+interface will be incompatible. In order to meet the interface upgrade requirements, GlacimonSpi supports adding methods to 
 the interface, and provide a backward compatible approach.
 ```
 
-[Back to index](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+[Back to index](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 <br>
 
 ## Add methods
 
 * Add the @NewMethod annotation to the new method, and configure a `CompatibleApproach'
-* If the implementation does not implement the method, Glaciion will generate a compatible proxy for it. When invoking the 
+* If the implementation does not implement the method, GlacimonSpi will generate a compatible proxy for it. When invoking the 
 unimplemented method, it will be handled by the `CompatibleApproach`.
 
 ```text

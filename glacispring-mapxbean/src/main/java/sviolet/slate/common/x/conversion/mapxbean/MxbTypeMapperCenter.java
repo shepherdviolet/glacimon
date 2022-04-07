@@ -19,7 +19,7 @@
 
 package sviolet.slate.common.x.conversion.mapxbean;
 
-import com.github.shepherdviolet.glaciion.api.annotation.SingleServiceInterface;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.SingleServiceInterface;
 
 import java.lang.reflect.Type;
 
@@ -28,7 +28,7 @@ import java.lang.reflect.Type;
  *
  * <p>Purpose: Mapping type to type with MxbTypeMapper (provided from MxbTypeMapperProvider)</p>
  *
- * <p>Glaciion Extension point. Doc: https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md</p>
+ * <p>GlacimonSpi Extension point. Doc: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md</p>
  *
  * @author S.Violet
  * @see MapXBean

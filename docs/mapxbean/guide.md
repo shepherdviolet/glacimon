@@ -2,7 +2,7 @@
 
 * [English](https://github.com/shepherdviolet/slate/blob/master/docs/mapxbean/guide-en.md)
 * [Source Code](https://github.com/shepherdviolet/slate/tree/master/slate-mapxbean/src/main/java/sviolet/slate/common/x/conversion/mapxbean)
-* [支持 Glaciion SPI 扩展点](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+* [支持 GlacimonSpi SPI 扩展点](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 <br>
 
 # 简单示例
@@ -233,7 +233,7 @@ MapXBean.beanToMap()
 | MxbMapperLowlevelNum2Integer | Low level number | Integer |
 | MxbMapperLowlevelNum2Long | Low level number | Long |
 
-* 你可以添加自己的MxbTypeMapper, 利用[Glaciion SPI 扩展点](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+* 你可以添加自己的MxbTypeMapper, 利用[GlacimonSpi SPI 扩展点](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 | 扩展点 | 默认实现 |
 | --------------- | ---------------------- |
@@ -308,7 +308,7 @@ MapXBean.beanToMap()
 Has read methods (getter) or write methods (setter)
 ```
 
-* 你可以自定义 "是否不可分割 / 是否Bean" 的判断逻辑, 利用[Glaciion SPI 扩展点](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+* 你可以自定义 "是否不可分割 / 是否Bean" 的判断逻辑, 利用[GlacimonSpi SPI 扩展点](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 | 扩展点 | 默认实现 |
 | --------------- | ---------------------- |
@@ -316,9 +316,9 @@ Has read methods (getter) or write methods (setter)
 
 <br>
 
-### 所有 Glaciion 扩展点
+### 所有 GlacimonSpi 扩展点
 
-* [Glaciion SPI 文档](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+* [GlacimonSpi SPI 文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 | 扩展点 | 默认实现 |
 | --------------- | ---------------------- |

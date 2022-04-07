@@ -1,10 +1,10 @@
-# Glaciion Implementation Lifecycle
+# GlacimonSpi Implementation Lifecycle
 
 ```text
 It can perceive while the implementation instance created or closed (service loader uninstalled). 
 ```
 
-[Back to index](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+[Back to index](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 <br>
 
@@ -59,5 +59,5 @@ public class SampleServiceImpl implements SampleService, CloseableImplementation
 ```
 
 * The closed state will become true when the service loader is uninstalled, 
-See [About Cache](https://github.com/shepherdviolet/glaciion/blob/master/docs/about-cache.md)
+See [About Cache](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/about-cache.md)
 * The closed state will become true after the service loader's close method is invoked

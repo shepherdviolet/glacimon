@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
  * <p>MxbTypeMappers are added by {@link MxbTypeMapperProvider} extension point, and managed (invoked) by
  * {@link MxbTypeMapperCenter}. If you need to add a new mapper, implement this interface first, and then add it by
  * {@link MxbTypeMapperProvider} extension point. See: {@link MxbTypeMapperProvider} {@link MxbTypeMapperProviderImpl}.
- * Glaciion doc: https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md</p>
+ * GlacimonSpi doc: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md</p>
  *
  * @author S.Violet
  * @see MapXBean

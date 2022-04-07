@@ -19,8 +19,8 @@
 
 package sviolet.slate.common.x.monitor.txtimer.def;
 
-import com.github.shepherdviolet.glaciion.api.annotation.PropertyInject;
-import com.github.shepherdviolet.glaciion.api.interfaces.InitializableImplementation;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
+import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.InitializableImplementation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sviolet.slate.common.x.monitor.txtimer.TimerContext;
@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * <p>默认实现了交易耗时的统计, 并通过日志定时输出报告. 可以使用Glaciion SPI替换实现.</p>
+ * <p>默认实现了交易耗时的统计, 并通过日志定时输出报告. 可以使用GlacimonSpi SPI替换实现.</p>
  *
  * @author S.Violet
  */

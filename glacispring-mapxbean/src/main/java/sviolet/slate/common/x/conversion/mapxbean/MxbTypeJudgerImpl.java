@@ -19,7 +19,7 @@
 
 package sviolet.slate.common.x.conversion.mapxbean;
 
-import com.github.shepherdviolet.glaciion.api.annotation.PropertyInject;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
 import sviolet.thistle.util.conversion.PrimitiveUtils;
 import sviolet.thistle.util.conversion.StringUtils;
 import sviolet.thistle.util.reflect.BeanInfoUtils;

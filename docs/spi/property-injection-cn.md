@@ -1,11 +1,11 @@
-# Glaciion 配置注入
+# GlacimonSpi 配置注入
 
 ```text
 向实现类实例注入配置. 
 程序会根据配置文件中的优先度选择应用哪个配置. 优先度最高的会被应用, 其他配置均不生效. 
 ```
 
-[返回首页](https://github.com/shepherdviolet/glaciion/blob/master/docs/index-cn.md)
+[返回首页](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)
 
 <br>
 
@@ -56,7 +56,7 @@ public class SampleServiceImpl implements SampleService {
 
 ### 2.配置文件
 
-* 添加文件`META-INF/glaciion/properties/sample.SampleServiceImpl`
+* 添加文件`META-INF/glacimonspi/properties/sample.SampleServiceImpl`
 * 内容:
 
 ```text
@@ -65,7 +65,7 @@ logEnabled=true
 serviceId=1
 ```
 
-* 配置文件路径:META-INF/glaciion/properties/`实现类全限定名`
+* 配置文件路径:META-INF/glacimonspi/properties/`实现类全限定名`
 * 配置文件内容为标准properties格式
 
 <br>
@@ -79,8 +79,8 @@ serviceId=1
 
 ### 通用方式
 
-* 添加启动参数:-Dglaciion.property.`实现类全限定名`.`参数名`=`参数值`
-* 以上文为例:-Dglaciion.property.sample.SampleServiceImpl.serviceId=2
+* 添加启动参数:-Dglacimonspi.property.`实现类全限定名`.`参数名`=`参数值`
+* 以上文为例:-Dglacimonspi.property.sample.SampleServiceImpl.serviceId=2
 
 <br>
 
@@ -89,7 +89,7 @@ serviceId=1
 * 只有一个配置文件会被加载, 其他落选配置文件中的参数均无效
 * 配置文件中, 通过添加`@priority`参数调整优先度
 * 优先度数值越大, 优先度越高, 优先度最高的配置文件会被加载, 未设置则默认为0
-* 启动参数(glaciion.property)在配置文件的基础上调整参数
+* 启动参数(glacimonspi.property)在配置文件的基础上调整参数
 * `特殊:当最高优先度的配置文件不止一个时, 根据配置文件内容的hash决定加载哪个`
 
 ### 示例
@@ -123,7 +123,7 @@ serviceId=3
 * 启动参数:
 
 ```text
--Dglaciion.property.sample.SampleServiceImpl.logEnabled=false
+-Dglacimonspi.property.sample.SampleServiceImpl.logEnabled=false
 -Dsample.service.id=4
 ```
 

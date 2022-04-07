@@ -38,7 +38,7 @@ public class MapToBeanTest {
 
         //Map -> Bean////////////////////////////////////////////////////////////////////////////////////////////
 
-        LogbackHelper.setLevel("com.github.shepherdviolet.glaciion", Level.INFO);
+        LogbackHelper.setLevel("com.github.shepherdviolet.glacimon.java.spi", Level.INFO);
 
         Map<String, Object> map = new HashMap<>();
         map.put("person", LambdaBuilder.hashMap(m -> {

@@ -1,4 +1,4 @@
-# Glaciion Property Inject
+# GlacimonSpi Property Inject
 
 ```text
 Inject properties into the implementation instance.
@@ -6,7 +6,7 @@ It chooses which properties to apply based on the priority in the properties fil
 The highest priority will be applied, and the other will not take effect.
 ```
 
-[Back to index](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+[Back to index](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 <br>
 
@@ -59,7 +59,7 @@ public class SampleServiceImpl implements SampleService {
 
 ### 2.Properties file
 
-* Add file `META-INF/glaciion/properties/sample.SampleServiceImpl`
+* Add file `META-INF/glacimonspi/properties/sample.SampleServiceImpl`
 * Contents:
 
 ```text
@@ -68,7 +68,7 @@ logEnabled=true
 serviceId=1
 ```
 
-* Properties file path: META-INF/glaciion/properties/`implementation-classname`
+* Properties file path: META-INF/glacimonspi/properties/`implementation-classname`
 * The properties file content is the standard properties format.
 
 <br>
@@ -82,8 +82,8 @@ serviceId=1
 
 ### General way
 
-* Add VM option: -Dglaciion.property.`implementation-classname`.`property-name`=`property-value`
-* Example: -Dglaciion.property.sample.SampleServiceImpl.serviceId=2
+* Add VM option: -Dglacimonspi.property.`implementation-classname`.`property-name`=`property-value`
+* Example: -Dglacimonspi.property.sample.SampleServiceImpl.serviceId=2
 
 <br>
 
@@ -92,7 +92,7 @@ serviceId=1
 * Only one properties file will be loaded, and the property in other files will be invalid.
 * In the properties file, adjust it's priority by adding the `@priority` property.
 * The higher the priority value, the higher the priority, the highest priority properties file will be loaded. the default will be 0 if not set.
-* The VM option (glaciion.property) adjust the properties based on the selected properties file. 
+* The VM option (glacimonspi.property) adjust the properties based on the selected properties file. 
 * `TIPS: When there is more than one properties file with the highest priority, which one is loaded according to the hash 
 of the content of the properties file`
 
@@ -127,7 +127,7 @@ serviceId=3
 * VM options:
 
 ```text
--Dglaciion.property.sample.SampleServiceImpl.logEnabled=false
+-Dglacimonspi.property.sample.SampleServiceImpl.logEnabled=false
 -Dsample.service.id=4
 ```
 

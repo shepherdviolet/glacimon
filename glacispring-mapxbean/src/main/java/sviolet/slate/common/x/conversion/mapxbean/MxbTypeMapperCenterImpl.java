@@ -19,9 +19,9 @@
 
 package sviolet.slate.common.x.conversion.mapxbean;
 
-import com.github.shepherdviolet.glaciion.Glaciion;
-import com.github.shepherdviolet.glaciion.api.annotation.PropertyInject;
-import com.github.shepherdviolet.glaciion.api.interfaces.InitializableImplementation;
+import com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
+import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.InitializableImplementation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ public class MxbTypeMapperCenterImpl implements MxbTypeMapperCenter, Initializab
     public void onServiceCreated() {
         List<MxbTypeMapper> allMappers = new ArrayList<>(32);
         //Get mapper from MxbTypeMapperProviders
-        List<MxbTypeMapperProvider> providers = Glaciion.loadMultipleService(MxbTypeMapperProvider.class).getAll();
+        List<MxbTypeMapperProvider> providers = GlacimonSpi.loadMultipleService(MxbTypeMapperProvider.class).getAll();
         //Multiple providers support
         for (MxbTypeMapperProvider provider : providers) {
             List<MxbTypeMapper> mappers = provider.getTypeMappers();
@@ -70,10 +70,10 @@ public class MxbTypeMapperCenterImpl implements MxbTypeMapperCenter, Initializab
         //Store mappers in 'typeMappers', fromType->toType->MxbTypeMapper
         for (MxbTypeMapper mapper : allMappers) {
             if (mapper.fromType() == null || mapper.fromType().length <= 0) {
-                throw new RuntimeException("Invalid MxbTypeMapper " + mapper.getClass().getName() + ", fromType method return null or empty, you can ignore this plugin by Glaciion SPI");
+                throw new RuntimeException("Invalid MxbTypeMapper " + mapper.getClass().getName() + ", fromType method return null or empty, you can ignore this plugin by GlacimonSpi SPI");
             }
             if (mapper.toType() == null || mapper.toType().length <= 0) {
-                throw new RuntimeException("Invalid MxbTypeMapper " + mapper.getClass().getName() + ", toType method return null or empty, you can ignore this plugin by Glaciion SPI");
+                throw new RuntimeException("Invalid MxbTypeMapper " + mapper.getClass().getName() + ", toType method return null or empty, you can ignore this plugin by GlacimonSpi SPI");
             }
             for (Class<?> fromType : mapper.fromType()) {
                 for (Class<?> toType : mapper.toType()) {

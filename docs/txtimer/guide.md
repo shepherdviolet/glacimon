@@ -1,7 +1,7 @@
 # TxTimer 简单的交易耗时统计
 
 * [Source Code](https://github.com/shepherdviolet/slate/tree/master/slate-txtimer/src/main/java/sviolet/slate/common/x/monitor/txtimer)
-* TxTimer支持Glaciion SPI扩展, 并提供一个缺省的实现
+* TxTimer支持GlacimonSpi SPI扩展, 并提供一个缺省的实现
 * `缺省实现`实现了交易耗时的统计, 并通过日志定时输出报告
 * 本文档讲述`缺省实现`的用法, 除了`全局禁用`方法以外, 其他的配置均只对`缺省实现`有效
 * `Maven/Gradle依赖配置`在本文最后
@@ -149,17 +149,17 @@
 <br>
 <br>
 
-# Glaciion SPI扩展点
+# GlacimonSpi SPI扩展点
 
 ## 自定义实现统计和报告逻辑
 
 * 扩展点接口:sviolet.slate.common.x.monitor.txtimer.TxTimerProvider2
-* 使用扩展点之前, 请先仔细阅读文档: https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md
+* 使用扩展点之前, 请先仔细阅读文档: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md
 
 ## 修改缺省实现的配置
 
 * 缺省实现:sviolet.slate.common.x.monitor.txtimer.def.DefaultTxTimerProvider2
-* 可以重新定义缺省实现的配置, 具体请阅读文档: https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md
+* 可以重新定义缺省实现的配置, 具体请阅读文档: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md
 
 <br>
 <br>

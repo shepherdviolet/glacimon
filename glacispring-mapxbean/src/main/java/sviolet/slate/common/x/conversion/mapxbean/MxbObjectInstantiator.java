@@ -19,14 +19,14 @@
 
 package sviolet.slate.common.x.conversion.mapxbean;
 
-import com.github.shepherdviolet.glaciion.api.annotation.SingleServiceInterface;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.SingleServiceInterface;
 
 /**
  * <p>[Common Handler] Object instantiator</p>
  *
  * <p>Purpose: Create instance of given class</p>
  *
- * <p>Glaciion Extension point. Doc: https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md</p>
+ * <p>GlacimonSpi Extension point. Doc: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md</p>
  *
  * @author S.Violet
  * @see MapXBean

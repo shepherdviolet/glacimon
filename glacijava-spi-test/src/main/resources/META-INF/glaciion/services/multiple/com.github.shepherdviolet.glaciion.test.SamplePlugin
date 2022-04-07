@@ -1,10 +1,10 @@
-+com.github.shepherdviolet.glaciion.test.SamplePluginImpl5
-+com.github.shepherdviolet.glaciion.test.SamplePluginImpl6
-+com.github.shepherdviolet.glaciion.test.SamplePluginImpl7
-+com.github.shepherdviolet.glaciion.test.SamplePluginImpl8
++com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl5
++com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl6
++com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl7
++com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl8
 
--com.github.shepherdviolet.glaciion.test.SamplePluginImpl5
--com.github.shepherdviolet.glaciion.test.SamplePluginImpl1
--com.github.shepherdviolet.glaciion.test.SamplePluginImpl2
+-com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl5
+-com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl1
+-com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl2
 
-++com.github.shepherdviolet.glaciion.test.SamplePluginImpl6
+++com.github.shepherdviolet.glacimon.java.spi.test.SamplePluginImpl6

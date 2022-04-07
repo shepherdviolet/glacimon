@@ -2,7 +2,7 @@
 
 * [中文](https://github.com/shepherdviolet/slate/blob/master/docs/mapxbean/guide.md)
 * [Source Code](https://github.com/shepherdviolet/slate/tree/master/slate-mapxbean/src/main/java/sviolet/slate/common/x/conversion/mapxbean)
-* [Support Glaciion SPI extension point](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+* [Support GlacimonSpi SPI extension point](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 <br>
 
@@ -239,7 +239,7 @@ MapXBean.beanToMap()
 | MxbMapperLowlevelNum2Integer | Low level number | Integer |
 | MxbMapperLowlevelNum2Long | Low level number | Long |
 
-* You can add your own MxbTypeMapper by [Glaciion SPI extension point](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+* You can add your own MxbTypeMapper by [GlacimonSpi SPI extension point](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 | Extension Point | Default Implementation |
 | --------------- | ---------------------- |
@@ -316,7 +316,7 @@ MapXBean.beanToMap()
 Has read methods (getter) or write methods (setter)
 ```
 
-* You can customize isIndivisible / isBean judgment logic by [Glaciion SPI extension point](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+* You can customize isIndivisible / isBean judgment logic by [GlacimonSpi SPI extension point](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 | Extension Point | Default Implementation |
 | --------------- | ---------------------- |
@@ -324,9 +324,9 @@ Has read methods (getter) or write methods (setter)
 
 <br>
 
-### All Glaciion Extension Points
+### All GlacimonSpi Extension Points
 
-* [Glaciion SPI Document](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
+* [GlacimonSpi SPI Document](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 
 | Extension Point | Default Implementation |
 | --------------- | ---------------------- |

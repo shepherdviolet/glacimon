@@ -19,8 +19,8 @@
 
 package sviolet.slate.common.x.conversion.mapxbean;
 
-import com.github.shepherdviolet.glaciion.api.annotation.PropertyInject;
-import com.github.shepherdviolet.glaciion.api.interfaces.InitializableImplementation;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
+import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.InitializableImplementation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sviolet.slate.common.x.conversion.mapxbean.mapper.date.*;

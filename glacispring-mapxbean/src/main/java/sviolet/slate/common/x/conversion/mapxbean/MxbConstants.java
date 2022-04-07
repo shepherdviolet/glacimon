@@ -19,7 +19,7 @@
 
 package sviolet.slate.common.x.conversion.mapxbean;
 
-import com.github.shepherdviolet.glaciion.Glaciion;
+import com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi;
 
 /**
  * Internal constants and components
@@ -29,11 +29,11 @@ import com.github.shepherdviolet.glaciion.Glaciion;
 class MxbConstants {
 
     // Common
-    static final MxbObjectInstantiator OBJECT_INSTANTIATOR = Glaciion.loadSingleService(MxbObjectInstantiator.class).get();
-    static final MxbTypeMapperCenter TYPE_MAPPER_CENTER = Glaciion.loadSingleService(MxbTypeMapperCenter.class).get();
-    static final MxbTypeJudger TYPE_JUDGER = Glaciion.loadSingleService(MxbTypeJudger.class).get();
+    static final MxbObjectInstantiator OBJECT_INSTANTIATOR = GlacimonSpi.loadSingleService(MxbObjectInstantiator.class).get();
+    static final MxbTypeMapperCenter TYPE_MAPPER_CENTER = GlacimonSpi.loadSingleService(MxbTypeMapperCenter.class).get();
+    static final MxbTypeJudger TYPE_JUDGER = GlacimonSpi.loadSingleService(MxbTypeJudger.class).get();
 
     // Map -> Bean only
-    static final MxbCollectionMapper MTB_COLLECTION_MAPPER = Glaciion.loadSingleService(MxbCollectionMapper.class).get();
+    static final MxbCollectionMapper MTB_COLLECTION_MAPPER = GlacimonSpi.loadSingleService(MxbCollectionMapper.class).get();
 
 }

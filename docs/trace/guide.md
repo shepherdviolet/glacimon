@@ -83,8 +83,8 @@ threadPool.execute(Trace.traceable(()-> {
 // 方式一: (高优先级) 通过Java启动参数将追踪号设置为URL-Safe-Base64格式
 -Dthistle.trace.trace-id-compressed=true
 
-// 方式二: 通过Glaciion SPI扩展点 的特性设置
-1.在Classpath下创建文件: META-INF/glaciion/properties/sviolet.thistle.x.util.trace.DefaultTraceProvider
+// 方式二: 通过GlacimonSpi SPI扩展点 的特性设置
+1.在Classpath下创建文件: META-INF/glacimonspi/properties/sviolet.thistle.x.util.trace.DefaultTraceProvider
 2.编写内容:
 
 traceIdCompressed=true
@@ -94,7 +94,7 @@ traceIdCompressed=true
 <br>
 <br>
 
-# Glaciion SPI扩展点
+# GlacimonSpi SPI扩展点
 
 * 扩展点: sviolet.thistle.x.util.trace.TraceProvider
-* 详见文档: https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md
+* 详见文档: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md

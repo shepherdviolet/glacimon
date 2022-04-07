@@ -19,13 +19,13 @@
 
 package sviolet.thistle.x.util.trace;
 
-import com.github.shepherdviolet.glaciion.Glaciion;
+import com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
- * 全局追踪API, Glaciion扩展点: sviolet.thistle.x.util.trace.TraceProvider.
+ * 全局追踪API, GlacimonSpi扩展点: sviolet.thistle.x.util.trace.TraceProvider.
  * 默认实现: DefaultTraceProvider.
  *
  * @author S.Violet
@@ -34,7 +34,7 @@ public class Trace {
 
     public static final String TRACE_ID_KEY = "_trace_id_";
 
-    private static final TraceProvider PROVIDER = Glaciion.loadSingleService(TraceProvider.class).get();
+    private static final TraceProvider PROVIDER = GlacimonSpi.loadSingleService(TraceProvider.class).get();
 
     /**
      * 重头开始追踪

@@ -19,14 +19,14 @@
 
 package sviolet.slate.common.x.monitor.txtimer;
 
-import com.github.shepherdviolet.glaciion.Glaciion;
+import com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 
 /**
- * <p>简单的交易耗时统计, 提供默认实现, 也可以用Glaciion SPI扩展</p>
+ * <p>简单的交易耗时统计, 提供默认实现, 也可以用GlacimonSpi SPI扩展</p>
  *
  * <p>日志前缀:TxTimer</p>
  *
@@ -38,7 +38,7 @@ import java.util.LinkedList;
  *
  * <p>
  *     1.默认实现了交易耗时的统计, 并通过日志定时输出报告. <br>
- *     2.可以使用Glaciion SPI替换实现, 替换实现后下面的参数无效. <br>
+ *     2.可以使用GlacimonSpi SPI替换实现, 替换实现后下面的参数无效. <br>
  * </p>
  *
  * <p>默认实现的启动参数(不可动态修改):<br>
@@ -67,7 +67,7 @@ public class TxTimer {
     static {
         //统计开关, 默认关闭
         if ("true".equals(System.getProperty("slate.txtimer.enabled", "true"))) {
-            TxTimerProvider2 service = Glaciion.loadSingleService(TxTimerProvider2.class).get();
+            TxTimerProvider2 service = GlacimonSpi.loadSingleService(TxTimerProvider2.class).get();
             //再根据provider判断是否要启用
             if (service.enabled()) {
                 PROVIDER = service;

@@ -1,3 +1,3 @@
-com.github.shepherdviolet.glaciion.test.SampleService
-com.github.shepherdviolet.glaciion.test.SamplePlugin
-com.github.shepherdviolet.glaciion.test.CompatService
+com.github.shepherdviolet.glacimon.java.spi.test.SampleService
+com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin
+com.github.shepherdviolet.glacimon.java.spi.test.CompatService

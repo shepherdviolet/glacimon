@@ -19,15 +19,15 @@
 
 package sviolet.thistle.x.util.trace;
 
-import com.github.shepherdviolet.glaciion.api.annotation.NewMethod;
-import com.github.shepherdviolet.glaciion.api.annotation.SingleServiceInterface;
-import com.github.shepherdviolet.glaciion.api.interfaces.CompatibleApproach;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.NewMethod;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.SingleServiceInterface;
+import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.CompatibleApproach;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * [Glaciion扩展点]全局追踪实现接口.
+ * [GlacimonSpi扩展点]全局追踪实现接口.
  * 默认实现: DefaultTraceProvider.
  *
  * @author S.Violet

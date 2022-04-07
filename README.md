@@ -10,25 +10,20 @@
 <br>
 <br>
 
-# GlaciJava (For JavaSE JDK7+)
+# GlaciJava (Glacimon for JavaSE JDK7+)
 
 ## Module 'glacijava-spi-api'/'glacijava-spi-core'
 
-> What's SPI?
+> GlacimonSpi is an implementation of service provider interface feature. It can make your library expandable.
 
-```text
-Service provider interface is a feature for discovering and loading implementations matching the given interface. 
-Glaciion is an implementation of service provider interface feature. It can make your library expandable. 
-```
-
-> [English Documents](https://github.com/shepherdviolet/glaciion/blob/master/docs/index.md)
-> [中文文档](https://github.com/shepherdviolet/glaciion/blob/master/docs/index-cn.md)
+* [GlacimonSpi English Documents](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
+* [GlacimonSpi 中文文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)
 
 <br>
 
 ## Module 'glacijava-common'
 
-[![Depends](https://img.shields.io/badge/Depends-glaciion--api-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glaciion)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--api-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Core module of thistle
 
@@ -72,7 +67,7 @@ Glaciion is an implementation of service provider interface feature. It can make
 ## Module 'glacijava-trace'
 
 [![Depends](https://img.shields.io/badge/Depends-thistle--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/thistle)
-[![Depends](https://img.shields.io/badge/Depends-glaciion--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glaciion)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > The module for tracing
 
@@ -83,7 +78,7 @@ Glaciion is an implementation of service provider interface feature. It can make
 <br>
 <br>
 
-# GlaciSpring (For Java Spring JDK8+)
+# GlaciSpring (Glacimon for Java Spring JDK8+)
 
 ## Module 'slate-common'
 
@@ -115,7 +110,7 @@ Glaciion is an implementation of service provider interface feature. It can make
 ## Module 'slate-txtimer'
 
 [![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
-[![Depends](https://img.shields.io/badge/Depends-glaciion--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glaciion)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > The module for statistic
 
@@ -160,7 +155,7 @@ Glaciion is an implementation of service provider interface feature. It can make
 ## Module 'slate-mapxbean'
 
 [![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
-[![Depends](https://img.shields.io/badge/Depends-glaciion--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glaciion)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Map - Bean converter
 
@@ -182,62 +177,62 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile 'com.github.shepherdviolet:glaciion-core:?'
-    compile 'com.github.shepherdviolet:thistle-common:?'
-    compile 'com.github.shepherdviolet:thistle-crypto-plus:?'
-    compile 'com.github.shepherdviolet:thistle-trace:?'
-    compile 'com.github.shepherdviolet:slate-common:?'
-    compile 'com.github.shepherdviolet:slate-txtimer:?'
-    compile 'com.github.shepherdviolet:slate-helper:?'
-    compile 'com.github.shepherdviolet:slate-http-client:?'
-    compile 'com.github.shepherdviolet:slate-mapxbean:?'
+    compile 'com.github.shepherdviolet.glacimon:glacijava-spi-core:?'
+    compile 'com.github.shepherdviolet.glacimon:thistle-common:?'
+    compile 'com.github.shepherdviolet.glacimon:thistle-crypto-plus:?'
+    compile 'com.github.shepherdviolet.glacimon:thistle-trace:?'
+    compile 'com.github.shepherdviolet.glacimon:slate-common:?'
+    compile 'com.github.shepherdviolet.glacimon:slate-txtimer:?'
+    compile 'com.github.shepherdviolet.glacimon:slate-helper:?'
+    compile 'com.github.shepherdviolet.glacimon:slate-http-client:?'
+    compile 'com.github.shepherdviolet.glacimon:slate-mapxbean:?'
 }
 
 ```
 
 ```maven
     <dependency>    
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>glaciion-core</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacijava-spi-core</artifactId>
         <version>?</version> 
     </dependency>
     <dependency>    
-        <groupId>com.github.shepherdviolet</groupId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>thistle-common</artifactId>
         <version>?</version> 
     </dependency>
     <dependency>    
-        <groupId>com.github.shepherdviolet</groupId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>thistle-crypto-plus</artifactId>
         <version>?</version> 
     </dependency>
     <dependency>    
-        <groupId>com.github.shepherdviolet</groupId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>thistle-trace</artifactId>
         <version>?</version> 
     </dependency>
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>slate-common</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>slate-txtimer</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>slate-helper</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>slate-http-client</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>slate-mapxbean</artifactId>
         <version>?</version>
     </dependency>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,17 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.thistle.x.util.trace;
+package com.github.shepherdviolet.glacimon.java.x.trace;
 
 /**
- * 本地追踪号提供器
+ * 追踪号提供器, 用于隔离不同实现, 不作为扩展点
  *
  * @author S.Violet
  */
-class LocalTraceIdProvider extends TraceIdProvider {
+abstract class TraceIdProvider {
 
-    private ThreadLocal<String> traceId = new ThreadLocal<>();
+    abstract void set(String traceId);
 
-    @Override
-    void set(String traceId) {
-        this.traceId.set(traceId);
-    }
-
-    @Override
-    String get() {
-        return this.traceId.get();
-    }
+    abstract String get();
 
 }

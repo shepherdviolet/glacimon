@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,21 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.thistle.x.util.trace;
+package com.github.shepherdviolet.glacimon.java.x.trace;
+
+import org.slf4j.MDC;
 
 /**
- * 无效的接力数据
+ * MDC追踪号提供器
  *
  * @author S.Violet
  */
-public class InvalidBatonException extends Exception {
+class Slf4jTraceIdProvider extends LocalTraceIdProvider {
 
-    private static final long serialVersionUID = -1729806806481330924L;
-
-    public InvalidBatonException(String message) {
-        super(message);
-    }
-
-    public InvalidBatonException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    void set(String traceId) {
+        super.set(traceId);
+        MDC.put(Trace.TRACE_ID_KEY, traceId);
     }
 
 }

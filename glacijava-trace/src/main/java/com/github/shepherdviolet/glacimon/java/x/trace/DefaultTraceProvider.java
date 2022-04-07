@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.thistle.x.util.trace;
+package com.github.shepherdviolet.glacimon.java.x.trace;
 
 import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
 import com.github.shepherdviolet.glacimon.java.conversion.UuidUtils;
@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * <p>
  *     1.追踪号和其他追踪信息保存在ThreadLocal中. <br>
- *     2.如果应用依赖SLF4J, 追踪号还会存入MDC, KEY为{@value sviolet.thistle.x.util.trace.Trace#TRACE_ID_KEY}, 可以打印在日志中. <br>
+ *     2.如果应用依赖SLF4J, 追踪号还会存入MDC, KEY为{@value Trace#TRACE_ID_KEY}, 可以打印在日志中. <br>
  * </p>
  *
  * @author zhuqinchao
@@ -45,7 +45,7 @@ public class DefaultTraceProvider implements TraceProvider {
         try {
             //尝试用SLF4J存追踪号
             Class.forName("org.slf4j.Logger");
-            traceIdProvider = (TraceIdProvider) Class.forName("sviolet.thistle.x.util.trace.Slf4jTraceIdProvider").newInstance();
+            traceIdProvider = (TraceIdProvider) Class.forName("com.github.shepherdviolet.glacimon.java.x.trace.Slf4jTraceIdProvider").newInstance();
         } catch (Exception e) {
             traceIdProvider = new LocalTraceIdProvider();
         }

@@ -84,7 +84,7 @@ threadPool.execute(Trace.traceable(()-> {
 -Dthistle.trace.trace-id-compressed=true
 
 // 方式二: 通过GlacimonSpi SPI扩展点 的特性设置
-1.在Classpath下创建文件: META-INF/glacimonspi/properties/sviolet.thistle.x.util.trace.DefaultTraceProvider
+1.在Classpath下创建文件: META-INF/glacimonspi/properties/com.github.shepherdviolet.glacimon.java.x.trace.DefaultTraceProvider
 2.编写内容:
 
 traceIdCompressed=true
@@ -96,5 +96,5 @@ traceIdCompressed=true
 
 # GlacimonSpi SPI扩展点
 
-* 扩展点: sviolet.thistle.x.util.trace.TraceProvider
+* 扩展点: com.github.shepherdviolet.glacimon.java.x.trace.TraceProvider
 * 详见文档: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md

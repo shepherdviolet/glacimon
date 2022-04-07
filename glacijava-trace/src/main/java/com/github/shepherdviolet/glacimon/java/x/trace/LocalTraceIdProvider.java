@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,25 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.thistle.x.util.trace;
-
-import org.slf4j.MDC;
+package com.github.shepherdviolet.glacimon.java.x.trace;
 
 /**
- * MDC追踪号提供器
+ * 本地追踪号提供器
  *
  * @author S.Violet
  */
-class Slf4jTraceIdProvider extends LocalTraceIdProvider {
+class LocalTraceIdProvider extends TraceIdProvider {
+
+    private ThreadLocal<String> traceId = new ThreadLocal<>();
 
     @Override
     void set(String traceId) {
-        super.set(traceId);
-        MDC.put(Trace.TRACE_ID_KEY, traceId);
+        this.traceId.set(traceId);
+    }
+
+    @Override
+    String get() {
+        return this.traceId.get();
     }
 
 }

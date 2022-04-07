@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.thistle.x.util.trace;
+package com.github.shepherdviolet.glacimon.java.x.trace;
 
 import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 
@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static sviolet.thistle.x.util.trace.Trace.TRACE_ID_KEY;
+import static com.github.shepherdviolet.glacimon.java.x.trace.Trace.TRACE_ID_KEY;
 
 /**
  * 追踪接力信息, 用于从一个线程携带到另一个线程, 或从一个进程携带到另一个进程

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,24 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.thistle.x.util.trace;
+package com.github.shepherdviolet.glacimon.java.x.trace;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * 追踪号提供器, 用于隔离不同实现, 不作为扩展点
+ * 临时使用的测试案例
  *
  * @author S.Violet
  */
-abstract class TraceIdProvider {
+public class TempTest {
 
-    abstract void set(String traceId);
-
-    abstract String get();
+    @Test
+    public void test(){
+        Trace.start();
+        Trace.setData("hello", "hello");
+        Trace.handoff(Trace.getBaton());
+        Assert.assertEquals("hello", Trace.getData("hello"));
+    }
 
 }

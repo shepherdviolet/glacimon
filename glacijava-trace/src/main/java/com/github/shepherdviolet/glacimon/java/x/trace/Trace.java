@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.thistle.x.util.trace;
+package com.github.shepherdviolet.glacimon.java.x.trace;
 
 import com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi;
 
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
- * 全局追踪API, GlacimonSpi扩展点: sviolet.thistle.x.util.trace.TraceProvider.
+ * 全局追踪API, GlacimonSpi扩展点: com.github.shepherdviolet.glacimon.java.x.trace.TraceProvider.
  * 默认实现: DefaultTraceProvider.
  *
  * @author S.Violet

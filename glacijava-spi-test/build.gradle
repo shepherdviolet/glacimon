@@ -3,7 +3,7 @@ dependencies {
 
     //required
     [
-            project(':glaciion-core') { group project_group_id; version project_version },
+            project(':glacijava-spi-core') { group project_group_id; version project_version },
 
     ].forEach{ implementation it }
 

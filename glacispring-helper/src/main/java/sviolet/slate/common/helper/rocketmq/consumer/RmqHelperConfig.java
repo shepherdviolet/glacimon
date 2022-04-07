@@ -28,7 +28,7 @@ import sviolet.slate.common.helper.rocketmq.consumer.manager.*;
 import sviolet.slate.common.helper.rocketmq.consumer.proc.RmqConcurrentConsumerMemProc;
 import sviolet.slate.common.helper.rocketmq.consumer.proc.RmqCustomConsumerMemProc;
 import sviolet.slate.common.helper.rocketmq.consumer.proc.RmqOrderedConsumerMemProc;
-import sviolet.slate.common.x.bean.mbrproc.EnableMemberProcessor;
+import com.github.shepherdviolet.glacimon.spring.x.beanfactory.mbrproc.EnableMemberProcessor;
 
 /**
  * RocketMQ Helper 配置类

@@ -22,7 +22,7 @@ package sviolet.slate.common.helper.rocketmq.consumer.proc;
 import org.springframework.context.ApplicationContext;
 import sviolet.slate.common.helper.rocketmq.consumer.RocketMqOrderedConsumer;
 import sviolet.slate.common.helper.rocketmq.consumer.manager.RmqConsumerManager;
-import sviolet.slate.common.x.bean.mbrproc.MemberProcessor;
+import com.github.shepherdviolet.glacimon.spring.x.beanfactory.mbrproc.MemberProcessor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

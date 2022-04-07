@@ -21,7 +21,7 @@ package sviolet.slate.common.x.net.loadbalance.springboot.autowired;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.ReflectionUtils;
-import sviolet.slate.common.x.bean.mbrproc.MemberProcessor;
+import com.github.shepherdviolet.glacimon.spring.x.beanfactory.mbrproc.MemberProcessor;
 import sviolet.slate.common.x.net.loadbalance.classic.SimpleOkHttpClient;
 import sviolet.slate.common.x.net.loadbalance.springboot.HttpClients;
 

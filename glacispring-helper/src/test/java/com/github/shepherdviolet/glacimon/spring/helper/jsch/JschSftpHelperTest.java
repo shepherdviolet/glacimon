@@ -17,9 +17,8 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.slate.common.com.github.shepherdviolet.glacimon.spring.helper.jsch;
+package com.github.shepherdviolet.glacimon.spring.helper.jsch;
 
-import com.github.shepherdviolet.glacimon.spring.helper.jsch.JschHelper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import com.github.shepherdviolet.glacimon.spring.helper.jsch.sftp.JschSftpCommand;

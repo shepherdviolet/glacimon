@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.slate.common.com.github.shepherdviolet.glacimon.spring;
+package com.github.shepherdviolet.glacimon.spring;
 
 import org.junit.Test;
 

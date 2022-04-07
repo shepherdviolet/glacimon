@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Project GitHub: https://github.com/shepherdviolet/thistle
+ * Project GitHub: https://github.com/shepherdviolet/glacimon
  * Email: shepherdviolet@163.com
  */
 package sviolet.thistle.entity.function;

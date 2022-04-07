@@ -18,7 +18,6 @@ dependencies {
             "javax.servlet:javax.servlet-api:$version_servlet",
             "org.springframework:spring-jdbc:$version_spring",
             "org.springframework.boot:spring-boot-autoconfigure:$version_spring_boot",
-            "ch.qos.logback:logback-classic:$version_logback",
 
     ].forEach{ compileOnly it; testImplementation it }
 

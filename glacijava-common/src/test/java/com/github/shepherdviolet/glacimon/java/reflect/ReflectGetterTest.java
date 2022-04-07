@@ -21,7 +21,6 @@ package com.github.shepherdviolet.glacimon.java.reflect;
 
 import static org.junit.Assert.*;
 
-import com.github.shepherdviolet.glacimon.java.reflect.ReflectGetter;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -78,17 +77,11 @@ public class ReflectGetterTest {
                 new String[]{"a", "b", "c"},
                 ReflectGetter.<String[]>get(bean, "objectMap.ssss", true)
         );
-        //jdk 8
         assertEquals(
                 1.698f,
-                ReflectGetter.get(bean, "objectList[1].floatValue", true)
+                ReflectGetter.get(bean, "objectList[1].floatValue", true),
+                0
         );
-        //jdk 11
-//        assertEquals(
-//                1.698f,
-//                ReflectGetter.get(bean, "objectList[1].floatValue", true),
-//                0
-//        );
         assertEquals(
                 5453988,
                 (int)ReflectGetter.get(bean, "objectList[2].list[0]", true)
@@ -129,17 +122,12 @@ public class ReflectGetterTest {
                 "hello",
                 ReflectGetter.get(bean, "methodString", true)
         );
-        //jdk 8
+        //jdk 11
         assertEquals(
                 5.9659554d,
-                ReflectGetter.get(bean, "methodBean.doubleValue", true)
+                ReflectGetter.get(bean, "methodBean.doubleValue", true),
+                0
         );
-        //jdk 11
-//        assertEquals(
-//                5.9659554d,
-//                ReflectGetter.get(bean, "methodBean.doubleValue", true),
-//                0
-//        );
     }
 
     private static Bean buildTestBean() {

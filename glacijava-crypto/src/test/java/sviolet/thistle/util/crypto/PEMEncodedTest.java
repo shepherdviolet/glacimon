@@ -19,9 +19,11 @@
 
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.PEMEncodeUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.entity.exception.IllegalParamException;
+import com.github.shepherdviolet.glacimon.java.throwable.IllegalParamException;
 
 import java.security.spec.InvalidKeySpecException;
 

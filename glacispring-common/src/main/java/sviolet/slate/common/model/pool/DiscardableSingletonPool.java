@@ -21,8 +21,8 @@ package sviolet.slate.common.model.pool;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sviolet.thistle.util.concurrent.ConcurrentUtils;
-import sviolet.thistle.util.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.java.concurrent.ConcurrentUtils;
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sviolet.slate.common.x.monitor.txtimer.TimerContext;
 import sviolet.slate.common.x.monitor.txtimer.TxTimerProvider2;
-import sviolet.thistle.model.concurrent.lock.UnsafeHashSpinLocks;
-import sviolet.thistle.model.concurrent.lock.UnsafeSpinLock;
+import com.github.shepherdviolet.glacimon.java.concurrent.lock.UnsafeHashSpinLocks;
+import com.github.shepherdviolet.glacimon.java.concurrent.lock.UnsafeSpinLock;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

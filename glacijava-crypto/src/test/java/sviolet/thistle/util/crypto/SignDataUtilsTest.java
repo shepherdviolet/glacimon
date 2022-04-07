@@ -19,6 +19,7 @@
 
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.Test;

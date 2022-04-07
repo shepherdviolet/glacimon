@@ -27,10 +27,10 @@ import sviolet.slate.common.x.net.loadbalance.classic.DataConverter;
 import sviolet.slate.common.x.net.loadbalance.classic.SimpleOkHttpClient;
 import sviolet.slate.common.x.net.loadbalance.classic.SslUtils;
 import sviolet.slate.common.x.net.loadbalance.springboot.HttpClients;
-import sviolet.thistle.entity.function.ThrowableBiConsumer;
-import sviolet.thistle.util.concurrent.ThreadPoolExecutorUtils;
-import sviolet.thistle.util.conversion.SimpleKeyValueEncoder;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.function.ThrowableBiConsumer;
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 import java.io.Closeable;
 import java.io.IOException;

@@ -19,10 +19,11 @@
 
 package sviolet.thistle.model.bitmap;
 
+import com.github.shepherdviolet.glacimon.java.bitmap.*;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.util.conversion.ByteUtils;
-import sviolet.thistle.util.crypto.DigestCipher;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.DigestCipher;
 
 import java.util.Random;
 import java.util.UUID;

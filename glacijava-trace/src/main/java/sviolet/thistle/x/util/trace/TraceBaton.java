@@ -19,7 +19,7 @@
 
 package sviolet.thistle.x.util.trace;
 
-import sviolet.thistle.util.conversion.SimpleKeyValueEncoder;
+import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 
 import java.io.Serializable;
 import java.util.HashMap;

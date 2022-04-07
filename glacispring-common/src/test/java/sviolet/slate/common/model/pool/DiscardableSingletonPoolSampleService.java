@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import sviolet.thistle.compat.concurrent.CompatThreadFactoryBuilder;
-import sviolet.thistle.util.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
 import java.io.IOException;
 import java.time.ZoneId;
@@ -253,7 +253,7 @@ public class DiscardableSingletonPoolSampleService
      * 注意要设置为守护线程, 否则会影响JVM自然结束
      */
     private final ScheduledExecutorService executorService = ThreadPoolExecutorUtils.createScheduled(1,
-            new CompatThreadFactoryBuilder().setNameFormat("sample-service-schedule-%d").setDaemon(true).build());
+            new GuavaThreadFactoryBuilder().setNameFormat("sample-service-schedule-%d").setDaemon(true).build());
 
     /**
      * [可选: 定时任务统计信息]

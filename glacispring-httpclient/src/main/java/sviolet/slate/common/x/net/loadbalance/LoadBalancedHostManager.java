@@ -21,9 +21,9 @@ package sviolet.slate.common.x.net.loadbalance;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sviolet.thistle.util.concurrent.ThreadPoolExecutorUtils;
-import sviolet.thistle.util.judge.CheckUtils;
-import sviolet.thistle.util.reflect.MethodCaller;
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.reflect.MethodCaller;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;

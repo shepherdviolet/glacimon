@@ -21,7 +21,7 @@ package sviolet.slate.common.x.monitor.txtimer.def;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 /**
  * 用于Spring容器中修改TxTimer配置(仅支持部分配置), 引入本配置类即可.

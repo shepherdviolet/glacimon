@@ -20,6 +20,8 @@
 package sviolet.thistle.util.reflect;
 
 import static org.junit.Assert.*;
+
+import com.github.shepherdviolet.glacimon.java.reflect.ReflectGetter;
 import org.junit.Test;
 
 import java.util.ArrayList;

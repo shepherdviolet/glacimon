@@ -19,14 +19,14 @@
 
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.PEMEncodeUtils;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.util.conversion.ByteUtils;
 import sviolet.thistle.util.crypto.base.BaseBCAsymKeyGenerator;
-import sviolet.thistle.util.crypto.base.CommonCryptoException;
+import com.github.shepherdviolet.glacimon.java.crypto.base.CommonCryptoException;
 import sviolet.thistle.util.crypto.base.SM2DefaultCurve;
 
 import java.io.ByteArrayInputStream;

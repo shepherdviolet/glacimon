@@ -19,7 +19,7 @@
 
 package sviolet.thistle.util.crypto.base;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import com.github.shepherdviolet.glacimon.java.crypto.base.BaseKeyGenerator;
 
 import javax.crypto.KeyGenerator;
 import java.security.NoSuchAlgorithmException;

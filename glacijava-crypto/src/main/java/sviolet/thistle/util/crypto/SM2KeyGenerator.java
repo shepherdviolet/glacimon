@@ -24,10 +24,10 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import sviolet.thistle.util.conversion.Base64Utils;
-import sviolet.thistle.util.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import sviolet.thistle.util.crypto.base.BaseBCAsymKeyGenerator;
-import sviolet.thistle.util.crypto.base.CommonCryptoException;
+import com.github.shepherdviolet.glacimon.java.crypto.base.CommonCryptoException;
 import sviolet.thistle.util.crypto.base.SM2DefaultCurve;
 
 import java.math.BigInteger;

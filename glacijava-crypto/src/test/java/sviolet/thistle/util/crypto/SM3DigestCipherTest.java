@@ -21,7 +21,7 @@ package sviolet.thistle.util.crypto;
 
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.util.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

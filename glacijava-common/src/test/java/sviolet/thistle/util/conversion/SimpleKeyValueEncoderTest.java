@@ -19,6 +19,7 @@
 
 package sviolet.thistle.util.conversion;
 
+import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 import org.junit.Assert;
 import org.junit.Test;
 

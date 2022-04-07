@@ -19,7 +19,7 @@
 
 package sviolet.slate.common.x.monitor.txtimer.def;
 
-import sviolet.thistle.model.concurrent.lock.UnsafeSpinLock;
+import com.github.shepherdviolet.glacimon.java.concurrent.lock.UnsafeSpinLock;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

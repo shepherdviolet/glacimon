@@ -21,8 +21,8 @@ package sviolet.slate.common.web.servlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sviolet.thistle.util.concurrent.ThreadPoolExecutorUtils;
-import sviolet.thistle.util.lifecycle.CloseableManageUtils;
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.java.lifecycle.CloseableManageUtils;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

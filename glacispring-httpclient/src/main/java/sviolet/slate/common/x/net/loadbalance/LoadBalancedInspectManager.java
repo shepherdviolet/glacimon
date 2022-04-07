@@ -23,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sviolet.slate.common.x.net.loadbalance.inspector.FixedTimeoutLoadBalanceInspector;
 import sviolet.slate.common.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
-import sviolet.thistle.compat.concurrent.CompatThreadFactoryBuilder;
-import sviolet.thistle.util.common.CloseableUtils;
-import sviolet.thistle.util.concurrent.ThreadPoolExecutorUtils;
-import sviolet.thistle.util.lifecycle.CloseableManageUtils;
+import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.java.lifecycle.CloseableManageUtils;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class LoadBalancedInspectManager implements Closeable {
     private long blockDuration = DEFAULT_INSPECT_INTERVAL * 2;
 
     private ExecutorService dispatchThreadPool = ThreadPoolExecutorUtils.createFixed(1,
-            new CompatThreadFactoryBuilder().setNameFormat("Slate-LBInspect-Dispatch-%d").setDaemon(true).build());
+            new GuavaThreadFactoryBuilder().setNameFormat("Slate-LBInspect-Dispatch-%d").setDaemon(true).build());
     private ExecutorService inspectThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 60, "Slate-LBInspect-Inspect-%d");
 
     /**

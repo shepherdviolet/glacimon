@@ -19,12 +19,11 @@
 
 package sviolet.slate.common.x.monitor.txtimer;
 
-import com.google.gson.GsonBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import sviolet.slate.common.x.monitor.txtimer.def.DefaultTxTimerReportRepository;
 import sviolet.slate.common.x.monitor.txtimer.def.DefaultTxTimerReportScanner;
-import sviolet.thistle.util.file.FileUtils;
+import com.github.shepherdviolet.glacimon.java.file.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

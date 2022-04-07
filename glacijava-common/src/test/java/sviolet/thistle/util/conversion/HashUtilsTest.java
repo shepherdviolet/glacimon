@@ -19,6 +19,8 @@
 
 package sviolet.thistle.util.conversion;
 
+import com.github.shepherdviolet.glacimon.java.conversion.HashUtils;
+
 public class HashUtilsTest {
 
     public static void main(String[] args) {

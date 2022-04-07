@@ -19,8 +19,9 @@
 
 package sviolet.thistle.util.crypto.base;
 
+import com.github.shepherdviolet.glacimon.java.util.crypto.base.CryptoConstants;
 import org.bouncycastle.crypto.Digest;
-import sviolet.thistle.util.common.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

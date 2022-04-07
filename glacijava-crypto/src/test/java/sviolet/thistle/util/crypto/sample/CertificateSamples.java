@@ -19,6 +19,8 @@
 
 package sviolet.thistle.util.crypto.sample;
 
+import com.github.shepherdviolet.glacimon.java.crypto.RSACipher;
+import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -32,13 +34,13 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.junit.Test;
-import sviolet.thistle.util.conversion.Base64Utils;
-import sviolet.thistle.util.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import sviolet.thistle.util.crypto.*;
 import sviolet.thistle.util.crypto.base.BouncyCastleProviderUtils;
-import sviolet.thistle.util.crypto.base.IssuerProvider;
-import sviolet.thistle.util.crypto.base.SimpleIssuerProvider;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.base.IssuerProvider;
+import com.github.shepherdviolet.glacimon.java.crypto.base.SimpleIssuerProvider;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 import javax.security.auth.x500.X500Principal;
 import java.io.IOException;

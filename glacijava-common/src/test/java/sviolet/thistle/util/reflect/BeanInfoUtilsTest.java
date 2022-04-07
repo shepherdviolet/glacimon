@@ -19,6 +19,7 @@
 
 package sviolet.thistle.util.reflect;
 
+import com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

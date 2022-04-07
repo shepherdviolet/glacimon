@@ -1,8 +1,9 @@
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.AESCipher;
+import com.github.shepherdviolet.glacimon.java.crypto.AESKeyGenerator;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.util.conversion.ByteUtils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;

@@ -19,6 +19,7 @@
 
 package sviolet.thistle.util.math;
 
+import com.github.shepherdviolet.glacimon.java.math.MathUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

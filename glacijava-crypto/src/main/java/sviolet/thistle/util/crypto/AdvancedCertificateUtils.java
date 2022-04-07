@@ -19,12 +19,15 @@
 
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.CertificateUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.base.BaseCertificateUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.base.IssuerProvider;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.operator.OperatorCreationException;
-import sviolet.thistle.util.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import sviolet.thistle.util.crypto.base.*;
 
 import java.io.ByteArrayInputStream;

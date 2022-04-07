@@ -22,7 +22,7 @@ package sviolet.slate.common.x.conversion.mapxbean;
 import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sviolet.thistle.util.reflect.GenericClassUtils;
+import com.github.shepherdviolet.glacimon.java.reflect.GenericClassUtils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

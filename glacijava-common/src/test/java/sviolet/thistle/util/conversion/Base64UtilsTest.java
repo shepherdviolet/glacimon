@@ -19,9 +19,10 @@
 
 package sviolet.thistle.util.conversion;
 
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.util.crypto.DigestCipher;
+import com.github.shepherdviolet.glacimon.java.crypto.DigestCipher;
 
 import java.nio.charset.StandardCharsets;
 

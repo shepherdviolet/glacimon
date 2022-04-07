@@ -1,7 +1,7 @@
 package sviolet.slate.common.x.monitor.txtimer;
 
 import sviolet.slate.common.x.monitor.txtimer.def.DefaultTxTimerConfig;
-import sviolet.thistle.util.crypto.SecureRandomUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.SecureRandomUtils;
 
 public class TxTimerCommonTest {
 

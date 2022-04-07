@@ -19,13 +19,15 @@
 
 package sviolet.thistle.util.crypto.sample;
 
+import com.github.shepherdviolet.glacimon.java.crypto.PEMEncodeUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import sviolet.thistle.entity.exception.IllegalParamException;
-import sviolet.thistle.util.conversion.Base64Utils;
-import sviolet.thistle.util.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.throwable.IllegalParamException;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import sviolet.thistle.util.crypto.*;
 
 import java.security.cert.X509Certificate;

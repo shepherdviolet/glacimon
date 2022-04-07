@@ -1,8 +1,10 @@
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.ECDSACipher;
+import com.github.shepherdviolet.glacimon.java.crypto.ECDSAKeyGenerator;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.util.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 
 import java.io.File;
 import java.io.IOException;

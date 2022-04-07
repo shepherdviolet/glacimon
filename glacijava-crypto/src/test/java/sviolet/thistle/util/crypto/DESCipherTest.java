@@ -1,5 +1,7 @@
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.DESCipher;
+import com.github.shepherdviolet.glacimon.java.crypto.DESKeyGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 

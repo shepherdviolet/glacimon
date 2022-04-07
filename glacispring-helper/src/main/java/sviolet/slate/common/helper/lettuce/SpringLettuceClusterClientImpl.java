@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import sviolet.thistle.util.common.CloseableUtils;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 import java.net.URI;
 import java.time.Duration;

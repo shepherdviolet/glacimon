@@ -26,7 +26,7 @@ import sviolet.slate.common.x.net.loadbalance.LoadBalancedHostManager;
 import sviolet.slate.common.x.net.loadbalance.LoadBalancedInspectManager;
 import sviolet.slate.common.x.net.loadbalance.inspector.HttpGetLoadBalanceInspector;
 import sviolet.slate.common.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
-import sviolet.thistle.util.common.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 
 import java.io.Closeable;
 

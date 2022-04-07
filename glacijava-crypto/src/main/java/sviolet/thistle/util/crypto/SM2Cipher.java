@@ -24,7 +24,7 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import sviolet.thistle.util.crypto.base.BaseBCCipher;
-import sviolet.thistle.util.crypto.base.CommonCryptoException;
+import com.github.shepherdviolet.glacimon.java.crypto.base.CommonCryptoException;
 import sviolet.thistle.util.crypto.base.SM2DefaultCurve;
 
 import java.io.IOException;

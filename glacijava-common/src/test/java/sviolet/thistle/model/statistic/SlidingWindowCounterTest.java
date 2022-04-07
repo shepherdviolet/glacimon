@@ -19,6 +19,7 @@
 
 package sviolet.thistle.model.statistic;
 
+import com.github.shepherdviolet.glacimon.java.math.statistic.SlidingWindowCounter;
 import org.junit.Assert;
 import org.junit.Test;
 

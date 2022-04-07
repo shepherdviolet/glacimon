@@ -19,6 +19,8 @@
 
 package sviolet.thistle.util.crypto.base;
 
+import com.github.shepherdviolet.glacimon.java.crypto.base.BaseKeyGenerator;
+import com.github.shepherdviolet.glacimon.java.crypto.base.IssuerProvider;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -39,13 +41,12 @@ import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.util.KeyUtil;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
-import sviolet.thistle.util.common.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

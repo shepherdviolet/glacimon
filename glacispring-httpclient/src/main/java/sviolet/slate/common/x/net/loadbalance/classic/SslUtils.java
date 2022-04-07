@@ -23,10 +23,10 @@ import okhttp3.internal.Util;
 import okhttp3.internal.platform.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sviolet.thistle.util.conversion.Base64Utils;
-import sviolet.thistle.util.crypto.CertificateUtils;
-import sviolet.thistle.util.judge.CheckUtils;
-import sviolet.thistle.util.net.SimpleHostnameVerifier;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.crypto.CertificateUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.net.SimpleHostnameVerifier;
 
 import javax.net.ssl.*;
 import java.security.KeyManagementException;

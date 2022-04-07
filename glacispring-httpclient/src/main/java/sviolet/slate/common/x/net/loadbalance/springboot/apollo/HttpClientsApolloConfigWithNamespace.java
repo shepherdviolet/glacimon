@@ -32,7 +32,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 import sviolet.slate.common.x.net.loadbalance.springboot.HttpClients;
 import sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.SlatePropertiesForHttpClient;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 /**
  * <p>HttpClients阿波罗动态配置: 支持在Apollo配置中心上动态调整客户端配置</p>

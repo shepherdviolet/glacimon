@@ -30,7 +30,7 @@ import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 import org.bouncycastle.util.Selector;
 import sviolet.thistle.util.crypto.base.BaseBCCertificateUtils;
-import sviolet.thistle.util.crypto.base.BaseCertificateUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.base.BaseCertificateUtils;
 import sviolet.thistle.util.crypto.base.BouncyCastleProviderUtils;
 
 import java.io.ByteArrayInputStream;

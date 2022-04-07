@@ -21,7 +21,7 @@ package sviolet.thistle.util.crypto;
 
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SM3Digest;
-import sviolet.thistle.util.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import sviolet.thistle.util.crypto.base.BaseBCDigestCipher;
 
 import java.io.IOException;

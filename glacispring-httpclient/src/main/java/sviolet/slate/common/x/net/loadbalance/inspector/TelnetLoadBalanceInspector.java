@@ -22,7 +22,7 @@ package sviolet.slate.common.x.net.loadbalance.inspector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sviolet.slate.common.x.net.loadbalance.LoadBalanceInspector;
-import sviolet.thistle.util.net.NetworkUtils;
+import com.github.shepherdviolet.glacimon.java.net.NetworkUtils;
 
 import java.net.URI;
 

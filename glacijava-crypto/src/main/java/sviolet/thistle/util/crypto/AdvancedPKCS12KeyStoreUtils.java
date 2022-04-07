@@ -19,6 +19,7 @@
 
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.PKCS12KeyStoreUtils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -26,12 +27,11 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.crypto.engines.DESedeEngine;
 import org.bouncycastle.crypto.engines.RC2Engine;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.pkcs.*;
 import org.bouncycastle.pkcs.bc.BcPKCS12MacCalculatorBuilder;
 import org.bouncycastle.pkcs.bc.BcPKCS12PBEOutputEncryptorBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS12SafeBagBuilder;
-import sviolet.thistle.util.common.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import sviolet.thistle.util.crypto.base.BouncyCastleProviderUtils;
 
 import java.io.*;

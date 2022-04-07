@@ -24,7 +24,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sviolet.thistle.util.common.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 
 import java.io.Closeable;
 import java.io.IOException;

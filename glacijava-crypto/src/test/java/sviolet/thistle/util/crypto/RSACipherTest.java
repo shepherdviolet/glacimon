@@ -1,8 +1,10 @@
 package sviolet.thistle.util.crypto;
 
+import com.github.shepherdviolet.glacimon.java.crypto.RSACipher;
+import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.util.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;

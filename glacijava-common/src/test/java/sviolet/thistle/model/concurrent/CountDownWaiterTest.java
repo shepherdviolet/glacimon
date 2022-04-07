@@ -19,10 +19,11 @@
 
 package sviolet.thistle.model.concurrent;
 
+import com.github.shepherdviolet.glacimon.java.concurrent.CountDownWaiter;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.thistle.compat.concurrent.CompatThreadFactoryBuilder;
-import sviolet.thistle.util.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CountDownWaiterTest {
 
     private final ExecutorService threadPool = ThreadPoolExecutorUtils.createFixed(4,
-            new CompatThreadFactoryBuilder()
+            new GuavaThreadFactoryBuilder()
                     .setNameFormat("test-%d")
                     .setDaemon(true)
                     .build());

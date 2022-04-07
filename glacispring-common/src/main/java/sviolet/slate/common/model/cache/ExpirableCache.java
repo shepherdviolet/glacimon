@@ -21,8 +21,8 @@ package sviolet.slate.common.model.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sviolet.thistle.util.concurrent.ConcurrentUtils;
-import sviolet.thistle.util.conversion.DateTimeUtils;
+import com.github.shepherdviolet.glacimon.java.concurrent.ConcurrentUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.DateTimeUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

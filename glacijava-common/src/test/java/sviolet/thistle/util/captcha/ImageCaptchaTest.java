@@ -19,7 +19,8 @@
 
 package sviolet.thistle.util.captcha;
 
-import sviolet.thistle.util.file.FileUtils;
+import com.github.shepherdviolet.glacimon.java.captcha.ImageCaptchaUtils;
+import com.github.shepherdviolet.glacimon.java.file.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

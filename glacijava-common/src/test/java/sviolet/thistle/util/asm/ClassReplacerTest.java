@@ -19,6 +19,7 @@
 
 package sviolet.thistle.util.asm;
 
+import com.github.shepherdviolet.glacimon.java.asm.ClassReplacer;
 import javassist.CannotCompileException;
 import org.junit.Assert;
 import org.junit.Test;

@@ -20,8 +20,8 @@
 package sviolet.slate.common.x.conversion.mapxbean.mapper.date;
 
 import sviolet.slate.common.x.conversion.mapxbean.MxbTypeMapper;
-import sviolet.thistle.util.conversion.DateTimeUtils;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.DateTimeUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;

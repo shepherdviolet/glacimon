@@ -20,8 +20,8 @@
 package sviolet.thistle.x.util.trace;
 
 import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
-import sviolet.thistle.util.conversion.UuidUtils;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.UuidUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 import java.util.HashMap;
 import java.util.Map;

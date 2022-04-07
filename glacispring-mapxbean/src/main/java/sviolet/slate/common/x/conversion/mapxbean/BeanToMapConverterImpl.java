@@ -21,7 +21,7 @@ package sviolet.slate.common.x.conversion.mapxbean;
 
 import org.springframework.cglib.beans.BeanMap;
 import sviolet.slate.common.x.conversion.mapxbean.strategy.InflateUntilIndivisible;
-import sviolet.thistle.util.reflect.BeanInfoUtils;
+import com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtils;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

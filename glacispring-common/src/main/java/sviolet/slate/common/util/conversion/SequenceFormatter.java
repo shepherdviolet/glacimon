@@ -2,8 +2,8 @@ package sviolet.slate.common.util.conversion;
 
 import org.springframework.util.PropertyPlaceholderHelper;
 import sviolet.slate.common.util.common.LambdaBuilder;
-import sviolet.thistle.util.conversion.StringUtils;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.StringUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

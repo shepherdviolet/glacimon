@@ -21,7 +21,7 @@ package sviolet.slate.common.helper.jedis.lock;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 import java.util.Arrays;
 import java.util.List;

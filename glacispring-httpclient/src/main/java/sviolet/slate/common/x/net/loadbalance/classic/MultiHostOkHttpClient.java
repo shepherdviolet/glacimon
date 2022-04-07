@@ -26,9 +26,9 @@ import sviolet.slate.common.x.monitor.txtimer.TimerContext;
 import sviolet.slate.common.x.monitor.txtimer.noref.NoRefTxTimer;
 import sviolet.slate.common.x.monitor.txtimer.noref.NoRefTxTimerFactory;
 import sviolet.slate.common.x.net.loadbalance.LoadBalancedHostManager;
-import sviolet.thistle.util.common.CloseableUtils;
-import sviolet.thistle.util.conversion.ByteUtils;
-import sviolet.thistle.util.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;

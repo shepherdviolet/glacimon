@@ -1,11 +1,26 @@
-package sviolet.slate.common.model.pool;
+/*
+ * Copyright (C) 2022-2022 S.Violet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Project GitHub: https://github.com/shepherdviolet/glacimon
+ * Email: shepherdviolet@163.com
+ */
 
-import com.github.shepherdviolet.glacimon.spring.pool.DiscardableSingletonPool;
+package com.github.shepherdviolet.glacimon.java.pool;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
@@ -63,7 +78,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author shepherdviolet
  */
-@Service
+//@Service
 public class DiscardableSingletonPoolSampleService
         implements DiscardableSingletonPool.InstanceManager<DiscardableSingletonPoolSampleService.Client, DiscardableSingletonPoolSampleService.ClientCreateParam> {
 
@@ -205,7 +220,7 @@ public class DiscardableSingletonPoolSampleService
      *
      * 注入所有客户端创建参数ClientCreateParam (注入所有类型为ClientCreateParam的Spring Bean)
      */
-    @Autowired
+//    @Autowired
     public void setClientCreateParams(Map<String, ClientCreateParam> clientCreateParams) {
         this.clientCreateParams = clientCreateParams;
     }
@@ -297,7 +312,7 @@ public class DiscardableSingletonPoolSampleService
      * 唤醒"销毁器"将"已到期"的对象强制销毁.
      *
      */
-    @Value("${sample-service.force-destroy-discarded-instances-after-millis:600000}")
+//    @Value("${sample-service.force-destroy-discarded-instances-after-millis:600000}")
     public void setForceDestroyDiscardedInstancesAfterMillis(long forceDestroyDiscardedInstancesAfterMillis){
         if (logger.isInfoEnabled()) {
             logger.info("sample-service | setForceDestroyDiscardedInstancesAfterMillis=" + forceDestroyDiscardedInstancesAfterMillis);
@@ -320,7 +335,7 @@ public class DiscardableSingletonPoolSampleService
      * 本使用示例保证了每次使用都释放引用, 所以这个设置在这里没有意义, 供需要的人参考.
      *
      */
-    @Value("${sample-service.notify-destroy-discarded-instances-period-millis:600000}")
+//    @Value("${sample-service.notify-destroy-discarded-instances-period-millis:600000}")
     public void setNotifyDestroyDiscardedInstancesPeriodMillis(long notifyDestroyDiscardedInstancesPeriodMillis) {
         if (logger.isInfoEnabled()) {
             logger.info("sample-service | setNotifyDestroyDiscardedInstancesPeriodMillis=" + notifyDestroyDiscardedInstancesPeriodMillis);
@@ -370,7 +385,7 @@ public class DiscardableSingletonPoolSampleService
      * sample-service.discard-low-usage-instances-period: 定时清理低使用率的对象, 默认3600000 (60分钟)
      *
      */
-    @Value("${sample-service.discard-low-usage-instances-expire-time:3000000}")
+//    @Value("${sample-service.discard-low-usage-instances-expire-time:3000000}")
     public void setDiscardLowUsageInstancesExpireTime(long discardLowUsageInstancesExpireTime) {
         if (logger.isInfoEnabled()) {
             logger.info("sample-service | setDiscardLowUsageInstancesExpireTime=" + discardLowUsageInstancesExpireTime);
@@ -388,7 +403,7 @@ public class DiscardableSingletonPoolSampleService
      * sample-service.discard-low-usage-instances-period: 定时清理低使用率的对象, 默认3600000 (60分钟)
      *
      */
-    @Value("${sample-service.discard-low-usage-instances-period:3600000}")
+//    @Value("${sample-service.discard-low-usage-instances-period:3600000}")
     public void setDiscardLowUsageInstancesPeriod(long discardLowUsageInstancesPeriod){
         if (logger.isInfoEnabled()) {
             logger.info("sample-service | setDiscardLowUsageInstancesPeriod=" + discardLowUsageInstancesPeriod);
@@ -445,7 +460,7 @@ public class DiscardableSingletonPoolSampleService
      * sample-service.time-zone: 设置时区, 默认操作系统时区 (东八区可以设置"UTC+8")
      *
      */
-    @Value("${sample-service.discard-all-everyday-at-hour:-1}")
+//    @Value("${sample-service.discard-all-everyday-at-hour:-1}")
     public void setDiscardAllEverydayAtHour(int discardAllEverydayAtHour){
         if (logger.isInfoEnabled()) {
             logger.info("sample-service | setDiscardAllEverydayAtHour=" + discardAllEverydayAtHour);
@@ -514,7 +529,7 @@ public class DiscardableSingletonPoolSampleService
      * sample-service.time-zone: 设置时区, 默认操作系统时区 (东八区可以设置"UTC+8")
      *
      */
-    @Value("${sample-service.time-zone:}")
+//    @Value("${sample-service.time-zone:}")
     public void setZone(String zone) {
         if (logger.isInfoEnabled()) {
             logger.info("sample-service | setZone=" + zone);
@@ -544,7 +559,7 @@ public class DiscardableSingletonPoolSampleService
      * sample-service.print-statistic-info-period: 定时输出统计日志的时间间隔, 默认600000 (10分钟)
      *
      */
-    @Value("${sample-service.print-statistic-info-period:600000}")
+//    @Value("${sample-service.print-statistic-info-period:600000}")
     public void setPrintStatisticInfoPeriod(long printStatisticInfoPeriod){
         if (logger.isInfoEnabled()) {
             logger.info("sample-service | setPrintStatisticInfoPeriod=" + printStatisticInfoPeriod);

@@ -14,6 +14,7 @@ dependencies {
     //compile only
     [
             "org.slf4j:slf4j-api:$version_slf4j",
+            "ch.qos.logback:logback-classic:$version_logback",
             "org.javassist:javassist:$version_javassist",
 
     ].forEach{ compileOnly it; testImplementation it }

@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.cache;
+package com.github.shepherdviolet.glacimon.java.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

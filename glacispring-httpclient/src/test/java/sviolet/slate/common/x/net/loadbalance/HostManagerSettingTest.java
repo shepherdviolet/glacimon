@@ -20,7 +20,7 @@
 package sviolet.slate.common.x.net.loadbalance;
 
 import ch.qos.logback.classic.Level;
-import com.github.shepherdviolet.glacimon.spring.helper.logback.LogbackHelper;
+import com.github.shepherdviolet.glacimon.java.helper.logback.LogbackHelper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2018 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,10 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.slate.common.model.cache;
+package com.github.shepherdviolet.glacimon.java.cache;
 
 import ch.qos.logback.classic.Level;
-import com.github.shepherdviolet.glacimon.spring.cache.ExpirableCache;
-import com.github.shepherdviolet.glacimon.spring.helper.logback.LogbackHelper;
+import com.github.shepherdviolet.glacimon.java.helper.logback.LogbackHelper;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -36,7 +35,7 @@ public class ExpirableCacheTest {
 
     public static void main(String[] args) throws InterruptedException {
 
-        LogbackHelper.setLevel("sviolet.slate.common.model.cache", Level.OFF);
+        LogbackHelper.setLevel("com.github.shepherdviolet.glacimon.java.cache", Level.OFF);
 
         new Thread(new Task()).start();
         new Thread(new Task()).start();

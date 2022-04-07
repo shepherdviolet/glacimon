@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.helper.logback;
+package com.github.shepherdviolet.glacimon.java.helper.logback;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;

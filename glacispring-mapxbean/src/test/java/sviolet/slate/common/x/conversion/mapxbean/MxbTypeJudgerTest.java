@@ -22,7 +22,7 @@ package sviolet.slate.common.x.conversion.mapxbean;
 import ch.qos.logback.classic.Level;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.slate.common.helper.logback.LogbackHelper;
+import com.github.shepherdviolet.glacimon.spring.helper.logback.LogbackHelper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2018 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.slate.common.model.cache;
+package com.github.shepherdviolet.glacimon.spring.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +38,10 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class ExpirableCache <T> {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Map<String, ElementWrapper<T>> map = new ConcurrentHashMap<>();
-    private ReentrantLock elementWrapperLock = new ReentrantLock();
+    private final Map<String, ElementWrapper<T>> map = new ConcurrentHashMap<>();
+    private final ReentrantLock elementWrapperLock = new ReentrantLock();
 
     private long doUpdateTimeout = 5000L;
     private long doCheckInterval = 500L;

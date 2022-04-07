@@ -19,9 +19,10 @@
 
 package sviolet.slate.common.util.conversion;
 
+import com.github.shepherdviolet.glacimon.spring.conversion.StringPlaceHolderUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.slate.common.util.common.LambdaBuildable;
+import com.github.shepherdviolet.glacimon.spring.misc.LambdaBuildable;
 
 public class StringPlaceHolderUtilsTest implements LambdaBuildable {
 

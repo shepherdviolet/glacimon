@@ -1,5 +1,6 @@
 package sviolet.slate.common.model.pool;
 
+import com.github.shepherdviolet.glacimon.spring.pool.DiscardableSingletonPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,10 +3,11 @@ package sviolet.slate.common.model.pool;
 import ch.qos.logback.classic.Level;
 import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.spring.pool.DiscardableSingletonPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sviolet.slate.common.helper.logback.LogbackHelper;
-import sviolet.slate.common.util.common.LambdaBuilder;
+import com.github.shepherdviolet.glacimon.spring.helper.logback.LogbackHelper;
+import com.github.shepherdviolet.glacimon.spring.misc.LambdaBuilder;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

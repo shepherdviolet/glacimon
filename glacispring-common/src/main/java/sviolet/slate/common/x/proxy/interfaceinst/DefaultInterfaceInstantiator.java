@@ -19,7 +19,7 @@
 
 package sviolet.slate.common.x.proxy.interfaceinst;
 
-import sviolet.slate.common.util.proxy.SpringCglibUtils;
+import com.github.shepherdviolet.glacimon.spring.proxy.SpringCglibUtils;
 
 /**
  * <p>接口实例化的默认实现, CGLib</p>

@@ -19,9 +19,10 @@
 
 package sviolet.slate.common.util.conversion;
 
+import com.github.shepherdviolet.glacimon.spring.conversion.SequenceFormatter;
 import org.junit.Assert;
 import org.junit.Test;
-import sviolet.slate.common.util.common.LambdaBuilder;
+import com.github.shepherdviolet.glacimon.spring.misc.LambdaBuilder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

@@ -19,6 +19,7 @@
 
 package sviolet.slate.common.util.common;
 
+import com.github.shepherdviolet.glacimon.spring.misc.LambdaBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -20,7 +20,8 @@
 package sviolet.slate.common.model.cache;
 
 import ch.qos.logback.classic.Level;
-import sviolet.slate.common.helper.logback.LogbackHelper;
+import com.github.shepherdviolet.glacimon.spring.cache.ExpirableCache;
+import com.github.shepherdviolet.glacimon.spring.helper.logback.LogbackHelper;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

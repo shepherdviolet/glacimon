@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2019 S.Violet
+ * Copyright (C) 2022-2022 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package sviolet.slate.common.util.common;
+package com.github.shepherdviolet.glacimon.spring.misc;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -28,13 +28,13 @@ import java.util.function.Supplier;
  *
  * @since 1.8
  */
-public class LambdaBuilder {
+public interface LambdaBuildable {
 
     /**
      * 创建HashMap
      *
      * <pre>
-     *         Map<String, Object> map = LambdaBuilder.hashMap(i -> {
+     *         Map<String, Object> map = buildHashMap(i -> {
      *             i.put("a", "b");
      *             i.put("c", "d");
      *         });
@@ -42,7 +42,7 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <K, V> Map<K, V> hashMap(Consumer<Map<K, V>> supplier) {
+    default <K, V> Map<K, V> buildHashMap(Consumer<Map<K, V>> supplier) {
         Map<K, V> map = new HashMap<>(16);
         if (supplier == null) {
             return map;
@@ -55,7 +55,7 @@ public class LambdaBuilder {
      * 创建LinkedHashMap
      *
      * <pre>
-     *         Map<String, Object> map = LambdaBuilder.linkedHashMap(i -> {
+     *         Map<String, Object> map = buildLinkedHashMap(i -> {
      *             i.put("a", "b");
      *             i.put("c", "d");
      *         });
@@ -63,7 +63,7 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <K, V> Map<K, V> linkedHashMap(Consumer<Map<K, V>> supplier) {
+    default <K, V> Map<K, V> buildLinkedHashMap(Consumer<Map<K, V>> supplier) {
         Map<K, V> map = new LinkedHashMap<>(16);
         if (supplier == null) {
             return map;
@@ -76,7 +76,7 @@ public class LambdaBuilder {
      * 创建HashSet
      *
      * <pre>
-     *         Set<String> set = LambdaBuilder.hashSet(i -> {
+     *         Set<String> set = buildHashSet(i -> {
      *             i.add("a");
      *             i.add("c");
      *         });
@@ -84,7 +84,7 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <T> Set<T> hashSet(Consumer<Set<T>> supplier) {
+    default <T> Set<T> buildHashSet(Consumer<Set<T>> supplier) {
         Set<T> set = new HashSet<>(16);
         if (supplier == null) {
             return set;
@@ -97,7 +97,7 @@ public class LambdaBuilder {
      * 创建Object
      *
      * <pre>
-     *         Bean bean = LambdaBuilder.object(() -> {
+     *         Bean bean = buildObject(() -> {
      *             Bean obj = new Bean();
      *             obj.setName("123");
      *             obj.setId("456");
@@ -107,7 +107,7 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <T> T object(Supplier<T> supplier) {
+    default <T> T buildObject(Supplier<T> supplier) {
         return supplier.get();
     }
 
@@ -122,7 +122,7 @@ public class LambdaBuilder {
      * </pre>
      *
      * <pre>
-     *         List<String> list = LambdaBuilder.arrayList(i -> {
+     *         List<String> list = buildArrayList(i -> {
      *            i.add("a");
      *            i.add("b");
      *         });
@@ -130,7 +130,7 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <T> List<T> arrayList(Consumer<List<T>> supplier) {
+    default <T> List<T> buildArrayList(Consumer<List<T>> supplier) {
         List<T> list = new ArrayList<>();
         if (supplier == null) {
             return list;
@@ -143,7 +143,7 @@ public class LambdaBuilder {
      * 创建LinkedList, 一般情况下用Arrays.asList
      *
      * <pre>
-     *         List<String> list = LambdaBuilder.linkedList(i -> {
+     *         List<String> list = buildLinkedList(i -> {
      *            i.add("a");
      *            i.add("b");
      *         });
@@ -151,7 +151,7 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <T> List<T> linkedList(Consumer<List<T>> supplier) {
+    default <T> List<T> buildLinkedList(Consumer<List<T>> supplier) {
         List<T> list = new LinkedList<>();
         if (supplier == null) {
             return list;
@@ -159,4 +159,5 @@ public class LambdaBuilder {
         supplier.accept(list);
         return list;
     }
+
 }

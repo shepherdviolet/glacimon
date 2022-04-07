@@ -22,6 +22,7 @@ package com.github.shepherdviolet.glacimon.java.conversion;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Base64;
 
 /**
  * Base64工具<br/>
@@ -36,7 +37,7 @@ public class Base64Utils {
     private static final char CHAR_LF = '\n';
     private static final byte[] CRLF = new byte[] {'\r', '\n'};
 
-    private static final Jdk8Base64.Encoder MINE_ENCODER = Jdk8Base64.getMimeEncoder(64, CRLF);
+    private static final Base64.Encoder MINE_ENCODER = Base64.getMimeEncoder(64, CRLF);
 
     /**
      * bytes 编码为 Base64 bytes (标准模式: + / =).
@@ -52,7 +53,7 @@ public class Base64Utils {
         if (data.length <= 0) {
             return new byte[0];
         }
-        return Jdk8Base64.getEncoder().encode(data);
+        return Base64.getEncoder().encode(data);
     }
 
     /**
@@ -68,7 +69,7 @@ public class Base64Utils {
         if (data.length <= 0) {
             return "";
         }
-        return Jdk8Base64.getEncoder().encodeToString(data);
+        return Base64.getEncoder().encodeToString(data);
     }
 
     /**
@@ -100,7 +101,7 @@ public class Base64Utils {
         if (data.length <= 0) {
             return "";
         }
-        return Jdk8Base64.getUrlEncoder().encodeToString(data);
+        return Base64.getUrlEncoder().encodeToString(data);
     }
 
     /**
@@ -116,7 +117,7 @@ public class Base64Utils {
             return "";
         }
         try {
-            return URLEncoder.encode(Jdk8Base64.getEncoder().encodeToString(data), "UTF-8");
+            return URLEncoder.encode(Base64.getEncoder().encodeToString(data), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -137,11 +138,11 @@ public class Base64Utils {
             byte b = data[i];
             if (b == CR || b == LF) {
                 // RFC2045
-                return Jdk8Base64.getMimeDecoder().decode(data);
+                return Base64.getMimeDecoder().decode(data);
             }
         }
         // RFC4648
-        return Jdk8Base64.getDecoder().decode(data);
+        return Base64.getDecoder().decode(data);
     }
 
     /**
@@ -159,11 +160,11 @@ public class Base64Utils {
             char c = data.charAt(i);
             if (c == CHAR_CR || c  == CHAR_LF) {
                 // RFC2045
-                return Jdk8Base64.getMimeDecoder().decode(data);
+                return Base64.getMimeDecoder().decode(data);
             }
         }
         // RFC4648
-        return Jdk8Base64.getDecoder().decode(data);
+        return Base64.getDecoder().decode(data);
     }
 
     /**
@@ -177,7 +178,7 @@ public class Base64Utils {
         if (data.length() <= 0) {
             return new byte[0];
         }
-        return Jdk8Base64.getUrlDecoder().decode(data);
+        return Base64.getUrlDecoder().decode(data);
     }
 
     /**
@@ -191,7 +192,7 @@ public class Base64Utils {
             return new byte[0];
         }
         try {
-            return Jdk8Base64.getDecoder().decode(URLDecoder.decode(data, "UTF-8"));
+            return Base64.getDecoder().decode(URLDecoder.decode(data, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

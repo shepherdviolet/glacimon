@@ -10,8 +10,8 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
 //    apply plugin: 'java'
 
     // compat android
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"

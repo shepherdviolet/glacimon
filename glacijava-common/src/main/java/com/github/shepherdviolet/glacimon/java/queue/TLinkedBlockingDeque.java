@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.github.shepherdviolet.glacimon.java.queue.Jdk8LinkedBlockingDeque;
-
 /**
  * 强化版LinkedBlockingDeque<Br/>
  * 1.支持元素不可重复<br/>

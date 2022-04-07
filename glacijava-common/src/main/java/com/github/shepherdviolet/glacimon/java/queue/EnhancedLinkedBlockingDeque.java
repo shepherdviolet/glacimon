@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author S.Violet
  */
-public class TLinkedBlockingDeque<E> extends Jdk8LinkedBlockingDeque<E> {
+public class EnhancedLinkedBlockingDeque<E> extends Jdk8LinkedBlockingDeque<E> {
 
     //SETTINGS////////////////////////////////////
     /**
@@ -49,7 +49,7 @@ public class TLinkedBlockingDeque<E> extends Jdk8LinkedBlockingDeque<E> {
     /**
      * 默认容量Integer.MAX_VALUE, 允许元素重复
      */
-    public TLinkedBlockingDeque() {
+    public EnhancedLinkedBlockingDeque() {
         this(Integer.MAX_VALUE, false);
     }
 
@@ -58,7 +58,7 @@ public class TLinkedBlockingDeque<E> extends Jdk8LinkedBlockingDeque<E> {
      * @param unrepeatable true:元素不可重复, 当元素塞入队列时, 会清除队列中原有相同的元素(元素equals()
      *                     方法决定是否相同), 该设置可能会使性能有所下降
      */
-    public TLinkedBlockingDeque(int capacity, boolean unrepeatable) {
+    public EnhancedLinkedBlockingDeque(int capacity, boolean unrepeatable) {
         super(capacity);
         this.unrepeatable = unrepeatable;
     }
@@ -67,7 +67,7 @@ public class TLinkedBlockingDeque<E> extends Jdk8LinkedBlockingDeque<E> {
      * @param unrepeatable true:元素不可重复, 当元素塞入队列时, 会清除队列中原有相同的元素(元素equals()
      *                     方法决定是否相同), 该设置可能会使性能有所下降
      */
-    public TLinkedBlockingDeque(Collection<? extends E> c, boolean unrepeatable) {
+    public EnhancedLinkedBlockingDeque(Collection<? extends E> c, boolean unrepeatable) {
         super(c);
         this.unrepeatable = unrepeatable;
     }

@@ -19,7 +19,9 @@
 
 package sviolet.thistle;
 
+import org.junit.Assert;
 import org.junit.Test;
+import sviolet.thistle.x.util.trace.Trace;
 
 /**
  * 临时使用的测试案例
@@ -30,7 +32,10 @@ public class TempTest {
 
     @Test
     public void test(){
-
+        Trace.start();
+        Trace.setData("hello", "hello");
+        Trace.handoff(Trace.getBaton());
+        Assert.assertEquals("hello", Trace.getData("hello"));
     }
 
 }

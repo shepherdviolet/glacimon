@@ -24,11 +24,11 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 /**
- * Java启动工具
+ * Spring启动工具
  *
  * @author shepherdviolet
  */
-public class StartupUtils {
+public class SpringStartupUtils {
 
     /**
      * 启动非WEB容器的SpringBoot应用

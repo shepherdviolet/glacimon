@@ -2,37 +2,37 @@
   "groups": [
     {
       "name": "slate.httpclient",
-      "type": "sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties",
-      "sourceType": "sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties"
+      "type": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties"
     }
   ],
   "properties": [
     {
       "name": "slate.httpclient.enabled",
       "type": "java.lang.Boolean",
-      "sourceType": "sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.HttpClientsConfig",
-      "description": "Properties: sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.HttpClientsConfig",
+      "description": "Properties: com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties",
       "defaultValue": false
     },
     {
       "name": "slate.httpclient.apollo-support",
       "type": "java.lang.Boolean",
-      "sourceType": "sviolet.slate.common.x.net.loadbalance.springboot.apollo.HttpClientsApolloConfig",
-      "description": "Properties: sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.apollo.HttpClientsApolloConfig",
+      "description": "Properties: com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties",
       "defaultValue": false
     },
     {
       "name": "slate.httpclient.apollo-namespace",
       "type": "java.lang.String",
-      "sourceType": "sviolet.slate.common.x.net.loadbalance.springboot.apollo.HttpClientsApolloConfigWithNamespace",
-      "description": "Properties: sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.apollo.HttpClientsApolloConfigWithNamespace",
+      "description": "Properties: com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.SlateHttpClientProperties",
       "defaultValue": "application"
     },
     {
       "name": "slate.httpclients",
-      "type": "java.util.Map<java.lang.String, sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.HttpClientSettings>",
-      "description": "Properties: sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.SlatePropertiesForHttpClient",
-      "sourceType": "sviolet.slate.common.x.net.loadbalance.springboot.autoconfig.HttpClientSettings"
+      "type": "java.util.Map<java.lang.String, com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.HttpClientSettings>",
+      "description": "Properties: com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.SlatePropertiesForHttpClient",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.HttpClientSettings"
     }
   ],
   "hints": [

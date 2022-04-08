@@ -124,7 +124,7 @@ public class LoadBalancedHostManager {
     }
 
     private final Collection<String> startsWithSkips = Arrays.asList(
-            "sviolet.slate.common.x.net.loadbalance.",
+            "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.",
             "org.springframework.cglib.proxy.Proxy$ProxyImpl$$"
     );
 

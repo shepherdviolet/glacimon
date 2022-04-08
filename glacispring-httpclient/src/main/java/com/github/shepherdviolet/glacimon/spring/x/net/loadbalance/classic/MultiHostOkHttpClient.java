@@ -83,16 +83,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <pre>{@code
  *
- *  <bean id="loadBalancedHostManager" class="sviolet.slate.common.x.net.loadbalance.LoadBalancedHostManager">
+ *  <bean id="loadBalancedHostManager" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager">
  *      <property name="hosts" value="http://127.0.0.1:8081,http://127.0.0.1:8082"/>
  *  </bean>
  *
- *  <bean id="loadBalancedInspector" class="sviolet.slate.common.x.net.loadbalance.LoadBalancedInspectManager">
+ *  <bean id="loadBalancedInspector" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager">
  *      <property name="hostManager" ref="loadBalancedHostManager"/>
  *      <property name="inspectInterval" value="5000"/>
  *  </bean>
  *
- *  <bean id="multiHostOkHttpClient" class="sviolet.slate.common.x.net.loadbalance.classic.MultiHostOkHttpClient">
+ *  <bean id="multiHostOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.MultiHostOkHttpClient">
  *      <property name="hostManager" ref="loadBalancedHostManager"/>
  *      <property name="maxThreads" value="256"/>
  *      <property name="maxThreadsPerHost" value="256"/>
@@ -108,17 +108,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <pre>{@code
  *
- *  <bean id="loadBalancedHostManager" class="sviolet.slate.common.x.net.loadbalance.LoadBalancedHostManager">
+ *  <bean id="loadBalancedHostManager" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager">
  *      <property name="hosts" value="http://127.0.0.1:8081,http://127.0.0.1:8082"/>
  *  </bean>
  *
- *  <bean id="loadBalancedInspector" class="sviolet.slate.common.x.net.loadbalance.LoadBalancedInspectManager"
+ *  <bean id="loadBalancedInspector" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager"
  *      destroy-method="close">
  *      <property name="hostManager" ref="loadBalancedHostManager"/>
  *      <property name="inspectInterval" value="5000"/>
  *  </bean>
  *
- *  <bean id="multiHostOkHttpClient" class="sviolet.slate.common.x.net.loadbalance.classic.MultiHostOkHttpClient">
+ *  <bean id="multiHostOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.MultiHostOkHttpClient">
  *      <property name="hostManager" ref="loadBalancedHostManager"/>
  *      <property name="maxThreads" value="256"/>
  *      <property name="maxThreadsPerHost" value="256"/>

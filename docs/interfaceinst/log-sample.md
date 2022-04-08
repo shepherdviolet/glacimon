@@ -1,6 +1,6 @@
 # InterfaceInstantiation 日志样例
 
-* SLF4J日志级别`INFO`, 日志包路径`sviolet.slate.common.x.proxy.interfaceinst`
+* SLF4J日志级别`INFO`, 日志包路径`com.github.shepherdviolet.glacimon.spring.x.config.interfaceinst`
 * `InterfaceInstantiator`: 接口实例化器的实现类
 * `Scan package`: 扫描的类路径
 * `Bean created`: 创建的接口实例

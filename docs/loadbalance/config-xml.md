@@ -16,7 +16,7 @@
 * 若SimpleOkHttpClient在Spring中注册为Bean, 主动探测器会在Spring启动后自动开始. 否则需要手动调用SimpleOkHttpClient.start()方法开始主动探测
 
 ```text
-    <bean id="simpleOkHttpClient" class="sviolet.slate.common.x.net.loadbalance.classic.SimpleOkHttpClient">
+    <bean id="simpleOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient">
         <property name="hosts" value="http://127.0.0.1:8081,http://127.0.0.1:8082"/>
         <property name="initiativeInspectInterval" value="5000"/><!-- 健康主动探测间隔为5000ms -->
         <property name="passiveBlockDuration" value="30000"/><!-- 健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近 -->
@@ -43,13 +43,13 @@
 
     <!-- 后端管理器 -->
     <!-- 配置管理后端地址和状态 -->
-    <bean id="loadBalancedHostManager" class="sviolet.slate.common.x.net.loadbalance.LoadBalancedHostManager">
+    <bean id="loadBalancedHostManager" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager">
         <property name="hosts" value="http://127.0.0.1:8081,http://127.0.0.1:8082"/>
     </bean>
     
     <!-- 主动探测管理器 -->
     <!-- 定时探测后端状态(默认Telnet方式) -->
-    <bean id="loadBalancedInspector" class="sviolet.slate.common.x.net.loadbalance.LoadBalancedInspectManager"
+    <bean id="loadBalancedInspector" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager"
         destroy-method="close">
         <property name="hostManager" ref="loadBalancedHostManager"/><!-- 持有LoadBalancedHostManager -->
         <property name="inspectInterval" value="5000"/><!-- 健康主动探测间隔为5000ms -->
@@ -57,7 +57,7 @@
     
     <!-- HTTP请求客户端 -->
     <!-- 调用该实例发送请求 -->
-    <bean id="multiHostOkHttpClient" class="sviolet.slate.common.x.net.loadbalance.classic.MultiHostOkHttpClient">
+    <bean id="multiHostOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.MultiHostOkHttpClient">
         <property name="hostManager" ref="loadBalancedHostManager"/><!-- 持有LoadBalancedHostManager -->
         <property name="passiveBlockDuration" value="30000"/><!-- 健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近 -->
         <property name="connectTimeout" value="3000"/><!-- 连接超时时间, 单位ms -->
@@ -83,13 +83,13 @@
 ```text
     <!-- HTTP请求客户端 -->
     <!-- 调用该实例发送请求 -->
-    <bean id="multiHostOkHttpClient" class="sviolet.slate.common.x.net.loadbalance.classic.MultiHostOkHttpClient">
+    <bean id="multiHostOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.MultiHostOkHttpClient">
         ......
         <property name="dataConverter" ref="dataConverter"/><!-- 设置数据转换器 -->
     </bean>
     
     <!-- 数据转换器 -->
-    <bean id="dataConverter" class="sviolet.slate.common.x.net.loadbalance.classic.GsonDataConverter">
+    <bean id="dataConverter" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GsonDataConverter">
     </bean>
 ```
 
@@ -159,7 +159,7 @@ public class MyHttpTransport implements InitializingBean {
     <apollo:config/>
 
     <!-- 使用${...}应用apollo参数 -->
-    <bean id="simpleOkHttpClient" class="sviolet.slate.common.x.net.loadbalance.classic.SimpleOkHttpClient">
+    <bean id="simpleOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient">
         <property name="hosts" value="${http.client.hosts}"/>
         ......
     </bean>

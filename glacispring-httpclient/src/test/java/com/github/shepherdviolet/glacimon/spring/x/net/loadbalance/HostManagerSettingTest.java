@@ -42,7 +42,7 @@ public class HostManagerSettingTest {
 
     public static void main(String[] args) {
 
-        LogbackHelper.setLevel("sviolet.slate.common.x.net.loadbalance", Level.ERROR);
+        LogbackHelper.setLevel("com.github.shepherdviolet.glacimon.spring.x.net.loadbalance", Level.ERROR);
         System.setProperty("slate.loadbalance.warndisabled", "true");
 
         final LoadBalancedHostManager manager = new LoadBalancedHostManager();

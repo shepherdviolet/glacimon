@@ -10,7 +10,7 @@
 
 ## 日志
 
-* SLF4J日志包路径: `sviolet.slate.common.x.proxy.interfaceinst`
+* SLF4J日志包路径: `com.github.shepherdviolet.glacimon.spring.x.config.interfaceinst`
 * 推荐日志级别: `INFO`
 * 日志关键字: `InterfaceInst`
 * [日志样例](https://github.com/shepherdviolet/slate/blob/master/docs/interfaceinst/log-sample.md)

@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.asm;
+package com.github.shepherdviolet.glacimon.java.clazz;
 
 /**
  * 这个类用于被替换字节码

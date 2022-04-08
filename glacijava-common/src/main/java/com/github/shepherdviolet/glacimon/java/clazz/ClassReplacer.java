@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.asm;
+package com.github.shepherdviolet.glacimon.java.clazz;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;

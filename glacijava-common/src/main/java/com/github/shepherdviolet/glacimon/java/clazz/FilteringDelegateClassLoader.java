@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.classloader;
+package com.github.shepherdviolet.glacimon.java.clazz;
 
 import java.io.IOException;
 import java.net.URL;

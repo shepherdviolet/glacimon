@@ -17,29 +17,10 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.asm;
-
-import javassist.CannotCompileException;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.io.IOException;
-
 /**
- * 类的字节码替换测试
+ * 1. class load
+ * 2. bytecode operate (asm)
  *
  * @author shepherdviolet
  */
-public class ClassReplacerTest {
-
-    @Test
-    public void test() throws IOException, CannotCompileException {
-        ClassReplacer.replace("META-INF/classfiles/TargetClass.classfile");
-        TargetClass targetClass = new TargetClass();
-//        System.out.println(targetClass.getData());
-        Assert.assertEquals(
-                "new",
-                targetClass.getData());
-    }
-
-}
+package com.github.shepherdviolet.glacimon.java.clazz;

@@ -17,50 +17,29 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.datastruc;
+package com.github.shepherdviolet.glacimon.java.misc;
+
+import java.lang.management.ManagementFactory;
 
 /**
- * 键值对
- * @param <K> key类型
- * @param <V> value类型
- *
- * @author shepherdviolet
+ * 环境工具
  */
-public class KeyValue <K, V> {
+public class JavaProcessUtils {
 
-    private K key;
-    private V value;
+    /**
+     * 当前进程PID
+     */
+    public static final String PID;
 
-    public KeyValue() {
-    }
-
-    public KeyValue(K key, V value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    public K getKey() {
-        return key;
-    }
-
-    public void setKey(K key) {
-        this.key = key;
-    }
-
-    public V getValue() {
-        return value;
-    }
-
-    public void setValue(V value) {
-        this.value = value;
-    }
-
-    public K key(){
-        return getKey();
-    }
-
-    public V value(){
-        return getValue();
+    static {
+        String pid;
+        try {
+            String mxBeanName = ManagementFactory.getRuntimeMXBean().getName();
+            pid = mxBeanName.split("@")[0];
+        } catch (Exception ignored) {
+            pid = "";
+        }
+        PID = pid;
     }
 
 }

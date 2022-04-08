@@ -30,7 +30,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.Ht
 import com.github.shepherdviolet.glacimon.java.common.function.ThrowableBiConsumer;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import java.io.Closeable;
 import java.io.IOException;

@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.spring.helper.jedis.lock;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import java.util.Arrays;
 import java.util.List;

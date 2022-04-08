@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.judge;
+package com.github.shepherdviolet.glacimon.java.misc;
 
 /**
  * 用于检查数据的工具

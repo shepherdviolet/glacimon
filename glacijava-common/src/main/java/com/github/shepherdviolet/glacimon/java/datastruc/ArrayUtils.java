@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.conversion;
+package com.github.shepherdviolet.glacimon.java.datastruc;
 
 import java.util.Arrays;
 

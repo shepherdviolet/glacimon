@@ -19,6 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.java.misc;
 
+import com.github.shepherdviolet.glacimon.java.common.interfaces.Destroyable;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 import com.github.shepherdviolet.glacimon.java.concurrent.lock.HashReentrantLocks;
 

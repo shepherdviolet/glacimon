@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.datastruc.cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.shepherdviolet.glacimon.java.datastruc.SnapshotUtils;
-import com.github.shepherdviolet.glacimon.java.conversion.DateTimeUtils;
+import com.github.shepherdviolet.glacimon.java.misc.DateTimeUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

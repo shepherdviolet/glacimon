@@ -19,6 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.misc;
 
+import com.github.shepherdviolet.glacimon.java.common.interfaces.Destroyable;
+
 import java.io.Closeable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -116,12 +118,12 @@ public class CloseableUtils {
     private static final MappedByteBufferUnmap MAPPED_BYTE_BUFFER_UNMAP;
 
     static {
-        if (PlatformUtils.PLATFORM == PlatformUtils.Platform.DALVIK ||
-                PlatformUtils.RUNTIME_VERSION == null){
+        if (JavaPlatformUtils.PLATFORM == JavaPlatformUtils.Platform.DALVIK ||
+                JavaPlatformUtils.RUNTIME_VERSION == null){
             //1. Android : 安卓平台中, MappedByteBuffer不支持手动回收, 但是不回收也不存在文件句柄占用问题, 可以用MappedByteBuffer
             //2. 未知版本 : 不支持手动回收, 不建议使用MappedByteBuffer
             MAPPED_BYTE_BUFFER_UNMAP = new UnsupportedMappedByteBufferUnmap();
-        } else if (PlatformUtils.RUNTIME_VERSION.startsWith("1.")) {
+        } else if (JavaPlatformUtils.RUNTIME_VERSION.startsWith("1.")) {
             //JDK8- : MappedByteBuffer需要被手动回收, 会有句柄未释放问题
             MAPPED_BYTE_BUFFER_UNMAP = new Jdk8MappedByteBufferUnmap();
         } else {

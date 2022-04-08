@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 /**
  * <p>将一个类或一个对象的数据/构造函数/方法打印出来</p>

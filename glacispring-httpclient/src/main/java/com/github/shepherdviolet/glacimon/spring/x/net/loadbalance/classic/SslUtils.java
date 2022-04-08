@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import com.github.shepherdviolet.glacimon.java.crypto.CertificateUtils;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 import com.github.shepherdviolet.glacimon.java.net.SimpleHostnameVerifier;
 
 import javax.net.ssl.*;

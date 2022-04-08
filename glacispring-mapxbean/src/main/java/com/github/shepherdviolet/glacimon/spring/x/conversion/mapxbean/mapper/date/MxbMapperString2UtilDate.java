@@ -20,8 +20,8 @@
 package com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.mapper.date;
 
 import com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeMapper;
-import com.github.shepherdviolet.glacimon.java.conversion.DateTimeUtils;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.DateTimeUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;

@@ -38,7 +38,7 @@ import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.base.BouncyCastleProviderUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.base.IssuerProvider;
 import com.github.shepherdviolet.glacimon.java.crypto.base.SimpleIssuerProvider;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import javax.security.auth.x500.X500Principal;
 import java.io.IOException;

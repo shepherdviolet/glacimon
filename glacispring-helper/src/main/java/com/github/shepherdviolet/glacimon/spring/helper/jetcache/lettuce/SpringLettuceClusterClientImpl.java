@@ -35,7 +35,7 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import java.net.URI;
 import java.time.Duration;

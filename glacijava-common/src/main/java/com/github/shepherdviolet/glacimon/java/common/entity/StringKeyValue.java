@@ -17,18 +17,20 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.misc;
+package com.github.shepherdviolet.glacimon.java.common.entity;
 
 /**
- * 可销毁对象, 销毁监听器
+ * String键值对
  *
  * @author shepherdviolet
  */
-public interface Destroyable {
+public class StringKeyValue extends KeyValue<String, String> {
 
-    /**
-     * 当对象销毁时回调该方法
-     */
-    void onDestroy();
+    public StringKeyValue() {
+    }
+
+    public StringKeyValue(String key, String value) {
+        super(key, value);
+    }
 
 }

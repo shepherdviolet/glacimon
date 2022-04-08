@@ -17,9 +17,8 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.conversion;
+package com.github.shepherdviolet.glacimon.java.misc;
 
-import com.github.shepherdviolet.glacimon.java.conversion.UuidUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

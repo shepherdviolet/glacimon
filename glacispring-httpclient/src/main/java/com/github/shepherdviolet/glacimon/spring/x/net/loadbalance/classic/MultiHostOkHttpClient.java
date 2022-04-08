@@ -28,7 +28,7 @@ import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTx
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimerFactory;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;

@@ -26,7 +26,7 @@ import java.lang.reflect.Field;
  *
  * @author shepherdviolet
  */
-public class PlatformUtils {
+public class JavaPlatformUtils {
 
     public enum Platform{
 

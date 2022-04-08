@@ -17,7 +17,10 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.conversion;
+package com.github.shepherdviolet.glacimon.java.misc;
+
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;

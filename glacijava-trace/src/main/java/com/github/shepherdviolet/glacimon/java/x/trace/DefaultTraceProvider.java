@@ -20,8 +20,8 @@
 package com.github.shepherdviolet.glacimon.java.x.trace;
 
 import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
-import com.github.shepherdviolet.glacimon.java.conversion.UuidUtils;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.UuidUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import java.util.HashMap;
 import java.util.Map;

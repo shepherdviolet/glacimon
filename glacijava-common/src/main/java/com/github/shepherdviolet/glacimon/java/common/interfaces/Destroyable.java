@@ -17,29 +17,18 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.misc;
-
-import java.lang.management.ManagementFactory;
+package com.github.shepherdviolet.glacimon.java.common.interfaces;
 
 /**
- * 环境工具
+ * 可销毁对象, 销毁监听器
+ *
+ * @author shepherdviolet
  */
-public class EnvironmentUtils {
+public interface Destroyable {
 
     /**
-     * 当前进程PID
+     * 当对象销毁时回调该方法
      */
-    public static final String PID;
-
-    static {
-        String pid;
-        try {
-            String mxBeanName = ManagementFactory.getRuntimeMXBean().getName();
-            pid = mxBeanName.split("@")[0];
-        } catch (Exception ignored) {
-            pid = "";
-        }
-        PID = pid;
-    }
+    void onDestroy();
 
 }

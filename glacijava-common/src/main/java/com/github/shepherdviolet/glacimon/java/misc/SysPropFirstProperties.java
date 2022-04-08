@@ -19,8 +19,6 @@
 
 package com.github.shepherdviolet.glacimon.java.misc;
 
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
-
 import java.util.Properties;
 
 /**

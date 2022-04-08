@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.judge;
+package com.github.shepherdviolet.glacimon.java.misc;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

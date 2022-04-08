@@ -20,7 +20,7 @@
 package com.github.shepherdviolet.glacimon.java.crypto.base;
 
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
-import com.github.shepherdviolet.glacimon.java.misc.PlatformUtils;
+import com.github.shepherdviolet.glacimon.java.misc.JavaPlatformUtils;
 import com.github.shepherdviolet.glacimon.java.io.FileUtils;
 
 import javax.crypto.*;
@@ -459,9 +459,9 @@ public class BaseCipher {
      * @return 数字签名
      */
     public static byte[] sign(File file, PrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        if (PlatformUtils.PLATFORM == PlatformUtils.Platform.DALVIK){
+        if (JavaPlatformUtils.PLATFORM == JavaPlatformUtils.Platform.DALVIK){
             //安卓API11以上使用NIO, API10以下会很慢
-            if (PlatformUtils.ANDROID_VERSION < CryptoConstants.ANDROID_API11){
+            if (JavaPlatformUtils.ANDROID_VERSION < CryptoConstants.ANDROID_API11){
                 return signIo(file, privateKey, signAlgorithm);
             } else {
                 return signNio(file, privateKey, signAlgorithm);
@@ -579,9 +579,9 @@ public class BaseCipher {
      * @return true:数字签名有效
      */
     public static boolean verify(File file, byte[] sign, PublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        if (PlatformUtils.PLATFORM == PlatformUtils.Platform.DALVIK){
+        if (JavaPlatformUtils.PLATFORM == JavaPlatformUtils.Platform.DALVIK){
             //安卓API11以上使用NIO, API10以下会很慢
-            if (PlatformUtils.ANDROID_VERSION < CryptoConstants.ANDROID_API11){
+            if (JavaPlatformUtils.ANDROID_VERSION < CryptoConstants.ANDROID_API11){
                 return verifyIo(file, sign, publicKey, signAlgorithm);
             } else {
                 return verifyNio(file, sign, publicKey, signAlgorithm);

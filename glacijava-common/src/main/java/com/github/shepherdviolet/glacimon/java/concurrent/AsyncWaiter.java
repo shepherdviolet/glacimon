@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.github.shepherdviolet.glacimon.java.misc.Destroyable;
+import com.github.shepherdviolet.glacimon.java.common.interfaces.Destroyable;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 
 /**

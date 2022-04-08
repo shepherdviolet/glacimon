@@ -28,7 +28,7 @@ import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import java.util.HashMap;
 import java.util.Map;

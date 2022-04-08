@@ -19,7 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.java.net;
 
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;

@@ -20,7 +20,7 @@
 package com.github.shepherdviolet.glacimon.java.reflect;
 
 import com.github.shepherdviolet.glacimon.java.conversion.BeanMethodNameUtils;
-import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;

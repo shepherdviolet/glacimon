@@ -20,7 +20,7 @@
 package com.github.shepherdviolet.glacimon.java.crypto.base;
 
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
-import com.github.shepherdviolet.glacimon.java.misc.PlatformUtils;
+import com.github.shepherdviolet.glacimon.java.misc.JavaPlatformUtils;
 import com.github.shepherdviolet.glacimon.java.io.FileUtils;
 
 import java.io.*;
@@ -96,9 +96,9 @@ public class BaseDigestCipher {
      * @return 摘要bytes
      */
     public static byte[] digestFile(File file, String type) throws IOException {
-        if (PlatformUtils.PLATFORM == PlatformUtils.Platform.DALVIK){
+        if (JavaPlatformUtils.PLATFORM == JavaPlatformUtils.Platform.DALVIK){
             //安卓API11以上使用NIO, API10以下会很慢
-            if (PlatformUtils.ANDROID_VERSION < CryptoConstants.ANDROID_API11){
+            if (JavaPlatformUtils.ANDROID_VERSION < CryptoConstants.ANDROID_API11){
                 return digestFileIo(file, type);
             } else {
                 return digestFileNio(file, type);

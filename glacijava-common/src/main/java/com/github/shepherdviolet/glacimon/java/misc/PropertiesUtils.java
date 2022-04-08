@@ -17,11 +17,10 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.conversion;
+package com.github.shepherdviolet.glacimon.java.misc;
 
-import com.github.shepherdviolet.glacimon.java.datastruc.KeyValue;
-import com.github.shepherdviolet.glacimon.java.datastruc.StringKeyValue;
-import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.common.entity.KeyValue;
+import com.github.shepherdviolet.glacimon.java.common.entity.StringKeyValue;
 
 import java.io.Closeable;
 import java.io.IOException;

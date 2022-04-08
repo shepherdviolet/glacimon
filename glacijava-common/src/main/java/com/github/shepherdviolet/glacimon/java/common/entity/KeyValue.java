@@ -17,20 +17,50 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.datastruc;
+package com.github.shepherdviolet.glacimon.java.common.entity;
 
 /**
- * String键值对
+ * 键值对
+ * @param <K> key类型
+ * @param <V> value类型
  *
  * @author shepherdviolet
  */
-public class StringKeyValue extends KeyValue<String, String> {
+public class KeyValue <K, V> {
 
-    public StringKeyValue() {
+    private K key;
+    private V value;
+
+    public KeyValue() {
     }
 
-    public StringKeyValue(String key, String value) {
-        super(key, value);
+    public KeyValue(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public K getKey() {
+        return key;
+    }
+
+    public void setKey(K key) {
+        this.key = key;
+    }
+
+    public V getValue() {
+        return value;
+    }
+
+    public void setValue(V value) {
+        this.value = value;
+    }
+
+    public K key(){
+        return getKey();
+    }
+
+    public V value(){
+        return getValue();
     }
 
 }

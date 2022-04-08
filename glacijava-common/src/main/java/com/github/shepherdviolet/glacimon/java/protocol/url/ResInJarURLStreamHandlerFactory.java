@@ -17,10 +17,10 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.urlext;
+package com.github.shepherdviolet.glacimon.java.protocol.url;
 
-import com.github.shepherdviolet.glacimon.java.urlext.installer.URLStreamHandlerFactoryWrapper;
-import com.github.shepherdviolet.glacimon.java.urlext.installer.URLStreamHandlerFactoryInstaller;
+import com.github.shepherdviolet.glacimon.java.protocol.url.installer.URLStreamHandlerFactoryWrapper;
+import com.github.shepherdviolet.glacimon.java.protocol.url.installer.URLStreamHandlerFactoryInstaller;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -32,4 +32,4 @@
  *
  * @author http://svn.apache.org/repos/asf/commons/sandbox/jnet/trunk/src/main/java/org/apache/commons/jnet
  */
-package com.github.shepherdviolet.glacimon.java.urlext.installer;
+package com.github.shepherdviolet.glacimon.java.protocol.url.installer;

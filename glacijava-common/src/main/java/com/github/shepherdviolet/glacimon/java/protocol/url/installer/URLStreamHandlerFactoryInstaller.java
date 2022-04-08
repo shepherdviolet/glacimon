@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.urlext.installer;
+package com.github.shepherdviolet.glacimon.java.protocol.url.installer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

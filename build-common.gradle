@@ -9,7 +9,6 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
     apply plugin: 'java-library'
 //    apply plugin: 'java'
 
-    // compat android
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
@@ -39,7 +38,6 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-s
     apply plugin: 'java-library'
 //    apply plugin: 'java'
 
-    // compat android
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 

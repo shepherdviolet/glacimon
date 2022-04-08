@@ -17,9 +17,34 @@
  * Email: shepherdviolet@163.com
  */
 
+package com.github.shepherdviolet.glacimon.java.misc;
+
+import java.text.Collator;
+import java.util.Arrays;
+import java.util.List;
+
+
 /**
- * 1. reflect
- *
+ * 
+ * 排序工具
+ * 
  * @author shepherdviolet
+ *
  */
-package com.github.shepherdviolet.glacimon.java.reflect;
+public class SortUtils {
+
+    public static void sortChinese(String[] list){
+        if (list == null) {
+            return;
+        }
+        Arrays.sort(list, Collator.getInstance(java.util.Locale.CHINA));
+    }
+
+    public static void sortChinese(List<String> list){
+        if (list == null) {
+            return;
+        }
+        list.sort(Collator.getInstance(java.util.Locale.CHINA));
+    }
+
+}

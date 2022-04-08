@@ -14,11 +14,11 @@
     "glacispring-txtimer": "glacispring-txtimer"
   },
   "private-java": {
-    "glacijava-misc": "glacijava-misc",
+    "glacijava-private": "glacijava-private",
     "glacijava-spi-test": "glacijava-spi-test"
   },
   "private-spring": {
-    "glacispring-misc": "glacispring-misc"
+    "glacispring-private": "glacispring-private"
   },
   "public-bom": {
     "glacimon-bom": "glacimon-bom"

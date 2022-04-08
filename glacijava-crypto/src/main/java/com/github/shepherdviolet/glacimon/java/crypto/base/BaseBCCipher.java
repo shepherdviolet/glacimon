@@ -619,8 +619,8 @@ public class BaseBCCipher {
             ASN1Sequence asn1Sequence = DERSequence.getInstance(der);
             byte[] r = ((ASN1Integer) asn1Sequence.getObjectAt(0)).getValue().toByteArray();
             byte[] s = ((ASN1Integer) asn1Sequence.getObjectAt(1)).getValue().toByteArray();
-            r = ByteUtils.toLength(r, 32);
-            s = ByteUtils.toLength(s, 32);
+            r = ByteUtils.leftAdjustToLength(r, 32);
+            s = ByteUtils.leftAdjustToLength(s, 32);
             byte[] result = new byte[64];
             System.arraycopy(r, 0, result, 0, r.length);
             System.arraycopy(s, 0, result, r.length, s.length);

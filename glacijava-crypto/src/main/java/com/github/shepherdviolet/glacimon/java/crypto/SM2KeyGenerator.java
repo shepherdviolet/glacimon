@@ -48,7 +48,7 @@ import java.security.spec.InvalidKeySpecException;
  * <p>获取Q(X)值: ecPublicKeyParameters.getQ().getAffineXCoord().toBigInteger() </p>
  * <p>获取Q(Y)值: ecPublicKeyParameters.getQ().getAffineYCoord().toBigInteger() </p>
  * <p>BigInteger转HexString: bigInteger.toString(16) </p>
- * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+ * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
  * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
  * <p>byte[]转BigInteger: new BigInteger(ByteUtils.bytesToHex(bytes), 16). 不要new BigInteger(bytes), 因为如果bytes第一个字节大于等于0x80会变负数!!!</p>
  *
@@ -104,7 +104,7 @@ public class SM2KeyGenerator {
      * <p>获取Q(X)值: ecPublicKeyParameters.getQ().getAffineXCoord().toBigInteger() </p>
      * <p>获取Q(Y)值: ecPublicKeyParameters.getQ().getAffineYCoord().toBigInteger() </p>
      * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-     * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+     * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
      * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
      * <p>byte[]转BigInteger: new BigInteger(ByteUtils.bytesToHex(bytes), 16). 不要new BigInteger(bytes), 因为如果bytes第一个字节大于等于0x80会变负数!!!</p>
      *
@@ -123,7 +123,7 @@ public class SM2KeyGenerator {
      * <p>获取Q(X)值: ecPublicKeyParameters.getQ().getAffineXCoord().toBigInteger() </p>
      * <p>获取Q(Y)值: ecPublicKeyParameters.getQ().getAffineYCoord().toBigInteger() </p>
      * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-     * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+     * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
      * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
      * <p>byte[]转BigInteger: new BigInteger(ByteUtils.bytesToHex(bytes), 16). 不要new BigInteger(bytes), 因为如果bytes第一个字节大于等于0x80会变负数!!!</p>
      *
@@ -142,7 +142,7 @@ public class SM2KeyGenerator {
      * <p>获取Q(X)值: ecPublicKeyParameters.getQ().getAffineXCoord().toBigInteger() </p>
      * <p>获取Q(Y)值: ecPublicKeyParameters.getQ().getAffineYCoord().toBigInteger() </p>
      * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-     * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+     * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
      * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
      * <p>byte[]转BigInteger: new BigInteger(ByteUtils.bytesToHex(bytes), 16). 不要new BigInteger(bytes), 因为如果bytes第一个字节大于等于0x80会变负数!!!</p>
      *
@@ -171,7 +171,7 @@ public class SM2KeyGenerator {
      * <p>获取Q(X)值: ecPublicKeyParameters.getQ().getAffineXCoord().toBigInteger() </p>
      * <p>获取Q(Y)值: ecPublicKeyParameters.getQ().getAffineYCoord().toBigInteger() </p>
      * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-     * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+     * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
      * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
      * <p>byte[]转BigInteger: new BigInteger(ByteUtils.bytesToHex(bytes), 16). 不要new BigInteger(bytes), 因为如果bytes第一个字节大于等于0x80会变负数!!!</p>
      *
@@ -194,7 +194,7 @@ public class SM2KeyGenerator {
      * <p>获取Q(X)值: ecPublicKeyParameters.getQ().getAffineXCoord().toBigInteger() </p>
      * <p>获取Q(Y)值: ecPublicKeyParameters.getQ().getAffineYCoord().toBigInteger() </p>
      * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-     * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+     * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
      * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
      * <p>byte[]转BigInteger: new BigInteger(ByteUtils.bytesToHex(bytes), 16). 不要new BigInteger(bytes), 因为如果bytes第一个字节大于等于0x80会变负数!!!</p>
      *
@@ -214,7 +214,7 @@ public class SM2KeyGenerator {
      * <p>获取Q(X)值: ecPublicKeyParameters.getQ().getAffineXCoord().toBigInteger() </p>
      * <p>获取Q(Y)值: ecPublicKeyParameters.getQ().getAffineYCoord().toBigInteger() </p>
      * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-     * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+     * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
      * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
      * <p>byte[]转BigInteger: new BigInteger(ByteUtils.bytesToHex(bytes), 16). 不要new BigInteger(bytes), 因为如果bytes第一个字节大于等于0x80会变负数!!!</p>
      *
@@ -370,7 +370,7 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取公钥的X值 (QX).</p>
-         * <p>转byte[], ByteUtils.trimHeader(SM2KeyParamsPair.getPublicX().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPublicX().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPublicX().toString(16).</p>
          */
         public BigInteger getPublicX(){
@@ -379,7 +379,7 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取公钥的X值 (QX).</p>
-         * <p>转byte[], ByteUtils.trimHeader(SM2KeyParamsPair.getPublicX().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPublicX().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPublicX().toString(16).</p>
          */
         public byte[] getPublicXBytes(){
@@ -388,7 +388,7 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取公钥的Y值 (QY).</p>
-         * <p>转byte[], ByteUtils.trimHeader(SM2KeyParamsPair.getPublicY().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPublicY().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPublicY().toString(16).</p>
          */
         public BigInteger getPublicY(){
@@ -397,7 +397,7 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取公钥的Y值 (QY).</p>
-         * <p>转byte[], ByteUtils.trimHeader(SM2KeyParamsPair.getPublicY().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPublicY().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPublicY().toString(16).</p>
          */
         public byte[] getPublicYBytes(){
@@ -406,7 +406,7 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取私钥的D值.</p>
-         * <p>转byte[], ByteUtils.trimHeader(SM2KeyParamsPair.getPrivateD().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPrivateD().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPrivateD().toString(16).</p>
          */
         public BigInteger getPrivateD(){
@@ -415,7 +415,7 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取私钥的D值.</p>
-         * <p>转byte[], ByteUtils.trimHeader(SM2KeyParamsPair.getPrivateD().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
+         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPrivateD().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPrivateD().toString(16).</p>
          */
         public byte[] getPrivateDBytes(){

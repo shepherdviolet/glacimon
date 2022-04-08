@@ -29,7 +29,7 @@ public class JavaProcessUtils {
     /**
      * 当前进程PID
      */
-    public static final String PID;
+    private static final String PID;
 
     static {
         String pid;
@@ -40,6 +40,10 @@ public class JavaProcessUtils {
             pid = "";
         }
         PID = pid;
+    }
+
+    public static String getPid(){
+        return PID;
     }
 
 }

@@ -33,7 +33,7 @@ import java.security.spec.InvalidKeySpecException;
  * <p>RSA秘钥生成工具</p>
  *
  * <p>BigInteger转HexString: bigInteger.toString(16) </p>
- * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
+ * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
  * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
  * <p>byte[]转BigInteger: new BigInteger(bytes), 有时头部没0x00变负数, 试试new BigInteger(ByteUtils.bytesToHex(bytes), 16)</p>
  *
@@ -92,7 +92,7 @@ public class RSAKeyGenerator {
      * <p>用模和指数生成RSA公钥</p>
      *
      * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-     * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
+     * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
      * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
      * <p>byte[]转BigInteger: new BigInteger(bytes), 有时头部没0x00变负数, 试试new BigInteger(ByteUtils.bytesToHex(bytes), 16)</p>
      *
@@ -107,7 +107,7 @@ public class RSAKeyGenerator {
      * <p>用模和指数生成RSA私钥</p>
      *
      * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-     * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
+     * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
      * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
      * <p>byte[]转BigInteger: new BigInteger(bytes), 有时头部没0x00变负数, 试试new BigInteger(ByteUtils.bytesToHex(bytes), 16)</p>
      *
@@ -173,7 +173,7 @@ public class RSAKeyGenerator {
          * 获取模数
          *
          * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-         * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
+         * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
          * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
          * <p>byte[]转BigInteger: new BigInteger(bytes), 有时头部没0x00变负数, 试试new BigInteger(ByteUtils.bytesToHex(bytes), 16)</p>
          */
@@ -185,7 +185,7 @@ public class RSAKeyGenerator {
          * 获取公钥指数
          *
          * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-         * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
+         * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
          * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
          * <p>byte[]转BigInteger: new BigInteger(bytes), 有时头部没0x00变负数, 试试new BigInteger(ByteUtils.bytesToHex(bytes), 16)</p>
          */
@@ -197,7 +197,7 @@ public class RSAKeyGenerator {
          * 获取私钥指数
          *
          * <p>BigInteger转HexString: bigInteger.toString(16) </p>
-         * <p>BigInteger转byte[]: ByteUtils.trimHeader(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
+         * <p>BigInteger转byte[]: ByteUtils.leftTrim(bigInteger.toByteArray())), 注意要去掉头部的0x00</p>
          * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
          * <p>byte[]转BigInteger: new BigInteger(bytes), 有时头部没0x00变负数, 试试new BigInteger(ByteUtils.bytesToHex(bytes), 16)</p>
          */

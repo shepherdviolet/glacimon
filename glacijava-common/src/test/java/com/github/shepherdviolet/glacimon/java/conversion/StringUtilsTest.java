@@ -19,7 +19,6 @@
 
 package com.github.shepherdviolet.glacimon.java.conversion;
 
-import com.github.shepherdviolet.glacimon.java.conversion.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,7 +50,7 @@ public class StringUtilsTest {
     }
 
     private void truncateByUtf8ByteLength0(String string, int toLength, String expected) {
-        Assert.assertEquals(expected, StringUtils.truncateByUtf8ByteLength(string, toLength));
+        Assert.assertEquals(expected, StringUtils.rightTruncateToUtf8ByteLength(string, toLength));
     }
 
     @Test
@@ -80,7 +79,7 @@ public class StringUtilsTest {
     }
 
     private void truncateByGbkByteLength0(String string, int toLength, String expected) {
-        Assert.assertEquals(expected, StringUtils.truncateByGbkByteLength(string, toLength));
+        Assert.assertEquals(expected, StringUtils.rightTruncateToGbkByteLength(string, toLength));
     }
 
     @Test

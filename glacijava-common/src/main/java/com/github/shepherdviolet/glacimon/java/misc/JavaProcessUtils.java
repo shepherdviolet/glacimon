@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.misc;
 import java.lang.management.ManagementFactory;
 
 /**
- * 环境工具
+ * Java进程工具
  */
 public class JavaProcessUtils {
 

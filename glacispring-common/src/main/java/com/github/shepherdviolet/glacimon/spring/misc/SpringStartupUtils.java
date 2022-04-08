@@ -34,7 +34,7 @@ public class SpringStartupUtils {
      * 启动非WEB容器的SpringBoot应用
      *
      * <pre>
-     *     StartupUtils.startNonWebSpringBootApp(Main.class, args);
+     *     SpringStartupUtils.startNonWebSpringBootApp(Main.class, args);
      * </pre>
      */
     public static void startNonWebSpringBootApp(Class<?> source, String[] args){

@@ -27,7 +27,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.DataC
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SslUtils;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.HttpClients;
-import com.github.shepherdviolet.glacimon.java.function.ThrowableBiConsumer;
+import com.github.shepherdviolet.glacimon.java.common.function.ThrowableBiConsumer;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;

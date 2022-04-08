@@ -16,10 +16,10 @@
  * Project GitHub: https://github.com/shepherdviolet/glacimon
  * Email: shepherdviolet@163.com
  */
-package com.github.shepherdviolet.glacimon.java.function;
+package com.github.shepherdviolet.glacimon.java.common.function;
 
-public interface ThrowablePredicate<T> {
+public interface ThrowableConsumer<T> {
 
-    boolean test(T t) throws Throwable;
+    void accept(T t) throws Throwable;
 
 }

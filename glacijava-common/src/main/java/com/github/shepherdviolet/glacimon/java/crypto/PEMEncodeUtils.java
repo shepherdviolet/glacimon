@@ -20,7 +20,7 @@
 package com.github.shepherdviolet.glacimon.java.crypto;
 
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
-import com.github.shepherdviolet.glacimon.java.throwable.IllegalParamException;
+import com.github.shepherdviolet.glacimon.java.common.throwable.IllegalParamException;
 
 /**
  * 证书/密钥PEM格式转换工具

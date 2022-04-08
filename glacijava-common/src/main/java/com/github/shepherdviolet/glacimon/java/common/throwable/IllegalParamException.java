@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.throwable;
+package com.github.shepherdviolet.glacimon.java.common.throwable;
 
 /**
  * 方法参数非法

@@ -16,11 +16,10 @@
  * Project GitHub: https://github.com/shepherdviolet/glacimon
  * Email: shepherdviolet@163.com
  */
+package com.github.shepherdviolet.glacimon.java.common.function;
 
-package com.github.shepherdviolet.glacimon.java.function;
+public interface ThrowableSupplier<T> {
 
-public interface ThrowableRunnable {
-
-    void run() throws Throwable;
+    T get() throws Throwable;
 
 }

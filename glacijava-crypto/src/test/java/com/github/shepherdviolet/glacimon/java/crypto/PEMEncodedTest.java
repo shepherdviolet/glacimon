@@ -19,11 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.java.crypto;
 
-import com.github.shepherdviolet.glacimon.java.crypto.PEMEncodeUtils;
-import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
 import org.junit.Assert;
 import org.junit.Test;
-import com.github.shepherdviolet.glacimon.java.throwable.IllegalParamException;
+import com.github.shepherdviolet.glacimon.java.common.throwable.IllegalParamException;
 
 import java.security.spec.InvalidKeySpecException;
 

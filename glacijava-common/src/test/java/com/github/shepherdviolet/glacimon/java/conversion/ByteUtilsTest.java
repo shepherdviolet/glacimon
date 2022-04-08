@@ -19,24 +19,23 @@
 
 package com.github.shepherdviolet.glacimon.java.conversion;
 
-import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class ByteUtilsTest {
 
     @Test
-    public void trimHeader() {
+    public void leftTrim() {
         Assert.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
-                ByteUtils.trimHeader(ByteUtils.hexToBytes("1a1a1a")));
+                ByteUtils.leftTrim(ByteUtils.hexToBytes("1a1a1a")));
         Assert.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
-                ByteUtils.trimHeader(ByteUtils.hexToBytes("001a1a1a")));
+                ByteUtils.leftTrim(ByteUtils.hexToBytes("001a1a1a")));
         Assert.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
-                ByteUtils.trimHeader(ByteUtils.hexToBytes("00001a1a1a")));
+                ByteUtils.leftTrim(ByteUtils.hexToBytes("00001a1a1a")));
         Assert.assertArrayEquals(ByteUtils.hexToBytes(""),
-                ByteUtils.trimHeader(ByteUtils.hexToBytes("00")));
+                ByteUtils.leftTrim(ByteUtils.hexToBytes("00")));
         Assert.assertArrayEquals(ByteUtils.hexToBytes(""),
-                ByteUtils.trimHeader(ByteUtils.hexToBytes("0000")));
+                ByteUtils.leftTrim(ByteUtils.hexToBytes("0000")));
     }
 
 }

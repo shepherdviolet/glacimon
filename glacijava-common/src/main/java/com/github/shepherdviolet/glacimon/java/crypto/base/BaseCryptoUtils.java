@@ -51,8 +51,8 @@ public class BaseCryptoUtils {
         }
 
         // 去掉前面的0x00
-        xBytes = ByteUtils.trimHeader(xBytes);
-        yBytes = ByteUtils.trimHeader(yBytes);
+        xBytes = ByteUtils.leftTrim(xBytes);
+        yBytes = ByteUtils.leftTrim(yBytes);
 
         byte[] asn1Encoding = new byte[1 + xBytes.length + yBytes.length];
         asn1Encoding[0] = SM2_CIPHER_TEXT_PREFIX_UNCOMPRESSED;

@@ -383,7 +383,7 @@ public class SM2KeyGenerator {
          * <p>转Hex, SM2KeyParamsPair.getPublicX().toString(16).</p>
          */
         public byte[] getPublicXBytes(){
-            return ByteUtils.trimHeader(publicKeyParams.getQ().getAffineXCoord().toBigInteger().toByteArray());
+            return ByteUtils.leftTrim(publicKeyParams.getQ().getAffineXCoord().toBigInteger().toByteArray());
         }
 
         /**
@@ -401,7 +401,7 @@ public class SM2KeyGenerator {
          * <p>转Hex, SM2KeyParamsPair.getPublicY().toString(16).</p>
          */
         public byte[] getPublicYBytes(){
-            return ByteUtils.trimHeader(publicKeyParams.getQ().getAffineYCoord().toBigInteger().toByteArray());
+            return ByteUtils.leftTrim(publicKeyParams.getQ().getAffineYCoord().toBigInteger().toByteArray());
         }
 
         /**
@@ -419,7 +419,7 @@ public class SM2KeyGenerator {
          * <p>转Hex, SM2KeyParamsPair.getPrivateD().toString(16).</p>
          */
         public byte[] getPrivateDBytes(){
-            return ByteUtils.trimHeader(privateKeyParams.getD().toByteArray());
+            return ByteUtils.leftTrim(privateKeyParams.getD().toByteArray());
         }
 
         public byte[] getX509EncodedPublicKey() {

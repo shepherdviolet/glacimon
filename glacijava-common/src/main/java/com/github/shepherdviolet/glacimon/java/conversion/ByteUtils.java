@@ -37,142 +37,19 @@ import java.nio.charset.Charset;
 
 public class ByteUtils {
 
-    /**
-     * 把两个byte[]前后拼接成一个byte[]
-     *
-     * @param left left bytes
-     * @param right right bytes
-     * @return jointed bytes
-     */
-    public static byte[] joint(byte[] left, byte[] right){
-        if (left == null) {
-            return right;
-        }
-        if (right == null) {
-            return left;
-        }
-        byte[] result = new byte[left.length + right.length];
-        System.arraycopy(left, 0, result, 0, left.length);
-        System.arraycopy(right, 0, result, left.length, right.length);
-        return result;
-    }
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 16进制字符串转换
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * 把三个byte[]前后拼接成一个byte[]
-     *
-     * @param left left bytes
-     * @param middle middle bytes
-     * @param right right bytes
-     * @return jointed bytes
+     * byte -> 十六进制字符 映射表
      */
-    public static byte[] joint(byte[] left, byte[] middle, byte[] right){
-        if (left == null) {
-            return joint(middle, right);
-        }
-        if (middle == null) {
-            return joint(left, right);
-        }
-        if (right == null) {
-            return joint(left, middle);
-        }
-        byte[] result = new byte[left.length + middle.length + right.length];
-        System.arraycopy(left, 0, result, 0, left.length);
-        System.arraycopy(middle, 0, result, left.length, middle.length);
-        System.arraycopy(right, 0, result, left.length + middle.length, right.length);
-        return result;
-    }
+    private static final char[] BYTE_TO_HEX_CHAR_MAP = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     /**
-     * 二进制数据长度调整到固定长度, 多余部分舍弃(左边的舍弃), 少的补0(在左边补0)
-     *
-     * @param data 二进制数据
-     * @param length 目标长度
+     * 十六进制字符 -> byte 映射表
      */
-    public static byte[] toLength(byte[] data, int length) {
-        if (data == null) {
-            return new byte[length];
-        }
-        if (data.length == length) {
-            return data;
-        }
-        byte[] result = new byte[length];
-        if (data.length > length) {
-            System.arraycopy(data, data.length - length, result, 0, length);
-        } else {
-            System.arraycopy(data, 0, result, length - data.length, data.length);
-        }
-        return result;
-    }
-
-    /**
-     * 从二进制数据中截取一段
-     * @param data 二进制数据
-     * @param start 起始位置(到末尾)
-     */
-    public static byte[] sub(byte[] data, int start){
-        if (data == null) {
-            return null;
-        }
-        if (start >= data.length) {
-            return new byte[0];
-        }
-        if (start <= 0) {
-            return data;
-        }
-        byte[] result = new byte[data.length - start];
-        System.arraycopy(data, start, result, 0, result.length);
-        return result;
-    }
-
-    /**
-     * 从二进制数据中截取一段
-     * @param data 二进制数据
-     * @param start 起始位置(到末尾)
-     * @param length 截取长度
-     */
-    public static byte[] sub(byte[] data, int start, int length){
-        if (data == null) {
-            return null;
-        }
-        if (start < 0) {
-            start = 0;
-        }
-        if (length <= 0) {
-            return new byte[0];
-        }
-        if (start + length > data.length) {
-            length = data.length - start;
-        }
-        byte[] result = new byte[length];
-        System.arraycopy(data, start, result, 0, length);
-        return result;
-    }
-
-    /**
-     * 去掉二进制数据头部(左边)的0x00
-     *
-     * @param data 二进制数据
-     */
-    public static byte[] trimHeader(byte[] data){
-        if (data == null) {
-            return null;
-        }
-        if (data.length <= 0) {
-            return new byte[0];
-        }
-        int i = 0;
-        for (; i < data.length ; i++) {
-            if (data[i] != 0x00) {
-                break;
-            }
-        }
-        if (i <= 0) {
-            return data;
-        }
-        byte[] result = new byte[data.length - i];
-        System.arraycopy(data, i, result, 0, result.length);
-        return result;
-    }
+    private static final byte[] HEX_CHAR_TO_BYTE_MAP = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
 
     /**
      * bytes转为hexString
@@ -232,11 +109,6 @@ public class ByteUtils {
     }
 
     /**
-     * byte -> 十六进制字符 映射表
-     */
-    private static final char[] BYTE_TO_HEX_CHAR_MAP = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
-    /**
      * hexString转为bytes
      * @param hexString hexString
      * @return bytes
@@ -273,11 +145,6 @@ public class ByteUtils {
     }
 
     /**
-     * 十六进制字符 -> byte 映射表
-     */
-    private static final byte[] HEX_CHAR_TO_BYTE_MAP = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
-
-    /**
      * 十六进制字符 -> byte 映射表 的索引
      */
     private static int hexCharToIndex(char c, String hexString) {
@@ -300,6 +167,230 @@ public class ByteUtils {
             return c - 'a' + 10;
         }
         throw new IllegalArgumentException("[ByteUtils]hexToBytes: Illegal char '" + c + "' in hex string: " + hexString);
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 2进制字符串转换
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final String[] BIN_MAPPING = {"0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111"};
+
+    /**
+     * byte转二进制字符串
+     * @param b byte
+     */
+    public static String byteToBin(byte b){
+        //byte做移位时, 会先转为int, 必须与0xff, 否则会出问题
+        return BIN_MAPPING[(b & 0xff) >>> 4] + BIN_MAPPING[b & 0x0F];
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Trim (去掉0x00)
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 去掉二进制数据头部(左边)的0x00
+     *
+     * @param data 二进制数据
+     */
+    public static byte[] leftTrim(byte[] data){
+        if (data == null) {
+            return null;
+        }
+        if (data.length <= 0) {
+            return new byte[0];
+        }
+        int i = 0;
+        for (; i < data.length ; i++) {
+            if (data[i] != 0x00) {
+                break;
+            }
+        }
+        if (i <= 0) {
+            return data;
+        }
+        byte[] result = new byte[data.length - i];
+        System.arraycopy(data, i, result, 0, result.length);
+        return result;
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 拼接
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 把两个byte[]前后拼接成一个byte[]
+     *
+     * @param left left bytes
+     * @param right right bytes
+     * @return jointed bytes
+     */
+    public static byte[] joint(byte[] left, byte[] right){
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        byte[] result = new byte[left.length + right.length];
+        System.arraycopy(left, 0, result, 0, left.length);
+        System.arraycopy(right, 0, result, left.length, right.length);
+        return result;
+    }
+
+    /**
+     * 把三个byte[]前后拼接成一个byte[]
+     *
+     * @param left left bytes
+     * @param middle middle bytes
+     * @param right right bytes
+     * @return jointed bytes
+     */
+    public static byte[] joint(byte[] left, byte[] middle, byte[] right){
+        if (left == null) {
+            return joint(middle, right);
+        }
+        if (middle == null) {
+            return joint(left, right);
+        }
+        if (right == null) {
+            return joint(left, middle);
+        }
+        byte[] result = new byte[left.length + middle.length + right.length];
+        System.arraycopy(left, 0, result, 0, left.length);
+        System.arraycopy(middle, 0, result, left.length, middle.length);
+        System.arraycopy(right, 0, result, left.length + middle.length, right.length);
+        return result;
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 截取
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 从二进制数据中截取一段
+     * @param data 二进制数据
+     * @param start 起始位置(到末尾)
+     */
+    public static byte[] sub(byte[] data, int start){
+        if (data == null) {
+            return null;
+        }
+        if (start >= data.length) {
+            return new byte[0];
+        }
+        if (start <= 0) {
+            return data;
+        }
+        byte[] result = new byte[data.length - start];
+        System.arraycopy(data, start, result, 0, result.length);
+        return result;
+    }
+
+    /**
+     * 从二进制数据中截取一段
+     * @param data 二进制数据
+     * @param start 起始位置(到末尾)
+     * @param length 截取长度
+     */
+    public static byte[] sub(byte[] data, int start, int length){
+        if (data == null) {
+            return null;
+        }
+        if (start < 0) {
+            start = 0;
+        }
+        if (length <= 0) {
+            return new byte[0];
+        }
+        if (start + length > data.length) {
+            length = data.length - start;
+        }
+        byte[] result = new byte[length];
+        System.arraycopy(data, start, result, 0, length);
+        return result;
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 长度控制
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 二进制数据长度调整到固定长度, 多余部分舍弃(左边的舍弃), 少的补0(在左边补0)
+     *
+     * @param data 二进制数据
+     * @param length 目标长度
+     */
+    public static byte[] leftAdjustToLength(byte[] data, int length) {
+        if (data == null) {
+            return new byte[length];
+        }
+        if (data.length == length) {
+            return data;
+        }
+        byte[] result = new byte[length];
+        if (data.length > length) {
+            System.arraycopy(data, data.length - length, result, 0, length);
+        } else {
+            System.arraycopy(data, 0, result, length - data.length, data.length);
+        }
+        return result;
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 类型转换
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * char[] 转 byte[]
+     * @param chars char[]
+     * @param charset charset
+     */
+    public static byte[] charsToBytes(char[] chars, String charset) {
+        CharBuffer charBuffer = CharBuffer.allocate(chars.length);
+        charBuffer.put(chars);
+        charBuffer.flip();
+        return Charset.forName(charset).encode(charBuffer).array();
+    }
+
+    /**
+     * byte[] 转 char[]
+     * @param bytes byte[]
+     * @param charset charset
+     */
+    public static char[] bytesToChars(byte[] bytes, String charset) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+        byteBuffer.put(bytes);
+        byteBuffer.flip();
+        return Charset.forName(charset).decode(byteBuffer).array();
+    }
+
+    /**
+     * bytes转long
+     * @param bytes bytes
+     * @param littleEndian 默认false
+     */
+    public static long bytesToLong(byte[] bytes, boolean littleEndian) {
+        // 将byte[] 封装为 ByteBuffer
+        ByteBuffer buffer = ByteBuffer.wrap(bytes, 0,8);
+        if(littleEndian){
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+        }
+        return buffer.getLong();
+    }
+
+    /**
+     * long转bytes
+     * @param longValue long
+     * @param littleEndian 默认false
+     */
+    public static byte[] longToBytes(long longValue, boolean littleEndian){
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        if(littleEndian){
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+        }
+        buffer.putLong(longValue);
+        return buffer.array();
     }
 
     /**
@@ -334,29 +425,9 @@ public class ByteUtils {
         return obj;
     }
 
-    /**
-     * char[] 转 byte[]
-     * @param chars char[]
-     * @param charset charset
-     */
-    public static byte[] charsToBytes(char[] chars, String charset) {
-        CharBuffer charBuffer = CharBuffer.allocate(chars.length);
-        charBuffer.put(chars);
-        charBuffer.flip();
-        return Charset.forName(charset).encode(charBuffer).array();
-    }
-
-    /**
-     * byte[] 转 char[]
-     * @param bytes byte[]
-     * @param charset charset
-     */
-    public static char[] bytesToChars(byte[] bytes, String charset) {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
-        byteBuffer.put(bytes);
-        byteBuffer.flip();
-        return Charset.forName(charset).decode(byteBuffer).array();
-    }
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 移位
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * 循环左移
@@ -386,45 +457,6 @@ public class ByteUtils {
         //byte做移位时, 会先转为int, 必须与0xff, 否则会出问题
         int bi = b & 0xff;
         return (byte)(bi >>> n | bi << 8 - n);
-    }
-
-    private static final String[] BIN_MAPPING = {"0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111"};
-
-    /**
-     * byte转二进制字符串
-     * @param b byte
-     */
-    public static String byteToBin(byte b){
-        //byte做移位时, 会先转为int, 必须与0xff, 否则会出问题
-        return BIN_MAPPING[(b & 0xff) >>> 4] + BIN_MAPPING[b & 0x0F];
-    }
-
-    /**
-     * bytes转long
-     * @param bytes bytes
-     * @param littleEndian 默认false
-     */
-    public static long bytesToLong(byte[] bytes, boolean littleEndian) {
-        // 将byte[] 封装为 ByteBuffer
-        ByteBuffer buffer = ByteBuffer.wrap(bytes, 0,8);
-        if(littleEndian){
-            buffer.order(ByteOrder.LITTLE_ENDIAN);
-        }
-        return buffer.getLong();
-    }
-
-    /**
-     * long转bytes
-     * @param longValue long
-     * @param littleEndian 默认false
-     */
-    public static byte[] longToBytes(long longValue, boolean littleEndian){
-        ByteBuffer buffer = ByteBuffer.allocate(8);
-        if(littleEndian){
-            buffer.order(ByteOrder.LITTLE_ENDIAN);
-        }
-        buffer.putLong(longValue);
-        return buffer.array();
     }
 
 }

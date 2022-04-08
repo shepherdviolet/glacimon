@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.pool;
+package com.github.shepherdviolet.glacimon.java.datastruc.pool;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

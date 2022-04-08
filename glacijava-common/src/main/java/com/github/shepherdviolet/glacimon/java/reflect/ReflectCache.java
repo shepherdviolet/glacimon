@@ -23,7 +23,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.github.shepherdviolet.glacimon.java.cache.LruCache;
+import com.github.shepherdviolet.glacimon.java.datastruc.cache.LruCache;
 
 /**
  * <p>反射缓存, 用于一些反复使用反射的Class</p>

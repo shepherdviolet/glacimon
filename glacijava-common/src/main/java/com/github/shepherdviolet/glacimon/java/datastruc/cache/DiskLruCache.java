@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.cache;
+package com.github.shepherdviolet.glacimon.java.datastruc.cache;
 
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 

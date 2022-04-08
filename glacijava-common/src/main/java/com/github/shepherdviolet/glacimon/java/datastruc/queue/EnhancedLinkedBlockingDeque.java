@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.queue;
+package com.github.shepherdviolet.glacimon.java.datastruc.queue;
 
 import java.util.ArrayList;
 import java.util.Collection;

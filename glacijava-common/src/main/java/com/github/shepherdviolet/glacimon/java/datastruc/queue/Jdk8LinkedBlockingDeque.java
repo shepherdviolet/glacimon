@@ -23,7 +23,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
 
-package com.github.shepherdviolet.glacimon.java.queue;
+package com.github.shepherdviolet.glacimon.java.datastruc.queue;
 
 import java.util.AbstractQueue;
 import java.util.Collection;

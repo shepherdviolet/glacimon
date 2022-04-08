@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.pool;
+package com.github.shepherdviolet.glacimon.java.datastruc.pool;
 
 import ch.qos.logback.classic.Level;
 import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;

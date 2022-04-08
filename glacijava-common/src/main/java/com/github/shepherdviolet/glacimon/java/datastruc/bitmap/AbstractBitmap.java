@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.bitmap;
+package com.github.shepherdviolet.glacimon.java.datastruc.bitmap;
 
 import com.github.shepherdviolet.glacimon.java.conversion.HashUtils;
 

@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.conversion;
 
-import com.github.shepherdviolet.glacimon.java.collect.KeyValue;
-import com.github.shepherdviolet.glacimon.java.collect.StringKeyValue;
+import com.github.shepherdviolet.glacimon.java.datastruc.KeyValue;
+import com.github.shepherdviolet.glacimon.java.datastruc.StringKeyValue;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 
 import java.io.Closeable;

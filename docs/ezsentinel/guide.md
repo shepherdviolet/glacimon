@@ -269,7 +269,7 @@ slate.common.ez-sentinel.rule-data: classpath:config/demo/sentinel/rules.json
 ```text
     <!-- 使用非SpringBoot专用的版本, 这个版本不是根据spring.cloud.sentinel.enabled开关的 -->
     <!-- 是根据四个必要的启动参数是否设置来决定是否启用Sentinel的, 详见源码 -->
-    <bean id="ezSentinelRuleConfigurer" class="sviolet.slate.common.helper.sentinel.JsonEzSentinelRuleConfigurerForSpring4">
+    <bean id="ezSentinelRuleConfigurer" class="com.github.shepherdviolet.glacimon.spring.helper.sentinel.JsonEzSentinelRuleConfigurerForSpring4">
         <property name="ruleData" value="${slate.common.ez-sentinel.rule-data:}"/>
     </bean>
 ```

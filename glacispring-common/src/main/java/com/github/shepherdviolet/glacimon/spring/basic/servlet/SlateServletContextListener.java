@@ -43,7 +43,7 @@ import javax.servlet.ServletContextListener;
  * <pre>{@code
  *  <web-app ......>
  *      <listener>
- *          <listener-class>sviolet.slate.common.web.servlet.SlateServletContextListener</listener-class>
+ *          <listener-class>com.github.shepherdviolet.glacimon.spring.basic.servlet.SlateServletContextListener</listener-class>
  *      </listener>
  *      <listener>
  *          ......

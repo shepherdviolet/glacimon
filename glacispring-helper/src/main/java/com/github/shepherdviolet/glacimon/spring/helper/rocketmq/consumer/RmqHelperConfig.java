@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.github.shepherdviolet.glacimon.spring.x.beanfactory.mbrproc.EnableMemberProcessor;
+import com.github.shepherdviolet.glacimon.spring.x.config.mbrproc.EnableMemberProcessor;
 
 /**
  * RocketMQ Helper 配置类

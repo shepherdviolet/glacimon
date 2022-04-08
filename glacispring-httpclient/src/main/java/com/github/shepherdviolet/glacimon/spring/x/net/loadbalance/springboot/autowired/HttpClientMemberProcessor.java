@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.a
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.ReflectionUtils;
-import com.github.shepherdviolet.glacimon.spring.x.beanfactory.mbrproc.MemberProcessor;
+import com.github.shepherdviolet.glacimon.spring.x.config.mbrproc.MemberProcessor;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.HttpClients;
 

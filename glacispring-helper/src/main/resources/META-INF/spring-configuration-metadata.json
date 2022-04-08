@@ -2,8 +2,8 @@
   "groups": [
     {
       "name": "slate.common",
-      "type": "com.github.shepherdviolet.glacimon.spring.autoconfig.SlateCommonProperties",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.autoconfig.SlateCommonProperties"
+      "type": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.SlateCommonProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.SlateCommonProperties"
     }
   ],
   "properties": [

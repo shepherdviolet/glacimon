@@ -26,7 +26,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.github.shepherdviolet.glacimon.spring.x.beanfactory.mbrproc.EnableMemberProcessor;
+import com.github.shepherdviolet.glacimon.spring.x.config.mbrproc.EnableMemberProcessor;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.DataConverter;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GsonDataConverter;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autowired.HttpClientMemberProcessor;

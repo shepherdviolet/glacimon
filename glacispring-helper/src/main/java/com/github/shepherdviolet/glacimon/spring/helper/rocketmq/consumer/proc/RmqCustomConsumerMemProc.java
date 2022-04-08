@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.proc;
 import com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManager;
 import org.springframework.context.ApplicationContext;
 import com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.RocketMqCustomConsumer;
-import com.github.shepherdviolet.glacimon.spring.x.beanfactory.mbrproc.MemberProcessor;
+import com.github.shepherdviolet.glacimon.spring.x.config.mbrproc.MemberProcessor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

@@ -271,8 +271,8 @@ MapXBean.beanToMap()
 /*
     1.Declare which classes are indivisible in /META-INF/keep-types.properties file
         Example: 
-            sviolet.slate.common.x.conversion.mapxbean.MapToBeanTest$Person1
-            sviolet.slate.common.x.conversion.mapxbean.MapToBeanTest$Person2
+            com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MapToBeanTest$Person1
+            com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MapToBeanTest$Person2
     2.Then load the properties file as Properties instance
     3.Set new InflateUntilIndivisible(...)
     4.Class 'MapToBeanTest$Person1' and 'MapToBeanTest$Person2' will not be inflated

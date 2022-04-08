@@ -90,8 +90,8 @@ public class InflateUntilIndivisible implements BeanToMapInflateStrategy {
     /**
      * <p>Example: example.properties</p>
      * <pre>
-     * sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible1
-     * sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible2
+     * com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible1
+     * com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible2
      * </pre>
      *
      * <p>Example: Load properties file to Properties instance in Spring: </p>
@@ -130,8 +130,8 @@ public class InflateUntilIndivisible implements BeanToMapInflateStrategy {
     /**
      * <p>Example: example.properties</p>
      * <pre>
-     * sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible1
-     * sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible2
+     * com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible1
+     * com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible2
      * </pre>
      *
      * <p>Example: Load properties file to Properties instance in Spring: </p>

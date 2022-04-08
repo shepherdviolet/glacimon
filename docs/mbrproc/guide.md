@@ -11,7 +11,7 @@
 
 ## 日志
 
-* SLF4J日志包路径: `sviolet.slate.common.x.bean.mbrproc`
+* SLF4J日志包路径: `com.github.shepherdviolet.glacimon.spring.x.config.mbrproc`
 * 推荐日志级别: `INFO`
 * 日志关键字: `MemberProcessor`
 

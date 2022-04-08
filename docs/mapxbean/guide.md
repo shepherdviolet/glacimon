@@ -263,8 +263,8 @@ MapXBean.beanToMap()
 /*
     1.在文件中指定哪些类型不可分割: /META-INF/keep-types.properties
         示例: 
-            sviolet.slate.common.x.conversion.mapxbean.MapToBeanTest$Person1
-            sviolet.slate.common.x.conversion.mapxbean.MapToBeanTest$Person2
+            com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MapToBeanTest$Person1
+            com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MapToBeanTest$Person2
     2.然后将这个properties文件加载为Properties实例
     3.设置继续拆解规则为: new InflateUntilIndivisible(properties)
     4.那么在示例中 'MapToBeanTest$Person1' 和 'MapToBeanTest$Person2' 将不会被继续分割

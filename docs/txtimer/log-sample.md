@@ -1,6 +1,6 @@
 # TxTimer 日志样例
 
-* SLF4J日志级别`INFO`, 日志包路径`sviolet.slate.common.x.monitor.txtimer.def`
+* SLF4J日志级别`INFO`, 日志包路径`com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.def`
 
 ## 20.0.0+ 14.8+
 

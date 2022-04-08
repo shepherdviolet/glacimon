@@ -26,7 +26,7 @@
 
 ## 日志
 
-* SLF4J日志包路径: `sviolet.slate.common.x.monitor.txtimer.def`
+* SLF4J日志包路径: `com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.def`
 * 推荐日志级别: `INFO`, 建议将日志输出到一个独立的文件中便于查看, 推荐单文件200MB, 最大历史50-100个(根据实际需求)
 * 日志关键字: `TxTimer`
 * [日志样例](https://github.com/shepherdviolet/slate/blob/master/docs/txtimer/log-sample.md)
@@ -153,12 +153,12 @@
 
 ## 自定义实现统计和报告逻辑
 
-* 扩展点接口:sviolet.slate.common.x.monitor.txtimer.TxTimerProvider2
+* 扩展点接口:com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.TxTimerProvider2
 * 使用扩展点之前, 请先仔细阅读文档: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md
 
 ## 修改缺省实现的配置
 
-* 缺省实现:sviolet.slate.common.x.monitor.txtimer.def.DefaultTxTimerProvider2
+* 缺省实现:com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.def.DefaultTxTimerProvider2
 * 可以重新定义缺省实现的配置, 具体请阅读文档: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md
 
 <br>

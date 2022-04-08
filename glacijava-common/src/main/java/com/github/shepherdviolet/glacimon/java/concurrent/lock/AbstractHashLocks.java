@@ -24,7 +24,7 @@ import com.github.shepherdviolet.glacimon.java.math.MathUtils;
 /**
  * 产生指定数量的同步锁, 根据字符串的哈希获取锁对象, 这样可以把同步代码块分散, 提高并发性能
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 abstract class AbstractHashLocks <T> {
 

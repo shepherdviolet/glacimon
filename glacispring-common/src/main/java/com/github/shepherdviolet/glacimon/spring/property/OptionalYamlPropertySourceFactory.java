@@ -36,7 +36,7 @@ import java.io.IOException;
  * })
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class OptionalYamlPropertySourceFactory extends YamlPropertySourceFactory {
 

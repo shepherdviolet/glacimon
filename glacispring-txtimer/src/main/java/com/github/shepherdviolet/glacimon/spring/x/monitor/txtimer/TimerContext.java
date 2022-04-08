@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer;
 /**
  * 开始计时后, 会返回这个对象, 在计时结束时调用这个对象的exit方法即可
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface TimerContext extends AutoCloseable {
 

@@ -30,7 +30,7 @@ import java.security.PrivilegedAction;
 /**
  * Closeable工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class CloseableUtils {
 

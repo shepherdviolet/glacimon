@@ -26,7 +26,7 @@ import java.security.SecureRandom;
 /**
  * AES秘钥生成工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class AESKeyGenerator {
 

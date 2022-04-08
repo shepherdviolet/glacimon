@@ -43,7 +43,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * 维护SpringBoot自动配置的SimpleOkHttpClient实例
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, DisposableBean {
 

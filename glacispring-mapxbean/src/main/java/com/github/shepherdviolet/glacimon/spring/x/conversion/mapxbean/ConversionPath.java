@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
  *
  * <p>WARNING! Please NO NOT hold this object for a long time, otherwise it will cause a memory leak.</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class ConversionPath {

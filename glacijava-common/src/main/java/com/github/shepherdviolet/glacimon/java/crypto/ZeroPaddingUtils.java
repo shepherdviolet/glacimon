@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.crypto;
 /**
  * 数据0填充
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ZeroPaddingUtils {
 

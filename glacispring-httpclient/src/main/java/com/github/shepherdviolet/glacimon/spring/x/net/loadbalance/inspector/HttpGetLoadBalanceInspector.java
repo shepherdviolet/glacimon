@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 负载均衡--HTTP GET方式探测网络状况
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class HttpGetLoadBalanceInspector implements FixedTimeoutLoadBalanceInspector, Closeable {
 

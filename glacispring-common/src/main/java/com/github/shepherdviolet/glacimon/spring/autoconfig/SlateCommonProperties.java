@@ -26,7 +26,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * <p>配置前缀: slate.common</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @ConfigurationProperties(prefix = "slate.common")
 public class SlateCommonProperties {

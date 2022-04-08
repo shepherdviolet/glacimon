@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.helper.sentinel;
 /**
  * @see AbstractEzSentinelRuleConfigurer
  * @param <T> 规则数据类型
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface EzSentinelRuleConfigurer <T> {
 

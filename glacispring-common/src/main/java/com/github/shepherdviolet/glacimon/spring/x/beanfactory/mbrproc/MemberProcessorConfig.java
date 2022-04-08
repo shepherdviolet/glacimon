@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Role;
  * 3.该注解允许多次声明, 声明不同的处理器处理不同的注解
  * </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 public class MemberProcessorConfig {

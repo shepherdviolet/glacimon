@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Preload all services from specified classloader
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class PreLoader {
 

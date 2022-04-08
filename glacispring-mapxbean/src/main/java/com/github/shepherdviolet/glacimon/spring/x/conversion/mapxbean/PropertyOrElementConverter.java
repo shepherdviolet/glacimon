@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
  * <p>Convert property to expected type (properties of Bean / elements of Collection).
  * Implemented by anonymous in *ConverterImpl. For property (element) conversions in sub processor</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  * @see MapToBeanConverterImpl
  * @see BeanToMapConverterImpl

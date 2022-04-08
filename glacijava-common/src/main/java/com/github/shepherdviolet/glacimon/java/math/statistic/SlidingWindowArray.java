@@ -29,7 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * <p>An array implements sliding window algorithm, For statistical</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SlidingWindowArray<E> {
 

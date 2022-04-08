@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>Purpose: Determine what type a class is</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class MxbTypeJudgerImpl implements MxbTypeJudger {

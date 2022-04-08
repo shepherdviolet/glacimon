@@ -28,7 +28,7 @@ import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
  *
  * <code>@Import(DefaultTxTimerSpringConfig.class)</code>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 public class DefaultTxTimerSpringConfig {

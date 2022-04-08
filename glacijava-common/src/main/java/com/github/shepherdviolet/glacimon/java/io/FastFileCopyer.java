@@ -28,7 +28,7 @@ import java.nio.channels.FileChannel;
 /**
  * 文件复制器快速版
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class FastFileCopyer {
 

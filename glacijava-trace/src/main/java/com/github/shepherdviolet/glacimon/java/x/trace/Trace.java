@@ -28,7 +28,7 @@ import java.util.concurrent.Callable;
  * 全局追踪API, GlacimonSpi扩展点: com.github.shepherdviolet.glacimon.java.x.trace.TraceProvider.
  * 默认实现: DefaultTraceProvider.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class Trace {
 

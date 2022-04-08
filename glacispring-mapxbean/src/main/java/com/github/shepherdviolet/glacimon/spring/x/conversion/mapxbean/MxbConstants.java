@@ -24,7 +24,7 @@ import com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi;
 /**
  * Internal constants and components
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class MxbConstants {
 

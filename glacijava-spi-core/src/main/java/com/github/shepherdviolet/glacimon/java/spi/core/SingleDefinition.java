@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.core;
 /**
  * Single service definition loaded from file
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class SingleDefinition {
 

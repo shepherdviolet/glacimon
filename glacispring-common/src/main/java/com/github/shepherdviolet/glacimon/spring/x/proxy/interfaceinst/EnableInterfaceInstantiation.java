@@ -63,7 +63,7 @@ import java.lang.annotation.*;
  *      }
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

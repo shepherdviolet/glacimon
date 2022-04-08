@@ -27,7 +27,7 @@ import java.lang.annotation.*;
  * 启用RocketMQ助手:
  * 1.使用注解声明消费者
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

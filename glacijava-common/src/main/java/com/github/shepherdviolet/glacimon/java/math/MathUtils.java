@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.math;
 /**
  * 数学工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class MathUtils {
 

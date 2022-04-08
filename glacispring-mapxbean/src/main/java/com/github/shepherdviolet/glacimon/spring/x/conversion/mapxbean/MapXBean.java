@@ -24,7 +24,7 @@ import com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.strategy.
 /**
  * MapXBean
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class MapXBean {
 

@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * 泛型工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class GenericClassUtils {
 

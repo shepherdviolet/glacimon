@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.api.interfaces;
 /**
  * The method 'onServiceCreated' is called when the service instance is created.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface InitializableImplementation {
 

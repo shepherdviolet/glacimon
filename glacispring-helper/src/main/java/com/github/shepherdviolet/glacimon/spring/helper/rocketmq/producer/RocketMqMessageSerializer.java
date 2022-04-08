@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * 简单地用FastJSON对Map做序列化, 配套Consumer端的Map入参使用
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RocketMqMessageSerializer {
 

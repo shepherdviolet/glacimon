@@ -130,7 +130,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * }</pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class MultiHostOkHttpClient {
 

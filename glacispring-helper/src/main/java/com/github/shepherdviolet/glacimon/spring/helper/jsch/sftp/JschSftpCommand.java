@@ -26,7 +26,7 @@ import com.jcraft.jsch.SftpException;
  * SFTP操作接口
  * @param <T>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface JschSftpCommand <T> {
 

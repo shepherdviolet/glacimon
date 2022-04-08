@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * <p>GlacimonSpi: An implementation of Java Service Provider Interface</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class GlacimonSpi {
 

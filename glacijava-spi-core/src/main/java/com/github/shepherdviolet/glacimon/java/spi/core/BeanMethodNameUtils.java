@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.core;
 /**
  * BeanMethodNameUtils
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class BeanMethodNameUtils {
 

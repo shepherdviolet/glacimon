@@ -31,7 +31,7 @@ import java.lang.reflect.Type;
  * {@link MxbTypeMapperProvider} extension point. See: {@link MxbTypeMapperProvider} {@link MxbTypeMapperProviderImpl}.
  * GlacimonSpi doc: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  * @see MxbTypeMapperCenter
  * @see MxbTypeMapperProvider

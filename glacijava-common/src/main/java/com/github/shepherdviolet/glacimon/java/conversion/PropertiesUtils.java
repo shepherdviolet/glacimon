@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * <p>为保持解析标准与JDK一致, 核心解析逻辑从JDK8的java.util.Properties类中复制</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class PropertiesUtils {
 

@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * [Main processor] Map -> Bean, thread-safe
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public interface MapToBeanConverter {

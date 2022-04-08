@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <p>默认实现了交易耗时的统计, 并通过日志定时输出报告. 可以使用GlacimonSpi SPI替换实现.</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DefaultTxTimerProvider2 implements TxTimerProvider2, InitializableImplementation {
 

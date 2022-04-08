@@ -50,7 +50,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *     // 正常处理
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class CountDownWaiter {
 

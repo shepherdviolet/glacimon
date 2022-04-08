@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * 1.动态配置规则
  * 2.如果没有设置四个必要的启动参数, 则禁用
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class JsonEzSentinelRuleConfigurerForSpring4 implements EzSentinelRuleConfigurer<String> {
 

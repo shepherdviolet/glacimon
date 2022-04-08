@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * <p>接口实例化器:可实现代理逻辑, 可获取ApplicationContext, 可获取接口类型</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public abstract class ContextAwaredInterfaceInstantiator implements InterfaceInstantiator, ApplicationContextAware {
 

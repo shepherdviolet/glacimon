@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>Purpose: Create instance of given class</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class MxbObjectInstantiatorImpl implements MxbObjectInstantiator {

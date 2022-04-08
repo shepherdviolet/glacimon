@@ -38,7 +38,7 @@ import java.security.NoSuchAlgorithmException;
  *
  * Created by S.Violet on 2016/12/20.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DESEdeCipher {
 

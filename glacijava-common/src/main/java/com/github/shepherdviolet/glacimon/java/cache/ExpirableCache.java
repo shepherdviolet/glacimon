@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 单服务用过期更新缓存
  *
  * @param <T> 内容类型
- * @author S.Violet
+ * @author shepherdviolet
  */
 public abstract class ExpirableCache <T> {
 

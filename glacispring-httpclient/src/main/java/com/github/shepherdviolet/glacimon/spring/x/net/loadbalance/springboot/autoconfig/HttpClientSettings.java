@@ -26,7 +26,7 @@ import java.util.Arrays;
  *
  * <p>配置前缀: slate.httpclients</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class HttpClientSettings {
 

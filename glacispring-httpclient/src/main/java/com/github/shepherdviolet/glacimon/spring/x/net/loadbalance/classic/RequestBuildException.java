@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic;
 /**
  * 请求初始化异常(通常是网络请求发送前的异常, 准备阶段异常)
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RequestBuildException extends Exception {
 

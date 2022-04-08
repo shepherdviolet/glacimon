@@ -49,7 +49,7 @@ import org.objenesis.instantiator.ObjectInstantiator;
  *     }
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SlateHessianLiteSerializerFactory extends SerializerFactory {
 

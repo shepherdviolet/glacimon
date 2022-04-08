@@ -29,7 +29,7 @@ import static org.junit.Assert.assertNull;
 /**
  * Test for interface compat
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class CompatTest {
 

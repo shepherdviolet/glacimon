@@ -20,7 +20,7 @@
 package com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer;
 
 /**
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RocketMqHelperException extends Exception {
 

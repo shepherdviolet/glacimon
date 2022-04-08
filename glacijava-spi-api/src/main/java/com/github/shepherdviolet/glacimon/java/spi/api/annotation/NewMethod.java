@@ -28,7 +28,7 @@ import java.lang.annotation.*;
  * Marked on the method of interface, indicates that this method is new (Added in newer version).
  * And you should provide a compatible approach for old version.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

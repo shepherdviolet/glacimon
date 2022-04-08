@@ -31,7 +31,7 @@ import com.github.shepherdviolet.glacimon.java.judge.CheckUtils;
 /**
  * <p>将一个类或一个对象的数据/构造函数/方法打印出来</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ClassPrinter {
 

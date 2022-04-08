@@ -50,7 +50,7 @@ import java.util.function.Supplier;
  * <p>核心逻辑, 高版本</p>
  *
  * @since 1.8
- * @author S.Violet
+ * @author shepherdviolet
  */
 class InterfaceInstBeanDefRegistry5 implements BeanDefinitionRegistryPostProcessor, PriorityOrdered {
 

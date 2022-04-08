@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * ExpirableCache测试案例
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ExpirableCacheTest {
 

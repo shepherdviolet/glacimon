@@ -36,7 +36,7 @@ import com.github.shepherdviolet.glacimon.spring.x.beanfactory.mbrproc.EnableMem
 /**
  * RocketMQ Helper 配置类
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 @EnableMemberProcessor({

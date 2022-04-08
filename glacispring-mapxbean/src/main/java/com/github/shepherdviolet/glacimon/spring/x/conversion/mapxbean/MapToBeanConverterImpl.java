@@ -31,7 +31,7 @@ import static com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.Mx
 /**
  * [Main processor] Map -> Bean
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class MapToBeanConverterImpl implements MapToBeanConverter, ConversionExceptionThrower {

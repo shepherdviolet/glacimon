@@ -36,7 +36,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.Ht
  * <p>HttpClients阿波罗动态配置: 支持在Apollo配置中心上动态调整客户端配置</p>
  * <p>配置前缀: slate.httpclient</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 @ConditionalOnExpression("${slate.httpclient.enabled:false} " +

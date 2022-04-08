@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.conversion;
 /**
  * <p>ENUM工具</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 
 public class EnumUtils {

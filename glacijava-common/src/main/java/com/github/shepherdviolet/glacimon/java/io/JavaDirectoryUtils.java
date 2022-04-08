@@ -24,7 +24,7 @@ import java.io.InputStream;
 /**
  * Java路径工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class JavaDirectoryUtils {
 

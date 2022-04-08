@@ -35,7 +35,7 @@ import java.io.InputStream;
  *
  * <p>Cipher/Signature/MessageDigest线程不安全!!!</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SM2Cipher {
 

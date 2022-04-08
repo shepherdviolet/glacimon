@@ -49,7 +49,7 @@ package com.github.shepherdviolet.glacimon.java.bitmap;
  *     容量: 1000万(1Mb)  元素数:  100万  HASH算法数: 3  误判率: < 0.005<br>
  * </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface BloomBitmap extends Bitmap {
 

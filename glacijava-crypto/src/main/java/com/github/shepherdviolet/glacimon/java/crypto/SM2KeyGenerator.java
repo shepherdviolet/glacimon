@@ -52,7 +52,7 @@ import java.security.spec.InvalidKeySpecException;
  * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
  * <p>byte[]转BigInteger: new BigInteger(ByteUtils.bytesToHex(bytes), 16). 不要new BigInteger(bytes), 因为如果bytes第一个字节大于等于0x80会变负数!!!</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SM2KeyGenerator {
 

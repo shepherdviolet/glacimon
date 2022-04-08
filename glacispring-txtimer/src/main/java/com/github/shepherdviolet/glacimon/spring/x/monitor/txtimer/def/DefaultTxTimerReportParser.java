@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
  * 用于将TxTimer报告解析为原始数据
  *
  * @see DefaultTxTimerReportScanner
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface DefaultTxTimerReportParser {
 

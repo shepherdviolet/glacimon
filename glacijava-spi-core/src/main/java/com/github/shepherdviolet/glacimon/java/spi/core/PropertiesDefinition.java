@@ -25,7 +25,7 @@ import java.util.TreeMap;
 /**
  * Properties definition loaded from file
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class PropertiesDefinition {
 

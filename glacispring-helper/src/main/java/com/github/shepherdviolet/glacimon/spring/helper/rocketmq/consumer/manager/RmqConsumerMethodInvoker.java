@@ -25,7 +25,7 @@ import org.apache.rocketmq.common.message.MessageExt;
  * RocketMQ 消费方法调用器:
  * 预处理消息, 调用绑定的消费方法(注解标记的方法)
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface RmqConsumerMethodInvoker {
 

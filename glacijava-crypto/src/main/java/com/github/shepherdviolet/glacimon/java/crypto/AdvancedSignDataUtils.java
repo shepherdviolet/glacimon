@@ -46,7 +46,7 @@ import java.util.Collection;
 /**
  * 签名数据工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class AdvancedSignDataUtils {
 
@@ -160,7 +160,7 @@ public class AdvancedSignDataUtils {
     /**
      * JDK格式的签名数据
      *
-     * @author S.Violet
+     * @author shepherdviolet
      */
     public static class JdkSignedData {
 

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Logback帮助类, 依赖: ch.qos.logback:logback-classic
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class LogbackHelper {
 

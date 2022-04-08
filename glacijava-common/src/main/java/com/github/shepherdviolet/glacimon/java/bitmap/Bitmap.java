@@ -26,7 +26,7 @@ import java.io.Closeable;
  *
  * <p>Bitmap能够精确的判断一个元素是否在集合中存在, 但元素的主键必须为不重复的数字, 且数字有界. </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface Bitmap extends Closeable, AutoCloseable {
 

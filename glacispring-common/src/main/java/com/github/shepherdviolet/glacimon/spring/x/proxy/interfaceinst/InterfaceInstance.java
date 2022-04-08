@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 
 /**
  * <p>声明该接口需要被实例化</p>
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

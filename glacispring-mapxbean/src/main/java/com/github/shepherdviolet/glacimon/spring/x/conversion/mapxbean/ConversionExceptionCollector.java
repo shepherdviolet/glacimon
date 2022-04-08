@@ -24,7 +24,7 @@ package com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean;
  * Only valid when throwExceptionIfFails = false (that is, "error skip" mode).
  * Used to collect exceptions that were ignored during the conversion process (can be used to print logs and troubleshooting).
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public interface ConversionExceptionCollector {

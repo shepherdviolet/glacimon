@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.api.interfaces;
 /**
  * Implements this interface to print logs, and add VM option -Dglacimonspi.conf.custom.logger to specify implementation class
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface SpiLogger {
 

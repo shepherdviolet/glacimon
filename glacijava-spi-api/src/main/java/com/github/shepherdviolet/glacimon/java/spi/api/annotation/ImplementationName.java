@@ -24,7 +24,7 @@ import java.lang.annotation.*;
 /**
  * Marked on the implementation class, specifying the name. Only for multiple-service mode.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

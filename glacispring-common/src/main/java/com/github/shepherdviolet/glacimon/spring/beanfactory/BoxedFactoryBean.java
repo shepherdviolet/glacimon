@@ -24,7 +24,7 @@ import org.springframework.beans.factory.FactoryBean;
 /**
  * [FactoryBean]用于将已经实例化好的Bean对象注册到spring context中
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class BoxedFactoryBean implements FactoryBean {
 

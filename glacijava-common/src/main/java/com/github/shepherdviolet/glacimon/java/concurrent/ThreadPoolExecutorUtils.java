@@ -44,7 +44,7 @@ import java.util.concurrent.*;
  * --6.2.因此, 一般maximumPoolSize >= corePoolSize.<br>
  * </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ThreadPoolExecutorUtils {
 

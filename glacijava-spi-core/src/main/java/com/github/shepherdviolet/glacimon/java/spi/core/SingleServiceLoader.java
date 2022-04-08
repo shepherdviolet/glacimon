@@ -42,7 +42,7 @@ import static com.github.shepherdviolet.glacimon.java.spi.core.Constants.*;
  * single-service mode is used when only one service implementation is required.</p>
  *
  * @param <T> Interface of service
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SingleServiceLoader<T> implements Closeable {
 

@@ -56,7 +56,7 @@ import java.util.LinkedList;
  * <p>slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
  * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class TxTimer {
 

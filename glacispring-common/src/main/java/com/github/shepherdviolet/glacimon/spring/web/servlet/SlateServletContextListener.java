@@ -65,7 +65,7 @@ import javax.servlet.ServletContextListener;
  *  }
  * }</pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  *
  */
 public class SlateServletContextListener implements ServletContextListener {

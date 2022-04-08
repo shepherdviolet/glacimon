@@ -32,7 +32,7 @@ import java.util.List;
  * <p>例如: C=BE,O=GlobalSign nv-sa,OU=Root CA,CN=GlobalSign Root CA</p>
  * <p>获取: CN 为 GlobalSign Root CA</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class X500NameWrapper {
 

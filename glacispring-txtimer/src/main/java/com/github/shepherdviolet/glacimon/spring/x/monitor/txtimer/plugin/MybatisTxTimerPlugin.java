@@ -48,7 +48,7 @@ import java.util.Properties;
  * </configuration>
  * }</pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Intercepts({
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),

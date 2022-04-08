@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>1.Linking the three steps (onStart / onException / onFinish) with id</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public abstract class BaseConversionExceptionCollector implements ConversionExceptionCollector {

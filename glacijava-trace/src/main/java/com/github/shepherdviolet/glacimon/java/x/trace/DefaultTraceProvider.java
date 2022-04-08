@@ -34,7 +34,7 @@ import java.util.Map;
  *     2.如果应用依赖SLF4J, 追踪号还会存入MDC, KEY为{@value Trace#TRACE_ID_KEY}, 可以打印在日志中. <br>
  * </p>
  *
- * @author zhuqinchao
+ * @author shepherdviolet
  */
 public class DefaultTraceProvider implements TraceProvider {
 

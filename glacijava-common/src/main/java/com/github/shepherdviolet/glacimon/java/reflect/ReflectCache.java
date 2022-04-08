@@ -30,7 +30,7 @@ import com.github.shepherdviolet.glacimon.java.cache.LruCache;
  *
  * <p>其实JDK已经实现了反射对象的缓存, 正常使用反射也没问题</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 
 public class ReflectCache {

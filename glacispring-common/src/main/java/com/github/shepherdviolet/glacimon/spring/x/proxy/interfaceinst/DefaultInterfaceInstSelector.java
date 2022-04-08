@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * <p>默认的ImportSelector, 配合EnableInterfaceInstantiation注解开启功能</p>
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DefaultInterfaceInstSelector extends InterfaceInstSelector {
 

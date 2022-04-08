@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic;
 /**
  * 请求报文体JavaBean转换成byte[]失败
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RequestConvertException extends RequestBuildException {
 

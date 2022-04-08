@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.spring.x.proxy.interfaceinst;
 
 /**
  * <p>接口实例化器</p>
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface InterfaceInstantiator {
 

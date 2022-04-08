@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 /**
  * <p>Spring CGLIB 代理工具</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SpringCglibUtils {
 

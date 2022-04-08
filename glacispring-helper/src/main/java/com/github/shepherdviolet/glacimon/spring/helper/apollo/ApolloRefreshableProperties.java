@@ -38,7 +38,7 @@ import java.util.Set;
  * <p>[Spring Bean] 根据Apollo配置中心动态更新内容的参数集合, 必须声明为Spring Bean才有效</p>
  * <p>依赖com.ctrip.framework.apollo:apollo-client</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ApolloRefreshableProperties implements InitializingBean {
 

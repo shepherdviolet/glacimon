@@ -35,7 +35,7 @@ import java.util.List;
  * 2.实现hostname与subjectAlternativeNames的匹配
  * 3.支持通配符域名(*)
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SimpleHostnameVerifier implements HostnameVerifier {
 

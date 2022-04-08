@@ -61,7 +61,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 变量实例可能在下一次系统GC时销毁, 若变量被其他对象强引用, 则不会被GC
  * </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ParasiticVars {
 

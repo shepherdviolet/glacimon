@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic;
 /**
  * 数据转换器(JavaBean -> JSON byte[])
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface DataConverter {
 

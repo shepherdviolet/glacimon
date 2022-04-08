@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.x.trace;
 /**
  * 本地追踪号提供器
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class LocalTraceIdProvider extends TraceIdProvider {
 

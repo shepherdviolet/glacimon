@@ -24,7 +24,7 @@ package com.github.shepherdviolet.glacimon.java.collect;
  * @param <K> key类型
  * @param <V> value类型
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class KeyValue <K, V> {
 

@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * JetCache的Lettuce方式原生是异步的, 性能好, 但对于对JetCache不了解的人, 如果拿JetCache去存一致性要求的数据时,
  * 会因为异步发生问题, 因此这个CacheBuilder牺牲性能, 将Redis操作改为同步, 依赖: com.alicp.jetcache:jetcache-starter-redis-lettuce
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SyncRedisLettuceCacheBuilder extends RedisLettuceCacheBuilder<SyncRedisLettuceCacheBuilder> {
 

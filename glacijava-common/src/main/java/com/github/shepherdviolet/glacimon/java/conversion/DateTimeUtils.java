@@ -28,7 +28,7 @@ import java.util.TimeZone;
 /**
  * Date time utils (JDK7)
  * 
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DateTimeUtils {
 

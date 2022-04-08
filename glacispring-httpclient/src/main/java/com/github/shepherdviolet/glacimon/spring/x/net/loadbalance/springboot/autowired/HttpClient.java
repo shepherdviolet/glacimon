@@ -24,7 +24,7 @@ import java.lang.annotation.*;
 /**
  * <p>HttpClient注入专用注解</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

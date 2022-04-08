@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 /**
  * JAVA运行环境信息
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class PlatformUtils {
 

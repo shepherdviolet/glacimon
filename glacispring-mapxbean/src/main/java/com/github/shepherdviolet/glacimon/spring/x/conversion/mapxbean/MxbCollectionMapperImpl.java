@@ -34,7 +34,7 @@ import java.util.*;
  * <p>Purpose: Determine whether it is a collection to collection scenes, and then implement collection conversion logic.
  * Notice that Map is collection here</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class MxbCollectionMapperImpl implements MxbCollectionMapper {

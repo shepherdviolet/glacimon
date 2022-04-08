@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance;
 
 /**
  * 负载均衡--网络状态探测器
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface LoadBalanceInspector {
 

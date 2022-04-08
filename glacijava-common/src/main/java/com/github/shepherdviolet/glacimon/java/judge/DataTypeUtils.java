@@ -30,7 +30,7 @@ import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 /**
  * 数据类型判断工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DataTypeUtils {
 

@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 /**
  * Test for class SingleServiceLoader
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DefinitionLoaderTest extends AbstractTest {
 

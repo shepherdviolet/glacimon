@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.throwable;
 /**
  * 方法参数非法
  * 
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class IllegalParamException extends Exception {
 

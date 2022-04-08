@@ -39,7 +39,7 @@ import java.util.Arrays;
 /**
  * MultiHostOkHttpClient专用工具: 自定义SSL方式
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SslUtils {
 

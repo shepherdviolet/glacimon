@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * 网络工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class NetworkUtils {
 

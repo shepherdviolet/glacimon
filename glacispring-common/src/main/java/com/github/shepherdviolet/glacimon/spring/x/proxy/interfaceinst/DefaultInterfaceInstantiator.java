@@ -23,7 +23,7 @@ import com.github.shepherdviolet.glacimon.spring.proxy.SpringCglibUtils;
 
 /**
  * <p>接口实例化的默认实现, CGLib</p>
- * @author S.Violet
+ * @author shepherdviolet
  */
 public final class DefaultInterfaceInstantiator implements InterfaceInstantiator {
     @Override

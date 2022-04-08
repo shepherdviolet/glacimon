@@ -74,7 +74,7 @@ import java.io.Closeable;
  * }</pre>
  *
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MultiHostOkHttpClient
  *
  */

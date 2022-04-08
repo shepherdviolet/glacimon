@@ -40,7 +40,7 @@ import java.nio.ByteBuffer;
  *
  * @see Bitmap
  * @see BloomBitmap
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DirectBitmap extends AbstractBitmap {
 

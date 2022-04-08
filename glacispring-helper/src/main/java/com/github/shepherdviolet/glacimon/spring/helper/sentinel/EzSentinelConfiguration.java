@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * 依赖: compile "com.google.code.gson:gson:$version_gson"
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 public class EzSentinelConfiguration {

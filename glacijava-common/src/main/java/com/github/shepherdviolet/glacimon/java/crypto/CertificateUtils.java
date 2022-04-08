@@ -30,7 +30,7 @@ import java.security.cert.*;
  *
  * <p>更多功能见thistle-crypto-plus的AdvancedCertificateUtils</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class CertificateUtils {
 

@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer;
 /**
  * 等同于RocketMQ的ConsumeFromWhere, 选择消息从队列头还是队列尾开始消费
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public enum ConsumeWay {
 

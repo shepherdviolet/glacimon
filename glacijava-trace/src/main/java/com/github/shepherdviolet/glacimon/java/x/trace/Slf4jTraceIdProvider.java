@@ -24,7 +24,7 @@ import org.slf4j.MDC;
 /**
  * MDC追踪号提供器
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class Slf4jTraceIdProvider extends LocalTraceIdProvider {
 

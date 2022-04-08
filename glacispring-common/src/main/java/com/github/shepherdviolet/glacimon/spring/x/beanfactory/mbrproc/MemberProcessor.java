@@ -79,7 +79,7 @@ import java.lang.reflect.Method;
  *  }
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface MemberProcessor<AnnotationType extends Annotation> {
 

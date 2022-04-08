@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  * we will build a proxy for the service instance. When the unimplemented method is invoked, the invocation will be handled
  * by {@link CompatibleApproach}.</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface CompatibleApproach {
 

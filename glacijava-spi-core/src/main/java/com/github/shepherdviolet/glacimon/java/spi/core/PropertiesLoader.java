@@ -32,7 +32,7 @@ import static com.github.shepherdviolet.glacimon.java.spi.core.Constants.*;
 /**
  * loading PropertiesInjector from classpath
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class PropertiesLoader {
 

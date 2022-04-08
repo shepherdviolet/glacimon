@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Inject properties to service instance
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class PropertiesInjector {
 

@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.conversion;
 /**
  * Hash算法工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class HashUtils {
 

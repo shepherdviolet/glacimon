@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean;
 /**
  * MapXBean conversion exception
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class ConversionRuntimeException extends RuntimeException {

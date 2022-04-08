@@ -31,7 +31,7 @@ import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 /**
  * 挂起当前线程等待异步线程的结果
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class AsyncWaiter <T> implements Closeable, Destroyable {
 

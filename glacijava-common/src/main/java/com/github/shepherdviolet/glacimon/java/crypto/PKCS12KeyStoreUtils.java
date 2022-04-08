@@ -50,7 +50,7 @@ import java.util.List;
  *     keytool -importkeystore -srckeystore name.jks -destkeystore name.p12 -deststoretype pkcs12
  * </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class PKCS12KeyStoreUtils {
 

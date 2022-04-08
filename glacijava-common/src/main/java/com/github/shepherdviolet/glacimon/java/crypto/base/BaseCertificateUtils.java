@@ -29,7 +29,7 @@ import java.security.cert.*;
  *
  * 不建议直接使用<p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class BaseCertificateUtils {
 

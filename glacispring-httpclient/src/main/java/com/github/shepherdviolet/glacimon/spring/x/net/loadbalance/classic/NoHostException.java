@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic;
 /**
  * 当前没有可发送的后端(网络请求发送前的异常, 准备阶段异常)
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class NoHostException extends Exception {
 

@@ -30,7 +30,7 @@ import static com.github.shepherdviolet.glacimon.java.x.trace.Trace.TRACE_ID_KEY
 /**
  * 追踪接力信息, 用于从一个线程携带到另一个线程, 或从一个进程携带到另一个进程
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class TraceBaton implements Serializable {
 

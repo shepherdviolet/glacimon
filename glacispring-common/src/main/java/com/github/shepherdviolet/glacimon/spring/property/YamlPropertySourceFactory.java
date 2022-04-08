@@ -40,7 +40,7 @@ import java.util.List;
  * })
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class YamlPropertySourceFactory implements PropertySourceFactory {
 

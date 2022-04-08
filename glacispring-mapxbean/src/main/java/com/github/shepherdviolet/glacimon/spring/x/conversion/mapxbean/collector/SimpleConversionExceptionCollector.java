@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>1.Print ignored exceptions after conversion by slf4j, you can override "onLog" method</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class SimpleConversionExceptionCollector extends BaseConversionExceptionCollector {

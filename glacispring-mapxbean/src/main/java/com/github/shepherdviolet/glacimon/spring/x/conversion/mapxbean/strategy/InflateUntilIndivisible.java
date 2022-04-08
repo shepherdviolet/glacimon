@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * as the method {@link BeanToMapInflateStrategy#needToBeInflated} returns true. The process of converting property
  * (or element) to Map is called 'Inflate'.</p><br>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  * @see BeanToMapInflateStrategy
  */

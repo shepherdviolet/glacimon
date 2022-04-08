@@ -33,7 +33,7 @@ import java.io.UnsupportedEncodingException;
  *
  * <p>Cipher/Signature/MessageDigest线程不安全!!!</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SM3DigestCipher {
 

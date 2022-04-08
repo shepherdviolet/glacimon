@@ -30,7 +30,7 @@ import java.security.spec.ECFieldFp;
  * SM2官方推荐椭圆曲线参数sm2p256v1,
  * 通讯双方必须使用相同的椭圆曲线
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SM2DefaultCurve {
 

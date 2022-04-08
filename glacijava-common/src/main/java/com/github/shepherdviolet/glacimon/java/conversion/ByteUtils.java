@@ -32,7 +32,7 @@ import java.nio.charset.Charset;
 /**
  * Byte处理工具
  * 
- * @author S.Violet
+ * @author shepherdviolet
  */
 
 public class ByteUtils {

@@ -34,7 +34,7 @@ import java.util.List;
  *
  * <p>Purpose: Provide type mappers to MxbTypeMapperCenter. Globally. </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class MxbTypeMapperProviderImpl implements MxbTypeMapperProvider, InitializableImplementation {

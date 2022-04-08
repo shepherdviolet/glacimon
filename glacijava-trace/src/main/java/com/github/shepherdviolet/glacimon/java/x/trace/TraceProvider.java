@@ -30,7 +30,7 @@ import java.util.Map;
  * [GlacimonSpi扩展点]全局追踪实现接口.
  * 默认实现: DefaultTraceProvider.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @SingleServiceInterface
 public interface TraceProvider {

@@ -32,7 +32,7 @@ import java.net.URL;
  *
  * <p>依赖: compile "com.google.code.gson:gson:$version_gson"</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class JsonEzSentinelRuleConfigurer extends AbstractEzSentinelRuleConfigurer<String> {
 

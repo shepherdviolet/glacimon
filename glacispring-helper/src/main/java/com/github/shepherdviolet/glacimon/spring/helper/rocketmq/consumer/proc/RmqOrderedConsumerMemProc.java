@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
 /**
  * 处理Bean方法上的RocketMqOrderedConsumer注解
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RmqOrderedConsumerMemProc implements MemberProcessor<RocketMqOrderedConsumer> {
 

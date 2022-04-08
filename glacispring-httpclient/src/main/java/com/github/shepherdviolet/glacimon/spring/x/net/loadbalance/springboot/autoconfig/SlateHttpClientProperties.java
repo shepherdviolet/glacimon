@@ -24,7 +24,7 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.a
  *
  * <p>配置前缀: slate.httpclient</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SlateHttpClientProperties {
 

@@ -26,7 +26,7 @@ import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.TxTimerProvid
 /**
  * 与TxTimer关联点
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class NoRefTxTimerImpl implements NoRefTxTimer {
 

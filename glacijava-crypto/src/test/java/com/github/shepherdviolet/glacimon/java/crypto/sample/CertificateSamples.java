@@ -53,7 +53,7 @@ import java.util.Date;
 /**
  * 一些证书相关的示例
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class CertificateSamples {
 

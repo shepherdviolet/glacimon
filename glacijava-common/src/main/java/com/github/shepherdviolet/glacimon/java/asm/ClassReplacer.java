@@ -45,7 +45,7 @@ import java.io.InputStream;
  * <p>3.将文件放进Classpath中, 例如: /META-INF/classfiles/类名.classfile</p>
  * <p>4.在应用启动后第一时间调用: ClassReplacer.replace("META-INF/classfiles/类名.classfile");</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ClassReplacer {
 

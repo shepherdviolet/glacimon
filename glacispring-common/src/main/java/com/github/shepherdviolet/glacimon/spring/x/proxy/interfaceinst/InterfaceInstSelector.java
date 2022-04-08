@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * <p>ImportSelector</p>
- * @author S.Violet
+ * @author shepherdviolet
  */
 public abstract class InterfaceInstSelector implements ImportSelector {
 

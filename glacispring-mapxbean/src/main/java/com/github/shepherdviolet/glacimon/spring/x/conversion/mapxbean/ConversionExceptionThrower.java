@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean;
 /**
  * Used to throw exceptions in a sub processor
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public interface ConversionExceptionThrower {

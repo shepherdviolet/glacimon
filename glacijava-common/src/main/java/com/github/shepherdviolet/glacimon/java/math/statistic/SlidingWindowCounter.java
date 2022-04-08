@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *     3.如果需要统计多种时间尺度, 比如最近10秒和最近5分钟, 建议: new SlidingWindowCounter(10000, 30), getRecently(10000), getTotally() <br>
  * </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SlidingWindowCounter {
 

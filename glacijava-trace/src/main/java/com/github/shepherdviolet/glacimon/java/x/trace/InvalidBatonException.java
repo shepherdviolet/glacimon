@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.x.trace;
 /**
  * 无效的接力数据
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class InvalidBatonException extends Exception {
 

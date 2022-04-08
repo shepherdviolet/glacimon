@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * 流水号格式化工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SequenceFormatter {
 

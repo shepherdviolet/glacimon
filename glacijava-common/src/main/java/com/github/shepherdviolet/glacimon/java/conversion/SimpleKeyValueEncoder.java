@@ -41,7 +41,7 @@ import java.util.Map;
  *     key3=value3
  * </code></pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SimpleKeyValueEncoder {
 

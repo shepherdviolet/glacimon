@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * If the value of this flag becomes true, it means that the corresponding service-loader has been closed
  * (has been uninstalled).
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface CloseableImplementation {
 

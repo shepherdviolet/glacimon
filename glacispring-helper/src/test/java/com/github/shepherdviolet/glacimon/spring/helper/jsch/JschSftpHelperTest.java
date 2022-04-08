@@ -32,7 +32,7 @@ import java.util.Vector;
  * <p>需要准备一个开启了SFTP关闭了防火墙的linux服务器, 在下面程序中配置IP/端口/用户名/密码, 在下面程序中配置需要ls的路径,
  * 配置需要上传的文件和目标路径, 配置需要下载的文件和目标路径.</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class JschSftpHelperTest {
 

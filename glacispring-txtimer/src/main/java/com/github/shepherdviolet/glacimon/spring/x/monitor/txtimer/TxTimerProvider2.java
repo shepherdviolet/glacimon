@@ -29,7 +29,7 @@ import com.github.shepherdviolet.glacimon.java.spi.api.annotation.SingleServiceI
  * <p>使用扩展点之前, 请先仔细阅读文档: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md</p>
  *
  * @see TxTimer
- * @author S.Violet
+ * @author shepherdviolet
  */
 @SingleServiceInterface
 public interface TxTimerProvider2 {

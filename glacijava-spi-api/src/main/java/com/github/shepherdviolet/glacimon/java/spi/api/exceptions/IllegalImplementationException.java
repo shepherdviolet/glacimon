@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.api.exceptions;
 /**
  * GlacimonSpi: Illegal implementation class
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class IllegalImplementationException extends RuntimeException {
 

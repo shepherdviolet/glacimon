@@ -46,7 +46,7 @@ import java.util.List;
  *
  * <p>基本功能见thistle-common的{@link CertificateUtils}</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class AdvancedCertificateUtils extends CertificateUtils {
 

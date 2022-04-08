@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * 提供验证所需的证书颁发者. 简单实现, 从指定的集合中查找证书颁发者(包括根证书和中间CA)
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SimpleIssuerProvider implements IssuerProvider<Object> {
 

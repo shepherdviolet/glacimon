@@ -34,7 +34,7 @@ import java.lang.reflect.Field;
  * <p><code>@EnableAspectJAutoProxy(proxyTargetClass = true)</code></p>
  * <p><code>@EnableTransactionManagement(proxyTargetClass = true)</code></p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SpringAopUtils {
 

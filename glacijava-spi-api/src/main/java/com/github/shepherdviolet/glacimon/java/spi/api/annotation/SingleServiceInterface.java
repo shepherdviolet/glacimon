@@ -24,7 +24,7 @@ import java.lang.annotation.*;
 /**
  * Marked on the service interface class. Indicates that this service is single-service mode.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

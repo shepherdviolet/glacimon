@@ -73,7 +73,7 @@ import com.jcraft.jsch.Session;
  *
  * }</pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class JschSftpHelper {
 

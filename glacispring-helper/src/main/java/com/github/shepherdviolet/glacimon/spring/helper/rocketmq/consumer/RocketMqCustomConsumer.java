@@ -50,7 +50,7 @@ import java.lang.annotation.*;
  *     }
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
  *
  * @see Bitmap
  * @see BloomBitmap
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ConcurrentHeapBitmap extends AbstractBitmap {
 

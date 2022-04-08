@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Import;
 /**
  * <p>slate-common 自动配置</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 @EnableConfigurationProperties

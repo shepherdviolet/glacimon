@@ -23,7 +23,7 @@ import com.github.shepherdviolet.glacimon.java.math.MathUtils;
 
 /**
  * 经纬度工具
- * @author S.Violet
+ * @author shepherdviolet
  */
 
 public class LatLonUtils {

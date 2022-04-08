@@ -31,7 +31,7 @@ import java.security.spec.InvalidKeySpecException;
 
 /**
  * ECDSA秘钥生成工具
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ECDSAKeyGenerator {
 

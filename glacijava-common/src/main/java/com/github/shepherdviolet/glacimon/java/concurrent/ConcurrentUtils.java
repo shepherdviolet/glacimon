@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * 并发工具<p/>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ConcurrentUtils {
 

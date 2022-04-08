@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  *     3.增加参数: slate.common.ez-sentinel.rule-data, 设置限流熔断规则. <br>
  * </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

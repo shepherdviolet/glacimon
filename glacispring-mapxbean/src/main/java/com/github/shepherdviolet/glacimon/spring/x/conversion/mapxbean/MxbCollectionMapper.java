@@ -31,7 +31,7 @@ import java.lang.reflect.Type;
  *
  * <p>GlacimonSpi Extension point. Doc: https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  * @see MxbCollectionMapperImpl
  */

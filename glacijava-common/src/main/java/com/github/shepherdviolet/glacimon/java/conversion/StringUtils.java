@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * 字符串工具
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class StringUtils {
 

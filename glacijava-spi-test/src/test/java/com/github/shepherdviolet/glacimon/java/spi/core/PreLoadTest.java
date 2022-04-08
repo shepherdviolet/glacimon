@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test for class PreLoader
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class PreLoadTest extends AbstractTest {
 

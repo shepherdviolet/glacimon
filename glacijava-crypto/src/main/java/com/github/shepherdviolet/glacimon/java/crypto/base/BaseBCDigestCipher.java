@@ -34,7 +34,7 @@ import java.io.InputStream;
  *
  * Cipher/Signature/MessageDigest线程不安全!!!<p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class BaseBCDigestCipher {
 

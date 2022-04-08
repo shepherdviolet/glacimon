@@ -26,7 +26,7 @@ import java.security.SecureRandom;
 /**
  * 安全随机数工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SecureRandomUtils {
 

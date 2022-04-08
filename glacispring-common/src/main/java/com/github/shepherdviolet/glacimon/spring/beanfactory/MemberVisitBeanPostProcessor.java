@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
 /**
  * [BeanPostProcessor]对每个Bean的成员进行访问
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public abstract class MemberVisitBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
 

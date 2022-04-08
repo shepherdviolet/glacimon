@@ -39,7 +39,7 @@ package com.github.shepherdviolet.glacimon.java.concurrent.lock;
  *     }
  * </code>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class UnsafeHashSpinLocks extends AbstractHashLocks<UnsafeSpinLock> {
 

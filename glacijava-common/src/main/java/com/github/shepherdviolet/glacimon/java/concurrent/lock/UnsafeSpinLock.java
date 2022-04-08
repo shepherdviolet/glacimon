@@ -43,7 +43,7 @@ import java.util.concurrent.locks.Lock;
  *     }
  * </code>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class UnsafeSpinLock implements Lock {
 

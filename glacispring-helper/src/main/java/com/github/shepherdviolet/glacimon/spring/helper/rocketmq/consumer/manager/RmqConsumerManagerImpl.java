@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * RocketMQ Consumer管理器:
  * 创建Consumer, 与指定方法绑定, 实现消息处理和方法调用逻辑
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RmqConsumerManagerImpl implements RmqConsumerManager, ApplicationContextAware {
 

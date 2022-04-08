@@ -32,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 3.增加"移除所有等于指定对象的元素"方法<br/>
  * 4.元素意外移除监听<br/>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class EnhancedLinkedBlockingDeque<E> extends Jdk8LinkedBlockingDeque<E> {
 

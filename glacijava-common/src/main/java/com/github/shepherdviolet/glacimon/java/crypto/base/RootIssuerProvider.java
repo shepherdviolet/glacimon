@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * 提供验证所需的证书颁发者. 可选实现, 中间CA允许客户端上送(issuerProviderParameter), 但根证书必须由服务端限定.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RootIssuerProvider implements IssuerProvider<List<? extends X509Certificate>> {
 

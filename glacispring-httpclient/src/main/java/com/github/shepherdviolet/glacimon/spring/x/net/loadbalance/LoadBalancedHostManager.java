@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *              });
  * }</pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class LoadBalancedHostManager {
 

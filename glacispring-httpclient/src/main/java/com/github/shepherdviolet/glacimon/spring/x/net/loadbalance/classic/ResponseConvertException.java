@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * byte[]转换成响应报文体JavaBean失败
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ResponseConvertException extends IOException {
 

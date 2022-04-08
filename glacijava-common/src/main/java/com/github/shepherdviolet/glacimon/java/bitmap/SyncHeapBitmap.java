@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @see Bitmap
  * @see BloomBitmap
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SyncHeapBitmap extends HeapBitmap {
 

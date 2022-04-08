@@ -26,7 +26,7 @@ import java.util.Properties;
 /**
  * 先从系统参数(启动参数)中取值, 若取值失败(不存在或解析失败), 从内置的Properties中取值, 若取值失败(不存在或解析失败), 返回默认值
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SysPropFirstProperties {
 

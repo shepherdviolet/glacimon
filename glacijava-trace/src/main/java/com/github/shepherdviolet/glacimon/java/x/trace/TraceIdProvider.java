@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.x.trace;
 /**
  * 追踪号提供器, 用于隔离不同实现, 不作为扩展点
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 abstract class TraceIdProvider {
 

@@ -38,7 +38,7 @@ import com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.strategy.
  * as the method {@link BeanToMapInflateStrategy#needToBeInflated} returns true. The process of converting property
  * (or element) to Map is called 'Inflate'.</p><br>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  * @see BeanToMapConverterImpl
  * @see InflateUntilIndivisible

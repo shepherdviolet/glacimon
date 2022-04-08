@@ -28,7 +28,7 @@ import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 /**
  * GSON数据转换器
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class GsonDataConverter implements DataConverter {
 

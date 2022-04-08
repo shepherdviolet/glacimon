@@ -46,7 +46,7 @@ import static com.alibaba.csp.sentinel.slots.block.RuleConstant.*;
  * 失败原因的.</p>
  *
  * @param <T> 规则数据类型
- * @author S.Violet
+ * @author shepherdviolet
  */
 public abstract class AbstractEzSentinelRuleConfigurer<T> implements EzSentinelRuleConfigurer<T> {
 

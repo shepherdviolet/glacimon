@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Loading interfaces defined in META-INF/glacimonspi/interfaces
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class InterfaceLoader {
 

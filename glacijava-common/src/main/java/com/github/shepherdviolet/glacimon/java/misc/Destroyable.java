@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.misc;
 /**
  * 可销毁对象, 销毁监听器
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface Destroyable {
 

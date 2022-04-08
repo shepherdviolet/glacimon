@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * 字符串占位符处理工具, 依赖spring-core
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class StringPlaceHolderUtils {
 

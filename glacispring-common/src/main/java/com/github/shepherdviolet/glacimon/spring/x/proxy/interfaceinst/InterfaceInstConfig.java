@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Role;
 
 /**
  * <p>配置类</p>
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 public class InterfaceInstConfig {

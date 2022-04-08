@@ -62,7 +62,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *      inspectManager.close();
  * }</pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class LoadBalancedInspectManager implements Closeable {
 

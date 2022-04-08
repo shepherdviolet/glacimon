@@ -27,7 +27,7 @@ import java.util.Base64;
 /**
  * Base64工具<br/>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class Base64Utils {
 

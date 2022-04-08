@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  *      .getResultData();
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DefaultTxTimerReportScanner {
 

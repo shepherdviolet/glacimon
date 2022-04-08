@@ -37,7 +37,7 @@ import java.security.spec.InvalidKeySpecException;
  * <p>HexString转BigInteger: new BigInteger(string, 16)</p>
  * <p>byte[]转BigInteger: new BigInteger(bytes), 有时头部没0x00变负数, 试试new BigInteger(ByteUtils.bytesToHex(bytes), 16)</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RSAKeyGenerator {
 

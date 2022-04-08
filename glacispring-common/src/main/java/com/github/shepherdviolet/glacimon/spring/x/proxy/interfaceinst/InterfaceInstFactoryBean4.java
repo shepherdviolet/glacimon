@@ -26,7 +26,7 @@ import org.springframework.beans.factory.FactoryBean;
  *
  * <p>FactoryBean, 适配低版本</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class InterfaceInstFactoryBean4<T> implements FactoryBean<T> {
 

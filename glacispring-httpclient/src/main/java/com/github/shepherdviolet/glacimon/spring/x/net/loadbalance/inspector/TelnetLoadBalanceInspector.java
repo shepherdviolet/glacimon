@@ -29,7 +29,7 @@ import java.net.URI;
 /**
  * 负载均衡--模拟TELNET方式探测网络状况
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class TelnetLoadBalanceInspector implements LoadBalanceInspector {
 

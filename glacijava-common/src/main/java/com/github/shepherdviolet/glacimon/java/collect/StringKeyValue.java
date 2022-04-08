@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.collect;
 /**
  * String键值对
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class StringKeyValue extends KeyValue<String, String> {
 

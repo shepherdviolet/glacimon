@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * CloseableConcurrentHashMap
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class CloseableConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> implements Closeable {
 

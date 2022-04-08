@@ -48,7 +48,7 @@ import java.util.Set;
  *
  * <p>核心逻辑, 适配低版本</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class InterfaceInstBeanDefRegistry4 implements BeanDefinitionRegistryPostProcessor, PriorityOrdered {
 

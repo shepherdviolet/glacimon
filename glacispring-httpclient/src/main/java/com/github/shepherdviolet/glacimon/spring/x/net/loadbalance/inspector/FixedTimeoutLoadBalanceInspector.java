@@ -26,7 +26,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceIn
  * 如果主动探测器无法在探测时实时指定超时时间, 可以实现该接口, 探测管理器会在自身探测间隔变化时, 调用setTimeout方法修改主动探测器
  * 的超时时间
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface FixedTimeoutLoadBalanceInspector extends LoadBalanceInspector {
 

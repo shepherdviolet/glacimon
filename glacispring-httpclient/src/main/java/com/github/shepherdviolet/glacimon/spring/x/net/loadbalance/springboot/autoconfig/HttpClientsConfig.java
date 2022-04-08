@@ -38,7 +38,7 @@ import java.util.Map;
  * <p>HttpClients配置: 自动配置SimpleOkHttpClient</p>
  * <p>配置前缀: slate.httpclients</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 @ConditionalOnExpression("${slate.httpclient.enabled:false}")

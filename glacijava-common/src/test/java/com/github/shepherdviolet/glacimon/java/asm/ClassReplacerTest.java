@@ -28,7 +28,7 @@ import java.io.IOException;
 /**
  * 类的字节码替换测试
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ClassReplacerTest {
 

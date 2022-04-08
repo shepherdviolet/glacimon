@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 /**
  * <p>实现用@HttpClient注解注入客户端</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class HttpClientMemberProcessor implements MemberProcessor<HttpClient> {
 

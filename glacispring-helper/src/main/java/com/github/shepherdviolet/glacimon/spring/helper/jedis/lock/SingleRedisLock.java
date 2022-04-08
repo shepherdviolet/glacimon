@@ -70,7 +70,7 @@ import java.util.UUID;
  *      }
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SingleRedisLock {
 

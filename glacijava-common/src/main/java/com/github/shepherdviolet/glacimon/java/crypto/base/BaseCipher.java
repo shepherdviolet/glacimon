@@ -44,7 +44,7 @@ import java.security.interfaces.RSAPublicKey;
  *
  * Cipher/Signature/MessageDigest线程不安全!!!<p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 // About suppressed warnings: It's a util, the algorithm type should not be restricted
 @SuppressWarnings({"lgtm[java/weak-cryptographic-algorithm]"})

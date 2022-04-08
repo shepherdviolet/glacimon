@@ -28,7 +28,7 @@ package com.github.shepherdviolet.glacimon.java.conversion;
  *
  * <p>根据JavaBean的方法名转化为参数名</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class BeanMethodNameUtils {
 

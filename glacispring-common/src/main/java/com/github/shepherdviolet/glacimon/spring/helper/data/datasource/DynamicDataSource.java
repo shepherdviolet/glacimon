@@ -92,7 +92,7 @@ import java.util.Map;
  *     DynamicDataSource.selectDataSource("dataSource2");
  * </pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
 

@@ -59,7 +59,7 @@ import java.security.spec.X509EncodedKeySpec;
  * <p>
  * 不建议直接使用<p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class BaseBCAsymKeyGenerator {
 

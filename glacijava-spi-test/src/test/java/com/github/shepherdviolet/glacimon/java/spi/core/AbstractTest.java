@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract test
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public abstract class AbstractTest {
 

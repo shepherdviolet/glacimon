@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.conversion;
 /**
  * 基本类型转换工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class PrimitiveUtils {
 

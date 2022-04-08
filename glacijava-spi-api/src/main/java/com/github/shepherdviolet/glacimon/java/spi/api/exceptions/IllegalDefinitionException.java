@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.api.exceptions;
 /**
  * GlacimonSpi: Illegal definition in file
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class IllegalDefinitionException extends RuntimeException {
 

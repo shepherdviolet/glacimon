@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * 简易的反射取值工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ReflectGetter {
 

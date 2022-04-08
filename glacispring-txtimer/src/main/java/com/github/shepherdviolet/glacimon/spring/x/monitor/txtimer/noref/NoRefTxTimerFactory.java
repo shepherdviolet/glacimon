@@ -30,7 +30,7 @@ import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.TxTimerProvid
  * <p>本工厂类和NoRefTxTimer类对TxTimer无直接类引用, 用于类库和框架层, 可以由用户选择是否开启TxTimer, 若不开启, 则不会初始化
  * TxTimer类, 减少无用的对象创建.</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class NoRefTxTimerFactory {
 

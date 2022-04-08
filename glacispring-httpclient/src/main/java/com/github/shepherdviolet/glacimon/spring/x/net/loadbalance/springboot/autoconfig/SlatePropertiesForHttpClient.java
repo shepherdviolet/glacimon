@@ -27,7 +27,7 @@ import java.util.Map;
  * <p>slate-http-client 配置</p>
  * <p>配置前缀: slate.httpclient slate.httpclients</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @ConfigurationProperties(prefix = "slate")
 public class SlatePropertiesForHttpClient {

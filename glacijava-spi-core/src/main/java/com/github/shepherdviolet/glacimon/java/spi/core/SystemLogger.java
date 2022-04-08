@@ -28,7 +28,7 @@ import java.util.Locale;
 /**
  * Logger for System.out
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class SystemLogger implements SpiLogger {
 

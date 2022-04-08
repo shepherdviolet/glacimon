@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  * The setter method must conform to the JavaBean specification.
  * The method parameter type / field type can be String/boolean/int/long/float/double.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

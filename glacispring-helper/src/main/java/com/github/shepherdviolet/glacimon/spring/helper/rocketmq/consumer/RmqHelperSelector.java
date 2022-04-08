@@ -26,7 +26,7 @@ import org.springframework.core.type.AnnotationMetadata;
 /**
  * <p>ImportSelector</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RmqHelperSelector implements ImportSelector {
 

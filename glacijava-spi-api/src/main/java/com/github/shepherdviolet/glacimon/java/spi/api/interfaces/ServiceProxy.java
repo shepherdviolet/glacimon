@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.api.interfaces;
 /**
  * If the service instance is proxied, the proxy class will implements this interface.
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface ServiceProxy {
 

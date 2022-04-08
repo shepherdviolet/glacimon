@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Logger for slf4j
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class SlfLogger implements SpiLogger {
 

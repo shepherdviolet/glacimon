@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.java.judge;
 
 /**
  * 用于检查数据的工具
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class CheckUtils {
 

@@ -29,7 +29,7 @@ import java.util.TreeMap;
  * @param <R> 结果数据类型
  *
  * @see DefaultTxTimerReportScanner
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface DefaultTxTimerReportRepository <R> {
 

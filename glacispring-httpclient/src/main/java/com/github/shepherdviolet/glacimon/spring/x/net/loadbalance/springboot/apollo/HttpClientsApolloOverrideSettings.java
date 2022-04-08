@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * 将Apollo客户端的Config对象包装成HttpClients.OverrideSettings, 用来实现Apollo配置中心动态调整客户端配置, 用法见文档
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class HttpClientsApolloOverrideSettings implements HttpClients.OverrideSettings {
 

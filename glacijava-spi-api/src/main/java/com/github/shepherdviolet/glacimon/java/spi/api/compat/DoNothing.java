@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
  *
  * <p>Do nothing and return null if the method invoked</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DoNothing implements CompatibleApproach {
 

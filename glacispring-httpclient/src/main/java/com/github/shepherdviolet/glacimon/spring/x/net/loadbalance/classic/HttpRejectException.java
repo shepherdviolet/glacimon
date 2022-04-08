@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic;
 /**
  * Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class HttpRejectException extends Exception {
 

@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test for class SingleServiceLoader
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class SingleServiceLoaderTest extends AbstractTest {
 

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * 文件工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class FileUtils {
 

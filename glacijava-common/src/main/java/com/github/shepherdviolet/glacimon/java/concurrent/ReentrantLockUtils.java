@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * <p>ReentrantLock工具</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class ReentrantLockUtils {
 

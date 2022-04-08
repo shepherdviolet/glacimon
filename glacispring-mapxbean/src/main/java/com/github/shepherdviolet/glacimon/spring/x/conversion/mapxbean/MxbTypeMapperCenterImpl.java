@@ -33,7 +33,7 @@ import java.util.*;
  *
  * <p>Purpose: Mapping type to type with MxbTypeMapper (provided from MxbTypeMapperProvider)</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  * @see MapXBean
  */
 public class MxbTypeMapperCenterImpl implements MxbTypeMapperCenter, InitializableImplementation {

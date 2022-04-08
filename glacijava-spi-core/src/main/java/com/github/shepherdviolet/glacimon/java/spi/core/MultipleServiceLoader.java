@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * multiple-service mode is used to load multiple services (has name and ordered).</p>
  *
  * @param <T> Interface of service
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class MultipleServiceLoader<T> implements Closeable {
 

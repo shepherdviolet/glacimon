@@ -31,7 +31,7 @@ package com.github.shepherdviolet.glacimon.java.bitmap;
  *
  * @see Bitmap
  * @see BloomBitmap
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class HeapBitmap extends AbstractBitmap {
 

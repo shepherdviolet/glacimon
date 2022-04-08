@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  * 1.根据方法参数选择如何调用该方法, 如何预处理消息(类型转换)
  * 2.可以自定义实现该工厂, 扩展类型支持, 或者实现事件拦截
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public interface RmqConsumerMethodInvokerFactory {
 

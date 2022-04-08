@@ -135,7 +135,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * }</pre>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class PurposefulBlockingMessagePool <K, I> {
 

@@ -26,7 +26,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 /**
  * Java启动工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class StartupUtils {
 

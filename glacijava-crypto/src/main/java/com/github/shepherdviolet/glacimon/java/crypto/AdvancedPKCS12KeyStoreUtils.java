@@ -55,7 +55,7 @@ import java.util.List;
  *     certmgr.msc
  * </p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class AdvancedPKCS12KeyStoreUtils extends PKCS12KeyStoreUtils {
 

@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.asm;
 /**
  * 这个类用于被替换字节码
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class TargetClass {
     public String getData(){

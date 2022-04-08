@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>默认交易耗时统计的配置</p>
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class DefaultTxTimerConfig {
 

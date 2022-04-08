@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.core;
 /**
  * Interface definition loaded from file
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 class InterfaceDefinition {
 

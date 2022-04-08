@@ -29,7 +29,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.ap
 /**
  * slate-http-client 自动配置 (Spring Boot)
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 @Configuration
 @EnableConfigurationProperties

@@ -25,7 +25,7 @@ import com.github.shepherdviolet.glacimon.java.throwable.IllegalParamException;
 /**
  * 证书/密钥PEM格式转换工具
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class PEMEncodeUtils {
 

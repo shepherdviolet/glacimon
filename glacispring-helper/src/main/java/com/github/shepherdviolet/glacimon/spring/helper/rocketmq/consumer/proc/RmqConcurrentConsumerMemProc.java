@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
 /**
  * 处理Bean方法上的RocketMqConcurrentConsumer注解
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class RmqConcurrentConsumerMemProc implements MemberProcessor<RocketMqConcurrentConsumer> {
 

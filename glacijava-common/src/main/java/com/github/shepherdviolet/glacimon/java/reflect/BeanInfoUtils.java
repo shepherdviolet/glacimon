@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Bean info utils
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class BeanInfoUtils {
 

@@ -38,7 +38,7 @@ import java.security.interfaces.RSAPublicKey;
 /**
  * 推断一个数据是什么 (密钥/证书)
  *
- * @author S.Violet
+ * @author shepherdviolet
  */
 public class GuessWhoIAm {
 

@@ -19,7 +19,6 @@
 
 package com.github.shepherdviolet.glacimon.java.reflect;
 
-import com.github.shepherdviolet.glacimon.java.reflect.MethodCaller;
 import org.junit.Assert;
 import org.junit.Test;
 

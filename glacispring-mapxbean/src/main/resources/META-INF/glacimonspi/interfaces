@@ -1,7 +1,7 @@
 
 # MapXBean
-sviolet.slate.common.x.conversion.mapxbean.MxbObjectInstantiator
-sviolet.slate.common.x.conversion.mapxbean.MxbTypeMapperProvider
-sviolet.slate.common.x.conversion.mapxbean.MxbTypeMapperCenter
-sviolet.slate.common.x.conversion.mapxbean.MxbCollectionMapper
-sviolet.slate.common.x.conversion.mapxbean.MxbTypeJudger
+com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbObjectInstantiator
+com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeMapperProvider
+com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeMapperCenter
+com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbCollectionMapper
+com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeJudger

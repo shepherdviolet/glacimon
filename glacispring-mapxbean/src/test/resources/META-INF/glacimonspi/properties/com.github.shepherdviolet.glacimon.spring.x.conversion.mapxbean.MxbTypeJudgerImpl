@@ -1,0 +1,6 @@
+
+# MapXBean
+@priority=0
+logEnabled=false
+indivisibleTypes=com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible1,\
+com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.MxbTypeJudgerTest$MyIndivisible2

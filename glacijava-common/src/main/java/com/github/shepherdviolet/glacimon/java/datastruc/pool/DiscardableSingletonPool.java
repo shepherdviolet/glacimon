@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.java.datastruc.pool;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.shepherdviolet.glacimon.java.concurrent.ConcurrentUtils;
+import com.github.shepherdviolet.glacimon.java.datastruc.SnapshotUtils;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
 import java.lang.ref.WeakReference;
@@ -312,7 +312,7 @@ public class DiscardableSingletonPool<InstanceType, CreateParamType> {
      */
     public DiscardableSingletonPool<InstanceType, CreateParamType> discard(BiFunction<InstanceType, InstanceInfo, Boolean> discardOrNot) {
         // 复制镜像
-        Map<String, InstanceHolder<InstanceType>> instances = ConcurrentUtils.getSnapShot(this.instances);
+        Map<String, InstanceHolder<InstanceType>> instances = SnapshotUtils.getSnapShot(this.instances);
         if (instances == null) {
             return this;
         }

@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.java.datastruc.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.shepherdviolet.glacimon.java.concurrent.ConcurrentUtils;
+import com.github.shepherdviolet.glacimon.java.datastruc.SnapshotUtils;
 import com.github.shepherdviolet.glacimon.java.conversion.DateTimeUtils;
 
 import java.util.Map;
@@ -117,7 +117,7 @@ public abstract class ExpirableCache <T> {
      * 强制更新所有缓存, 会阻塞线程等待更新完毕
      */
     public void forceUpdateAll(){
-        Map<String, ElementWrapper<T>> snap = ConcurrentUtils.getSnapShot(map);
+        Map<String, ElementWrapper<T>> snap = SnapshotUtils.getSnapShot(map);
         for (ElementWrapper<T> wrapper : snap.values()){
             forceUpdate(wrapper.key);
         }

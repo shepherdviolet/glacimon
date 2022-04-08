@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.def;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Base64Utils;
-import com.github.shepherdviolet.glacimon.java.concurrent.ConcurrentUtils;
+import com.github.shepherdviolet.glacimon.java.datastruc.SnapshotUtils;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.SecureRandomUtils;
 
@@ -126,10 +126,10 @@ class Reporter {
 
     private void report(long reportStartTime, long reportEndTime, boolean reportAll) {
         //遍历groups
-        Map<String, Group> groupsSnap = ConcurrentUtils.getSnapShot(provider.groups);
+        Map<String, Group> groupsSnap = SnapshotUtils.getSnapShot(provider.groups);
         for (Map.Entry<String, Group> groupEntry : groupsSnap.entrySet()) {
 
-            Map<String, Transaction> transactionsSnap = ConcurrentUtils.getSnapShot(groupEntry.getValue().transactions);
+            Map<String, Transaction> transactionsSnap = SnapshotUtils.getSnapShot(groupEntry.getValue().transactions);
             List<Info> infos = new ArrayList<>(transactionsSnap.size());
 
             //遍历transactions

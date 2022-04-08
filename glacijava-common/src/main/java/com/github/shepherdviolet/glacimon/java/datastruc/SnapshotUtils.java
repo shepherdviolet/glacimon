@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.concurrent;
+package com.github.shepherdviolet.glacimon.java.datastruc;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 并发工具<p/>
+ * 集合快照工具<p/>
  *
  * @author shepherdviolet
  */
-public class ConcurrentUtils {
+public class SnapshotUtils {
 
     /**
      * 复制一个Collection的快照, 防止并发处理时, 发生异常

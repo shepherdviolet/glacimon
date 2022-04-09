@@ -20,8 +20,7 @@
 
 #### SPI
 
-* [GlacimonSpi English Documents](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
-* [GlacimonSpi 中文文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)
+* GlacimonSpi [(English Documents)](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md) [(中文文档)](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)
 
 <br>
 
@@ -92,22 +91,22 @@
 
 > More crypto features (depends on bouncy-castle)
 
-#### [Crypto utils](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
+#### [Crypto advanced utils](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
 
-* SM2 SM3 SM4
+* SM2 SM3 SM4 ... utils
 
 <br>
 
 ## Module: glacijava-trace
 
-[![Depends](https://img.shields.io/badge/Depends-thistle--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/thistle)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
-> The module for tracing
+> Tracing
 
-#### Tracing utils
+#### [Tracing utils]((https://github.com/shepherdviolet/glacimon/blob/master/docs/trace/guide.md))
 
-* [Trace : Help to trace invocation across thread or process](https://github.com/shepherdviolet/thistle/blob/master/docs/trace/guide.md)
+* [Trace : Help to trace invocation across thread or process](https://github.com/shepherdviolet/glacimon/blob/master/docs/trace/guide.md)
 
 <br>
 <br>

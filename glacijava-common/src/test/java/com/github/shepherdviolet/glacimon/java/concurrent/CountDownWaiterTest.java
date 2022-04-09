@@ -19,11 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.concurrent;
 
-import com.github.shepherdviolet.glacimon.java.concurrent.CountDownWaiter;
 import org.junit.Assert;
 import org.junit.Test;
-import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
-import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

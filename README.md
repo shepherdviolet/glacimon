@@ -115,16 +115,16 @@
 
 <br>
 
-### Module: slate-common
+### Module: glacispring-common
 
-[![Depends](https://img.shields.io/badge/Depends-thistle--common-dc143c.svg?style=flat)](https://github.com/shepherdviolet/thistle)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-spring--context-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.springframework%20a:spring-context)
 [![Depends](https://img.shields.io/badge/Depends-slf4j--api-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.slf4j%20a:slf4j-api)
 
-> Core module of slate
+> Common utils for Java Spring and its ecosystem
 
-| Auto Configurations |
-| ------------------- |
+| Springboot Auto Configurations                                                                                                                                                              |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [SlateCommonAutoConfiguration](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/springboot/autoconfig/SlateCommonAutoConfiguration.java) |
 
 #### Spring utils

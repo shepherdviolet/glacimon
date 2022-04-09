@@ -27,7 +27,7 @@
 
 ## Module: glacijava-common
 
-[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--api-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--api-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Common utils for JavaSE
 
@@ -47,6 +47,7 @@
 * [GenericClassUtils : Get actual types of generic class](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/GenericClassUtils.java)
 * [MethodCaller : Get caller information of a method](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/MethodCaller.java)
 * [ClassPrinter : Print all information for a class / object](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/ClassPrinter.java)
+* [...](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect)
 
 ### Concurrent utils
 
@@ -60,7 +61,7 @@
 
 <br>
 
-## Module 'glacijava-crypto'
+## Module: glacijava-crypto
 
 [![Depends](https://img.shields.io/badge/Depends-glacijava--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-bcpkix--jdk15on-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.bouncycastle%20a:bcpkix-jdk15on)
@@ -73,10 +74,10 @@
 
 <br>
 
-## Module 'glacijava-trace'
+## Module: glacijava-trace
 
 [![Depends](https://img.shields.io/badge/Depends-thistle--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/thistle)
-[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > The module for tracing
 
@@ -91,7 +92,7 @@
 
 <br>
 
-## Module 'slate-common'
+## Module: slate-common
 
 [![Depends](https://img.shields.io/badge/Depends-thistle--common-dc143c.svg?style=flat)](https://github.com/shepherdviolet/thistle)
 [![Depends](https://img.shields.io/badge/Depends-spring--context-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.springframework%20a:spring-context)
@@ -118,10 +119,10 @@
 
 <br>
 
-## Module 'slate-txtimer'
+## Module: slate-txtimer
 
 [![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
-[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > The module for statistic
 
@@ -131,7 +132,7 @@
 
 <br>
 
-## Module 'slate-helper'
+## Module: slate-helper
 
 [![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
 ![Depends](https://img.shields.io/badge/Depends-...-dc143c.svg?style=flat)
@@ -149,7 +150,7 @@
 
 <br>
 
-## Module 'slate-http-client'
+## Module: slate-http-client
 
 [![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
 [![Depends](https://img.shields.io/badge/Depends-slate--txtimer-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
@@ -163,10 +164,10 @@
 
 <br>
 
-## Module 'slate-mapxbean'
+## Module: slate-mapxbean
 
 [![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
-[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-dc143c.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Map - Bean converter
 

@@ -1,14 +1,14 @@
 {
   "groups": [
     {
-      "name": "slate.common",
+      "name": "glacispring.helper",
       "type": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties"
     }
   ],
   "properties": [
     {
-      "name": "slate.common.ez-sentinel.rule-data",
+      "name": "glacispring.helper.ez-sentinel.rule-data",
       "type": "java.lang.String",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.sentinel.EzSentinelConfiguration",
       "description": "Annotation: com.github.shepherdviolet.glacimon.spring.helper.sentinel.EnableEzSentinel",

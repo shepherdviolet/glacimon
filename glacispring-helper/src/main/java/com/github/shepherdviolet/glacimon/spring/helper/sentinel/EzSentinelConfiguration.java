@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * <p>注解方式启用JSON格式的Sentinel规则设置器. 说明文档见: https://github.com/shepherdviolet/slate/blob/master/docs/ezsentinel/guide.md</p>
+ * <p>注解方式启用JSON格式的Sentinel规则设置器. 说明文档见: https://github.com/shepherdviolet/glacimon/blob/master/docs/ezsentinel/guide.md</p>
  *
  * 依赖: compile "com.google.code.gson:gson:$version_gson"
  *
@@ -41,16 +41,16 @@ public class EzSentinelConfiguration {
     /**
      * 规则设置器
      */
-    @Bean("slate.common.ezSentinelRuleConfigurer")
+    @Bean("glacispring.helper.ezSentinelRuleConfigurer")
     @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
     public EzSentinelRuleConfigurer<String> ezSentinelRuleConfigurer(){
         return new JsonEzSentinelRuleConfigurer();
     }
 
     /**
-     * 规则设置器绑定参数slate.common.ez-sentinel.rule-data
+     * 规则设置器绑定参数glacispring.helper.ez-sentinel.rule-data
      */
-    @Bean("slate.common.ezSentinelRuleConfigurerPropertySetter")
+    @Bean("glacispring.helper.ezSentinelRuleConfigurerPropertySetter")
     @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
     public Object ezSentinelRuleConfigurerPropertySetter(AbstractEzSentinelRuleConfigurer<String> ezSentinelRuleConfigurer){
         return new Object() {
@@ -58,7 +58,7 @@ public class EzSentinelConfiguration {
             /**
              * 监听本地配置和Apollo配置, 更新规则
              */
-            @Value("${slate.common.ez-sentinel.rule-data:}")
+            @Value("${glacispring.helper.ez-sentinel.rule-data:}")
             public void setRuleData(String ruleData) {
                 ezSentinelRuleConfigurer.update(ruleData);
             }

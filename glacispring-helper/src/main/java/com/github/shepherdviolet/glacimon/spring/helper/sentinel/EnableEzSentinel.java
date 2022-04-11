@@ -24,14 +24,14 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * <p>用于Spring容器中修改EzSentinel配置. 说明文档见: https://github.com/shepherdviolet/slate/blob/master/docs/ezsentinel/guide.md</p>
+ * <p>用于Spring容器中修改EzSentinel配置. 说明文档见: https://github.com/shepherdviolet/glacimon/blob/master/docs/ezsentinel/guide.md</p>
  *
  * <p>依赖: compile "com.google.code.gson:gson:$version_gson"</p>
  *
  * <p>
  *     1.添加gson依赖: compile "com.google.code.gson:gson:$version_gson" <br>
  *     2.添加本注解来启用: EnableEzSentinel <br>
- *     3.增加参数: slate.common.ez-sentinel.rule-data, 设置限流熔断规则. <br>
+ *     3.增加参数: glacispring.helper.ez-sentinel.rule-data, 设置限流熔断规则. <br>
  * </p>
  *
  * @author shepherdviolet

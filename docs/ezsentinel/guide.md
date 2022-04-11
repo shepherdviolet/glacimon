@@ -1,6 +1,6 @@
 # EzSentinel | 一种Sentinel动态规则的变通方案
 
-* [Source Code](https://github.com/shepherdviolet/slate/tree/master/slate-helper/src/main/java/sviolet/slate/common/helper/sentinel)
+* [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-helper/src/main/java/com/github/shepherdviolet/glacimon/spring/helper/sentinel)
 * [Sentinel是啥?](https://github.com/alibaba/Sentinel/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8)
 
 ## Sentinel动态规则的现状
@@ -48,8 +48,8 @@ EzSentinel的EzSentinelConfiguration中监听了spring.cloud.sentinel.enabled参
 ```text
 //Sentinel官方依赖
 compile "com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel:$version_sentinel"
-//EzSentinel依赖 (slate-helper 14.5+)
-compile "com.github.shepherdviolet:slate-helper:$version_slate"
+//EzSentinel依赖 (glacispring-helper)
+compile "com.github.shepherdviolet.glacimon:glacispring-helper:$version_glacimon"
 //默认的JsonEzSentinelRuleConfigurer使用GSON解析JSON, 你也可以不要GSON, 自行实现AbstractEzSentinelRuleConfigurer
 compile "com.google.code.gson:gson:$version_gson"
 ```
@@ -89,8 +89,8 @@ spring:
         dir: logs/
 
 ## EzSentinel配置
-slate:
-  common:
+glacispring:
+  helper:
     ez-sentinel:
       ## <重要>规则: 可以指向classpath中的一个文件
       rule-data: classpath:config/demo/sentinel/rules.json
@@ -202,7 +202,7 @@ API方式
 * 访问Dashboard, 找到应用(需发生过请求才会有显示), 可以观察`流控规则``降级规则`是否生效
 * 另外, Dashboard`流控规则`中会有`_ez_`开头的资源, 它们用于展示规则的`更新时间`/`版本`/`更新失败原因`, 便于管理员判断下发的规则是否生效
 
-* `动态下发规则: `如果应用接入了Apollo配置中心, 只需要将规则数据(JSON), 配置到Apollo, 参数名为`slate.common.ez-sentinel.rule-data`, 点击发布即可将规则下发给对应的应用(准实时生效). 发布后请观察Dashboard, 确保规则下发成功. 
+* `动态下发规则: `如果应用接入了Apollo配置中心, 只需要将规则数据(JSON), 配置到Apollo, 参数名为`glacispring.helper.ez-sentinel.rule-data`, 点击发布即可将规则下发给对应的应用(准实时生效). 发布后请观察Dashboard, 确保规则下发成功. 
 
 ## 客户端(非SpringBoot)
 
@@ -213,8 +213,8 @@ API方式
 compile "com.alibaba.csp:sentinel-core:$version_sentinel"
 compile "com.alibaba.csp:sentinel-annotation-aspectj:$version_sentinel"
 compile "com.alibaba.csp:sentinel-transport-simple-http:$version_sentinel"
-//EzSentinel依赖 (slate-common 14.5+)
-compile "com.github.shepherdviolet:slate-common:$version_slate"
+//EzSentinel依赖 (glacispring-helper)
+compile "com.github.shepherdviolet.glacimon:glacispring-helper:$version_glacimon"
 //默认的JsonEzSentinelRuleConfigurer使用GSON解析JSON, 你也可以不要GSON, 自行实现AbstractEzSentinelRuleConfigurer
 compile "com.google.code.gson:gson:$version_gson"
 ```
@@ -248,9 +248,9 @@ csp.sentinel.api.port=60001
 
 ## EzSentinel配置
 ## <重要>规则: 可以指向classpath中的一个文件
-slate.common.ez-sentinel.rule-data: classpath:config/demo/sentinel/rules.json
+glacispring.helper.ez-sentinel.rule-data: classpath:config/demo/sentinel/rules.json
 ## <重要>规则: 也可以直接是JSON内容(这种情况通常是配置在Apollo的)
-#slate.common.ez-sentinel.rule-data: {...json...}
+#glacispring.helper.ez-sentinel.rule-data: {...json...}
 ```
 
 * (备忘)Linux脚本如何获取本机IP?
@@ -270,7 +270,7 @@ slate.common.ez-sentinel.rule-data: classpath:config/demo/sentinel/rules.json
     <!-- 使用非SpringBoot专用的版本, 这个版本不是根据spring.cloud.sentinel.enabled开关的 -->
     <!-- 是根据四个必要的启动参数是否设置来决定是否启用Sentinel的, 详见源码 -->
     <bean id="ezSentinelRuleConfigurer" class="com.github.shepherdviolet.glacimon.spring.helper.sentinel.JsonEzSentinelRuleConfigurerForSpring4">
-        <property name="ruleData" value="${slate.common.ez-sentinel.rule-data:}"/>
+        <property name="ruleData" value="${glacispring.helper.ez-sentinel.rule-data:}"/>
     </bean>
 ```
 
@@ -281,7 +281,7 @@ slate.common.ez-sentinel.rule-data: classpath:config/demo/sentinel/rules.json
 * 访问Dashboard, 找到应用(需发生过请求才会有显示), 可以观察`流控规则``降级规则`是否生效
 * 另外, Dashboard`流控规则`中会有`_ez_`开头的资源, 它们用于展示规则的`更新时间`/`版本`/`更新失败原因`, 便于管理员判断下发的规则是否生效
 
-* `动态下发规则: `如果应用接入了Apollo配置中心, 只需要将规则数据(JSON), 配置到Apollo, 参数名为`slate.common.ez-sentinel.rule-data`, 点击发布即可将规则下发给对应的应用(准实时生效). 发布后请观察Dashboard, 确保规则下发成功. 
+* `动态下发规则: `如果应用接入了Apollo配置中心, 只需要将规则数据(JSON), 配置到Apollo, 参数名为`glacispring.helper.ez-sentinel.rule-data`, 点击发布即可将规则下发给对应的应用(准实时生效). 发布后请观察Dashboard, 确保规则下发成功. 
 
 ## 调整Apollo字段长度
 
@@ -302,7 +302,7 @@ UPDATE `ServerConfig` SET `Value` = '200000' WHERE `Key` = 'item.value.length.li
 
 ## 推荐配套TxTimer使用
 
-* [TxTimer](https://github.com/shepherdviolet/slate/blob/master/docs/txtimer/guide.md)
+* [TxTimer](https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md)
 
 ```text
 开源版的SentinelDashboard没有数据源, 没办法看五分钟前的统计数据, 这使得生产出问题的时候, 难以判断哪些服务(资源)拖垮了系统, 

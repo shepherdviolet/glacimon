@@ -1,6 +1,6 @@
 # Bean Member Processor | Bean成员处理器 (For Spring)
 
-* [Source Code](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/x/bean/mbrproc)
+* [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/x/config/mbrproc)
 
 ## 说明
 
@@ -71,9 +71,9 @@ public class MyConfiguration {
 
 ## 示例
 
-* 以slate-http-client的客户端注入为例, 我们要实现将HTTP客户端注入到标注了`@HttpClient`注解的成员变量/方法上
+* 以glacispring-httpclient的客户端注入为例, 我们要实现将HTTP客户端注入到标注了`@HttpClient`注解的成员变量/方法上
 
-* 定义注解, 此处省略部分代码, [详见源码](https://github.com/shepherdviolet/slate/blob/master/slate-http-client/src/main/java/sviolet/slate/common/x/net/loadbalance/springboot/autowired/HttpClient.java)
+* 定义注解, 此处省略部分代码, [详见源码](https://github.com/shepherdviolet/glacimon/blob/master/glacispring-httpclient/src/main/java/com/github/shepherdviolet/glacimon/spring/x/net/loadbalance/springboot/autowired/HttpClient.java)
 
 ```text
 @Target({ElementType.FIELD, ElementType.METHOD})
@@ -85,7 +85,7 @@ public @interface HttpClient {
 }
 ```
 
-* 编写成员处理器, 此处省略部分代码, [详见源码](https://github.com/shepherdviolet/slate/blob/master/slate-http-client/src/main/java/sviolet/slate/common/x/net/loadbalance/springboot/autowired/HttpClientMemberProcessor.java)
+* 编写成员处理器, 此处省略部分代码, [详见源码](https://github.com/shepherdviolet/glacimon/blob/master/glacispring-httpclient/src/main/java/com/github/shepherdviolet/glacimon/spring/x/net/loadbalance/springboot/autowired/HttpClientMemberProcessor.java)
 
 ```text
 public class HttpClientMemberProcessor implements MemberProcessor<HttpClient> {
@@ -133,11 +133,11 @@ public class HttpClientMemberProcessor implements MemberProcessor<HttpClient> {
 }
 ```
 
-* 启用成员处理器, 此处省略部分代码, [详见源码](https://github.com/shepherdviolet/slate/blob/master/slate-http-client/src/main/java/sviolet/slate/common/x/net/loadbalance/springboot/autoconfig/HttpClientsConfig.java)
+* 启用成员处理器, 此处省略部分代码, [详见源码](https://github.com/shepherdviolet/glacimon/blob/master/glacispring-httpclient/src/main/java/com/github/shepherdviolet/glacimon/spring/x/net/loadbalance/springboot/autoconfig/HttpClientsConfig.java)
 
 ```text
 @Configuration
-@ConditionalOnExpression("${slate.httpclient.enabled:false}")
+@ConditionalOnExpression("${glacispring.httpclient.enabled:false}")
 @EnableMemberProcessor(HttpClientMemberProcessor.class)//开启@HttpClient注解注入
 public class HttpClientsConfig {
     // (此处省略代码)
@@ -196,7 +196,7 @@ public @interface EnableMyFunction {
 ```text
 //version替换为具体版本
 dependencies {
-    compile 'com.github.shepherdviolet:slate-common:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-common:?'
 }
 ```
 
@@ -205,8 +205,8 @@ dependencies {
 ```maven
     <!--version替换为具体版本-->
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>slate-common</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacispring-common</artifactId>
         <version>?</version>
     </dependency>
 ```

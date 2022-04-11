@@ -37,7 +37,7 @@
 
 ### Module: glacijava-common
 
-[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--api-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacimon--spi--api-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Common utils for JavaSE
 
@@ -104,14 +104,14 @@
 
 #### [Crypto advanced utils](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
 
-* SM2 SM3 SM4 ... utils
+* SM2 / SM3 / SM4 ... utils
 
 <br>
 
 ### Module: glacijava-trace
 
 [![Depends](https://img.shields.io/badge/Depends-glacijava--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
-[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Tracing
 
@@ -132,82 +132,93 @@
 [![Depends](https://img.shields.io/badge/Depends-spring--context-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.springframework%20a:spring-context)
 [![Depends](https://img.shields.io/badge/Depends-slf4j--api-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.slf4j%20a:slf4j-api)
 
-> Common utils for Java Spring and its ecosystem
+> Common utils for Java Spring and third-party libraries
 
-| Springboot Auto Configurations                                                                                                                                                              |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [SlateCommonAutoConfiguration](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/springboot/autoconfig/SlateCommonAutoConfiguration.java) |
+| Springboot Auto Configurations                                                                                                                                                                                                   |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [GlacispringCommonAutoConfiguration](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/basic/autoconfig/GlacispringCommonAutoConfiguration.java) |
 
-#### Spring utils
+#### [Spring config components](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/x/config)
 
-* [InterfaceInstantiation : Instantiate interfaces into Spring context](https://github.com/shepherdviolet/slate/blob/master/docs/interfaceinst/guide.md)
-* [MemberProcessor : Process all fields/methods (of bean) in Spring context (To implement custom injection / method binding...)](https://github.com/shepherdviolet/slate/blob/master/docs/mbrproc/guide.md)
-* [YamlPropertySourceFactory : Load YAML by @PropertySource](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/spring/property)
-* [LambdaBuilder(Buildable) : New object in lambda way](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/util/common)
-* [...](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/util)
+* [InterfaceInstantiation : Instantiate interfaces into Spring context](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/guide.md)
+* [MemberProcessor : Process all fields/methods (of bean) in Spring context (To implement custom injection / method binding...)](https://github.com/shepherdviolet/glacimon/blob/master/docs/mbrproc/guide.md)
 
-#### Helpers
+#### [Spring config utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/config)
 
-* [DynamicDataSource : Dynamic datasource for Spring Boot](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/helper/data/datasource/DynamicDataSource.java)
-* [...](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/helper)
+* FactoryBean / BeanPostProcessor ...
+* [YamlPropertySourceFactory : Load YAML by @PropertySource](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/config/property)
 
-<br>
+#### [Conversion utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/conversion)
 
-### Module: slate-txtimer
+* SequenceFormatter / StringPlaceHolderUtils ...
 
-[![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
-[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+#### [Proxy utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/proxy)
 
-> The module for statistic
+* AOP / CGLib ...
 
-#### TxTimer
+#### [Misc utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/misc)
 
-* [TxTimer : RT Statistic API](https://github.com/shepherdviolet/slate/blob/master/docs/txtimer/guide.md)
+#### [Helpers](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/helpers)
+
+* [DynamicDataSource : Dynamic datasource for Spring Boot](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/helper/data/datasource/DynamicDataSource.java)
 
 <br>
 
-### Module: slate-helper
+### Module: glacispring-txtimer
 
-[![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
-![Depends](https://img.shields.io/badge/Depends-...-dc143c.svg?style=flat)
+[![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
-> Helpers for third-party libraries
+> Simple time-consuming statistics
 
-#### Helpers
+#### Statistic components
 
-* [RocketMQ : Subscribe message by annotation](https://github.com/shepherdviolet/slate/blob/master/docs/rocketmq/guide.md)
-* [Sentinel : Another way to config rules](https://github.com/shepherdviolet/slate/blob/master/docs/ezsentinel/guide.md)
-* [Apollo : ApolloRefreshableProperties : The 'Properties' dynamically updated by Apollo](https://github.com/shepherdviolet/slate/tree/master/slate-helper/src/main/java/sviolet/slate/common/helper/apollo/ApolloRefreshableProperties.java)
-* [Hessianlite : HessianLiteSerializeUtils : Serialize util with hessianlite](https://github.com/shepherdviolet/slate/tree/master/slate-helper/src/main/java/sviolet/slate/common/helper/hessianlite/HessianLiteSerializeUtils.java)
-* [JetCache : SyncRedisLettuceCacheBuilder : Connect to redis in a synchronous manner for JetCache](https://github.com/shepherdviolet/slate/tree/master/slate-helper/src/main/java/sviolet/slate/common/helper/jetcache/lettuce/SyncRedisLettuceCacheBuilder.java)
-* [...](https://github.com/shepherdviolet/slate/tree/master/slate-helper/src/main/java/sviolet/slate/common/helper)
+* [TxTimer : Simple time-consuming statistic API](https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md)
 
 <br>
 
-### Module: slate-http-client
+### Module: glacispring-httpclient
 
-[![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
-[![Depends](https://img.shields.io/badge/Depends-slate--txtimer-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
+[![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacispring--txtimer-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-okhttp-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:com.squareup.okhttp3%20a:okhttp)
 
 > Provides a solution for http client
 
-#### Http client
+#### Http client components
 
-* [MultiHostOkHttpClient : A HTTP client supporting load balancing](https://github.com/shepherdviolet/slate/blob/master/docs/loadbalance/guide.md)
+* [SimpleOkHttpClient (MultiHostOkHttpClient) : HTTP client supporting load-balancing / backend health-checking / circuit-breaking](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/guide.md)
 
 <br>
 
-### Module: slate-mapxbean
+### Module: glacispring-mapxbean
 
-[![Depends](https://img.shields.io/badge/Depends-slate--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/slate)
-[![Depends](https://img.shields.io/badge/Depends-glacijava--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Map - Bean converter
 
-#### MapXBean
+#### Conversion components
 
-* [MapXBean : Map - Bean Converter](https://github.com/shepherdviolet/slate/blob/master/docs/mapxbean/guide.md)
+* [MapXBean : Map - Bean Converter](https://github.com/shepherdviolet/glacimon/blob/master/docs/mapxbean/guide.md)
+
+<br>
+
+### Module: glacispring-helper
+
+[![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+![Depends](https://img.shields.io/badge/Depends-...-dc143c.svg?style=flat)
+
+> Helpers for third-party libraries
+
+#### [Helpers](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-helper/src/main/java/com/github/shepherdviolet/glacimon/spring/helper)
+
+* [RocketMQ : Subscribe message by annotation](https://github.com/shepherdviolet/glacimon/blob/master/docs/rocketmq/guide.md)
+* [Sentinel : Another way to config rules](https://github.com/shepherdviolet/glacimon/blob/master/docs/ezsentinel/guide.md)
+* [Apollo : ApolloRefreshableProperties : The 'Properties' dynamically updated by Apollo](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-helper/src/main/java/com/github/shepherdviolet/glacimon/spring/helper/apollo/ApolloRefreshableProperties.java)
+* [Hessianlite : HessianLiteSerializeUtils : Serialize util with hessianlite](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-helper/src/main/java/com/github/shepherdviolet/glacimon/spring/helper/hessianlite/HessianLiteSerializeUtils.java)
+* [JetCache : SyncRedisLettuceCacheBuilder : Connect to redis in a synchronous manner for JetCache](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-helper/src/main/java/com/github/shepherdviolet/glacimon/spring/helper/jetcache/lettuce/SyncRedisLettuceCacheBuilder.java)
+* Jedis / jsch ...
 
 <br>
 <br>
@@ -224,14 +235,16 @@ repositories {
 }
 dependencies {
     compile 'com.github.shepherdviolet.glacimon:glacimon-spi-core:?'
-    compile 'com.github.shepherdviolet.glacimon:thistle-common:?'
-    compile 'com.github.shepherdviolet.glacimon:thistle-crypto-plus:?'
-    compile 'com.github.shepherdviolet.glacimon:thistle-trace:?'
-    compile 'com.github.shepherdviolet.glacimon:slate-common:?'
-    compile 'com.github.shepherdviolet.glacimon:slate-txtimer:?'
-    compile 'com.github.shepherdviolet.glacimon:slate-helper:?'
-    compile 'com.github.shepherdviolet.glacimon:slate-http-client:?'
-    compile 'com.github.shepherdviolet.glacimon:slate-mapxbean:?'
+    
+    compile 'com.github.shepherdviolet.glacimon:glacijava-common:?'
+    compile 'com.github.shepherdviolet.glacimon:glacijava-crypto:?'
+    compile 'com.github.shepherdviolet.glacimon:glacijava-trace:?'
+    
+    compile 'com.github.shepherdviolet.glacimon:glacispring-common:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-txtimer:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-httpclient:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-mapxbean:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-helper:?'
 }
 
 ```
@@ -242,44 +255,46 @@ dependencies {
         <artifactId>glacimon-spi-core</artifactId>
         <version>?</version> 
     </dependency>
+    
     <dependency>    
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>thistle-common</artifactId>
+        <artifactId>glacijava-common</artifactId>
         <version>?</version> 
     </dependency>
     <dependency>    
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>thistle-crypto-plus</artifactId>
+        <artifactId>glacijava-crypto</artifactId>
         <version>?</version> 
     </dependency>
     <dependency>    
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>thistle-trace</artifactId>
+        <artifactId>glacijava-trace</artifactId>
         <version>?</version> 
     </dependency>
+    
     <dependency>
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>slate-common</artifactId>
+        <artifactId>glacispring-common</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>slate-txtimer</artifactId>
+        <artifactId>glacispring-txtimer</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>slate-helper</artifactId>
+        <artifactId>glacispring-httpclient</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>slate-http-client</artifactId>
+        <artifactId>glacispring-mapxbean</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>slate-mapxbean</artifactId>
+        <artifactId>glacispring-helper</artifactId>
         <version>?</version>
     </dependency>
 ```

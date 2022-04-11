@@ -261,7 +261,7 @@ public class ApolloConfigChangeService {
 ```text
 //version替换为具体版本, 另外需要依赖spring库
 dependencies {
-    compile 'com.github.shepherdviolet:slate-http-client:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-httpclient:?'
 }
 ```
 
@@ -270,8 +270,8 @@ dependencies {
 ```maven
     <!--version替换为具体版本, 另外需要依赖spring库-->
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>slate-http-client</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacispring-httpclient</artifactId>
         <version>?</version>
     </dependency>
 ```

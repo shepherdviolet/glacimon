@@ -11,7 +11,7 @@
 * 在application.yml/application-profile.yml中增加配置
 
 ```yaml
-slate:
+glacispring:
   httpclient:
     enabled: true
   httpclients:
@@ -25,7 +25,7 @@ slate:
       max-read-length: 10485760
       verbose-log: true
     client2:
-      # 方式二, 优先级低. 在properties中: slate.httpclients.client2.host-list[0]=http://127.0.0.1:8083
+      # 方式二, 优先级低. 在properties中: glacispring.httpclients.client2.host-list[0]=http://127.0.0.1:8083
       host-list:
         - http://127.0.0.1:8083
         - http://127.0.0.1:8084
@@ -51,7 +51,7 @@ slate:
 ### YML中所提供的全部配置说明
 
 ```yaml
-slate:
+glacispring:
   httpclient:
     # 启用HttpClients (必须, 修改该配置需重启, 源码见HttpClientsConfig)
     enabled: true
@@ -63,7 +63,7 @@ slate:
     client1:
       # 后端列表(方式一, 优先级高)
       hosts: http://127.0.0.1:8083,http://127.0.0.1:8084
-      # 后端列表(方式二, 优先级低), 在properties中: slate.httpclients.client1.host-list[0]=http://127.0.0.1:8083
+      # 后端列表(方式二, 优先级低), 在properties中: glacispring.httpclients.client1.host-list[0]=http://127.0.0.1:8083
       host-list:
         - http://127.0.0.1:8083
         - http://127.0.0.1:8084
@@ -79,8 +79,8 @@ slate:
       media-type: application/json;charset=utf-8
       # 编码
       encode: utf-8
-      # Http请求头, 键值对格式参考: https://github.com/shepherdviolet/thistle/blob/master/docs/kvencoder/guide.md
-      headers: User-Agent=SlateHttpClient,Referer=http://github.com
+      # Http请求头, 键值对格式参考: https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md
+      headers: User-Agent=GlacispringHttpClient,Referer=http://github.com
       # 阻断后的恢复期系数, 恢复期时长 = blockDuration * recoveryCoefficient, 设置1则无恢复期
       recovery-coefficient: 10
       # 最大闲置连接数. 客户端会保持与服务端的连接, 保持数量由此设置决定, 直到闲置超过5分钟. 默认16
@@ -101,13 +101,13 @@ slate:
       http-code-need-block: 400,500
       # true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
       verbose-log: false
-      # true启用TxTimer对请求耗时的统计(目前只支持同步方式), 详见https://github.com/shepherdviolet/slate/blob/master/docs/txtimer/guide.md
+      # true启用TxTimer对请求耗时的统计(目前只支持同步方式), 详见https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md
       tx-timer-enabled: false
       # true: 开启简易的请求日志追踪(请求日志追加4位数追踪号), 默认false
       request-trace-enabled: false
       # 添加自定义的根证书, 用于验证自签名的服务器(设置一个, 优先级高). 如果设置为"UNSAFE-TRUST-ALL-ISSUERS"则不校验服务端证书链, 信任一切服务端证书, 不安全!!!
       custom-server-issuer-encoded: '自签名的服务端根证书X509-Base64字符串'
-      # 添加自定义的根证书, 用于验证自签名的服务器(设置多个, 优先级低). 在properties中: slate.httpclients.custom-server-issuers-encoded[0]=...
+      # 添加自定义的根证书, 用于验证自签名的服务器(设置多个, 优先级低). 在properties中: glacispring.httpclients.custom-server-issuers-encoded[0]=...
       custom-server-issuers-encoded: 
         - '自签名的服务端根证书X509-Base64字符串(1)'
         - '自签名的服务端根证书X509-Base64字符串(2)'
@@ -141,7 +141,7 @@ slate:
 
 # 手动配置
 
-* 除了用YML配置, 也可以进行手动配置, 参考https://github.com/shepherdviolet/slate/blob/master/docs/loadbalance/config-annotation.md
+* 除了用YML配置, 也可以进行手动配置, 参考https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/config-annotation.md
 
 <br>
 <br>
@@ -238,15 +238,15 @@ public class MyHttpTransport implements InitializingBean {
 # 使用启动参数调整配置
 
 * HttpClients支持用启动参数调整配置, 但必须重启应用才会生效
-* 启动参数格式: -Dslate.httpclients.`客户端标识`.`配置名`=`配置值`
+* 启动参数格式: -Dglacispring.httpclients.`客户端标识`.`配置名`=`配置值`
 
 * 例如: 修改client2的hosts为http://127.0.0.1:8083,http://127.0.0.1:8084
 
-> -Dslate.httpclients.client2.hosts=http://127.0.0.1:8083,http://127.0.0.1:8084<br>
+> -Dglacispring.httpclients.client2.hosts=http://127.0.0.1:8083,http://127.0.0.1:8084<br>
 
-* 例如: 给client1添加两个Http请求头 [键值对格式](https://github.com/shepherdviolet/thistle/blob/master/docs/kvencoder/guide.md)
+* 例如: 给client1添加两个Http请求头 [键值对格式](https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md)
 
-> -Dslate.httpclients.client1.headers=User-Agent=SlateHttpClient,Referer=http://github.com<br>
+> -Dglacispring.httpclients.client1.headers=User-Agent=GlacispringHttpClient,Referer=http://github.com<br>
 
 * 其他说明
 
@@ -270,7 +270,7 @@ public class BootApplication {
 * 在application.yml/application-profile.yml中增加配置
 
 ```yaml
-slate:
+glacispring:
   httpclient:
     enabled: true
     apollo-support: true
@@ -281,17 +281,17 @@ slate:
 * 进入Apollo配置中心控制台, 新增或修改应用的`私有配置(namespace=application)`, 应用端的HttpClient配置就会实时调整
 * 注意: 只能配置在应用的`私有配置(namespace=application)`中, 配在`公共配置或非默认配置(namespace!=application)`中无效
 
-> Key格式: slate.httpclients.`客户端标识`.`配置名`
+> Key格式: glacispring.httpclients.`客户端标识`.`配置名`
 
 * 例如: 修改client2的hosts为http://127.0.0.1:8083,http://127.0.0.1:8084
 
-> Key: `slate.httpclients.client2.hosts`<br>
+> Key: `glacispring.httpclients.client2.hosts`<br>
 > Value: `http://127.0.0.1:8083,http://127.0.0.1:8084`<br>
 
-* 例如: 给client1添加两个Http请求头 [键值对格式](https://github.com/shepherdviolet/thistle/blob/master/docs/kvencoder/guide.md)
+* 例如: 给client1添加两个Http请求头 [键值对格式](https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md)
 
-> Key: `slate.httpclients.client1.headers`<br>
-> Value: `User-Agent=SlateHttpClient,Referer=http://github.com`<br>
+> Key: `glacispring.httpclients.client1.headers`<br>
+> Value: `User-Agent=GlacispringHttpClient,Referer=http://github.com`<br>
 
 * 其他说明
 
@@ -302,7 +302,7 @@ slate:
 * 多个namespace用逗号分隔, 默认为application
 
 ```yaml
-slate:
+glacispring:
   httpclient:
     enabled: true
     apollo-support: true
@@ -320,7 +320,7 @@ slate:
 ```text
 //version替换为具体版本, 另外需要依赖spring库
 dependencies {
-    compile 'com.github.shepherdviolet:slate-http-client:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-httpclient:?'
 }
 ```
 
@@ -329,8 +329,8 @@ dependencies {
 ```maven
     <!--version替换为具体版本, 另外需要依赖spring库-->
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>slate-http-client</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacispring-httpclient</artifactId>
         <version>?</version>
     </dependency>
 ```

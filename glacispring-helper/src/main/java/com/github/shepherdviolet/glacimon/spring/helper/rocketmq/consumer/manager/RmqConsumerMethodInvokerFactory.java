@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  */
 public interface RmqConsumerMethodInvokerFactory {
 
-    String BEAN_NAME = "slate.common.rocketMqConsumerMethodInvokerFactory";
+    String BEAN_NAME = "glacispring.helper.rocketMqConsumerMethodInvokerFactory";
 
     /**
      * 根据绑定方法参数类型产生对应的方法调用器

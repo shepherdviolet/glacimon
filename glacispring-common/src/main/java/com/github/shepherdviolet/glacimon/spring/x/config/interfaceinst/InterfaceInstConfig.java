@@ -60,7 +60,7 @@ public class InterfaceInstConfig {
      * 无法通过ImportAware注入注解参数. 如果该方法不为静态(static), 会导致该类过早实例化(即使这样也无法通过ImportAware注入注解参数).
      * 因此, 只能在InterfaceInstantiationSelector中获取并持有注解参数(静态持有).
      */
-    @Bean("slate.common.interfaceInstantiationBeanDefinitionRegistry")
+    @Bean("glacispring.common.interfaceInstantiationBeanDefinitionRegistry")
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public static BeanDefinitionRegistryPostProcessor interfaceInstantiationBeanDefinitionRegistry(){
         if (isJdk8 && isSpring5) {

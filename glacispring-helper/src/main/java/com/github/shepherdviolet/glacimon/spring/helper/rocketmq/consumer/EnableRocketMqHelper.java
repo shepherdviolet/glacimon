@@ -39,8 +39,8 @@ public @interface EnableRocketMqHelper {
      * 指定NameServer地址. 优先级最低.
      * 优先级:
      * 1.@RocketMqConcurrentConsumer(nameServer = "...") / @RocketMqOrderedConsumer(nameServer = "...")
-     * 2.启动参数slate.common.rocketmq.namesrv
-     * 3.配置文件slate.common.rocketmq.namesrv
+     * 2.启动参数glacispring.helper.rocketmq.namesrv
+     * 3.配置文件glacispring.helper.rocketmq.namesrv
      * 4.@EnableRocketMq(defaultNameServer = "...")
      */
     String defaultNameServer() default "localhost:9876";

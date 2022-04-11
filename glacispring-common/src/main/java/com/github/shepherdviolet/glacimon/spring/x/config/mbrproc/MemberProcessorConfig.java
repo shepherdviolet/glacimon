@@ -44,7 +44,7 @@ public class MemberProcessorConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(MemberProcessorConfig.class);
 
-    @Bean("slate.common.memberProcessorBeanPostProcessor")
+    @Bean("glacispring.common.memberProcessorBeanPostProcessor")
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public static BeanPostProcessor memberProcessorBeanPostProcessor(){
         if (logger.isInfoEnabled()) {

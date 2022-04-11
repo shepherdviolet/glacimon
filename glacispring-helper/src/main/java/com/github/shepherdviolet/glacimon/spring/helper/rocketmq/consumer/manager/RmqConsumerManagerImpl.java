@@ -56,29 +56,29 @@ public class RmqConsumerManagerImpl implements RmqConsumerManager, ApplicationCo
      * NameServer地址. 优先级中等.
      * 优先级:
      * 1.@RocketMqConcurrentConsumer(nameServer = "...") / @RocketMqOrderedConsumer(nameServer = "...")
-     * 2.启动参数slate.common.rocketmq.namesrv
-     * 3.配置文件slate.common.rocketmq.namesrv
+     * 2.启动参数glacispring.helper.rocketmq.namesrv
+     * 3.配置文件glacispring.helper.rocketmq.namesrv
      * 4.@EnableRocketMq(defaultNameServer = "...")
      */
-    @Value("${slate.common.rocketmq.namesrv:}")
+    @Value("${glacispring.helper.rocketmq.namesrv:}")
     private String nameServerFromProperties;
 
     /**
      * true: 绑定的方法抛出异常时在日志中打印消息信息
      */
-    @Value("${slate.common.rocketmq.print-message-when-exception:true}")
+    @Value("${glacispring.helper.rocketmq.print-message-when-exception:true}")
     private boolean printMessageWhenException;
 
     /**
      * true: 消息被打回重新消费(RECONSUME)时在日志中打印消息信息
      */
-    @Value("${slate.common.rocketmq.print-message-when-reconsume:true}")
+    @Value("${glacispring.helper.rocketmq.print-message-when-reconsume:true}")
     private boolean printMessageWhenReconsume;
 
     /**
      * 默认字符集
      */
-    @Value("${slate.common.rocketmq.default-charset:UTF-8}")
+    @Value("${glacispring.helper.rocketmq.default-charset:UTF-8}")
     private String defaultCharset;
 
     /**

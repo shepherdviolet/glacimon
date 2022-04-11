@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
  */
 public interface RmqConsumerManager extends DisposableBean {
 
-    String BEAN_NAME = "slate.common.rocketMqConsumerManager";
+    String BEAN_NAME = "glacispring.helper.rocketMqConsumerManager";
 
     /**
      * 与RocketMqCustomConsumer注解的方法绑定(自定义消费者)

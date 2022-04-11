@@ -45,7 +45,7 @@ public class RmqConsumerMethodInvokerFactoryImpl implements RmqConsumerMethodInv
     /**
      * 当JSON解析失败时, 打回消息重新消费(RECONSUME), 默认false(因为JSON解析失败一般也没可能再消费成功了)
      */
-    @Value("${slate.common.rocketmq.reconsume-when-json-parse-failed:false}")
+    @Value("${glacispring.helper.rocketmq.reconsume-when-json-parse-failed:false}")
     private boolean reconsumeWhenJsonParseFailed;
 
     @Override

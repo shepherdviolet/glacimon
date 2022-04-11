@@ -1,6 +1,6 @@
 # RocketMQ助手
 
-* [Source Code](https://github.com/shepherdviolet/slate/tree/master/slate-helper/src/main/java/sviolet/slate/common/helper/rocketmq)
+* [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-helper/src/main/java/com/github/shepherdviolet/glacimon/spring/helper/rocketmq)
 
 # 注解方式声明消费者(Consumer)
 
@@ -27,7 +27,7 @@ public class AppConfiguration {
 * 配置NameServer地址(yaml/properties/启动参数)
 
 ```text
-slate.common.rocketmq.namesrv=host1:9876;host2:9876
+glacispring.helper.rocketmq.namesrv=host1:9876;host2:9876
 ```
 
 <br>
@@ -59,7 +59,7 @@ public class RocketMqHelperConfiguration {
 * 配置NameServer地址(properties/启动参数)
 
 ```text
-slate.common.rocketmq.namesrv=host1:9876;host2:9876
+glacispring.helper.rocketmq.namesrv=host1:9876;host2:9876
 ```
 
 <br>
@@ -113,7 +113,7 @@ slate.common.rocketmq.namesrv=host1:9876;host2:9876
             reconsumeWhenException = true,
             //字符集
             charset = "UTF-8",
-            //指定nameServer地址, 不设置使用参数slate.common.rocketmq.namesrv的值, 若参数不存在则用EnableRocketMqHelper的defaultNameServer
+            //指定nameServer地址, 不设置使用参数glacispring.helper.rocketmq.namesrv的值, 若参数不存在则用EnableRocketMqHelper的defaultNameServer
             nameServer = "192.168.1.1:9876"
     )
 ```
@@ -187,7 +187,7 @@ slate.common.rocketmq.namesrv=host1:9876;host2:9876
 
 ```gradle
 dependencies {
-    compile 'com.github.shepherdviolet:slate-helper:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-helper:?'
     compile 'org.apache.rocketmq:rocketmq-client:4.4.0'
 }
 
@@ -195,8 +195,8 @@ dependencies {
 
 ```maven
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>slate-helper</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacispring-helper</artifactId>
         <version>?</version>
     </dependency>
     <dependency>

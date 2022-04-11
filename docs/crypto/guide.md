@@ -1,6 +1,6 @@
-# 国际/国密算法加解密/加解签手册
+# 国际/国密算法加解密/签名验签手册
 
-* [Source Code](https://github.com/shepherdviolet/thistle/tree/master/thistle-common/src/main/java/sviolet/thistle/util/crypto) | [Source Code (Advanced)](https://github.com/shepherdviolet/thistle/tree/master/thistle-crypto-plus/src/main/java/sviolet/thistle/util/crypto)
+* [源码](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/crypto) | [源码 (高级, 支持国密)](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-crypto/src/main/java/com/github/shepherdviolet/glacimon/java/crypto)
 * 这些加密工具`线程安全`
 * `Maven/Gradle依赖配置`在本文最后
 
@@ -41,11 +41,11 @@
 
 * MD5/SHA1/SHA256摘要
 
-### SM3DigestCipher (thistle-crypto-plus)
+### SM3DigestCipher (glacijava-crypto)
 
 * SM3摘要
 
-# RSA 加解密/加解签
+# RSA 加解密/签名验签
 
 ### RSAKeyGenerator
 
@@ -78,14 +78,14 @@
     boolean valid = RSACipher.verify(data, sign, publicKey, RSACipher.SIGN_ALGORITHM_RSA_SHA256);
 ```
 
-# SM2 加解密/加解签 (thistle-crypto-plus)
+# SM2 加解密/签名验签 (glacijava-crypto)
 
-### SM2KeyGenerator (thistle-crypto-plus)
+### SM2KeyGenerator (glacijava-crypto)
 
 * SM2密钥生成
 * 将密钥转换为各种编码
 
-### SM2Cipher (thistle-crypto-plus)
+### SM2Cipher (glacijava-crypto)
 
 * SM2签名/验签
 * SM2加密/解密
@@ -114,13 +114,13 @@
     byte[] decrypted = AESKeyGenerator.encrypt(encrypted, key, AESKeyGenerator.CRYPTO_ALGORITHM_AES_ECB_PKCS5PADDING);
 ```
 
-# SM4 加解密 (thistle-crypto-plus)
+# SM4 加解密 (glacijava-crypto)
 
-### SM4KeyGenerator (thistle-crypto-plus)
+### SM4KeyGenerator (glacijava-crypto)
 
 * SM4密钥生成
 
-### SM4Cipher (thistle-crypto-plus)
+### SM4Cipher (glacijava-crypto)
 
 * AES加密解密
 * 注意, CBC填充算法需使用encryptCBC/decryptCBC方法, 并送入iv量
@@ -140,7 +140,7 @@
 
 * DESede(3DES)加密解密
 
-# ECDSA 加解签
+# ECDSA 签名验签
 
 ### ECDSAKeyGenerator
 
@@ -175,15 +175,15 @@
         );
 ```
 
-# 证书高级版 (thistle-crypto-plus)
+# 证书高级版 (glacijava-crypto)
 
-### AdvancedCertificateUtils (thistle-crypto-plus)
+### AdvancedCertificateUtils (glacijava-crypto)
 
 * RSA证书/根证书签发
 * SM2证书/根证书签发
 * SM2证书编码/解析(SM2要用*Advanced方法)
 
-### AdvancedPKCS12KeyStoreUtils (thistle-crypto-plus)
+### AdvancedPKCS12KeyStoreUtils (glacijava-crypto)
 
 * 从p12/pfx文件中读取SM2证书和私钥(SM2要用*Advanced方法)
 * 将SM2证书和私钥写入到p12/pfx文件中(SM2要用*Advanced方法)
@@ -211,14 +211,14 @@
 ```gradle
 
 repositories {
-    //Thistle in mavenCentral
+    //In mavenCentral
     mavenCentral()
 }
 dependencies {
     //Common crypto utils
-    compile 'com.github.shepherdviolet:thistle-common:?'
+    compile 'com.github.shepherdviolet.glacimon:glacijava-common:?'
     //Advanced crypto utils
-    compile 'com.github.shepherdviolet:thistle-crypto-plus:?'
+    compile 'com.github.shepherdviolet.glacimon:glacijava-crypto:?'
 }
 
 ```
@@ -226,14 +226,14 @@ dependencies {
 ```maven
     <!-- Common crypto utils -->
     <dependency>    
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>thistle-common</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacijava-common</artifactId>
         <version>?</version> 
     </dependency>
     <!-- Advanced crypto utils -->
     <dependency>    
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>thistle-crypto-plus</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacijava-crypto</artifactId>
         <version>?</version> 
     </dependency>
 ```

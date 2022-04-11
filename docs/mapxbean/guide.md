@@ -1,7 +1,7 @@
 # MapXBean | Map - Bean 转换工具
 
-* [English](https://github.com/shepherdviolet/slate/blob/master/docs/mapxbean/guide-en.md)
-* [Source Code](https://github.com/shepherdviolet/slate/tree/master/slate-mapxbean/src/main/java/sviolet/slate/common/x/conversion/mapxbean)
+* [English](https://github.com/shepherdviolet/glacimon/blob/master/docs/mapxbean/guide-en.md)
+* [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-mapxbean/src/main/java/com/github/shepherdviolet/glacimon/spring/x/conversion/mapxbean)
 * [支持 GlacimonSpi SPI 扩展点](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md)
 <br>
 
@@ -335,19 +335,19 @@ Has read methods (getter) or write methods (setter)
 ```gradle
 
 repositories {
-    //Slate in mavenCentral
+    //In mavenCentral
     mavenCentral()
 }
 dependencies {
-    compile 'com.github.shepherdviolet:slate-mapxbean:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-mapxbean:?'
 }
 
 ```
 
 ```maven
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>slate-mapxbean</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacispring-mapxbean</artifactId>
         <version>?</version>
     </dependency>
 ```

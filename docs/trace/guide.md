@@ -1,6 +1,6 @@
 # 全局追踪工具
 
-* [Source Code](https://github.com/shepherdviolet/thistle/tree/master/thistle-trace/src/main/java/sviolet/thistle/x/util/trace)
+* [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-trace/src/main/java/com/github/shepherdviolet/glacimon/java/x/trace)
 
 # API
 
@@ -81,7 +81,7 @@ threadPool.execute(Trace.traceable(()-> {
 
 ```text
 // 方式一: (高优先级) 通过Java启动参数将追踪号设置为URL-Safe-Base64格式
--Dthistle.trace.trace-id-compressed=true
+-Dglacijava.trace.trace-id-compressed=true
 
 // 方式二: 通过GlacimonSpi SPI扩展点 的特性设置
 1.在Classpath下创建文件: META-INF/glacimonspi/properties/com.github.shepherdviolet.glacimon.java.x.trace.DefaultTraceProvider

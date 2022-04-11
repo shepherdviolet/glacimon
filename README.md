@@ -158,7 +158,7 @@
 
 #### [Misc utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/misc)
 
-#### [Helpers](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/helpers)
+#### [Helpers](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/helper)
 
 * [DynamicDataSource : Dynamic datasource for Spring Boot](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/helper/data/datasource/DynamicDataSource.java)
 

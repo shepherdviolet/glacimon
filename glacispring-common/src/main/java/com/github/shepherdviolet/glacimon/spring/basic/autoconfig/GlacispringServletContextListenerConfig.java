@@ -39,7 +39,7 @@ import javax.servlet.ServletContextListener;
 public class GlacispringServletContextListenerConfig {
 
     @Bean("glacispring.common.glacispringServletContextListener")
-    public ServletContextListener slateServletContextListener() {
+    public ServletContextListener glacispringServletContextListener() {
         return new GlacispringServletContextListener();
     }
 

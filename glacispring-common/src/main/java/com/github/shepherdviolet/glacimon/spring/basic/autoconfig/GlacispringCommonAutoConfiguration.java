@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Import;
 public class GlacispringCommonAutoConfiguration {
 
     @Bean("glacispring.common.glacispringCommonProperties")
-    public GlacispringCommonProperties slateCommonProperties(){
+    public GlacispringCommonProperties glacispringCommonProperties(){
         return new GlacispringCommonProperties();
     }
 

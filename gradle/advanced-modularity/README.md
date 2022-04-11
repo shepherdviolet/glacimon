@@ -145,8 +145,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP == 'web' }) {
 
     dependencies {
         // Import BOMs
-        implementation platform("com.github.shepherdviolet:thistle-bom:$version_thistle_slate")
-        implementation platform("com.github.shepherdviolet:slate-bom:$version_thistle_slate")
+        implementation platform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")
 
         // Common dependencies
         implementation "ch.qos.logback:logback-classic:$version_logback"
@@ -165,8 +164,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['module'] }) {
 
     dependencies {
         // Import BOMs
-        api platform("com.github.shepherdviolet:thistle-bom:$version_thistle_slate")
-        api platform("com.github.shepherdviolet:slate-bom:$version_thistle_slate")
+        implementation platform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")
 
         // Common dependencies
         api "ch.qos.logback:logback-classic:$version_logback"

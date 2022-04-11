@@ -217,7 +217,7 @@ public class AdvancedPKCS12KeyStoreUtils extends PKCS12KeyStoreUtils {
      *      PKCS12KeyStoreUtils.CertificateChainAndKey certificateChainAndKey = PKCS12KeyStoreUtils.loadCertificateAndKey(
      *          "ca-cert.p12",
      *          "000000",
-     *          "Thistle test ca alias"
+     *          "Glacijava test ca alias"
      *          );
      * }</pre>
      *
@@ -240,7 +240,7 @@ public class AdvancedPKCS12KeyStoreUtils extends PKCS12KeyStoreUtils {
      *      PKCS12KeyStoreUtils.CertificateChainAndKey certificateChainAndKey = PKCS12KeyStoreUtils.loadCertificateAndKey(
      *          inputStream,
      *          "000000",
-     *          "Thistle test ca alias"
+     *          "Glacijava test ca alias"
      *          );
      * }</pre>
      *

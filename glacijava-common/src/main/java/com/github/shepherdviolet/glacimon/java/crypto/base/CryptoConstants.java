@@ -26,9 +26,9 @@ class CryptoConstants {
 
     static {
         try {
-            BUFFER_SIZE = Integer.parseInt(System.getProperty("thistle.crypto.buffersize", "4096"));
+            BUFFER_SIZE = Integer.parseInt(System.getProperty("glacijava.crypto.buffersize", "4096"));
         } catch (Exception e) {
-            throw new RuntimeException("Invalid vm arg -Dthistle.crypto.buffersize, not an integer", e);
+            throw new RuntimeException("Invalid vm arg -Dglacijava.crypto.buffersize, not an integer", e);
         }
     }
 

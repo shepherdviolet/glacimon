@@ -49,7 +49,7 @@ public class RSACertTest {
         RSAKeyGenerator.RSAKeyPair rootKeyPair = RSAKeyGenerator.generateKeyPair(2048);
 
         X509Certificate rootCertificate = AdvancedCertificateUtils.generateRSAX509RootCertificate(
-                "CN=Thistle test ca, OU=Thistle group, O=Violet Shell, L=Ningbo, ST=Zhejiang, C=CN",
+                "CN=Glacijava test ca, OU=Glacijava group, O=Violet Shell, L=Ningbo, ST=Zhejiang, C=CN",
                 rootKeyPair.getPublicKey(),
                 rootKeyPair.getPrivateKey(),
                 3650,
@@ -62,14 +62,14 @@ public class RSACertTest {
         PKCS12KeyStoreUtils.storeCertificateAndKey(
                 "./out/test-case/pkcs12-test-ca.p12",
                 "000000",
-                "Thistle test ca alias",
+                "Glacijava test ca alias",
                 null,
                 rootCertificate);
 
         RSAKeyGenerator.RSAKeyPair subjectKeyPair = RSAKeyGenerator.generateKeyPair(2048);
 
         X509Certificate subjectCertificate = AdvancedCertificateUtils.generateRSAX509Certificate(
-                "CN=Thistle test subject, OU=Thistle group, O=Violet Shell, L=Ningbo, ST=Zhejiang, C=CN",
+                "CN=Glacijava test subject, OU=Glacijava group, O=Violet Shell, L=Ningbo, ST=Zhejiang, C=CN",
                 subjectKeyPair.getPublicKey(),
                 3650,
                 AdvancedCertificateUtils.SIGN_ALGORITHM_RSA_SHA256,
@@ -83,14 +83,14 @@ public class RSACertTest {
         PKCS12KeyStoreUtils.storeCertificateAndKey(
                 "./out/test-case/pkcs12-test.p12",
                 "000000",
-                "Thistle test subject alias",
+                "Glacijava test subject alias",
                 subjectKeyPair.getPrivateKey(),
                 subjectCertificate);
 
         PKCS12KeyStoreUtils.CertificateChainAndKey certificateChainAndKey = PKCS12KeyStoreUtils.loadCertificateAndKey(
                 "./out/test-case/pkcs12-test-ca.p12",
                 "000000",
-                "Thistle test ca alias"
+                "Glacijava test ca alias"
         );
 
         Assert.assertArrayEquals(new Certificate[]{rootCertificate}, certificateChainAndKey.getCertificateChain());
@@ -99,7 +99,7 @@ public class RSACertTest {
         PKCS12KeyStoreUtils.CertificateChainAndKey certificateChainAndKey2 = PKCS12KeyStoreUtils.loadCertificateAndKey(
                 "./out/test-case/pkcs12-test.p12",
                 "000000",
-                "Thistle test subject alias"
+                "Glacijava test subject alias"
         );
 
         Assert.assertArrayEquals(new Certificate[]{subjectCertificate}, certificateChainAndKey2.getCertificateChain());

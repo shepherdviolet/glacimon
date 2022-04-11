@@ -10,7 +10,7 @@
 <br>
 <br>
 
-## Basic
+## Glacimon
 
 <br>
 
@@ -21,6 +21,12 @@
 #### SPI utils
 
 * GlacimonSpi [(English Documents)](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md) [(中文文档)](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)
+
+<br>
+
+### Module: glacimon-bom
+
+> BOM for maven
 
 <br>
 <br>

@@ -216,7 +216,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 headers = SimpleKeyValueEncoder.decode(settings.getHeaders());
             } catch (SimpleKeyValueEncoder.DecodeException e) {
                 throw new RuntimeException("HttpClients | Error while parsing headers '" + settings.getHeaders() +
-                        "' to Map, illegal key-value format, see github.com/shepherdviolet/thistle/blob/master/docs/kvencoder/guide.md", e);
+                        "' to Map, illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", e);
             }
         }
 
@@ -701,7 +701,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                     if (t instanceof SimpleKeyValueEncoder.DecodeException) {
                         logger.error("HttpClients SettingsUpdate | Error while updating setting '" + settingName +
                                 "' of client '" + tag + "' to '" + value +
-                                "', illegal key-value format, see github.com/shepherdviolet/thistle/blob/master/docs/kvencoder/guide.md", t);
+                                "', illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", t);
                     } else {
                         logger.error("HttpClients SettingsUpdate | Error while updating setting '" + settingName +
                                 "' of client '" + tag + "' to '" + value + "'", t);
@@ -811,7 +811,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 if (t instanceof SimpleKeyValueEncoder.DecodeException) {
                     logger.error("HttpClients SettingsUpdate | Error while updating setting '" + settingName +
                             "' of client '" + tag + "' to '" + value +
-                            "', illegal key-value format, see github.com/shepherdviolet/thistle/blob/master/docs/kvencoder/guide.md", t);
+                            "', illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", t);
                 } else {
                     logger.error("HttpClients SettingsUpdate | Error while updating setting '" + settingName +
                             "' of client '" + tag + "' to '" + value + "'", t);
@@ -931,7 +931,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                         if (t instanceof SimpleKeyValueEncoder.DecodeException) {
                             logger.error("HttpClients SettingsUpdate | Error while updating setting '" + singleSettingName +
                                     "' of client '" + tag + "' to '" + value +
-                                    "', illegal key-value format, see github.com/shepherdviolet/thistle/blob/master/docs/kvencoder/guide.md", t);
+                                    "', illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", t);
                         } else {
                             logger.error("HttpClients SettingsUpdate | Error while updating setting '" + singleSettingName +
                                     "' of client '" + tag + "' to '" + value + "'", t);
@@ -950,7 +950,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                         if (t instanceof SimpleKeyValueEncoder.DecodeException) {
                             logger.error("HttpClients SettingsUpdate | Error while updating setting '" + arraySettingName +
                                     "' of client '" + tag + "' to '" + value +
-                                    "', illegal key-value format, see github.com/shepherdviolet/thistle/blob/master/docs/kvencoder/guide.md", t);
+                                    "', illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", t);
                         } else {
                             logger.error("HttpClients SettingsUpdate | Error while updating setting '" + arraySettingName +
                                     "' of client '" + tag + "' to '" + value + "'", t);

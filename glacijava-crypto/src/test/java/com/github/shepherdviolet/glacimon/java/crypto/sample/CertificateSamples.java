@@ -89,8 +89,8 @@ public class CertificateSamples {
     public void buildPKCS10CertificationRequest() throws NoSuchAlgorithmException, IOException, OperatorCreationException {
         SM2KeyGenerator.SM2KeyParamsPair keyPair = SM2KeyGenerator.generateKeyParamsPair();
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
-        x500NameBuilder.addRDN(BCStyle.CN, "Thistle test ca");
-        x500NameBuilder.addRDN(BCStyle.OU, "Thistle group");
+        x500NameBuilder.addRDN(BCStyle.CN, "Glacijava test ca");
+        x500NameBuilder.addRDN(BCStyle.OU, "Glacijava group");
         x500NameBuilder.addRDN(BCStyle.O, "Violet Shell");
         x500NameBuilder.addRDN(BCStyle.L, "Ningbo");
         x500NameBuilder.addRDN(BCStyle.ST, "Zhejiang");

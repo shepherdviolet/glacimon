@@ -28,7 +28,7 @@ import java.security.cert.*;
 /**
  * <p>证书工具</p>
  *
- * <p>更多功能见thistle-crypto-plus的AdvancedCertificateUtils</p>
+ * <p>更多功能见glacijava-crypto的AdvancedCertificateUtils</p>
  *
  * @author shepherdviolet
  */
@@ -40,7 +40,7 @@ public class CertificateUtils {
 
     /**
      * <p>解析X509格式的证书, 返回Certificate对象, 可用来获取证书公钥实例等, JDK版本较弱.
-     * 解析SM2等证书请使用thistle-crypto-plus的AdvancedCertificateUtils. </p>
+     * 解析SM2等证书请使用glacijava-crypto的AdvancedCertificateUtils. </p>
      * @param certData X509格式证书数据
      */
     public static X509Certificate parseX509ToCertificate(byte[] certData) throws CertificateException {
@@ -52,7 +52,7 @@ public class CertificateUtils {
 
     /**
      * <p>解析X509格式的证书, 返回Certificate对象, 可用来获取证书公钥实例等, JDK版本较弱.
-     * 解析SM2等证书请使用thistle-crypto-plus的AdvancedCertificateUtils. </p>
+     * 解析SM2等证书请使用glacijava-crypto的AdvancedCertificateUtils. </p>
      * @param inputStream X509格式证书数据流, 会被close掉
      */
     public static X509Certificate parseX509ToCertificate(InputStream inputStream) throws CertificateException {

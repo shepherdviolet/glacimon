@@ -57,14 +57,14 @@ public class PKCS12KeyStoreUtils {
     private static final String ALGORITHM = "PKCS12";
 
     /**
-     * 将证书和私钥保存到p12/pfx文件中, 本JDK版本较弱, 国密等算法请用thistle-crypto-plus的AdvancedPKCS12KeyStoreUtils
+     * 将证书和私钥保存到p12/pfx文件中, 本JDK版本较弱, 国密等算法请用glacijava-crypto的AdvancedPKCS12KeyStoreUtils
      *
      * <p>{@code
      *      //output user p12
      *      PKCS12KeyStoreUtils.storeCertificateAndKey(
      *          "user-cert.p12",
      *          "000000",
-     *          "Thistle test user cert",
+     *          "Glacijava test user cert",
      *          userPrivateKey,
      *          userCertificate);
      *
@@ -72,7 +72,7 @@ public class PKCS12KeyStoreUtils {
      *      PKCS12KeyStoreUtils.storeCertificateAndKey(
      *          "root-cert.p12",
      *          "000000",
-     *          "Thistle test ca cert",
+     *          "Glacijava test ca cert",
      *          null,
      *          caCertificate);
      * }</p>
@@ -98,14 +98,14 @@ public class PKCS12KeyStoreUtils {
     }
 
     /**
-     * 将证书和私钥保存到p12/pfx文件中, 本JDK版本较弱, 国密等算法请用thistle-crypto-plus的AdvancedPKCS12KeyStoreUtils
+     * 将证书和私钥保存到p12/pfx文件中, 本JDK版本较弱, 国密等算法请用glacijava-crypto的AdvancedPKCS12KeyStoreUtils
      *
      * <p>{@code
      *      //output user p12
      *      PKCS12KeyStoreUtils.storeCertificateAndKey(
      *          outputStream1,
      *          "000000",
-     *          "Thistle test user cert",
+     *          "Glacijava test user cert",
      *          userPrivateKey,
      *          userCertificate);
      *
@@ -113,7 +113,7 @@ public class PKCS12KeyStoreUtils {
      *      PKCS12KeyStoreUtils.storeCertificateAndKey(
      *          outputStream2,
      *          "000000",
-     *          "Thistle test ca cert",
+     *          "Glacijava test ca cert",
      *          null,
      *          caCertificate);
      * }</p>
@@ -150,7 +150,7 @@ public class PKCS12KeyStoreUtils {
     }
 
     /**
-     * 从p12/pfx文件中遍历alias, 本JDK版本较弱, 国密等算法请用thistle-crypto-plus的AdvancedPKCS12KeyStoreUtils
+     * 从p12/pfx文件中遍历alias, 本JDK版本较弱, 国密等算法请用glacijava-crypto的AdvancedPKCS12KeyStoreUtils
      *
      * <pre>{@code
      *      Enumeration<String> aliases = PKCS12KeyStoreUtils.loadAliases(
@@ -171,7 +171,7 @@ public class PKCS12KeyStoreUtils {
     }
 
     /**
-     * 从p12/pfx文件中遍历alias, 本JDK版本较弱, 国密等算法请用thistle-crypto-plus的AdvancedPKCS12KeyStoreUtils
+     * 从p12/pfx文件中遍历alias, 本JDK版本较弱, 国密等算法请用glacijava-crypto的AdvancedPKCS12KeyStoreUtils
      *
      * <pre>{@code
      *      Enumeration<String> aliases = PKCS12KeyStoreUtils.loadAliases(
@@ -194,13 +194,13 @@ public class PKCS12KeyStoreUtils {
     }
 
     /**
-     * 从p12/pfx文件中读取证书和私钥, 本JDK版本较弱, 国密等算法请用thistle-crypto-plus的AdvancedPKCS12KeyStoreUtils
+     * 从p12/pfx文件中读取证书和私钥, 本JDK版本较弱, 国密等算法请用glacijava-crypto的AdvancedPKCS12KeyStoreUtils
      *
      * <pre>{@code
      *      PKCS12KeyStoreUtils.CertificateChainAndKey certificateChainAndKey = PKCS12KeyStoreUtils.loadCertificateAndKey(
      *          "ca-cert.p12",
      *          "000000",
-     *          "Thistle test ca alias"
+     *          "Glacijava test ca alias"
      *          );
      * }</pre>
      *
@@ -217,13 +217,13 @@ public class PKCS12KeyStoreUtils {
     }
 
     /**
-     * 从p12/pfx文件中读取证书和私钥, 本JDK版本较弱, 国密等算法请用thistle-crypto-plus的AdvancedPKCS12KeyStoreUtils
+     * 从p12/pfx文件中读取证书和私钥, 本JDK版本较弱, 国密等算法请用glacijava-crypto的AdvancedPKCS12KeyStoreUtils
      *
      * <pre>{@code
      *      PKCS12KeyStoreUtils.CertificateChainAndKey certificateChainAndKey = PKCS12KeyStoreUtils.loadCertificateAndKey(
      *          inputStream,
      *          "000000",
-     *          "Thistle test ca alias"
+     *          "Glacijava test ca alias"
      *          );
      * }</pre>
      *
@@ -249,7 +249,7 @@ public class PKCS12KeyStoreUtils {
     }
 
     /**
-     * 从p12/pfx文件中读取证书和私钥, 本JDK版本较弱, 国密等算法请用thistle-crypto-plus的AdvancedPKCS12KeyStoreUtils
+     * 从p12/pfx文件中读取证书和私钥, 本JDK版本较弱, 国密等算法请用glacijava-crypto的AdvancedPKCS12KeyStoreUtils
      *
      * <pre>{@code
      *      List<PKCS12KeyStoreUtils.CertificateChainAndKey> certificateChainAndKeyList = PKCS12KeyStoreUtils.loadAllCertificateAndKey(
@@ -270,7 +270,7 @@ public class PKCS12KeyStoreUtils {
     }
 
     /**
-     * 从p12/pfx文件中读取证书和私钥, 本JDK版本较弱, 国密等算法请用thistle-crypto-plus的AdvancedPKCS12KeyStoreUtils
+     * 从p12/pfx文件中读取证书和私钥, 本JDK版本较弱, 国密等算法请用glacijava-crypto的AdvancedPKCS12KeyStoreUtils
      *
      * <pre>{@code
      *      List<PKCS12KeyStoreUtils.CertificateChainAndKey> certificateChainAndKeyList = PKCS12KeyStoreUtils.loadAllCertificateAndKey(

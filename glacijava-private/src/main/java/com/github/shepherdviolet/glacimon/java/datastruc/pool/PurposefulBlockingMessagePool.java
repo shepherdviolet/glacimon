@@ -220,7 +220,7 @@ public class PurposefulBlockingMessagePool <K, I> {
         setMessageDropListener(messageDropListener);
         if (this.unexpectedItemValidityPeriod > 0) {
             this.unexpectedItemLock = new ReentrantLock();
-            this.unexpectedItemFlushThreadPool = ThreadPoolExecutorUtils.createLazy(60L, "Thistle-PurposefulBlockMQ-Flush-%d");
+            this.unexpectedItemFlushThreadPool = ThreadPoolExecutorUtils.createLazy(60L, "Glacijava-PurposefulBlockMQ-Flush-%d");
             this.unexpectedItemPool = new HashMap<>();
         }
     }

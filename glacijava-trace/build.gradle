@@ -7,8 +7,8 @@ dependencies {
 
     //required
     [
+            project(':glacimon-spi-core') { group project_group_id; version project_version },
             project(':glacijava-common') { group project_group_id; version project_version },
-            project(':glacijava-spi-core') { group project_group_id; version project_version },
 
     ].forEach{ api it }
 

@@ -33,14 +33,14 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacijava-spi-core:?'
+    compile 'com.github.shepherdviolet.glacimon:glacimon-spi-core:?'
 }
 ```
 
 ```maven
     <dependency>    
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>glacijava-spi-core</artifactId>
+        <artifactId>glacimon-spi-core</artifactId>
         <version>?</version> 
     </dependency>
 ```

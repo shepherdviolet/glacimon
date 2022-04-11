@@ -10,17 +10,22 @@
 <br>
 <br>
 
-## Glacijava (Glacimon for JavaSE)
+## Basic
 
 <br>
 
-### Module: glacijava-spi-api glacijava-spi-core
+### Module: glacimon-spi-core  glacimon-spi-api
 
 > GlacimonSpi is an implementation of service provider interface feature. It can make your library expandable.
 
-#### SPI
+#### SPI utils
 
 * GlacimonSpi [(English Documents)](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md) [(中文文档)](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)
+
+<br>
+<br>
+
+## Glacijava (Glacimon for JavaSE)
 
 <br>
 
@@ -212,7 +217,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacijava-spi-core:?'
+    compile 'com.github.shepherdviolet.glacimon:glacimon-spi-core:?'
     compile 'com.github.shepherdviolet.glacimon:thistle-common:?'
     compile 'com.github.shepherdviolet.glacimon:thistle-crypto-plus:?'
     compile 'com.github.shepherdviolet.glacimon:thistle-trace:?'
@@ -228,7 +233,7 @@ dependencies {
 ```maven
     <dependency>    
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>glacijava-spi-core</artifactId>
+        <artifactId>glacimon-spi-core</artifactId>
         <version>?</version> 
     </dependency>
     <dependency>    

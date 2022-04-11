@@ -1,7 +1,7 @@
 {
   "public-java": {
-    "glacijava-spi-api": "glacijava-spi-api",
-    "glacijava-spi-core": "glacijava-spi-core",
+    "glacimon-spi-api": "glacimon-spi-api",
+    "glacimon-spi-core": "glacimon-spi-core",
     "glacijava-common": "glacijava-common",
     "glacijava-crypto": "glacijava-crypto",
     "glacijava-trace": "glacijava-trace"
@@ -14,8 +14,8 @@
     "glacispring-txtimer": "glacispring-txtimer"
   },
   "private-java": {
-    "glacijava-private": "glacijava-private",
-    "glacijava-spi-test": "glacijava-spi-test"
+    "glacimon-spi-test": "glacimon-spi-test",
+    "glacijava-private": "glacijava-private"
   },
   "private-spring": {
     "glacispring-private": "glacispring-private"

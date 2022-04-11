@@ -1,6 +1,6 @@
 # InterfaceInstantiation 接口实例化工具 (For Spring)
 
-* [Source Code](https://github.com/shepherdviolet/slate/tree/master/slate-common/src/main/java/sviolet/slate/common/x/proxy/interfaceinst)
+* [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/x/config/interfaceinst)
 
 ## 说明
 
@@ -13,7 +13,7 @@
 * SLF4J日志包路径: `com.github.shepherdviolet.glacimon.spring.x.config.interfaceinst`
 * 推荐日志级别: `INFO`
 * 日志关键字: `InterfaceInst`
-* [日志样例](https://github.com/shepherdviolet/slate/blob/master/docs/interfaceinst/log-sample.md)
+* [日志样例](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/log-sample.md)
 
 ## InterfaceInstantiation做了些什么?
 
@@ -268,7 +268,7 @@ public @interface EnableMyFunction {
 ```text
 //version替换为具体版本
 dependencies {
-    compile 'com.github.shepherdviolet:slate-common:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-common:?'
 }
 ```
 
@@ -277,8 +277,8 @@ dependencies {
 ```maven
     <!--version替换为具体版本-->
     <dependency>
-        <groupId>com.github.shepherdviolet</groupId>
-        <artifactId>slate-common</artifactId>
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacispring-common</artifactId>
         <version>?</version>
     </dependency>
 ```

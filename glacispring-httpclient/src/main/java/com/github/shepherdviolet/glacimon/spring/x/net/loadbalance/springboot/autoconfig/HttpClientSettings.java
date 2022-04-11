@@ -24,7 +24,7 @@ import java.util.Arrays;
 /**
  * <p>Http客户端实例参数</p>
  *
- * <p>配置前缀: slate.httpclients</p>
+ * <p>配置前缀: glacispring.httpclients</p>
  *
  * @author shepherdviolet
  */

@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * <p>
  *     注意!!!!!!<br>
- *     1.如果你是Servlet项目, 可以注册com.github.shepherdviolet.glacimon.spring.basic.servlet.SlateServletContextListener监听器, 监听器会帮你
+ *     1.如果你是Servlet项目, 可以注册com.github.shepherdviolet.glacimon.spring.basic.servlet.GlacispringServletContextListener监听器, 监听器会帮你
  *     自动销毁本探测器.<br>
  *     2.如果不是Servlet项目或没有注册监听器, 请在服务停止的时候调用close()方法销毁本实例, 以释放线程池.<br>
  * </p>
@@ -85,8 +85,8 @@ public class LoadBalancedInspectManager implements Closeable {
     private long blockDuration = DEFAULT_INSPECT_INTERVAL * 2;
 
     private ExecutorService dispatchThreadPool = ThreadPoolExecutorUtils.createFixed(1,
-            new GuavaThreadFactoryBuilder().setNameFormat("Slate-LBInspect-Dispatch-%d").setDaemon(true).build());
-    private ExecutorService inspectThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 60, "Slate-LBInspect-Inspect-%d");
+            new GuavaThreadFactoryBuilder().setNameFormat("Glacispring-LBInspect-Dispatch-%d").setDaemon(true).build());
+    private ExecutorService inspectThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 60, "Glacispring-LBInspect-Inspect-%d");
 
     /**
      * 自动开始探测(无需调用start()方法手动开启)

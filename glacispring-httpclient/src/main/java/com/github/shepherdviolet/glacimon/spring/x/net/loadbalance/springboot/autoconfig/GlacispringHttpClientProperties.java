@@ -20,16 +20,16 @@
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig;
 
 /**
- * <p>slate-http-client的客户端公共配置</p>
+ * <p>glacispring-httpclient的客户端公共配置</p>
  *
- * <p>配置前缀: slate.httpclient</p>
+ * <p>配置前缀: glacispring.httpclient</p>
  *
  * @author shepherdviolet
  */
-public class SlateHttpClientProperties {
+public class GlacispringHttpClientProperties {
 
     /**
-     * true: 启用Slate的HttpClient(总开关, 详见HttpClientsConfig), 默认false
+     * true: 启用glacispring-httpclient(总开关, 详见HttpClientsConfig), 默认false
      */
     private boolean enabled = false;
 

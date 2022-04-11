@@ -10,7 +10,7 @@
 <br>
 <br>
 
-## GlaciJava (Glacimon for JavaSE)
+## Glacijava (Glacimon for JavaSE)
 
 <br>
 
@@ -111,7 +111,7 @@
 <br>
 <br>
 
-## GlaciSpring (Glacimon for Java Spring)
+## Glacispring (Glacimon for Java Spring)
 
 <br>
 

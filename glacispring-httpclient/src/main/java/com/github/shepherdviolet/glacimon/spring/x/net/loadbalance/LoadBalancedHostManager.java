@@ -55,7 +55,7 @@ public class LoadBalancedHostManager {
     private static final boolean WARNING_DISABLED;
 
     static {
-        WARNING_DISABLED = "true".equals(System.getProperty("slate.loadbalance.warndisabled", "false"));
+        WARNING_DISABLED = "true".equals(System.getProperty("glacispring.loadbalance.warndisabled", "false"));
     }
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -118,7 +118,7 @@ public class LoadBalancedHostManager {
             if (System.currentTimeMillis() - previousHostChangeTime < WARNING_THRESHOLD && logger.isErrorEnabled()) {
                 logger.error(LOG_PREFIX + "ERROR at " + getCallerInfo() + "!!! DO NOT set the hosts before requesting! Because the new hosts will " +
                         "not take effect immediately! It will send the request to the old hosts! See doc: " +
-                        "https://github.com/shepherdviolet/slate/blob/master/docs/loadbalance/guide.md");
+                        "https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/guide.md");
             }
         }
     }
@@ -140,7 +140,7 @@ public class LoadBalancedHostManager {
      * settings
      */
 
-    private ExecutorService settingThreadPool = ThreadPoolExecutorUtils.createLazy(60L, "Slate-LBHostManager-Set-%d");
+    private ExecutorService settingThreadPool = ThreadPoolExecutorUtils.createLazy(60L, "Glacispring-LBHostManager-Set-%d");
     private AtomicReference<List<String>> newSettings = new AtomicReference<>(null);
 
     private volatile boolean initialized = false;

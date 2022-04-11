@@ -27,7 +27,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.ap
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.apollo.HttpClientsApolloConfigWithNamespace;
 
 /**
- * slate-http-client 自动配置 (Spring Boot)
+ * glacispring-httpclient 自动配置 (Spring Boot)
  *
  * @author shepherdviolet
  */
@@ -38,11 +38,11 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.ap
         HttpClientsApolloConfig.class,
         HttpClientsApolloConfigWithNamespace.class
 })
-public class SlateHttpClientAutoConfiguration {
+public class GlacispringHttpClientAutoConfiguration {
 
-    @Bean(SlatePropertiesForHttpClient.BEAN_NAME)
-    public SlatePropertiesForHttpClient slatePropertiesForHttpClient(){
-        return new SlatePropertiesForHttpClient();
+    @Bean(GlacispringPropertiesForHttpClient.BEAN_NAME)
+    public GlacispringPropertiesForHttpClient glacispringPropertiesForHttpClient(){
+        return new GlacispringPropertiesForHttpClient();
     }
 
 }

@@ -36,12 +36,12 @@ import java.util.Map;
 
 /**
  * <p>HttpClients配置: 自动配置SimpleOkHttpClient</p>
- * <p>配置前缀: slate.httpclients</p>
+ * <p>配置前缀: glacispring.httpclients</p>
  *
  * @author shepherdviolet
  */
 @Configuration
-@ConditionalOnExpression("${slate.httpclient.enabled:false}")
+@ConditionalOnExpression("${glacispring.httpclient.enabled:false}")
 @EnableMemberProcessor(HttpClientMemberProcessor.class)//开启@HttpClient注解注入
 public class HttpClientsConfig {
 
@@ -60,7 +60,7 @@ public class HttpClientsConfig {
     @Bean(HttpClients.HTTP_CLIENTS_NAME)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public HttpClients httpClientsContainer(
-            @Qualifier(SlatePropertiesForHttpClient.BEAN_NAME) SlatePropertiesForHttpClient slatePropertiesForHttpClient,
+            @Qualifier(GlacispringPropertiesForHttpClient.BEAN_NAME) GlacispringPropertiesForHttpClient glacispringPropertiesForHttpClient,
             ObjectProvider<Map<String, DataConverter>> dataConverterProvider) {
 
         //data converter
@@ -71,7 +71,7 @@ public class HttpClientsConfig {
         }
 
         //impl
-        return new HttpClientsImpl(slatePropertiesForHttpClient, dataConverter);
+        return new HttpClientsImpl(glacispringPropertiesForHttpClient, dataConverter);
     }
 
     /**

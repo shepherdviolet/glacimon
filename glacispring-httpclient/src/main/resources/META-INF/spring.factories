@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.SlateHttpClientAutoConfiguration
+com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.GlacispringHttpClientAutoConfiguration

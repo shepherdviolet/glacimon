@@ -34,16 +34,16 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.Ht
 
 /**
  * <p>HttpClients阿波罗动态配置: 支持在Apollo配置中心上动态调整客户端配置</p>
- * <p>配置前缀: slate.httpclient</p>
+ * <p>配置前缀: glacispring.httpclient</p>
  *
  * @author shepherdviolet
  */
 @Configuration
-@ConditionalOnExpression("${slate.httpclient.enabled:false} " +
-        "&& ${slate.httpclient.apollo-support:false} " +
-        "&& ( '${slate.httpclient.apollo-namespace:<null/>}'.equals(\"<null/>\") " +
-        "|| '${slate.httpclient.apollo-namespace:<null/>}'.equals(\"application\") " +
-        "|| '${slate.httpclient.apollo-namespace:<null/>}'.length() == 0 )")
+@ConditionalOnExpression("${glacispring.httpclient.enabled:false} " +
+        "&& ${glacispring.httpclient.apollo-support:false} " +
+        "&& ( '${glacispring.httpclient.apollo-namespace:<null/>}'.equals(\"<null/>\") " +
+        "|| '${glacispring.httpclient.apollo-namespace:<null/>}'.equals(\"application\") " +
+        "|| '${glacispring.httpclient.apollo-namespace:<null/>}'.length() == 0 )")
 @ConditionalOnClass(Config.class)
 public class HttpClientsApolloConfig implements InitializingBean {
 

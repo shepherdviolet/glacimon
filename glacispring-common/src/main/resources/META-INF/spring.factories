@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.github.shepherdviolet.glacimon.spring.basic.autoconfig.SlateCommonAutoConfiguration
+com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonAutoConfiguration

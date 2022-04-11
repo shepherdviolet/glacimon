@@ -24,7 +24,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.github.shepherdviolet.glacimon.spring.basic.servlet.SlateServletContextListener;
+import com.github.shepherdviolet.glacimon.spring.basic.servlet.GlacispringServletContextListener;
 
 import javax.servlet.ServletContextListener;
 
@@ -34,13 +34,13 @@ import javax.servlet.ServletContextListener;
  * @author shepherdviolet
  */
 @Configuration
-@ConditionalOnExpression("${slate.common.servlet-context-listener-enabled:true}")
+@ConditionalOnExpression("${glacispring.common.servlet-context-listener-enabled:true}")
 @ConditionalOnClass(javax.servlet.ServletContextListener.class)
-public class SlateServletContextListenerConfig {
+public class GlacispringServletContextListenerConfig {
 
-    @Bean("slate.httpclient.slateServletContextListener")
+    @Bean("glacispring.common.glacispringServletContextListener")
     public ServletContextListener slateServletContextListener() {
-        return new SlateServletContextListener();
+        return new GlacispringServletContextListener();
     }
 
 }

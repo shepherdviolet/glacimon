@@ -19,26 +19,31 @@
 
 package com.github.shepherdviolet.glacimon.spring.basic.autoconfig;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * <p>slate-common 自动配置</p>
+ * <p>glacispring common 配置</p>
+ *
+ * <p>配置前缀: glacispring.common</p>
  *
  * @author shepherdviolet
  */
-@Configuration
-@EnableConfigurationProperties
-@Import({
-        SlateServletContextListenerConfig.class
-})
-public class SlateCommonAutoConfiguration {
+@ConfigurationProperties(prefix = "glacispring.common")
+public class GlacispringCommonProperties {
 
-    @Bean("slate.common.slateCommonProperties")
-    public SlateCommonProperties slateCommonProperties(){
-        return new SlateCommonProperties();
+    /**
+     * <p>true:启用ServletContextListener监听WEB容器启停事件, 默认true</p>
+     *
+     * <p>See GlacispringServletContextListenerConfig</p>
+     */
+    private boolean servletContextListenerEnabled = true;
+
+    public boolean isServletContextListenerEnabled() {
+        return servletContextListenerEnabled;
+    }
+
+    public void setServletContextListenerEnabled(boolean servletContextListenerEnabled) {
+        this.servletContextListenerEnabled = servletContextListenerEnabled;
     }
 
 }

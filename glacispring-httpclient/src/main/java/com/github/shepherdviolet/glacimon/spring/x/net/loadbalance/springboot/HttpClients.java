@@ -27,12 +27,12 @@ import java.util.Set;
 
 /**
  * <p>HttpClients配置: 自动配置SimpleOkHttpClient</p>
- * <p>配置前缀: slate.httpclients</p>
+ * <p>配置前缀: glacispring.httpclients</p>
  */
 public interface HttpClients {
 
-    String HTTP_CLIENTS_NAME = "slate.httpclient.httpClients";
-    String DATA_CONVERTER_NAME = "slate.httpclient.dataConverter";
+    String HTTP_CLIENTS_NAME = "glacispring.httpclient.httpClients";
+    String DATA_CONVERTER_NAME = "glacispring.httpclient.dataConverter";
 
     /**
      * 获取Http请求客户端
@@ -114,9 +114,9 @@ public interface HttpClients {
 
         /**
          * <p>返回需要调整的配置清单, 格式如下:</p>
-         * <p>slate.httpclients.tag.propname</p>
+         * <p>glacispring.httpclients.tag.propname</p>
          * <p>其中, tag为HttpClient的标识, propname为配置名称.</p>
-         * <p>例如: slate.httpclients.default.hosts 表示调整default客户端的后端列表, 若不存在default客户端, 则会创建一个新的</p>
+         * <p>例如: glacispring.httpclients.default.hosts 表示调整default客户端的后端列表, 若不存在default客户端, 则会创建一个新的</p>
          */
         Set<String> getKeys();
 

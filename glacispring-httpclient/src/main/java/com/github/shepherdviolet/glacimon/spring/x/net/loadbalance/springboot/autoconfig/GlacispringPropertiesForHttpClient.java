@@ -24,31 +24,31 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.Map;
 
 /**
- * <p>slate-http-client 配置</p>
- * <p>配置前缀: slate.httpclient slate.httpclients</p>
+ * <p>glacispring-httpclient 配置</p>
+ * <p>配置前缀: glacispring.httpclient glacispring.httpclients</p>
  *
  * @author shepherdviolet
  */
-@ConfigurationProperties(prefix = "slate")
-public class SlatePropertiesForHttpClient {
+@ConfigurationProperties(prefix = "glacispring")
+public class GlacispringPropertiesForHttpClient {
 
-    public static final String BEAN_NAME = "slate.httpclient.slatePropertiesForHttpClient";
+    public static final String BEAN_NAME = "glacispring.httpclient.glacispringPropertiesForHttpClient";
 
     /**
      * 配置Http客户端的公共配置(总开关/Apollo动态配置等), 详见HttpClientProperties
      */
-    private SlateHttpClientProperties httpclient;
+    private GlacispringHttpClientProperties httpclient;
 
     /**
      * 配置每个Http客户端的参数, key:客户端名, value:详见HttpClientSettings
      */
     private Map<String, HttpClientSettings> httpclients;
 
-    public SlateHttpClientProperties getHttpclient() {
+    public GlacispringHttpClientProperties getHttpclient() {
         return httpclient;
     }
 
-    public void setHttpclient(SlateHttpClientProperties httpclient) {
+    public void setHttpclient(GlacispringHttpClientProperties httpclient) {
         this.httpclient = httpclient;
     }
 

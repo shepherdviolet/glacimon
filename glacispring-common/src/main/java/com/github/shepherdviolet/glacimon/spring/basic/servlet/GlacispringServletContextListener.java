@@ -31,7 +31,7 @@ import javax.servlet.ServletContextListener;
  * <p>[ServletContextListener]</p>
  *
  * <p>
- *     Slate库统一Servlet监听器<br>
+ *     Glacispring库统一Servlet监听器<br>
  *     1.销毁所有在CloseableManageUtils注册的Closeable实例<br>
  *     2.销毁所有由ThreadPoolExecutorUtils创建的Executor<br>
  * </p>
@@ -43,7 +43,7 @@ import javax.servlet.ServletContextListener;
  * <pre>{@code
  *  <web-app ......>
  *      <listener>
- *          <listener-class>com.github.shepherdviolet.glacimon.spring.basic.servlet.SlateServletContextListener</listener-class>
+ *          <listener-class>com.github.shepherdviolet.glacispring.spring.basic.servlet.GlacispringServletContextListener</listener-class>
  *      </listener>
  *      <listener>
  *          ......
@@ -58,8 +58,8 @@ import javax.servlet.ServletContextListener;
  *  <code>@Configuration</code>
  *  public class AppConf {
  *      <code>@Bean</code>
- *      public ServletContextListener slateServletContextListener() {
- *          return new SlateServletContextListener();
+ *      public ServletContextListener glacispringServletContextListener() {
+ *          return new GlacispringServletContextListener();
  *      }
  *      ......
  *  }
@@ -68,18 +68,18 @@ import javax.servlet.ServletContextListener;
  * @author shepherdviolet
  *
  */
-public class SlateServletContextListener implements ServletContextListener {
+public class GlacispringServletContextListener implements ServletContextListener {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        logger.info("SlateServletContextListener init");
+        logger.info("GlacispringServletContextListener init");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        logger.info("SlateServletContextListener destroy");
+        logger.info("GlacispringServletContextListener destroy");
         CloseableManageUtils.closeAll();
         ThreadPoolExecutorUtils.shutdownNowAll();
     }

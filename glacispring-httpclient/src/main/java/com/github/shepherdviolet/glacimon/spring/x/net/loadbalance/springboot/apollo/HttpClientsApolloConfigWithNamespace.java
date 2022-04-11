@@ -24,7 +24,7 @@ import com.ctrip.framework.apollo.ConfigChangeListener;
 import com.ctrip.framework.apollo.ConfigService;
 import com.ctrip.framework.apollo.enums.ConfigSourceType;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.SlatePropertiesForHttpClient;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.GlacispringPropertiesForHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +36,16 @@ import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 
 /**
  * <p>HttpClients阿波罗动态配置: 支持在Apollo配置中心上动态调整客户端配置</p>
- * <p>配置前缀: slate.httpclient</p>
+ * <p>配置前缀: glacispring.httpclient</p>
  *
  * @author shepherdviolet
  */
 @Configuration
-@ConditionalOnExpression("${slate.httpclient.enabled:false} " +
-        "&& ${slate.httpclient.apollo-support:false} " +
-        "&& !'${slate.httpclient.apollo-namespace:<null/>}'.equals(\"<null/>\") " +
-        "&& !'${slate.httpclient.apollo-namespace:<null/>}'.equals(\"application\") " +
-        "&& '${slate.httpclient.apollo-namespace:<null/>}'.length() > 0")
+@ConditionalOnExpression("${glacispring.httpclient.enabled:false} " +
+        "&& ${glacispring.httpclient.apollo-support:false} " +
+        "&& !'${glacispring.httpclient.apollo-namespace:<null/>}'.equals(\"<null/>\") " +
+        "&& !'${glacispring.httpclient.apollo-namespace:<null/>}'.equals(\"application\") " +
+        "&& '${glacispring.httpclient.apollo-namespace:<null/>}'.length() > 0")
 @ConditionalOnClass(Config.class)
 public class HttpClientsApolloConfigWithNamespace {
 
@@ -56,7 +56,7 @@ public class HttpClientsApolloConfigWithNamespace {
     //构造注入确保第一时间获得实例
     @Autowired
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public HttpClientsApolloConfigWithNamespace(HttpClients httpClients, SlatePropertiesForHttpClient properties) {
+    public HttpClientsApolloConfigWithNamespace(HttpClients httpClients, GlacispringPropertiesForHttpClient properties) {
         this.httpClients = httpClients;
         logger.info("HttpClients Apollo | Custom namespace mode");
         String[] namespaces = properties.getHttpclient().getApolloNamespace().split(",");

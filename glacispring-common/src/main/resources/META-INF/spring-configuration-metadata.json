@@ -1,17 +1,17 @@
 {
   "groups": [
     {
-      "name": "slate.common",
-      "type": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.SlateCommonProperties",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.SlateCommonProperties"
+      "name": "glacispring.common",
+      "type": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties"
     }
   ],
   "properties": [
     {
-      "name": "slate.common.servlet-context-listener-enabled",
+      "name": "glacispring.common.servlet-context-listener-enabled",
       "type": "java.lang.Boolean",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.SlateServletContextListenerConfig",
-      "description": "Properties: com.github.shepherdviolet.glacimon.spring.basic.autoconfig.SlateCommonProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringServletContextListenerConfig",
+      "description": "Properties: com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties",
       "defaultValue": true
     }
   ],

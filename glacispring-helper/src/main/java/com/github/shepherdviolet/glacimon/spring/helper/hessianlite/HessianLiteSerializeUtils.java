@@ -38,7 +38,7 @@ public class HessianLiteSerializeUtils {
     private static final int BUFF_SIZE = 1024;
 
     static {
-        serializerFactory = new SlateHessianLiteSerializerFactory();
+        serializerFactory = new GlacispringHessianLiteSerializerFactory();
         serializerFactory.setAllowNonSerializable(true);
     }
 

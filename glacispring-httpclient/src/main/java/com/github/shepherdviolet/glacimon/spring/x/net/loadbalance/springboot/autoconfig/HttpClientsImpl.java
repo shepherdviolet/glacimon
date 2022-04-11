@@ -47,7 +47,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, DisposableBean {
 
-    public static final String SETTING_PREFIX = "slate.httpclients.";
+    public static final String SETTING_PREFIX = "glacispring.httpclients.";
     private static final int ARRAY_MAX_SIZE = 1024;
 
     private static final Logger logger = LoggerFactory.getLogger(HttpClientsImpl.class);
@@ -60,20 +60,20 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
     private final Map<String, Updater> clientUpdaters = new HashMap<>(32);
 
     private final LinkedBlockingQueue<OverrideSettings> unsolvedSettings = new LinkedBlockingQueue<>();
-    private final ExecutorService updateExecutor = ThreadPoolExecutorUtils.createLazy(60, "Slate-HttpClients-update-%d");
+    private final ExecutorService updateExecutor = ThreadPoolExecutorUtils.createLazy(60, "Glacispring-HttpClients-update-%d");
 
-    HttpClientsImpl(SlatePropertiesForHttpClient slatePropertiesForHttpClient, DataConverter dataConverter) {
+    HttpClientsImpl(GlacispringPropertiesForHttpClient glacispringPropertiesForHttpClient, DataConverter dataConverter) {
         this.dataConverter = dataConverter;
 
-        if (slatePropertiesForHttpClient.getHttpclient() != null) {
-            noticeLogEnabled = slatePropertiesForHttpClient.getHttpclient().isNoticeLogEnabled();
+        if (glacispringPropertiesForHttpClient.getHttpclient() != null) {
+            noticeLogEnabled = glacispringPropertiesForHttpClient.getHttpclient().isNoticeLogEnabled();
         }
 
         // Init client updaters
         initClientUpdaters();
 
         // Create clients at startup
-        createClientsAtStartup(slatePropertiesForHttpClient);
+        createClientsAtStartup(glacispringPropertiesForHttpClient);
     }
 
     /**
@@ -160,17 +160,17 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
     /**
      * 启动时第一次创建客户端示例
      */
-    private void createClientsAtStartup(SlatePropertiesForHttpClient slatePropertiesForHttpClient) {
+    private void createClientsAtStartup(GlacispringPropertiesForHttpClient glacispringPropertiesForHttpClient) {
         if (noticeLogEnabled) {
             logger.info("HttpClients | Enabled");
         }
 
-        if (slatePropertiesForHttpClient.getHttpclients() == null) {
+        if (glacispringPropertiesForHttpClient.getHttpclients() == null) {
             return;
         }
 
         //create client
-        for (Map.Entry<String, HttpClientSettings> entry : slatePropertiesForHttpClient.getHttpclients().entrySet()) {
+        for (Map.Entry<String, HttpClientSettings> entry : glacispringPropertiesForHttpClient.getHttpclients().entrySet()) {
 
             String tag = entry.getKey();
 

@@ -40,7 +40,7 @@ import org.objenesis.instantiator.ObjectInstantiator;
  *         private SerializerFactory serializerFactory;
  *
  *         public Foo() {
- *             serializerFactory = new SlateHessianLiteSerializerFactory();
+ *             serializerFactory = new GlacispringHessianLiteSerializerFactory();
  *             serializerFactory.setAllowNonSerializable(true);
  *         }
  *
@@ -51,7 +51,7 @@ import org.objenesis.instantiator.ObjectInstantiator;
  *
  * @author shepherdviolet
  */
-public class SlateHessianLiteSerializerFactory extends SerializerFactory {
+public class GlacispringHessianLiteSerializerFactory extends SerializerFactory {
 
     private Objenesis objenesis = new ObjenesisStd();
 

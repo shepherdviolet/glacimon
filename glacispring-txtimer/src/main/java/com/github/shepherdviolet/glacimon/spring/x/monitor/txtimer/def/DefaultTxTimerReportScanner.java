@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 /**
  * [非线程安全 | Not Thread Safe] TxTimer报告扫描解析器
  *
- * <p>建议TxTimer设置slate.txtimer.report.printpermin=true, 可以打印更精确的数据</p>
+ * <p>建议TxTimer设置glacispring.txtimer.report.printpermin=true, 可以打印更精确的数据</p>
  *
  * <p>本类是设计用来进行简单地离线地统计数据分析的, 如果写成线程安全的, 会增加代码的复杂度, 同时降低单线程执行时的效率.
  * 所以在使用时, 请在单线程中创建该类, 然后读取, 最后获取结果. 本类提供了一个shutdown方法, 这是唯一一个可以在其他线程

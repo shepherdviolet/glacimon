@@ -42,32 +42,32 @@ public class DefaultTxTimerProvider2 implements TxTimerProvider2, InitializableI
      * 启动后固定
      * [基本设置]日志报告输出间隔(周期), 单位:分钟, [2-60], 默认5
      */
-    @PropertyInject(getVmOptionFirst = "slate.txtimer.report.interval")
+    @PropertyInject(getVmOptionFirst = "glacispring.txtimer.report.interval")
     int reportInterval;
     int reportIntervalMillis;
     /**
      * 启动后固定
      * [调优设置]日志每次输出的最大行数, 大于该行数会分页, 默认20
      */
-    @PropertyInject(getVmOptionFirst = "slate.txtimer.pagelines")
+    @PropertyInject(getVmOptionFirst = "glacispring.txtimer.pagelines")
     int pageLines;
     /**
      * 启动后固定
      * [调优设置]内部Map的初始大小, 大于观测点数量为宜
      */
-    @PropertyInject(getVmOptionFirst = "slate.txtimer.mapinitcap")
+    @PropertyInject(getVmOptionFirst = "glacispring.txtimer.mapinitcap")
     int mapInitCap;
     /**
      * 启动后固定
      * [调优设置]StringHashLocks的锁数量
      */
-    @PropertyInject(getVmOptionFirst = "slate.txtimer.hashlocknum")
+    @PropertyInject(getVmOptionFirst = "glacispring.txtimer.hashlocknum")
     int hashLockNum;
     /**
      * 启动后固定
      * [调优设置]内部一些非锁更新操作的最大尝试次数
      */
-    @PropertyInject(getVmOptionFirst = "slate.txtimer.updateattemps")
+    @PropertyInject(getVmOptionFirst = "glacispring.txtimer.updateattemps")
     int updateAttempts;
 
     /* ******************************************************************************************************** */
@@ -88,23 +88,23 @@ public class DefaultTxTimerProvider2 implements TxTimerProvider2, InitializableI
     @Override
     public void onServiceCreated() {
         if (reportInterval < 2 || reportInterval > 60) {
-            throw new IllegalArgumentException("slate.txtimer.report.interval must >= 2 and <= 60 (minute)");
+            throw new IllegalArgumentException("glacispring.txtimer.report.interval must >= 2 and <= 60 (minute)");
         }
         reportIntervalMillis = reportInterval * 60 * 1000;
         locks = new UnsafeHashSpinLocks(hashLockNum);
         logger.info("TxTimer | Config: Ordinary Report every " + reportInterval + " minutes");
 
         if (pageLines < 1) {
-            throw new IllegalArgumentException("slate.txtimer.pagelines must >= 1");
+            throw new IllegalArgumentException("glacispring.txtimer.pagelines must >= 1");
         }
         if (mapInitCap < 16) {
-            throw new IllegalArgumentException("slate.txtimer.mapinitcap must >= 16");
+            throw new IllegalArgumentException("glacispring.txtimer.mapinitcap must >= 16");
         }
         if (hashLockNum < 8) {
-            throw new IllegalArgumentException("slate.txtimer.hashlocknum must >= 8");
+            throw new IllegalArgumentException("glacispring.txtimer.hashlocknum must >= 8");
         }
         if (updateAttempts < 1) {
-            throw new IllegalArgumentException("slate.txtimer.updateattemps must >= 1");
+            throw new IllegalArgumentException("glacispring.txtimer.updateattemps must >= 1");
         }
     }
 

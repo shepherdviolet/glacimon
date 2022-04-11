@@ -31,7 +31,7 @@ import java.util.LinkedList;
  * <p>日志前缀:TxTimer</p>
  *
  * <p>启动参数:<br>
- *      -Dslate.txtimer.enabled=true 启用统计, true开启, false关闭, 默认开启<br>
+ *      -Dglacispring.txtimer.enabled=true 启用统计, true开启, false关闭, 默认开启<br>
  * </p>
  *
  * <p>默认实现 ********************************************************************************************</p>
@@ -42,18 +42,18 @@ import java.util.LinkedList;
  * </p>
  *
  * <p>默认实现的启动参数(不可动态修改):<br>
- *      -Dslate.txtimer.report.interval=5 日志报告输出间隔, 单位分钟, [2-60], 默认5 <br>
- *      -Dslate.txtimer.pagelines=20 日志每次输出的最大行数, 大于该行数会分页, 默认20 <br>
+ *      -Dglacispring.txtimer.report.interval=5 日志报告输出间隔, 单位分钟, [2-60], 默认5 <br>
+ *      -Dglacispring.txtimer.pagelines=20 日志每次输出的最大行数, 大于该行数会分页, 默认20 <br>
  * </p>
  *
  * <p>默认实现的启动参数(可动态修改):<br>
- *      -Dslate.txtimer.reportall.interval=60 全量日志报告输出间隔(周期), 单位:分钟, [2-∞], 默认∞(不输出全量日志)<br>
- *      -Dslate.txtimer.threshold.avg=2000 打印周期内平均耗时超过该值的交易, 单位:毫秒<br>
- *      -Dslate.txtimer.threshold.max=10000 打印周期内最大耗时超过该值的交易, 单位:毫秒<br>
- *      -Dslate.txtimer.threshold.min=1000 打印周期内最小耗时超过该值的交易, 单位:毫秒<br>
+ *      -Dglacispring.txtimer.reportall.interval=60 全量日志报告输出间隔(周期), 单位:分钟, [2-∞], 默认∞(不输出全量日志)<br>
+ *      -Dglacispring.txtimer.threshold.avg=2000 打印周期内平均耗时超过该值的交易, 单位:毫秒<br>
+ *      -Dglacispring.txtimer.threshold.max=10000 打印周期内最大耗时超过该值的交易, 单位:毫秒<br>
+ *      -Dglacispring.txtimer.threshold.min=1000 打印周期内最小耗时超过该值的交易, 单位:毫秒<br>
  * </p>
  *
- * <p>slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+ * <p>glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
  * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin</p>
  *
  * @author shepherdviolet
@@ -66,7 +66,7 @@ public class TxTimer {
 
     static {
         //统计开关, 默认关闭
-        if ("true".equals(System.getProperty("slate.txtimer.enabled", "true"))) {
+        if ("true".equals(System.getProperty("glacispring.txtimer.enabled", "true"))) {
             TxTimerProvider2 service = GlacimonSpi.loadSingleService(TxTimerProvider2.class).get();
             //再根据provider判断是否要启用
             if (service.enabled()) {

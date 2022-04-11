@@ -39,7 +39,7 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内平均耗时超过该值的交易, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     static int thresholdAvg;
@@ -47,7 +47,7 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内最大耗时超过该值的交易, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     static int thresholdMax;
@@ -55,7 +55,7 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内最小耗时超过该值的交易, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     static int thresholdMin;
@@ -76,7 +76,7 @@ public class DefaultTxTimerConfig {
      */
     public static void setReportAllInterval(int reportAllInterval) {
         if (lockReportAllInterval) {
-            logger.warn("TxTimer | Config: reportAllInterval has been locked by -Dslate.txtimer.reportall.interval, can not change");
+            logger.warn("TxTimer | Config: reportAllInterval has been locked by -Dglacispring.txtimer.reportall.interval, can not change");
             return;
         }
         DefaultTxTimerConfig.reportAllInterval = reportAllInterval;
@@ -103,12 +103,12 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内平均耗时超过该值的记录, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     public static void setThresholdAvg(int thresholdAvg) {
         if (lockThresholdAvg) {
-            logger.warn("TxTimer | Config: thresholdAvg has been locked by -Dslate.txtimer.threshold.avg, can not change");
+            logger.warn("TxTimer | Config: thresholdAvg has been locked by -Dglacispring.txtimer.threshold.avg, can not change");
             return;
         }
         DefaultTxTimerConfig.thresholdAvg = thresholdAvg;
@@ -120,7 +120,7 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内平均耗时超过该值的记录, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     public static void setThresholdAvg(String thresholdAvg) {
@@ -137,12 +137,12 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内最大耗时超过该值的记录, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     public static void setThresholdMax(int thresholdMax) {
         if (lockThresholdMax) {
-            logger.warn("TxTimer | Config: thresholdMax has been locked by -Dslate.txtimer.threshold.max, can not change");
+            logger.warn("TxTimer | Config: thresholdMax has been locked by -Dglacispring.txtimer.threshold.max, can not change");
             return;
         }
         DefaultTxTimerConfig.thresholdMax = thresholdMax;
@@ -154,7 +154,7 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内最大耗时超过该值的记录, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     public static void setThresholdMax(String thresholdMax) {
@@ -171,12 +171,12 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内最小耗时超过该值的记录, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     public static void setThresholdMin(int thresholdMin) {
         if (lockThresholdMin) {
-            logger.warn("TxTimer | Config: thresholdMin has been locked by -Dslate.txtimer.threshold.min, can not change");
+            logger.warn("TxTimer | Config: thresholdMin has been locked by -Dglacispring.txtimer.threshold.min, can not change");
             return;
         }
         DefaultTxTimerConfig.thresholdMin = thresholdMin;
@@ -188,7 +188,7 @@ public class DefaultTxTimerConfig {
     /**
      * 可动态调整, 启动参数优先级大于动态配置<br>
      * [基本设置]打印周期内最小耗时超过该值的记录, 单位:毫秒<br>
-     * slate.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
+     * glacispring.txtimer.threshold系列参数均未配置, 则输出全部交易的报告. 若设置了任意一个, 则只有满足条件的交易才输出:
      * avg >= thresholdAvg || max >= thresholdMax || min >= thresholdMin<br>
      */
     public static void setThresholdMin(String thresholdMin) {
@@ -208,7 +208,7 @@ public class DefaultTxTimerConfig {
      */
     public static void setReportPrintsPerMinute(boolean reportPrintsPerMinute) {
         if (lockReportPrintsPerMinute) {
-            logger.warn("TxTimer | Config: reportPrintsPerMinute has been locked by -Dslate.txtimer.report.printpermin, can not change");
+            logger.warn("TxTimer | Config: reportPrintsPerMinute has been locked by -Dglacispring.txtimer.report.printpermin, can not change");
             return;
         }
         DefaultTxTimerConfig.reportPrintsPerMinute = reportPrintsPerMinute;
@@ -235,38 +235,38 @@ public class DefaultTxTimerConfig {
     private static final Logger logger = LoggerFactory.getLogger(DefaultTxTimerConfig.class);
 
     static {
-        reportAllInterval = getIntFromProperty("slate.txtimer.reportall.interval", Integer.MAX_VALUE);
+        reportAllInterval = getIntFromProperty("glacispring.txtimer.reportall.interval", Integer.MAX_VALUE);
         if (reportAllInterval < 2) {
-            throw new IllegalArgumentException("-Dslate.txtimer.reportall.interval must >= 2 (minute)");
+            throw new IllegalArgumentException("-Dglacispring.txtimer.reportall.interval must >= 2 (minute)");
         }
         if (reportAllInterval < Integer.MAX_VALUE) {
             lockReportAllInterval = true;
             reportAllIntervalMillis = reportAllInterval * 60L * 1000L;
-            logger.debug("TxTimer | Config: reportAllInterval is locked by -Dslate.txtimer.reportall.interval=" + reportAllInterval);
+            logger.debug("TxTimer | Config: reportAllInterval is locked by -Dglacispring.txtimer.reportall.interval=" + reportAllInterval);
             logger.info("TxTimer | Config: Full Report every " + reportAllInterval + " minutes");
         }
 
-        thresholdAvg = getIntFromProperty("slate.txtimer.threshold.avg", Integer.MAX_VALUE);
+        thresholdAvg = getIntFromProperty("glacispring.txtimer.threshold.avg", Integer.MAX_VALUE);
         if (thresholdAvg < Integer.MAX_VALUE) {
             lockThresholdAvg = true;
             thresholdEnabled = true;
-            logger.debug("TxTimer | Config: thresholdAvg is locked by -Dslate.txtimer.threshold.avg=" + thresholdAvg);
+            logger.debug("TxTimer | Config: thresholdAvg is locked by -Dglacispring.txtimer.threshold.avg=" + thresholdAvg);
         }
-        thresholdMax = getIntFromProperty("slate.txtimer.threshold.max", Integer.MAX_VALUE);
+        thresholdMax = getIntFromProperty("glacispring.txtimer.threshold.max", Integer.MAX_VALUE);
         if (thresholdMax < Integer.MAX_VALUE) {
             lockThresholdMax = true;
             thresholdEnabled = true;
-            logger.debug("TxTimer | Config: thresholdMax is locked by -Dslate.txtimer.threshold.max=" + thresholdMax);
+            logger.debug("TxTimer | Config: thresholdMax is locked by -Dglacispring.txtimer.threshold.max=" + thresholdMax);
         }
-        thresholdMin = getIntFromProperty("slate.txtimer.threshold.min", Integer.MAX_VALUE);
+        thresholdMin = getIntFromProperty("glacispring.txtimer.threshold.min", Integer.MAX_VALUE);
         if (thresholdMin < Integer.MAX_VALUE) {
             lockThresholdMin = true;
             thresholdEnabled = true;
-            logger.debug("TxTimer | Config: thresholdMin is locked by -Dslate.txtimer.threshold.min=" + thresholdMin);
+            logger.debug("TxTimer | Config: thresholdMin is locked by -Dglacispring.txtimer.threshold.min=" + thresholdMin);
         }
         logger.info("TxTimer | Config: Report " + reportCondition());
 
-        Boolean reportPrintsPerMinute = getBooleanFromProperty("slate.txtimer.report.printpermin", null);
+        Boolean reportPrintsPerMinute = getBooleanFromProperty("glacispring.txtimer.report.printpermin", null);
         if (reportPrintsPerMinute == null) {
             reportPrintsPerMinute = false;
             lockReportPrintsPerMinute = false;

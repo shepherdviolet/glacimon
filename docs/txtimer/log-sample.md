@@ -10,7 +10,7 @@
 * 默认情况下, 当一个组别的输出记录超过20条时, 会分页, 每页的页码会+1
 
 ```text
-2018-10-03 09:12:38,978 INFO Slate-TxTimer-Report-0 s.s.common.x.monitor.txtimer.def.Reporter : Page 1
+2018-10-03 09:12:38,978 INFO Glacispring-TxTimer-Report-0 s.s.common.x.monitor.txtimer.def.Reporter : Page 1
    Ver Rand StartTime Duration Group Name RunCnt     TotAvg TotCnt     CurrMin CurrMax CurrAvg CurrCnt (TimeUnit:ms)
 TxT|1|DriYUYUu|20191003 09:09:00|180000|rpc-invoke|template.api.base.UserService#get|0||153|195353||102|573|162|44|
 TxT|1|DriYUYUu|20191003 09:09:00|180000|rpc-invoke|template.api.base.UserService#set|0||352|75353||287|851|377|26|
@@ -24,7 +24,7 @@ TxT|1|DriYUYUu|20191003 09:09:00|180000|rpc-invoke|template.api.base.UserService
 * `total ( cnt:... ing:... est-avg:... )`: 该交易累计交易数(cnt), 当前执行中的交易数(ing), 平均耗时估计(est-avg)
 
 ```text
-2018-10-03 09:12:38,978 INFO Slate-TxTimer-Report-0 s.s.common.x.monitor.txtimer.def.Reporter : 
+2018-10-03 09:12:38,978 INFO Glacispring-TxTimer-Report-0 s.s.common.x.monitor.txtimer.def.Reporter : 
 TxTimer | ------------------------------------------------------------------------------------------------------------
 TxTimer | Group (Scrunchy-Actions) Time (2019-10-03 09:09:00 - 2019-10-03 09:12:00)  Page 1
 TxTimer | template.api.base.UserService#get > last 3 min ( cnt:44, avg:162ms, max:573ms, min:102ms ) total ( cnt:195353, ing:0, est-avg:153ms )

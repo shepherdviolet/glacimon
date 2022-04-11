@@ -34,25 +34,25 @@ import java.util.TreeMap;
 public class TxTimerReportReaderTest {
 
     private static final String DATA1 = "" +
-            "2019-09-16 16:09:09,933 INFO Slate-TxTimer-Report-1 s.s.c.x.monitor.txtimer.def.Reporter flush 283: Page 1\n" +
+            "2019-09-16 16:09:09,933 INFO Glacispring-TxTimer-Report-1 s.s.c.x.monitor.txtimer.def.Reporter flush 283: Page 1\n" +
             "   Ver Rand StartTime Duration Group Name RunCnt     TotAvg TotCnt     CurrMin CurrMax CurrAvg CurrCnt (TimeUnit:ms)\n" +
             "TxT|1|58r7a54o|20190916 16:04:00|300000|TestGroup|0001|0||1466|37||1188|1342|1265|2|\n" +
             "TxT|1|58r7a54o|20190916 16:04:00|300000|TestGroup|0002|0||1014|45||944|1424|1062|8|\n" +
             "TxT|1|58r7a54o|20190916 16:04:00|300000|TestGroup|0003|0||2549|2||0|0|0|0|\n" +
             "TxT|1|58r7a54o|20190916 16:04:00|300000|TestGroup|0004|0||1466|37||0|0|0|0|\n" +
-            "2019-09-16 16:09:09,933 INFO Slate-TxTimer-Report-1 s.s.c.x.monitor.txtimer.def.Reporter flush 283: Page 1\n" +
+            "2019-09-16 16:09:09,933 INFO Glacispring-TxTimer-Report-1 s.s.c.x.monitor.txtimer.def.Reporter flush 283: Page 1\n" +
             "[TxT] Ver From To Group Name RunCnt [Blank] TotAvg(ms) TotCnt [Blank] CurrMin(ms) CurrMax(ms) CurrAvg(ms) CurrCnt\n" +
             "TxT|1|58r7a54o|20190916 16:09:00|300000|TestGroup|0001|0||1466|37||1088|1242|1165|10|";
 
     private static final String DATA2 = "" +
-            "2019-09-16 16:09:09,833 INFO Slate-TxTimer-Report-1 s.s.c.x.monitor.txtimer.def.Reporter flush 283: Page 1\n" +
+            "2019-09-16 16:09:09,833 INFO Glacispring-TxTimer-Report-1 s.s.c.x.monitor.txtimer.def.Reporter flush 283: Page 1\n" +
             "   Ver Rand StartTime Duration Group Name RunCnt     TotAvg TotCnt     CurrMin CurrMax CurrAvg CurrCnt (TimeUnit:ms)\n" +
             "TxT|1|DriYUYUu|20190917 14:57:00|60000|HttpTransport|Service1|200||95|242996||4|1313|95|97770|\n" +
             "TxT|1|DriYUYUu|20190917 14:57:00|60000|HttpTransport|Service2|200||94|246025||3|1308|94|98903|\n" +
             "TxT|1|DriYUYUu|20190917 14:57:00|60000|HttpTransport|Service3|200||92|249177||2|1311|92|100119|\n" +
             "TxT|1|DriYUYUu|20190917 14:57:00|60000|HttpTransport|Service4|200||91|251712||1|1295|91|101202|\n" +
             "TxT|1|DriYUYUu|20190917 14:57:00|60000|HttpTransport|Service5|200||90|255383||0|1307|90|102742|\n" +
-            "2019-09-16 16:09:09,933 INFO Slate-TxTimer-Report-1 s.s.c.x.monitor.txtimer.def.Reporter flush 283: Page 1\n" +
+            "2019-09-16 16:09:09,933 INFO Glacispring-TxTimer-Report-1 s.s.c.x.monitor.txtimer.def.Reporter flush 283: Page 1\n" +
             "   Ver Rand StartTime Duration Group Name RunCnt     TotAvg TotCnt     CurrMin CurrMax CurrAvg CurrCnt (TimeUnit:ms)\n" +
             "TxT|1|DriYUYUu|20190917 14:58:00|60000|HttpTransport|Service1|200||95|242996||4|904|99|120964|\n" +
             "TxT|1|DriYUYUu|20190917 14:58:00|60000|HttpTransport|Service2|200||94|246025||3|910|97|122697|\n" +

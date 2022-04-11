@@ -33,35 +33,35 @@ import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 @Configuration
 public class DefaultTxTimerSpringConfig {
 
-    @Value("${slate.txtimer.reportall.interval:}")
+    @Value("${glacispring.txtimer.reportall.interval:}")
     private void setReportAllInterval(String reportAllInterval){
         if (!CheckUtils.isEmptyOrBlank(reportAllInterval)){
             DefaultTxTimerConfig.setReportAllInterval(reportAllInterval);
         }
     }
 
-    @Value("${slate.txtimer.threshold.avg:}")
+    @Value("${glacispring.txtimer.threshold.avg:}")
     private void setThresholdAvg(String avg){
         if (!CheckUtils.isEmptyOrBlank(avg)){
             DefaultTxTimerConfig.setThresholdAvg(avg);
         }
     }
 
-    @Value("${slate.txtimer.threshold.max:}")
+    @Value("${glacispring.txtimer.threshold.max:}")
     private void setThresholdMax(String max){
         if (!CheckUtils.isEmptyOrBlank(max)){
             DefaultTxTimerConfig.setThresholdMax(max);
         }
     }
 
-    @Value("${slate.txtimer.threshold.min:}")
+    @Value("${glacispring.txtimer.threshold.min:}")
     private void setThresholdMin(String min){
         if (!CheckUtils.isEmptyOrBlank(min)){
             DefaultTxTimerConfig.setThresholdMin(min);
         }
     }
 
-    @Value("${slate.txtimer.report.printpermin:}")
+    @Value("${glacispring.txtimer.report.printpermin:}")
     private void setReportPrintsPerMinute(String reportPrintsPerMinute){
         if (!CheckUtils.isEmptyOrBlank(reportPrintsPerMinute)){
             DefaultTxTimerConfig.setReportPrintsPerMinute(reportPrintsPerMinute);

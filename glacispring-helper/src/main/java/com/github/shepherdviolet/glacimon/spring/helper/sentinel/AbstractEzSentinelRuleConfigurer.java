@@ -35,7 +35,7 @@ import java.util.*;
 import static com.alibaba.csp.sentinel.slots.block.RuleConstant.*;
 
 /**
- * <p>说明文档见: https://github.com/shepherdviolet/slate/blob/master/docs/ezsentinel/guide.md</p>
+ * <p>说明文档见: https://github.com/shepherdviolet/glacimon/blob/master/docs/ezsentinel/guide.md</p>
  *
  * <p>Sentinel官方最佳实践的方案中, 应该是改造Dashboard, 由Dashboard向一个数据源推送规则, 而客户端则连接数据源获取更新.
  * 而EzSentinel是一个简易的变通方案, 不改造Dashboard, 也不配置客户端数据源. 通过一个大JSON来维护规则(人工), 然后手动

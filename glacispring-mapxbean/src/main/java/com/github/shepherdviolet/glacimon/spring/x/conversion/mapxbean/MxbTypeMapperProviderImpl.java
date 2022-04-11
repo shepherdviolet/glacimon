@@ -46,19 +46,19 @@ public class MxbTypeMapperProviderImpl implements MxbTypeMapperProvider, Initial
     /**
      * Property inject: Date format, Nullable, e.g. yyyy-MM-dd HH:mm:ss.SSS
      */
-    @PropertyInject(getVmOptionFirst = "slate.mapxbean.date-format")
+    @PropertyInject(getVmOptionFirst = "glacispring.mapxbean.date-format")
     private String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
      * Property inject: Time zone, Nullable, e.g. GMT+08:00
      */
-    @PropertyInject(getVmOptionFirst = "slate.mapxbean.time-zone")
+    @PropertyInject(getVmOptionFirst = "glacispring.mapxbean.time-zone")
     private String timeZone;
 
     /**
      * Property inject: Is log enabled
      */
-    @PropertyInject(getVmOptionFirst = "slate.mapxbean.log")
+    @PropertyInject(getVmOptionFirst = "glacispring.mapxbean.log")
     private boolean logEnabled = false;
 
     /**

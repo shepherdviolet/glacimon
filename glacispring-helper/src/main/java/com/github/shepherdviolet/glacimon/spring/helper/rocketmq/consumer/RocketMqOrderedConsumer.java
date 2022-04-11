@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  *
  * <p>注意!!! 消费者必须保证幂等性! 任何一条消息都有可能被重复消费!</p>
  *
- * <p>https://github.com/shepherdviolet/slate/blob/master/docs/rocketmq/guide.md</p>
+ * <p>https://github.com/shepherdviolet/glacimon/blob/master/docs/rocketmq/guide.md</p>
  *
  * <p>顺序消费有两个前提, 生产者必须将消息放进同一个队列(可以将某个TAG的消息放进同一个队列), 消费者必须消费同一个队列(订阅那个TAG).
  * MQ只保证同一个队列中的消息的顺序. 消费者如果是集群, 队列会被全局锁定(同时只有一个消费者可以消费消息), 每个消费者同时只有一个

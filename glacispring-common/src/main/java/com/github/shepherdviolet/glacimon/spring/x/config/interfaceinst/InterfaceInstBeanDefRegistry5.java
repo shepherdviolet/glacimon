@@ -65,7 +65,7 @@ class InterfaceInstBeanDefRegistry5 implements BeanDefinitionRegistryPostProcess
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 
-        logger.info("InterfaceInst | Interface Instantiation Start (spring 5+ and jdk 8+) Doc: https://github.com/shepherdviolet/slate");
+        logger.info("InterfaceInst | Interface Instantiation Start (spring 5+ and jdk 8+) Doc: https://github.com/shepherdviolet/glacimon");
 
         Set<String> processedClasses = new HashSet<>(128);
 

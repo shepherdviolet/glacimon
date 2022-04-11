@@ -57,13 +57,13 @@ public class MxbObjectInstantiatorImpl implements MxbObjectInstantiator {
     /**
      * Property inject: Is objenesis cache enabled
      */
-    @PropertyInject(getVmOptionFirst = "slate.mapxbean.instantiator-cache-enabled")
+    @PropertyInject(getVmOptionFirst = "glacispring.mapxbean.instantiator-cache-enabled")
     private boolean cacheEnabled = true;
 
     /**
      * Property inject: Is log enabled
      */
-    @PropertyInject(getVmOptionFirst = "slate.mapxbean.log")
+    @PropertyInject(getVmOptionFirst = "glacispring.mapxbean.log")
     private boolean logEnabled = false;
 
     /**

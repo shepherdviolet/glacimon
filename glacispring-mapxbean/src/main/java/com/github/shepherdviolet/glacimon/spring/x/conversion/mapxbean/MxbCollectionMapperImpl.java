@@ -44,7 +44,7 @@ public class MxbCollectionMapperImpl implements MxbCollectionMapper {
     /**
      * Property inject: Is log enabled
      */
-    @PropertyInject(getVmOptionFirst = "slate.mapxbean.log")
+    @PropertyInject(getVmOptionFirst = "glacispring.mapxbean.log")
     private boolean logEnabled = false;
 
     /**

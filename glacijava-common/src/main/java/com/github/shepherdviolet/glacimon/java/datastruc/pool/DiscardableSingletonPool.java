@@ -69,7 +69,7 @@ import java.util.function.BiFunction;
  * </pre>
  * <p></p>
  * <p>[3.使用示例]</p>
- * <p>3.1.详见: slate-common/src/test/java/sviolet/slate/common/model/pool/DiscardableSingletonPoolSampleService</p>
+ * <p>3.1.详见: glacijava-common/src/test/java/com/github/shepherdviolet/glacimon/java/datastruc/pool/DiscardableSingletonPoolSampleService.java</p>
  * <p></p>
  * <p>[4.工作机制: 获取对象]</p>
  * <p>4.1.获取对象(getInstanceProvider)时, 先从"对象池"获取, 若存在, 则直接返回, 若不存在, 则调用InstanceManager#createInstance创建对象.
@@ -114,7 +114,7 @@ public class DiscardableSingletonPool<InstanceType, CreateParamType> {
     private final ConcurrentHashMap<String, ReentrantLock> createLocks;
 
     // 执行异步销毁
-    private final ExecutorService destroyExecutor = ThreadPoolExecutorUtils.createLazy(60, "Slate-DiscardableSingletonPool-destroyer-%d");
+    private final ExecutorService destroyExecutor = ThreadPoolExecutorUtils.createLazy(60, "Glacijava-DiscardableSingletonPool-destroyer-%d");
     // 丢弃队列
     private final BlockingQueue<InstanceHolder<InstanceType>> discardingInstances = new LinkedBlockingQueue<>();
     // 丢弃池

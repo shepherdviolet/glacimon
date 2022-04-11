@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 /**
- * <p>JSON格式的Sentinel规则设置器. 说明文档见: https://github.com/shepherdviolet/slate/blob/master/docs/ezsentinel/guide.md</p>
+ * <p>JSON格式的Sentinel规则设置器. 说明文档见: https://github.com/shepherdviolet/glacimon/blob/master/docs/ezsentinel/guide.md</p>
  *
  * <p>依赖: compile "com.google.code.gson:gson:$version_gson"</p>
  *

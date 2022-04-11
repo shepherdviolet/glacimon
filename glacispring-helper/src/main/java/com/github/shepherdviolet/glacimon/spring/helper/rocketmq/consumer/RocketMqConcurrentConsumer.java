@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  *
  * <p>注意!!! 消费者必须保证幂等性! 任何一条消息都有可能被重复消费!</p>
  *
- * <p>https://github.com/shepherdviolet/slate/blob/master/docs/rocketmq/guide.md</p>
+ * <p>https://github.com/shepherdviolet/glacimon/blob/master/docs/rocketmq/guide.md</p>
  *
  * <pre>
  *     <code>@RocketMqConcurrentConsumer(</code>

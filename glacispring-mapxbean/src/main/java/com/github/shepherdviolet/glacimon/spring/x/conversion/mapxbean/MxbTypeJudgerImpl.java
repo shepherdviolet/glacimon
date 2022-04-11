@@ -48,7 +48,7 @@ public class MxbTypeJudgerImpl implements MxbTypeJudger {
     /**
      * Property inject: Is log enabled
      */
-    @PropertyInject(getVmOptionFirst = "slate.mapxbean.log")
+    @PropertyInject(getVmOptionFirst = "glacispring.mapxbean.log")
     private boolean logEnabled = false;
 
     // Is Indivisible ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ public class MxbTypeJudgerImpl implements MxbTypeJudger {
     /**
      * Property inject: Indivisible types
      */
-    @PropertyInject(getVmOptionFirst = "slate.mapxbean.indivisible-types")
+    @PropertyInject(getVmOptionFirst = "glacispring.mapxbean.indivisible-types")
     public void setIndivisibleTypes(String types) {
         INDIVISIBLE_TYPES.addAll(StringUtils.splitAndTrim(types, ","));
     }

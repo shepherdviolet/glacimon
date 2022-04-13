@@ -2,7 +2,7 @@
 
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/shepherdviolet/glacimon.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/shepherdviolet/glacimon/context:java)
 
-* Comprehensive Java library, JDK8+
+* Glacimon [ɡleɪsɪmən]: Comprehensive Java library, JDK8+
 * [Github Home](https://github.com/shepherdviolet/glacimon)
 * [Search in Maven Central](https://search.maven.org/search?q=g:com.github.shepherdviolet.glacimon)
 * [PGP Key](https://keyserver.ubuntu.com/pks/lookup?search=0x90998B78AABD6E96&fingerprint=on&op=index)

@@ -65,7 +65,7 @@ public class SslUtils {
         }
         try {
             SSLContext sslContext = Platform.get().getSSLContext();
-            sslContext.init(null, new TrustManager[]{trustManager}, null);
+            sslContext.init(null, new TrustManager[]{trustManager}, null);//lgtm [java/insecure-trustmanager]
             multiHostOkHttpClient.setSSLSocketFactory(sslContext.getSocketFactory());
             multiHostOkHttpClient.setX509TrustManager(trustManager);
         } catch (KeyManagementException e) {

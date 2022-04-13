@@ -164,7 +164,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['module'] }) {
 
     dependencies {
         // Import BOMs
-        implementation platform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")
+        api platform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")
 
         // Common dependencies
         api "ch.qos.logback:logback-classic:$version_logback"

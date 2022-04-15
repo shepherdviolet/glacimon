@@ -33,7 +33,7 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' } // Gradle插件库, 可选
         mavenCentral() // https://repo1.maven.org/maven2/
         //maven { url 'https://jitpack.io' }
-        //maven { url 'http://repo.spring.io/plugins-release/' }
+        //maven { url 'http://repo.spring.io/plugins-release/'; allowInsecureProtocol true }
     }
 
     // 构建脚本用的依赖(插件)

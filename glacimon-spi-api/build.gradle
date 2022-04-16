@@ -1,4 +1,23 @@
 
 dependencies {
+    //import bom
+//    api platform(project(':glacimon-bom'))//只对未指定版本的依赖生效
+//    api platform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")//只对未指定版本的依赖生效
+//    api enforcedPlatform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")//强制覆盖依赖版本
+
+    //required
+    [
+
+    ].forEach{ api it }
+
+    //compile only
+    [
+
+    ].forEach{ compileOnly it; testImplementation it }
+
+    //test
+    [
+
+    ].forEach{ testImplementation it }
 
 }

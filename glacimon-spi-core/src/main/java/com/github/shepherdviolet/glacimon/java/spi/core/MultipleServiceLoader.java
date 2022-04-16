@@ -197,7 +197,7 @@ public class MultipleServiceLoader<T> implements Closeable {
                 }
             }
         }
-        return instanceList;
+        return new ArrayList<>(instanceList);
     }
 
     @Override

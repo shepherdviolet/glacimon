@@ -14,7 +14,7 @@
 
 <br>
 
-### Module: glacimon-spi-core  glacimon-spi-api
+### Module: glacimon-spi-core
 
 > GlacimonSpi is an implementation of service provider interface feature. It can make your library expandable.
 

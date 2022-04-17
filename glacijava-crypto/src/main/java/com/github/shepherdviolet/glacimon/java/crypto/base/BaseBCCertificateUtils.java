@@ -94,7 +94,12 @@ public class BaseBCCertificateUtils {
      */
     public static Certificate parseCertificateByBouncyCastle(InputStream inputStream, String type) throws CertificateException, NoSuchProviderException {
         try {
-            return CertificateFactory.getInstance(type, BouncyCastleProviderUtils.getProviderName()).generateCertificate(inputStream);
+            Certificate certificate;
+            certificate = CertificateFactory.getInstance(type, BouncyCastleProviderUtils.getProviderName()).generateCertificate(inputStream);
+            if (certificate == null) {
+                throw new CertificateException("Failed to parse certificate, returns null. (If the certificate data is Base64 encoded, please decode it before parse)");
+            }
+            return certificate;
         } finally {
             CloseableUtils.closeQuiet(inputStream);
         }

@@ -79,6 +79,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
                     def releasesRepoUrl = private_release_url
                     def snapshotsRepoUrl = private_snapshot_url
                     url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                    allowInsecureProtocol true
                     credentials {
                         username = private_user
                         password = private_password

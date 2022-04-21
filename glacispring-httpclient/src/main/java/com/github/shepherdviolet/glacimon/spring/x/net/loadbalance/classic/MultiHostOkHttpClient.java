@@ -19,20 +19,19 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic;
 
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager;
-import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.TimerContext;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimer;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimerFactory;
-import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
-import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
-import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.ssl.*;
+import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +40,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.*;
+import java.security.Key;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -777,7 +777,9 @@ public class MultiHostOkHttpClient {
                 //网络故障阻断后端
                 isOk = false;
                 if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_BLOCK)){
-                    logger.info(genLogPrefix(settings.tag, request) + "Bad host " + host.getUrl() + ", block for " + passiveBlockDuration + " ms, passive block, recoveryCoefficient " + settings.recoveryCoefficient);
+                    logger.info(genLogPrefix(settings.tag, request) + "Bad host " + host.getUrl() + ", block for " + passiveBlockDuration +
+                            " ms, recovery period (half-open) " + (passiveBlockDuration * settings.recoveryCoefficient) +
+                            " ms. Passive block, recoveryCoefficient " + settings.recoveryCoefficient);
                 }
             }
             if (t instanceof  IOException ||
@@ -905,8 +907,9 @@ public class MultiHostOkHttpClient {
                         //反馈异常
                         host.feedback(false, passiveBlockDuration, settings.recoveryCoefficient);
                         if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_BLOCK)) {
-                            logger.info(genLogPrefix(settings.tag, request) + "Bad host " + host.getUrl() + ", block for " + passiveBlockDuration + " ms, passive block, recoveryCoefficient " + settings.recoveryCoefficient);
-                        }
+                            logger.info(genLogPrefix(settings.tag, request) + "Bad host " + host.getUrl() + ", block for " + passiveBlockDuration +
+                                    " ms, recovery period (half-open) " + (passiveBlockDuration * settings.recoveryCoefficient) +
+                                    " ms. Passive block, recoveryCoefficient " + settings.recoveryCoefficient);                        }
                     } else {
                         //反馈健康(反馈健康无需计算阻断时长)
                         host.feedback(true, 0);
@@ -1123,14 +1126,19 @@ public class MultiHostOkHttpClient {
         if (settings.dns != null) {
             builder.dns(settings.dns);
         }
-        if (settings.sslSocketFactory != null) {
-            if (settings.x509TrustManager != null) {
-                // 最好两个都有, 不然OkHttp3会用反射的方式清理证书链
-                builder.sslSocketFactory(settings.sslSocketFactory, settings.x509TrustManager);
-            } else {
-                builder.sslSocketFactory(settings.sslSocketFactory);
+
+        if (settings.sslConfigSupplier != null){
+            SslConfig sslConfig = settings.sslConfigSupplier.getSslConfig();
+            if (sslConfig != null && sslConfig.getSslSocketFactory() != null) {
+                if (sslConfig.getTrustManager() != null) {
+                    // 最好两个都有, 不然OkHttp3会用反射的方式清理证书链
+                    builder.sslSocketFactory(sslConfig.getSslSocketFactory(), sslConfig.getTrustManager());
+                } else {
+                    builder.sslSocketFactory(sslConfig.getSslSocketFactory());
+                }
             }
         }
+
         if (settings.hostnameVerifier != null) {
             builder.hostnameVerifier(settings.hostnameVerifier);
         }
@@ -1346,8 +1354,7 @@ public class MultiHostOkHttpClient {
         private CookieJar cookieJar;
         private Proxy proxy;
         private Dns dns;
-        private SSLSocketFactory sslSocketFactory;
-        private X509TrustManager x509TrustManager;
+        private SslConfigSupplier sslConfigSupplier;
         private HostnameVerifier hostnameVerifier;
         private DataConverter dataConverter;
         private String tag = LOG_PREFIX;
@@ -1380,8 +1387,7 @@ public class MultiHostOkHttpClient {
                     ", cookieJar=" + cookieJar +
                     ", proxy=" + proxy +
                     ", dns=" + dns +
-                    ", sslSocketFactory=" + sslSocketFactory +
-                    ", x509TrustManager=" + x509TrustManager +
+                    ", sslConfigSupplier=" + sslConfigSupplier +
                     ", hostnameVerifier=" + hostnameVerifier +
                     ", dataConverter=" + dataConverter +
                     ", httpCodeNeedBlock=" + httpCodeNeedBlock +
@@ -1926,20 +1932,23 @@ public class MultiHostOkHttpClient {
 
     /**
      * <p>[可运行时修改]</p>
-     * <p>SSLSocketFactory, 请配套X509TrustManager一起设置.</p>
-     * <p></p>
-     * <p>1.如果需要添加自定义的根证书, 用于验证自签名的服务器, 请调用{@link SslUtils#setCustomServerIssuers}
-     * {@link SslUtils#setCustomServerIssuer} {@link SslUtils#setCustomServerIssuersEncoded}
-     * {@link SslUtils#setCustomServerIssuerEncoded} 方法设置自定义的根证书</p>
-     * <p></p>
-     * <p>2.如果需要实现自定义证书验证逻辑, 请调用{@link SslUtils#setX509TrustManager}设置自己的X509TrustManager</p>
+     * <p>SSL配置提供者. 向HttpClient提供SSLSocketFactory. </p>
      *
-     * @param sslSocketFactory SSLSocketFactory
+     * <p>建议sslSocketFactory和trustManager一起设置, 如果只设置sslSocketFactory的话, OKHTTP会用反射的方式清理证书链.</p>
+     *
+     * <p>注意: 这个方式设置SSL会覆盖setCustomServerIssuer...系列设置的参数</p>
+     *
+     * <p>用途: </p>
+     * <p>1.设置服务端证书的受信颁发者 </p>
+     * <p>2.设置客户端证书(双向SSL) </p>
+     * <p>3. ... </p>
+     *
+     * @param sslConfigSupplier sslConfigSupplier, 例如: SslSocketFactorySupplier / KeyAndTrustManagerSupplier / CertAndTrustedIssuerSupplier
      */
-    public MultiHostOkHttpClient setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
+    public MultiHostOkHttpClient setSslConfigSupplier(SslConfigSupplier sslConfigSupplier) {
         try {
             settingsSpinLock.lock();
-            settings.sslSocketFactory = sslSocketFactory;
+            settings.sslConfigSupplier = sslConfigSupplier;
         } finally {
             settingsSpinLock.unlock();
         }
@@ -1948,111 +1957,235 @@ public class MultiHostOkHttpClient {
 
     /**
      * <p>[可运行时修改]</p>
-     * <p>X509TrustManager, 请配套SSLSocketFactory一起设置</p>
+     * <p>添加服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
      * <p></p>
-     * <p>1.如果需要添加自定义的根证书, 用于验证自签名的服务器, 请调用{@link SslUtils#setCustomServerIssuers}
-     * {@link SslUtils#setCustomServerIssuer} {@link SslUtils#setCustomServerIssuersEncoded}
-     * {@link SslUtils#setCustomServerIssuerEncoded} 方法设置自定义的根证书</p>
-     * <p></p>
-     * <p>2.如果需要实现自定义证书验证逻辑, 请调用{@link SslUtils#setX509TrustManager}设置自己的X509TrustManager</p>
-     *
-     * @param x509TrustManager x509TrustManager
-     */
-    public MultiHostOkHttpClient setX509TrustManager(X509TrustManager x509TrustManager) {
-        try {
-            settingsSpinLock.lock();
-            settings.x509TrustManager = x509TrustManager;
-        } finally {
-            settingsSpinLock.unlock();
-        }
-        return this;
-    }
-
-    /**
-     * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient添加自定义的根证书, 用于验证自签名的服务器.</p>
-     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的证书.</p>
-     * <p></p>
-     * <p>注意, 调用这个方法会覆盖 SSLSocketFactory 和 X509TrustManager</p>
-     * <p></p>
-     * <p>如果需要实现自定义证书验证逻辑, 请调用{@link SslUtils#setX509TrustManager}设置自己的X509TrustManager</p>
-     *
-     * @param customIssuers 添加服务端的根证书为受信任的证书
-     * @deprecated Use SslUtils instead
-     */
-    @Deprecated
-    public MultiHostOkHttpClient setCustomServerIssuers(X509Certificate[] customIssuers) {
-        try {
-            SslUtils.setCustomServerIssuers(this, customIssuers);
-        } catch (Throwable t) {
-            throw new RuntimeException("Error while setting custom issuers", t);
-        }
-        return this;
-    }
-
-    /**
-     * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient添加自定义的根证书, 用于验证自签名的服务器.</p>
-     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的证书.</p>
-     * <p></p>
-     * <p>注意, 调用这个方法会覆盖 SSLSocketFactory 和 X509TrustManager</p>
-     * <p></p>
-     * <p>如果需要实现自定义证书验证逻辑, 请调用{@link SslUtils#setX509TrustManager}设置自己的X509TrustManager</p>
-     *
-     * @param customIssuer 添加服务端的根证书为受信任的证书
-     * @deprecated Use SslUtils instead
-     */
-    @Deprecated
-    public MultiHostOkHttpClient setCustomServerIssuer(X509Certificate customIssuer) {
-        try {
-            SslUtils.setCustomServerIssuer(this, customIssuer);
-        } catch (Throwable t) {
-            throw new RuntimeException("Error while setting custom issuers", t);
-        }
-        return this;
-    }
-
-    /**
-     * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient添加自定义的根证书, 用于验证自签名的服务器.</p>
-     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的证书.</p>
-     * <p></p>
-     * <p>注意, 调用这个方法会覆盖 SSLSocketFactory 和 X509TrustManager</p>
-     * <p></p>
-     * <p>如果需要实现自定义证书验证逻辑, 请调用{@link SslUtils#setX509TrustManager}设置自己的X509TrustManager</p>
-     *
-     * @param customIssuersEncoded 添加服务端的根证书为受信任的证书, X509 Base64 编码的证书
-     * @deprecated Use SslUtils instead
-     */
-    @Deprecated
-    public MultiHostOkHttpClient setCustomServerIssuersEncoded(String[] customIssuersEncoded) {
-        try {
-            SslUtils.setCustomServerIssuersEncoded(this, customIssuersEncoded);
-        } catch (Throwable t) {
-            throw new RuntimeException("Error while setting custom issuers", t);
-        }
-        return this;
-    }
-
-    /**
-     * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient添加自定义的根证书, 用于验证自签名的服务器.</p>
-     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的证书.</p>
-     * <p></p>
-     * <p>注意, 调用这个方法会覆盖 SSLSocketFactory 和 X509TrustManager</p>
-     * <p></p>
-     * <p>如果需要实现自定义证书验证逻辑, 请调用{@link SslUtils#setX509TrustManager}设置自己的X509TrustManager</p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <p>setCustomServerIssuer...系列参数只需要设置一个, 同时设置时, 本参数优先级1 (最高).
+     * 如果一个都不设置, 表示不配置自定义的颁发者.</p>
      *
      * @param customIssuerEncoded 添加服务端的根证书为受信任的证书, X509 Base64 编码的证书. 如果设置为"UNSAFE-TRUST-ALL-ISSUERS",
      *                            则不校验服务端证书链, 信任一切服务端证书, 不安全!!!
-     * @deprecated Use SslUtils instead
      */
-    @Deprecated
     public MultiHostOkHttpClient setCustomServerIssuerEncoded(String customIssuerEncoded) {
         try {
-            SslUtils.setCustomServerIssuerEncoded(this, customIssuerEncoded);
-        } catch (Throwable t) {
-            throw new RuntimeException("Error while setting custom issuers", t);
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomServerIssuerEncoded(customIssuerEncoded);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <p>setCustomServerIssuer...系列参数只需要设置一个, 同时设置时, 本参数优先级2 (第二).
+     * 如果一个都不设置, 表示不配置自定义的颁发者.</p>
+     *
+     * @param customIssuersEncoded 添加服务端的根证书为受信任的证书, X509 Base64 编码的证书
+     */
+    public MultiHostOkHttpClient setCustomServerIssuersEncoded(String[] customIssuersEncoded) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomServerIssuersEncoded(customIssuersEncoded);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <p>setCustomServerIssuer...系列参数只需要设置一个, 同时设置时, 本参数优先级3 (第三).
+     * 如果一个都不设置, 表示不配置自定义的颁发者.</p>
+     *
+     * @param customIssuer 添加服务端的根证书为受信任的证书
+     */
+    public MultiHostOkHttpClient setCustomServerIssuer(X509Certificate customIssuer) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomServerIssuer(customIssuer);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <p>setCustomServerIssuer...系列参数只需要设置一个, 同时设置时, 本参数优先级4 (最低).
+     * 如果一个都不设置, 表示不配置自定义的颁发者.</p>
+     *
+     * @param customIssuers 添加服务端的根证书为受信任的证书
+     */
+    public MultiHostOkHttpClient setCustomServerIssuers(X509Certificate[] customIssuers) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomServerIssuers(customIssuers);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加客户端证书, 用于双向SSL.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <psetCustomClientCert...系列参数只需要设置一个, 同时设置时, 本参数优先级1 (最高).
+     * 如果一个都不设置, 表示不配置客户端证书(关闭双向SSL). 如果设置了客户端证书, 必须设置客户端私钥.</p>
+     *
+     * @param customClientCertEncoded 客户端证书, X509 Base64 编码的证书
+     */
+    public MultiHostOkHttpClient setCustomClientCertEncoded(String customClientCertEncoded) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomClientCertEncoded(customClientCertEncoded);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加客户端证书链, 用于双向SSL.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <psetCustomClientCert...系列参数只需要设置一个, 同时设置时, 本参数优先级2 (第二).
+     * 如果一个都不设置, 表示不配置客户端证书(关闭双向SSL). 如果设置了客户端证书, 必须设置客户端私钥.</p>
+     *
+     * @param customClientCertsEncoded 客户端证书链, X509 Base64 编码的证书
+     */
+    public MultiHostOkHttpClient setCustomClientCertsEncoded(String[] customClientCertsEncoded) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomClientCertsEncoded(customClientCertsEncoded);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加客户端证书, 用于双向SSL.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <psetCustomClientCert...系列参数只需要设置一个, 同时设置时, 本参数优先级3 (第三).
+     * 如果一个都不设置, 表示不配置客户端证书(关闭双向SSL). 如果设置了客户端证书, 必须设置客户端私钥.</p>
+     *
+     * @param customClientCert 客户端证书
+     */
+    public MultiHostOkHttpClient setCustomClientCert(X509Certificate customClientCert) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomClientCert(customClientCert);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加客户端证书链, 用于双向SSL.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <psetCustomClientCert...系列参数只需要设置一个, 同时设置时, 本参数优先级4 (最低).
+     * 如果一个都不设置, 表示不配置客户端证书(关闭双向SSL). 如果设置了客户端证书, 必须设置客户端私钥.</p>
+     *
+     * @param customClientCerts 客户端证书链
+     */
+    public MultiHostOkHttpClient setCustomClientCerts(X509Certificate[] customClientCerts) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomClientCerts(customClientCerts);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加客户端证书私钥, 用于双向SSL.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <p>setCustomClientCertKey...系列参数只需要设置一个, 同时设置时, 本参数优先级1 (最高).
+     * 如果一个都不设置, 表示不配置客户端证书私钥(关闭双向SSL). 如果设置了客户端私钥, 必须设置客户端证书.</p>
+     *
+     * @param customClientCertKeyEncoded 客户端证书私钥, 目前仅支持RSA私钥, PKCS8 BASE64
+     */
+    public MultiHostOkHttpClient setCustomClientCertKeyEncoded(String customClientCertKeyEncoded) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomClientCertKeyEncoded(customClientCertKeyEncoded);
+        } finally {
+            settingsSpinLock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>添加客户端证书私钥, 用于双向SSL.</p>
+     * <p></p>
+     * <p>注意: 这个方式设置SSL会覆盖setSslConfigSupplier设置的参数</p>
+     * <p>setCustomClientCertKey...系列参数只需要设置一个, 同时设置时, 本参数优先级2 (最低).
+     * 如果一个都不设置, 表示不配置客户端证书私钥(关闭双向SSL). 如果设置了客户端私钥, 必须设置客户端证书.</p>
+     *
+     * @param customClientCertKey 客户端证书私钥, 目前仅支持RSA私钥
+     */
+    public MultiHostOkHttpClient setCustomClientCertKey(Key customClientCertKey) {
+        try {
+            settingsSpinLock.lock();
+            if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
+                settings.sslConfigSupplier = new CertAndTrustedIssuerSupplier();
+            }
+            ((CertAndTrustedIssuerSupplier)settings.sslConfigSupplier).setCustomClientCertKey(customClientCertKey);
+        } finally {
+            settingsSpinLock.unlock();
         }
         return this;
     }
@@ -2061,9 +2194,11 @@ public class MultiHostOkHttpClient {
      * <p>[可运行时修改]</p>
      * <p>设置自定义的服务端域名验证逻辑</p>
      * <p></p>
-     * <p>1.如果你通过一个代理访问服务端, 且访问代理的域名, 请调用{@link SslUtils#setVerifyServerCnByCustomHostname}
-     * 设置服务端域名, 程序会改用指定的域名去匹配服务端证书的CN. 也可以调用{@link SslUtils#setVerifyServerDnByCustomDn}
+     * <p>1.如果你通过一个代理访问服务端, 且访问代理的域名, 请调用{@link MultiHostOkHttpClient#setVerifyServerCnByCustomHostname}
+     * 设置服务端域名, 程序会改用指定的域名去匹配服务端证书的CN. 也可以调用{@link MultiHostOkHttpClient#setVerifyServerDnByCustomDn}
      * 匹配证书的全部DN信息. </p>
+     *
+     * <p>注意: 这个方式设置SSL会覆盖setVerifyServer...系列设置的参数</p>
      *
      * @param hostnameVerifier hostnameVerifier
      */
@@ -2084,14 +2219,18 @@ public class MultiHostOkHttpClient {
      * 域名验证失败, 因为"客户端访问的域名与服务端证书的CN不符", 这种情况可以调用这个方法设置服务端的域名, 程序会改用指定的域名去匹配
      * 服务端证书的CN. 除此之外, 你也可以利用这个方法强制验证证书CN, 即你只信任指定CN的证书. </p>
      * <p></p>
-     * <p>注意, 调用这个方法会覆盖 HostnameVerifier</p>
+     * <p>注意: 这个方式设置域名校验会覆盖setHostnameVerifier设置的参数</p>
+     * <p>setVerifyServer...系列参数只需要设置一个, 同时设置时, 后设置的生效.</p>
      *
-     * @param customHostname 指定服务端域名 (如果设置为"UNSAFE-TRUST-ALL-CN"则不校验CN, 所有合法证书都通过, 不安全!!!), 示例: www.baidu.com
-     * @deprecated Use SslUtils instead
+     * @param customHostname 指定服务端域名, 示例: www.baidu.com. 如果设置为"UNSAFE-TRUST-ALL-CN"则不校验CN, 所有合法证书都通过, 不安全!!!.
+     *                       如果设置为null或""则取消设置.
      */
-    @Deprecated
     public MultiHostOkHttpClient setVerifyServerCnByCustomHostname(String customHostname) {
-        SslUtils.setVerifyServerCnByCustomHostname(this, customHostname);
+        if (CheckUtils.isEmptyOrBlank(customHostname)) {
+            setHostnameVerifier(null);
+            return this;
+        }
+        setHostnameVerifier(new FixedCnHostnameVerifier(customHostname));
         return this;
     }
 
@@ -2100,15 +2239,18 @@ public class MultiHostOkHttpClient {
      * <p>使用指定的域名验证服务端证书的DN. </p>
      * <p>默认情况下, HTTP客户端会验证访问的域名和服务端证书的CN是否匹配. 你可以利用这个方法强制验证证书DN, 即你只信任指定DN的证书. </p>
      * <p></p>
-     * <p>注意, 调用这个方法会覆盖 HostnameVerifier</p>
+     * <p>注意: 这个方式设置域名校验会覆盖setHostnameVerifier设置的参数</p>
+     * <p>setVerifyServer...系列参数只需要设置一个, 同时设置时, 后设置的生效.</p>
      *
-     * @param customDn 指定服务端证书DN (如果设置为"UNSAFE-TRUST-ALL-DN"则不校验DN, 所有合法证书都通过, 不安全!!!), DN示例:
-     *                 CN=baidu.com,O=Beijing Baidu Netcom Science Technology Co.\, Ltd,OU=service operation department,L=beijing,ST=beijing,C=CN
-     * @deprecated Use SslUtils instead
+     * @param customDn 指定服务端证书DN DN示例: CN=baidu.com,O=Beijing Baidu Netcom Science Technology Co.\, Ltd,OU=service operation department,L=beijing,ST=beijing,C=CN.
+     *                 如果设置为"UNSAFE-TRUST-ALL-DN"则不校验DN, 所有合法证书都通过, 不安全!!!, 如果设置为null或""则取消设置.
      */
-    @Deprecated
     public MultiHostOkHttpClient setVerifyServerDnByCustomDn(String customDn) {
-        SslUtils.setVerifyServerDnByCustomDn(this, customDn);
+        if (CheckUtils.isEmptyOrBlank(customDn)) {
+            setHostnameVerifier(null);
+            return this;
+        }
+        setHostnameVerifier(new FixedDnHostnameVerifier(customDn));
         return this;
     }
 

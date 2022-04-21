@@ -19,22 +19,20 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.DataConverter;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SslUtils;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.HttpClients;
 import com.github.shepherdviolet.glacimon.java.common.function.ThrowableBiConsumer;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.DataConverter;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.security.cert.CertificateException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -220,22 +218,11 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
             }
         }
 
-        //custom issuer
-        try {
-            if (!CheckUtils.isEmptyOrBlank(settings.getCustomServerIssuerEncoded())) {
-                SslUtils.setCustomServerIssuerEncoded(client, settings.getCustomServerIssuerEncoded());
-            } else if (settings.getCustomServerIssuersEncoded() != null && settings.getCustomServerIssuersEncoded().length > 0){
-                SslUtils.setCustomServerIssuersEncoded(client, settings.getCustomServerIssuersEncoded());
-            }
-        } catch (CertificateException e) {
-            throw new RuntimeException("Error while setting custom server issuers", e);
-        }
-
-        //custom dn/cn verification
+        //custom dn/cn verification, dn has high priority
         if (!CheckUtils.isEmptyOrBlank(settings.getVerifyServerDnByCustomDn())) {
-            SslUtils.setVerifyServerDnByCustomDn(client, settings.getVerifyServerDnByCustomDn());
+            client.setVerifyServerDnByCustomDn(settings.getVerifyServerDnByCustomDn());
         } else if (!CheckUtils.isEmptyOrBlank(settings.getVerifyServerCnByCustomHostname())){
-            SslUtils.setVerifyServerCnByCustomHostname(client, settings.getVerifyServerCnByCustomHostname());
+            client.setVerifyServerCnByCustomHostname(settings.getVerifyServerCnByCustomHostname());
         }
 
         //properties
@@ -261,7 +248,9 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setThrowableNeedBlock(settings.getThrowableNeedBlock())
                 .setVerboseLog(settings.isVerboseLog())
                 .setTxTimerEnabled(settings.isTxTimerEnabled())
-                .setRequestTraceEnabled(settings.isRequestTraceEnabled());
+                .setRequestTraceEnabled(settings.isRequestTraceEnabled())
+                .setCustomServerIssuerEncoded(settings.getCustomServerIssuerEncoded())
+                .setCustomServerIssuersEncoded(settings.getCustomServerIssuersEncoded());
     }
 
     private static final class HttpClient extends SimpleOkHttpClient {
@@ -602,15 +591,17 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 Arrays.asList("customServerIssuersEncoded", "custom-server-issuers-encoded")) {
             @Override
             public void applySingleSetting(HttpClient client, String value) throws Exception {
-                SslUtils.setCustomServerIssuerEncoded(client, value);
+                client.setCustomServerIssuersEncoded(null);
+                client.setCustomServerIssuerEncoded(value);
             }
             @Override
             public void applyArraySetting(HttpClient client, String[] value) throws Exception {
-                SslUtils.setCustomServerIssuersEncoded(client, value);
+                client.setCustomServerIssuerEncoded(null);
+                client.setCustomServerIssuersEncoded(value);
             }
             @Override
             public void applyReset(HttpClient client) throws Exception {
-                SslUtils.setCustomServerIssuerEncoded(client, null);
+                client.setSslConfigSupplier(null);
             }
         });
 
@@ -619,15 +610,15 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 Arrays.asList("verifyServerCnByCustomHostname", "verify-server-cn-by-custom-hostname")) {
             @Override
             public void applySetting1(HttpClient client, String value) throws Exception {
-                SslUtils.setVerifyServerDnByCustomDn(client, value);
+                client.setVerifyServerDnByCustomDn(value);
             }
             @Override
             public void applySetting2(HttpClient client, String value) throws Exception {
-                SslUtils.setVerifyServerCnByCustomHostname(client, value);
+                client.setVerifyServerCnByCustomHostname(value);
             }
             @Override
             public void applyReset(HttpClient client) throws Exception {
-                SslUtils.setVerifyServerDnByCustomDn(client, null);
+                client.setHostnameVerifier(null);
             }
         });
 

@@ -183,8 +183,8 @@ public class HttpClientSettings {
 
     /**
      * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient添加自定义的根证书, 用于验证自签名的服务器.</p>
-     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的证书.</p>
+     * <p>给MultiHostOkHttpClient添加服务端证书受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
      * <p></p>
      * <p>1.该参数优先级高于customServerIssuersEncoded, 同时设置该参数生效</p>
      * <p>2.调用这个方法会覆盖 SSLSocketFactory 和 X509TrustManager</p>
@@ -194,8 +194,8 @@ public class HttpClientSettings {
 
     /**
      * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient添加自定义的根证书, 用于验证自签名的服务器.</p>
-     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的证书.</p>
+     * <p>给MultiHostOkHttpClient添加服务端证书受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
      * <p></p>
      * <p>1.该参数优先级低于customServerIssuerEncoded, 同时设置该参数无效</p>
      * <p>2.调用这个方法会覆盖 SSLSocketFactory 和 X509TrustManager</p>

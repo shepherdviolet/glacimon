@@ -345,7 +345,7 @@ public class LoadBalancedInspectManager implements Closeable {
                 if (block){
                     host.feedback(false, blockDuration, 1);
                     if (logger.isWarnEnabled()) {
-                        logger.warn(tag + "Inspect: Bad host " + host.getUrl() + ", block for " + blockDuration + " ms, initiative block");
+                        logger.warn(tag + "Inspect: Bad host " + host.getUrl() + ", block for " + blockDuration + " ms. Initiative block");
                     }
                 }
                 if (logger.isTraceEnabled()) {

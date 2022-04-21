@@ -114,10 +114,10 @@ The wrong way is: to invoke the setter method (adjust configurations) before sen
 # 关于日志
 
 * SLF4J日志包路径: `com.github.shepherdviolet.glacimon.spring.x.net.loadbalance`
-* 推荐日志级别: `INFO`
-* 需要打印请求报文和响应码的, 可以将`verboseLog`调为true (配合`INFO`级别)
-* 需要更详细的内容, 可以将级别调为`DEBUG`
-* SimpleOkHttpClient(MultiHostOkHttpClient)还支持日志微调, 详见源码中的verboseLogConfig配置
 * 日志关键字: `LoadBalance` / `HttpClient` / `HttpClients`
-* 包含: 请求/响应日志, Hosts变化日志, 主动探测日志, 被动阻断日志, SpringBoot自动配置日志, Apollo配置实时调整日志等
-* 建议将`com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager`日志输出到单独文件中(主动探测日志)
+* 日志内容: 请求/响应日志, Hosts变化日志, 主动探测日志, 被动阻断日志, SpringBoot自动配置日志, Apollo配置实时调整日志等
+* ----推荐日志级别: `INFO`
+* ----需要打印请求报文和响应码的, 可以将`verboseLog`调为true (配合`INFO`级别)
+* ----需要更详细的内容, 可以将级别调为`DEBUG`
+* ----SimpleOkHttpClient(MultiHostOkHttpClient)还支持日志微调, 详见源码中的verboseLogConfig配置
+* ----`建议`将主动探测日志`com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager`输出到单独文件中 (设为`DEBUG`级别可以持续观察后端状态)

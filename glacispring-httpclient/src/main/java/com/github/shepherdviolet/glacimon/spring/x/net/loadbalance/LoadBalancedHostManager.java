@@ -460,7 +460,7 @@ public class LoadBalancedHostManager {
             if (currentTimeMillis < recoveryUntil.get()) {
                 //阻断后, 恢复期只能放行一次
                 //若恢复期的请求成功, 则有release方法释放流量控制
-                if (recoveryGate.get() < 1) {
+                if (recoveryGate.get() >= 0) {
                     return HostState.RECOVERING;
                 }
             }

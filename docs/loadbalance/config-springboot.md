@@ -99,6 +99,8 @@ glacispring:
       max-read-length: 10485760
       # 当后端HTTP返回码为400或500时阻断后端
       http-code-need-block: 400,500
+      # 当异常为指定类型时, 阻断后端 (这里配的两个异常仅作为演示, 无需设置它们, 因为它们已经包含在默认清单里了, 见源码MultiHostOkHttpClient#needBlock)
+      throwable-need-block: java.net.SocketException,java.net.SocketTimeoutException
       # true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
       verbose-log: false
       # true启用TxTimer对请求耗时的统计(目前只支持同步方式), 详见https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md

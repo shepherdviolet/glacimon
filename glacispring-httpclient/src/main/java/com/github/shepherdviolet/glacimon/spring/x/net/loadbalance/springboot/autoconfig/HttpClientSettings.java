@@ -158,6 +158,13 @@ public class HttpClientSettings {
 
     /**
      * [可运行时修改]
+     * 当异常为指定类型时, 阻断后端.
+     * 指定需要阻断的异常类型, 例如:com.package.BarException,com.package.FooException
+     */
+    private String throwableNeedBlock;
+
+    /**
+     * [可运行时修改]
      * true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
      */
     private boolean verboseLog = false;
@@ -374,6 +381,14 @@ public class HttpClientSettings {
         this.httpCodeNeedBlock = httpCodeNeedBlock;
     }
 
+    public String getThrowableNeedBlock() {
+        return throwableNeedBlock;
+    }
+
+    public void setThrowableNeedBlock(String throwableNeedBlock) {
+        this.throwableNeedBlock = throwableNeedBlock;
+    }
+
     public boolean isVerboseLog() {
         return verboseLog;
     }
@@ -452,6 +467,7 @@ public class HttpClientSettings {
                 ", readTimeout=" + readTimeout +
                 ", maxReadLength=" + maxReadLength +
                 ", httpCodeNeedBlock='" + httpCodeNeedBlock + '\'' +
+                ", throwableNeedBlock='" + throwableNeedBlock + '\'' +
                 ", verboseLog=" + verboseLog +
                 ", txTimerEnabled=" + txTimerEnabled +
                 ", requestTraceEnabled=" + requestTraceEnabled +
@@ -461,5 +477,4 @@ public class HttpClientSettings {
                 ", verifyServerCnByCustomHostname='" + verifyServerCnByCustomHostname + '\'' +
                 '}';
     }
-
 }

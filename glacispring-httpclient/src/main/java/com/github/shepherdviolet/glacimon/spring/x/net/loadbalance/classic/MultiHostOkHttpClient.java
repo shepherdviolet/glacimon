@@ -1289,7 +1289,13 @@ public class MultiHostOkHttpClient {
      * 判断该异常是否需要阻断后端, 返回true阻断
      */
     protected boolean needBlock(Throwable t, Settings settings) {
-        return t instanceof ConnectException ||
+        if (t == null) {
+            return false;
+        }
+        if (settings.throwableNeedBlock.contains(t.getClass())) {
+            return true;
+        }
+        return t instanceof SocketException ||
                 t instanceof SocketTimeoutException ||
                 t instanceof UnknownHostException ||
                 (t instanceof HttpRejectException && settings.httpCodeNeedBlock.contains(((HttpRejectException) t).getResponseCode()));
@@ -1347,6 +1353,7 @@ public class MultiHostOkHttpClient {
         private String tag = LOG_PREFIX;
         private String rawTag = "";
         private Set<Integer> httpCodeNeedBlock = new HashSet<>(8);
+        private Set<Class<? extends Throwable>> throwableNeedBlock = new HashSet<>(8);
 
         private boolean requestTraceEnabled = false;
 
@@ -1377,7 +1384,8 @@ public class MultiHostOkHttpClient {
                     ", x509TrustManager=" + x509TrustManager +
                     ", hostnameVerifier=" + hostnameVerifier +
                     ", dataConverter=" + dataConverter +
-                    ", httpCodeNeedBlock=" + httpCodeNeedBlock;
+                    ", httpCodeNeedBlock=" + httpCodeNeedBlock +
+                    ", throwableNeedBlock=" + throwableNeedBlock;
         }
     }
 
@@ -2132,6 +2140,44 @@ public class MultiHostOkHttpClient {
             settings.httpCodeNeedBlock = newSet;
         } catch (Throwable t) {
             throw new RuntimeException("Invalid httpCodeNeedBlock " + codes, t);
+        }
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 当异常为指定类型时, 阻断后端
+     * @param throwableTypes 指定需要阻断的异常类型, 例如:com.package.BarException,com.package.FooException
+     */
+    public MultiHostOkHttpClient setThrowableNeedBlock(Set<Class<? extends Throwable>> throwableTypes) {
+        if (throwableTypes == null) {
+            settings.throwableNeedBlock = new HashSet<>(8);
+            return this;
+        }
+        settings.throwableNeedBlock = new HashSet<>(throwableTypes);
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 当异常为指定类型时, 阻断后端
+     * @param throwableTypes 指定需要阻断的异常类型, 例如:com.package.BarException,com.package.FooException
+     */
+    @SuppressWarnings("unchecked")
+    public MultiHostOkHttpClient setThrowableNeedBlock(String throwableTypes) {
+        if (CheckUtils.isEmptyOrBlank(throwableTypes)) {
+            settings.throwableNeedBlock = new HashSet<>(8);
+            return this;
+        }
+        try {
+            String[] typeArray = throwableTypes.split(",");
+            Set<Class<? extends Throwable>> newSet = new HashSet<>(8);
+            for (String type : typeArray) {
+                newSet.add((Class<? extends Throwable>) Class.forName(type));
+            }
+            settings.throwableNeedBlock = newSet;
+        } catch (Throwable t) {
+            throw new RuntimeException("Invalid throwableNeedBlock " + throwableTypes, t);
         }
         return this;
     }

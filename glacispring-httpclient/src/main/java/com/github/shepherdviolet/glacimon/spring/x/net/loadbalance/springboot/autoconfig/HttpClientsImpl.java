@@ -258,6 +258,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setReadTimeout(settings.getReadTimeout())
                 .setMaxReadLength(settings.getMaxReadLength())
                 .setHttpCodeNeedBlock(settings.getHttpCodeNeedBlock())
+                .setThrowableNeedBlock(settings.getThrowableNeedBlock())
                 .setVerboseLog(settings.isVerboseLog())
                 .setTxTimerEnabled(settings.isTxTimerEnabled())
                 .setRequestTraceEnabled(settings.isRequestTraceEnabled());
@@ -561,6 +562,14 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
             @Override
             public void applySetting(HttpClient client, String value) throws Exception {
                 client.setHttpCodeNeedBlock(value);
+            }
+        });
+
+        installUpdater(new SingleValueUpdater(
+                Arrays.asList("throwableNeedBlock", "throwable-need-block")) {
+            @Override
+            public void applySetting(HttpClient client, String value) throws Exception {
+                client.setThrowableNeedBlock(value);
             }
         });
 

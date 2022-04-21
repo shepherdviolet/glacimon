@@ -239,9 +239,8 @@ public class LoadBalancedHostManager {
 
     /**
      * 获得当前远端列表和状态
-     * @return value=true:可用, value=false:不可用
      */
-    public Map<String, Boolean> getHostsStatus(){
+    public Map<String, HostState> getHostsStatus(){
         Host[] hostArray = this.hostArray;
 
         if (hostArray.length <= 0){
@@ -250,9 +249,9 @@ public class LoadBalancedHostManager {
 
         long currentTimeMillis = System.currentTimeMillis();
 
-        Map<String, Boolean> status = new HashMap<>(hostArray.length);
+        Map<String, HostState> status = new HashMap<>(hostArray.length);
         for (Host host : hostArray){
-            status.put(host.getUrl(), !host.isBlocked(currentTimeMillis));
+            status.put(host.getUrl(), host.getState(currentTimeMillis));
         }
         return status;
     }
@@ -283,10 +282,12 @@ public class LoadBalancedHostManager {
 
         long currentTimeMillis = System.currentTimeMillis();
 
-        for (Host host : hostArray){
-            stringBuilder.append(" ");
-            stringBuilder.append(host.getUrl());
-            stringBuilder.append(host.isBlocked(currentTimeMillis) ? "(bad)" : "(ok)");
+        for (Host host : hostArray) {
+            stringBuilder.append(" ")
+                    .append(host.getUrl())
+                    .append("(")
+                    .append(host.getState(currentTimeMillis).toString())
+                    .append(")");
         }
         return stringBuilder.toString();
     }
@@ -425,7 +426,7 @@ public class LoadBalancedHostManager {
         }
 
         /**
-         * 该远端是否被阻断
+         * 该远端是否被阻断, 会消耗恢复期的放行次数
          * @param currentTimeMillis 当前时间戳
          * @return true:被阻断(不可用), false:未阻断(可用)
          */
@@ -445,10 +446,51 @@ public class LoadBalancedHostManager {
             return false;
         }
 
+        /**
+         * 该远端状态, 不会消耗恢复期的放行次数
+         * @param currentTimeMillis 当前时间戳
+         * @return HOST_STATE_OK HOST_STATE_RECOVERING HOST_STATE_BLOCKED
+         */
+        private HostState getState(long currentTimeMillis){
+            //阻断期一律返回阻断
+            if (currentTimeMillis < blockUntil.get()) {
+                return HostState.BLOCKED;
+            }
+            //恢复期限流
+            if (currentTimeMillis < recoveryUntil.get()) {
+                //阻断后, 恢复期只能放行一次
+                //若恢复期的请求成功, 则有release方法释放流量控制
+                if (recoveryGate.get() < 1) {
+                    return HostState.RECOVERING;
+                }
+            }
+            return HostState.OK;
+        }
+
         @Override
         public String toString() {
             return "Host<" + url + ">";
         }
+    }
+
+    /**
+     * 后端状态
+     */
+    public enum HostState {
+        /**
+         * 正常
+         */
+        OK,
+
+        /**
+         * 恢复期(半开期), 只能放行一次(判断是否恢复正常)
+         */
+        RECOVERING,
+
+        /**
+         * 阻断期
+         */
+        BLOCKED
     }
 
 }

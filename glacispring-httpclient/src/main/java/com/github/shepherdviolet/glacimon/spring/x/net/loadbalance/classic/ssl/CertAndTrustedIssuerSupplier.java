@@ -70,8 +70,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * 如果一个都不设置, 表示不配置自定义的颁发者.
      * @param customServerIssuerEncoded 服务端证书的受信颁发者
      */
-    public void setCustomServerIssuerEncoded(String customServerIssuerEncoded) {
+    public CertAndTrustedIssuerSupplier setCustomServerIssuerEncoded(String customServerIssuerEncoded) {
         this.customServerIssuerEncoded = customServerIssuerEncoded;
+        return this;
     }
 
     /**
@@ -80,8 +81,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * 如果一个都不设置, 表示不配置自定义的颁发者.
      * @param customServerIssuersEncoded 服务端证书的受信颁发者
      */
-    public void setCustomServerIssuersEncoded(String[] customServerIssuersEncoded) {
+    public CertAndTrustedIssuerSupplier setCustomServerIssuersEncoded(String[] customServerIssuersEncoded) {
         this.customServerIssuersEncoded = customServerIssuersEncoded;
+        return this;
     }
 
     /**
@@ -90,8 +92,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * 如果一个都不设置, 表示不配置自定义的颁发者.
      * @param customServerIssuer 服务端证书的受信颁发者
      */
-    public void setCustomServerIssuer(X509Certificate customServerIssuer) {
+    public CertAndTrustedIssuerSupplier setCustomServerIssuer(X509Certificate customServerIssuer) {
         this.customServerIssuer = customServerIssuer;
+        return this;
     }
 
     /**
@@ -100,8 +103,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * 如果一个都不设置, 表示不配置自定义的颁发者.
      * @param customServerIssuers 服务端证书的受信颁发者
      */
-    public void setCustomServerIssuers(X509Certificate[] customServerIssuers) {
+    public CertAndTrustedIssuerSupplier setCustomServerIssuers(X509Certificate[] customServerIssuers) {
         this.customServerIssuers = customServerIssuers;
+        return this;
     }
 
     /**
@@ -112,8 +116,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      *
      * @param customClientCertEncoded 客户端证书, X509 PEM BASE64
      */
-    public void setCustomClientCertEncoded(String customClientCertEncoded) {
+    public CertAndTrustedIssuerSupplier setCustomClientCertEncoded(String customClientCertEncoded) {
         this.customClientCertEncoded = customClientCertEncoded;
+        return this;
     }
 
     /**
@@ -124,8 +129,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      *
      * @param customClientCertsEncoded 客户端证书链, X509 PEM BASE64
      */
-    public void setCustomClientCertsEncoded(String[] customClientCertsEncoded) {
+    public CertAndTrustedIssuerSupplier setCustomClientCertsEncoded(String[] customClientCertsEncoded) {
         this.customClientCertsEncoded = customClientCertsEncoded;
+        return this;
     }
 
     /**
@@ -136,8 +142,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      *
      * @param customClientCert 客户端证书
      */
-    public void setCustomClientCert(X509Certificate customClientCert) {
+    public CertAndTrustedIssuerSupplier setCustomClientCert(X509Certificate customClientCert) {
         this.customClientCert = customClientCert;
+        return this;
     }
 
     /**
@@ -148,8 +155,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      *
      * @param customClientCerts 客户端证书链
      */
-    public void setCustomClientCerts(X509Certificate[] customClientCerts) {
+    public CertAndTrustedIssuerSupplier setCustomClientCerts(X509Certificate[] customClientCerts) {
         this.customClientCerts = customClientCerts;
+        return this;
     }
 
     /**
@@ -160,8 +168,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      *
      * @param customClientCertKeyEncoded 客户端证书, PKCS8 BASE64
      */
-    public void setCustomClientCertKeyEncoded(String customClientCertKeyEncoded) {
+    public CertAndTrustedIssuerSupplier setCustomClientCertKeyEncoded(String customClientCertKeyEncoded) {
         this.customClientCertKeyEncoded = customClientCertKeyEncoded;
+        return this;
     }
 
     /**
@@ -172,8 +181,9 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      *
      * @param customClientCertKey 客户端证书
      */
-    public void setCustomClientCertKey(Key customClientCertKey) {
+    public CertAndTrustedIssuerSupplier setCustomClientCertKey(Key customClientCertKey) {
         this.customClientCertKey = customClientCertKey;
+        return this;
     }
 
     @Override

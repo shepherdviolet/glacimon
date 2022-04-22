@@ -12,9 +12,9 @@
 glacispring:
   httpclients:
     client1:
-      # 添加自定义的根证书, 用于验证自签名的服务器(设置一个, 优先级高). 如果设置为"UNSAFE-TRUST-ALL-ISSUERS"则不校验服务端证书链, 信任一切服务端证书, 不安全!!!
+      # 添加服务端证书的受信颁发者, 用于验证自签名的服务器(设置一个, 优先级高). 如果设置为"UNSAFE-TRUST-ALL-ISSUERS"则不校验服务端证书链, 信任一切服务端证书, 不安全!!!
       custom-server-issuer-encoded: '自签名的服务端根证书X509-Base64字符串'
-      # 添加自定义的根证书, 用于验证自签名的服务器(设置多个, 优先级低). 在properties中: glacispring.httpclients.custom-server-issuers-encoded[0]=...
+      # 添加服务端证书的受信颁发者, 用于验证自签名的服务器(设置多个, 优先级低). 在properties中: glacispring.httpclients.custom-server-issuers-encoded[0]=...
       custom-server-issuers-encoded: 
         - '自签名的服务端根证书X509-Base64字符串(1)'
         - '自签名的服务端根证书X509-Base64字符串(2)'
@@ -26,10 +26,10 @@ glacispring:
 
 ```text
 //四选一
-SslUtils.setCustomServerIssuers(simpleOkHttpClient, ...)
-SslUtils.setCustomServerIssuer(simpleOkHttpClient, ...)
-SslUtils.setCustomServerIssuersEncoded(simpleOkHttpClient, ...)
-SslUtils.setCustomServerIssuerEncoded(simpleOkHttpClient, ...)
+client.setCustomServerIssuers(...)
+client.setCustomServerIssuer(...)
+client.setCustomServerIssuersEncoded(...)
+client.setCustomServerIssuerEncoded(...)
 ```
 
 ## 强制指定证书域名(CN)/DN
@@ -43,10 +43,10 @@ SslUtils.setCustomServerIssuerEncoded(simpleOkHttpClient, ...)
 glacispring:
   httpclients:
     client1:
+      # 使用指定的域名验证服务端证书的DN(方式一, 优先级高). 如果设置为"UNSAFE-TRUST-ALL-DN"则不校验DN, 所有合法证书都通过, 不安全!!!
+      verify-server-dn-by-custom-dn: 'CN=baidu.com,O=Beijing Baidu Netcom Science Technology Co.\, Ltd,OU=service operation department,L=beijing,ST=beijing,C=CN'
       # 使用指定的域名验证服务端证书的CN(方式二, 优先级低). 如果设置为"UNSAFE-TRUST-ALL-CN"则不校验CN, 所有合法证书都通过, 不安全!!!
       verify-server-cn-by-custom-hostname: 'www.baidu.com'
-      # 使用指定的域名验证服务端证书的DN(方式一, 优先级高). 如果设置为"UNSAFE-TRUST-ALL-DN"则不校验DN, 所有合法证书都通过, 不安全!!!
-      verify-server-dn-by-customdn: 'CN=baidu.com,O=Beijing Baidu Netcom Science Technology Co.\, Ltd,OU=service operation department,L=beijing,ST=beijing,C=CN'
 ```
 
 ### 其他
@@ -54,8 +54,55 @@ glacispring:
 * 调用如下方法设置根证书, 或在Spring XML中设置如下参数
 
 ```text
-SslUtils.setVerifyServerCnByCustomHostname(simpleOkHttpClient, ...)
-SslUtils.setVerifyServerDnByCustomDn(simpleOkHttpClient, ...)
+client.setVerifyServerCnByCustomHostname(...)
+client.setVerifyServerDnByCustomDn(...)
+```
+
+## 双向SSL
+
+* 与服务端建立双向SSL连接
+
+### Spring Boot YAML
+
+```text
+glacispring:
+  httpclients:
+    client1:
+      # 添加服务端证书的受信颁发者, 用于验证自签名的服务器(设置一个, 优先级高). 如果设置为"UNSAFE-TRUST-ALL-ISSUERS"则不校验服务端证书链, 信任一切服务端证书, 不安全!!!
+      custom-server-issuer-encoded: '自签名的服务端根证书X509-Base64字符串'
+      # 添加服务端证书的受信颁发者, 用于验证自签名的服务器(设置多个, 优先级低). 在properties中: glacispring.httpclients.custom-server-issuers-encoded[0]=...
+      #custom-server-issuers-encoded: 
+      #  - '自签名的服务端根证书X509-Base64字符串(1)'
+      #  - '自签名的服务端根证书X509-Base64字符串(2)'
+      # 添加客户端证书, 用于双向SSL(设置一个, 优先级高). 
+      custom-client-cert-encoded: '客户端证书X509-Base64字符串'
+      # 添加客户端证书链, 用于双向SSL(设置一个, 优先级低). 
+      #custom-client-certs-encoded:
+      #  - '客户端证书X509-Base64字符串'
+      #  - '二级CA证书X509-Base64字符串'
+      #  - '一级根证书X509-Base64字符串'
+      # 添加客户端证书私钥, 用于双向SSL, 设置了客户端证书时必须设置对应的私钥. 
+      custom-client-cert-key-encoded: '客户端证书私钥PKCS8-Base64字符串'
+```
+
+### 其他
+
+* 调用如下方法设置双向SSL, 或在Spring XML中设置如下参数
+
+```text
+//四选一
+client.setCustomServerIssuers(...)
+client.setCustomServerIssuer(...)
+client.setCustomServerIssuersEncoded(...)
+client.setCustomServerIssuerEncoded(...)
+//四选一
+setCustomClientCertEncoded(...)
+setCustomClientCertsEncoded(...)
+setCustomClientCert(...)
+setCustomClientCerts(...)
+//二选一
+setCustomClientCertKeyEncoded(...)
+setCustomClientCertKey(...)
 ```
 
 <br>
@@ -68,30 +115,37 @@ SslUtils.setVerifyServerDnByCustomDn(simpleOkHttpClient, ...)
 * 给客户端设置自定义的X509TrustManager
 
 ```text
-SslUtils.setX509TrustManager(simpleOkHttpClient, new X509TrustManager() {
-    @Override
-    public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-        // TO DO ...
-    }
-    @Override
-    public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-        // TO DO ...
-    }
-    @Override
-    public X509Certificate[] getAcceptedIssuers() {
-        // TO DO ...
-    }
-});
+// 示例1: 单向SSL
+client.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                // TO DO ...
+            }
+            @Override
+            public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                // TO DO ...
+            }
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                // TO DO ...
+            }
+        }));
+
+// 示例二: 双向SSL
+client.setSslConfigSupplier(new KeyAndTrustManagerSupplier()
+                .setTrustManager(trustManager)
+                .setKeyManager(keyManager));
 ```
 
-## 自定义SSLSocketFactory和X509TrustManager
+## 自定义SSLSocketFactory
 
-* 给客户端设置自定义的SSLSocketFactory和X509TrustManager
+* 给客户端设置自定义的SSLSocketFactory
 
 ```text
-// 两个要同时设置
-simpleOkHttpClient.setSSLSocketFactory(sslSocketFactory);
-simpleOkHttpClient.setX509TrustManager(x509TrustManager);
+// 建议sslSocketFactory和trustManager一起设置, 如果只设置sslSocketFactory的话, OKHTTP会用反射的方式清理证书链.
+client.setSslConfigSupplier(new SslSocketFactorySupplier()
+                .setSslSocketFactory(sslSocketFactory)
+                .setTrustManager(x509TrustManager));
 ```
 
 ## 自定义域名验证逻辑
@@ -143,10 +197,11 @@ public class HttpClientConfiguration {
     public void configureHttpClients(HttpClients httpClients){
         SimpleOkHttpClient client1 = httpClients.get("client1");
         //给客户端设置自定义的X509TrustManager
-        SslUtils.setX509TrustManager(client1, x509TrustManager);
-        //给客户端设置自定义的SSLSocketFactory和X509TrustManager, 两个要同时设置
-        //client1.setSSLSocketFactory(sslSocketFactory);
-        //client1.setX509TrustManager(x509TrustManager);
+        client1.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(trustManager));
+        //给客户端设置自定义的SSLSocketFactory, 建议sslSocketFactory和trustManager一起设置, 如果只设置sslSocketFactory的话, OKHTTP会用反射的方式清理证书链.
+        client1.setSslConfigSupplier(new SslSocketFactorySupplier()
+                .setSslSocketFactory(sslSocketFactory)
+                .setTrustManager(x509TrustManager));
         //自定义域名验证逻辑
         client1.setHostnameVerifier(hostnameVerifier);
     }
@@ -161,10 +216,11 @@ public class HttpClientConfiguration {
     @Qualifier("simpleOkHttpClient")
     public void configureHttpClients(SimpleOkHttpClient simpleOkHttpClient){
         //给客户端设置自定义的X509TrustManager
-        SslUtils.setX509TrustManager(simpleOkHttpClient, x509TrustManager);
-        //给客户端设置自定义的SSLSocketFactory和X509TrustManager, 两个要同时设置
-        //simpleOkHttpClient.setSSLSocketFactory(sslSocketFactory);
-        //simpleOkHttpClient.setX509TrustManager(x509TrustManager);
+        simpleOkHttpClient.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(trustManager));
+        //给客户端设置自定义的SSLSocketFactory, 建议sslSocketFactory和trustManager一起设置, 如果只设置sslSocketFactory的话, OKHTTP会用反射的方式清理证书链.
+        simpleOkHttpClient.setSslConfigSupplier(new SslSocketFactorySupplier()
+                .setSslSocketFactory(sslSocketFactory)
+                .setTrustManager(x509TrustManager));
         //自定义域名验证逻辑
         simpleOkHttpClient.setHostnameVerifier(hostnameVerifier);
     }
@@ -186,10 +242,11 @@ public class HttpClientSslConfigurer implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         //给客户端设置自定义的X509TrustManager
-        SslUtils.setX509TrustManager(simpleOkHttpClient, x509TrustManager);
-        //给客户端设置自定义的SSLSocketFactory和X509TrustManager, 两个要同时设置
-        //simpleOkHttpClient.setSSLSocketFactory(sslSocketFactory);
-        //simpleOkHttpClient.setX509TrustManager(x509TrustManager);
+        simpleOkHttpClient.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(trustManager));
+        //给客户端设置自定义的SSLSocketFactory, 建议sslSocketFactory和trustManager一起设置, 如果只设置sslSocketFactory的话, OKHTTP会用反射的方式清理证书链.
+        simpleOkHttpClient.setSslConfigSupplier(new SslSocketFactorySupplier()
+                .setSslSocketFactory(sslSocketFactory)
+                .setTrustManager(x509TrustManager));
         //自定义域名验证逻辑
         simpleOkHttpClient.setHostnameVerifier(hostnameVerifier);
     }

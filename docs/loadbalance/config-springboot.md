@@ -113,6 +113,15 @@ glacispring:
       custom-server-issuers-encoded: 
         - '自签名的服务端根证书X509-Base64字符串(1)'
         - '自签名的服务端根证书X509-Base64字符串(2)'
+      # 添加客户端证书, 用于双向SSL(设置一个, 优先级高). 
+      custom-client-cert-encoded: '客户端证书X509-Base64字符串'
+      # 添加客户端证书链, 用于双向SSL(设置一个, 优先级低). 
+      custom-client-certs-encoded:
+        - '客户端证书X509-Base64字符串'
+        - '二级CA证书X509-Base64字符串'
+        - '一级根证书X509-Base64字符串'
+      # 添加客户端证书私钥, 用于双向SSL, 设置了客户端证书时必须设置对应的私钥. 
+      custom-client-cert-key-encoded: '客户端证书私钥PKCS8-Base64字符串'
       # 使用指定的域名验证服务端证书的DN(方式一, 优先级高). 如果设置为"UNSAFE-TRUST-ALL-DN"则不校验DN, 所有合法证书都通过, 不安全!!!
       verify-server-dn-by-custom-dn: 'CN=baidu.com,O=Beijing Baidu Netcom Science Technology Co.\, Ltd,OU=service operation department,L=beijing,ST=beijing,C=CN'
       # 使用指定的域名验证服务端证书的CN(方式二, 优先级低). 如果设置为"UNSAFE-TRUST-ALL-CN"则不校验CN, 所有合法证书都通过, 不安全!!!

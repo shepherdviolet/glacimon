@@ -183,25 +183,51 @@ public class HttpClientSettings {
 
     /**
      * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient添加服务端证书受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>给MultiHostOkHttpClient设置服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
      * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
      * <p></p>
      * <p>1.该参数优先级高于customServerIssuersEncoded, 同时设置该参数生效</p>
-     * <p>2.调用这个方法会覆盖 SSLSocketFactory 和 X509TrustManager</p>
-     * <p>3.如果需要实现自定义证书验证逻辑, 请调用SslUtils#setX509TrustManager设置自己的X509TrustManager</p>
+     * <p>2.设置这个参数会覆盖MultiHostOkHttpClient#setSslConfigSupplier</p>
      */
     private String customServerIssuerEncoded;
 
     /**
      * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient添加服务端证书受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>给MultiHostOkHttpClient设置服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
      * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
      * <p></p>
      * <p>1.该参数优先级低于customServerIssuerEncoded, 同时设置该参数无效</p>
-     * <p>2.调用这个方法会覆盖 SSLSocketFactory 和 X509TrustManager</p>
-     * <p>3.如果需要实现自定义证书验证逻辑, 请调用SslUtils#setX509TrustManager设置自己的X509TrustManager</p>
+     * <p>2.设置这个参数会覆盖MultiHostOkHttpClient#setSslConfigSupplier</p>
      */
     private String[] customServerIssuersEncoded;
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>[双向SSL]设置客户端证书</p>
+     * <p></p>
+     * <p>1.该参数优先级高于 customClientCertsEncoded, 同时设置该参数生效</p>
+     * <p>2.如果一个都不设置, 表示不配置客户端证书(关闭双向SSL)</p>
+     * <p>3.如果设置了客户端证书, 必须设置客户端私钥.</p>
+     */
+    private String customClientCertEncoded;
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>[双向SSL]设置客户端证书链</p>
+     * <p></p>
+     * <p>1.该参数优先级低于 customClientCertEncoded, 同时设置该参数无效</p>
+     * <p>2.如果一个都不设置, 表示不配置客户端证书(关闭双向SSL)</p>
+     * <p>3.如果设置了客户端证书, 必须设置客户端私钥.</p>
+     */
+    private String[] customClientCertsEncoded;
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>[双向SSL]设置客户端证书对应的私钥</p>
+     * <p></p>
+     * <p>1.如果设置了客户端私钥, 必须设置客户端证书.</p>
+     */
+    private String customClientCertKeyEncoded;
 
     /**
      * <p>[可运行时修改]</p>
@@ -211,7 +237,7 @@ public class HttpClientSettings {
      * <p>默认情况下, HTTP客户端会验证访问的域名和服务端证书的CN是否匹配. 你可以利用这个方法强制验证证书DN, 即你只信任指定DN的证书. </p>
      * <p></p>
      * <p>1.该参数优先级高于verifyServerCnByCustomHostname, 同时设置该参数生效</p>
-     * <p>2.调用这个方法会覆盖 HostnameVerifier</p>
+     * <p>2.设置这个参数会覆盖MultiHostOkHttpClient#setHostnameVerifier</p>
      */
     public String verifyServerDnByCustomDn;
 
@@ -225,7 +251,7 @@ public class HttpClientSettings {
      * 服务端证书的CN. 除此之外, 你也可以利用这个方法强制验证证书CN, 即你只信任指定CN的证书. </p>
      * <p></p>
      * <p>1.该参数优先级低于verifyServerDnByCustomDn, 同时设置该参数无效</p>
-     * <p>2.调用这个方法会覆盖 HostnameVerifier</p>
+     * <p>2.设置这个参数会覆盖MultiHostOkHttpClient#setHostnameVerifier</p>
      */
     public String verifyServerCnByCustomHostname;
 
@@ -429,6 +455,30 @@ public class HttpClientSettings {
         this.customServerIssuersEncoded = customServerIssuersEncoded;
     }
 
+    public String getCustomClientCertEncoded() {
+        return customClientCertEncoded;
+    }
+
+    public void setCustomClientCertEncoded(String customClientCertEncoded) {
+        this.customClientCertEncoded = customClientCertEncoded;
+    }
+
+    public String[] getCustomClientCertsEncoded() {
+        return customClientCertsEncoded;
+    }
+
+    public void setCustomClientCertsEncoded(String[] customClientCertsEncoded) {
+        this.customClientCertsEncoded = customClientCertsEncoded;
+    }
+
+    public String getCustomClientCertKeyEncoded() {
+        return customClientCertKeyEncoded;
+    }
+
+    public void setCustomClientCertKeyEncoded(String customClientCertKeyEncoded) {
+        this.customClientCertKeyEncoded = customClientCertKeyEncoded;
+    }
+
     public String getVerifyServerDnByCustomDn() {
         return verifyServerDnByCustomDn;
     }
@@ -473,6 +523,9 @@ public class HttpClientSettings {
                 ", requestTraceEnabled=" + requestTraceEnabled +
                 ", customServerIssuerEncoded='" + customServerIssuerEncoded + '\'' +
                 ", customServerIssuersEncoded=" + Arrays.toString(customServerIssuersEncoded) +
+                ", customClientCertEncoded='" + customClientCertEncoded + '\'' +
+                ", customClientCertsEncoded=" + Arrays.toString(customClientCertsEncoded) +
+                ", customClientCertKeyEncoded='" + customClientCertKeyEncoded + '\'' +
                 ", verifyServerDnByCustomDn='" + verifyServerDnByCustomDn + '\'' +
                 ", verifyServerCnByCustomHostname='" + verifyServerCnByCustomHostname + '\'' +
                 '}';

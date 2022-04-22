@@ -250,7 +250,10 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setTxTimerEnabled(settings.isTxTimerEnabled())
                 .setRequestTraceEnabled(settings.isRequestTraceEnabled())
                 .setCustomServerIssuerEncoded(settings.getCustomServerIssuerEncoded())
-                .setCustomServerIssuersEncoded(settings.getCustomServerIssuersEncoded());
+                .setCustomServerIssuersEncoded(settings.getCustomServerIssuersEncoded())
+                .setCustomClientCertEncoded(settings.getCustomClientCertEncoded())
+                .setCustomClientCertsEncoded(settings.getCustomClientCertsEncoded()).
+                setCustomClientCertKeyEncoded(settings.getCustomClientCertKeyEncoded());
     }
 
     private static final class HttpClient extends SimpleOkHttpClient {
@@ -601,7 +604,36 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
             }
             @Override
             public void applyReset(HttpClient client) throws Exception {
-                client.setSslConfigSupplier(null);
+                client.setCustomServerIssuerEncoded(null);
+                client.setCustomServerIssuersEncoded(null);
+            }
+        });
+
+        installUpdater(new SingleOrArrayValueUpdater(
+                Arrays.asList("customClientCertEncoded", "custom-client-cert-encoded"),
+                Arrays.asList("customClientCertsEncoded", "custom-client-certs-encoded")) {
+            @Override
+            public void applySingleSetting(HttpClient client, String value) throws Exception {
+                client.setCustomClientCertsEncoded(null);
+                client.setCustomClientCertEncoded(value);
+            }
+            @Override
+            public void applyArraySetting(HttpClient client, String[] value) throws Exception {
+                client.setCustomClientCertEncoded(null);
+                client.setCustomClientCertsEncoded(value);
+            }
+            @Override
+            public void applyReset(HttpClient client) throws Exception {
+                client.setCustomClientCertEncoded(null);
+                client.setCustomClientCertsEncoded(null);
+            }
+        });
+
+        installUpdater(new SingleValueUpdater(
+                Arrays.asList("customClientCertKeyEncoded", "custom-client-cert-key-encoded")) {
+            @Override
+            public void applySetting(HttpClient client, String value) throws Exception {
+                client.setCustomClientCertKeyEncoded(value);
             }
         });
 

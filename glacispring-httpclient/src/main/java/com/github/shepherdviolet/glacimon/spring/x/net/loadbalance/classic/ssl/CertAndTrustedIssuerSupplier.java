@@ -117,8 +117,10 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCertEncoded 客户端证书, X509 PEM BASE64
      */
     public CertAndTrustedIssuerSupplier setCustomClientCertEncoded(String customClientCertEncoded) {
-        this.customClientCertEncoded = customClientCertEncoded;
-        return this;
+        // TODO SSL mutual authentication
+        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
+//        this.customClientCertEncoded = customClientCertEncoded;
+//        return this;
     }
 
     /**
@@ -130,8 +132,10 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCertsEncoded 客户端证书链, X509 PEM BASE64
      */
     public CertAndTrustedIssuerSupplier setCustomClientCertsEncoded(String[] customClientCertsEncoded) {
-        this.customClientCertsEncoded = customClientCertsEncoded;
-        return this;
+        // TODO SSL mutual authentication
+        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
+//        this.customClientCertsEncoded = customClientCertsEncoded;
+//        return this;
     }
 
     /**
@@ -143,8 +147,10 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCert 客户端证书
      */
     public CertAndTrustedIssuerSupplier setCustomClientCert(X509Certificate customClientCert) {
-        this.customClientCert = customClientCert;
-        return this;
+        // TODO SSL mutual authentication
+        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
+//        this.customClientCert = customClientCert;
+//        return this;
     }
 
     /**
@@ -156,8 +162,10 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCerts 客户端证书链
      */
     public CertAndTrustedIssuerSupplier setCustomClientCerts(X509Certificate[] customClientCerts) {
-        this.customClientCerts = customClientCerts;
-        return this;
+        // TODO SSL mutual authentication
+        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
+//        this.customClientCerts = customClientCerts;
+//        return this;
     }
 
     /**
@@ -169,8 +177,10 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCertKeyEncoded 客户端证书, PKCS8 BASE64
      */
     public CertAndTrustedIssuerSupplier setCustomClientCertKeyEncoded(String customClientCertKeyEncoded) {
-        this.customClientCertKeyEncoded = customClientCertKeyEncoded;
-        return this;
+        // TODO SSL mutual authentication
+        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
+//        this.customClientCertKeyEncoded = customClientCertKeyEncoded;
+//        return this;
     }
 
     /**
@@ -182,8 +192,10 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCertKey 客户端证书
      */
     public CertAndTrustedIssuerSupplier setCustomClientCertKey(Key customClientCertKey) {
-        this.customClientCertKey = customClientCertKey;
-        return this;
+        // TODO SSL mutual authentication
+        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
+//        this.customClientCertKey = customClientCertKey;
+//        return this;
     }
 
     @Override
@@ -341,14 +353,14 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
         try {
             keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null, null);
-            keyStore.setKeyEntry("0", customKey, null, customCerts.toArray(new X509Certificate[0]));
+            keyStore.setKeyEntry("0", customKey, new char[0], customCerts.toArray(new X509Certificate[0]));
         } catch (Throwable t) {
             throw new RuntimeException("CertAndTrustedIssuerSupplier | Failed to convert custom client certificate chain and key to KeyStore", t);
         }
 
         try {
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, null);
+            keyManagerFactory.init(keyStore, new char[0]);
             return (X509KeyManager) keyManagerFactory.getKeyManagers()[0];
         } catch (Throwable t) {
             throw new RuntimeException("CertAndTrustedIssuerSupplier | Failed to create X509KeyManager instance for custom client certificate chain and key", t);

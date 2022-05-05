@@ -61,6 +61,7 @@ client.setVerifyServerDnByCustomDn(...)
 ## 双向SSL
 
 * 与服务端建立双向SSL连接
+* `待解决: SSL双向认证似乎有点问题, 后端如果是Springboot应用, 配置了客户端证书验证, 测试通过没问题; 后端如果是nginx, 配置了客户端证书验证, 就会报错400, 原因不明...`
 
 ### Spring Boot YAML
 

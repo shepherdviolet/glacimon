@@ -50,6 +50,8 @@ glacispring:
 
 ### YML中所提供的全部配置说明
 
+* `待解决: SSL双向认证似乎有点问题, 后端如果是Springboot应用, 配置了客户端证书验证, 测试通过没问题; 后端如果是nginx, 配置了客户端证书验证, 就会报错400, 原因不明...`
+
 ```yaml
 glacispring:
   httpclient:

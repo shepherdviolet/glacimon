@@ -20,7 +20,9 @@
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.ssl;
 
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.CertificateUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.DigestCipher;
 import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 import com.github.shepherdviolet.glacimon.java.net.CustomIssuersTrustManager;
@@ -29,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -44,6 +47,11 @@ import java.util.List;
  * <p>1.设置服务端证书的受信颁发者 </p>
  * <p>2.设置客户端证书(双向SSL) </p>
  * <p>3. ... </p>
+ *
+ * <p>待解决: SSL双向认证似乎有点问题, 后端如果是Springboot应用, 配置了客户端证书验证, 测试通过没问题; 后端如果是nginx, 配置了客户端证书验证,
+ * 就会报错400, 原因不明...</p>
+ *
+ * <p>待开发: 目前只支持设置证书和私钥, 将来可以支持设置JKS/PFX文件 (keyStore.load(...)加载一下文件即可)</p>
  *
  * @author shepherdviolet
  */
@@ -117,10 +125,8 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCertEncoded 客户端证书, X509 PEM BASE64
      */
     public CertAndTrustedIssuerSupplier setCustomClientCertEncoded(String customClientCertEncoded) {
-        // TODO SSL mutual authentication
-        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
-//        this.customClientCertEncoded = customClientCertEncoded;
-//        return this;
+        this.customClientCertEncoded = customClientCertEncoded;
+        return this;
     }
 
     /**
@@ -132,10 +138,8 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCertsEncoded 客户端证书链, X509 PEM BASE64
      */
     public CertAndTrustedIssuerSupplier setCustomClientCertsEncoded(String[] customClientCertsEncoded) {
-        // TODO SSL mutual authentication
-        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
-//        this.customClientCertsEncoded = customClientCertsEncoded;
-//        return this;
+        this.customClientCertsEncoded = customClientCertsEncoded;
+        return this;
     }
 
     /**
@@ -147,10 +151,8 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCert 客户端证书
      */
     public CertAndTrustedIssuerSupplier setCustomClientCert(X509Certificate customClientCert) {
-        // TODO SSL mutual authentication
-        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
-//        this.customClientCert = customClientCert;
-//        return this;
+        this.customClientCert = customClientCert;
+        return this;
     }
 
     /**
@@ -162,10 +164,8 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCerts 客户端证书链
      */
     public CertAndTrustedIssuerSupplier setCustomClientCerts(X509Certificate[] customClientCerts) {
-        // TODO SSL mutual authentication
-        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
-//        this.customClientCerts = customClientCerts;
-//        return this;
+        this.customClientCerts = customClientCerts;
+        return this;
     }
 
     /**
@@ -177,10 +177,8 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCertKeyEncoded 客户端证书, PKCS8 BASE64
      */
     public CertAndTrustedIssuerSupplier setCustomClientCertKeyEncoded(String customClientCertKeyEncoded) {
-        // TODO SSL mutual authentication
-        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
-//        this.customClientCertKeyEncoded = customClientCertKeyEncoded;
-//        return this;
+        this.customClientCertKeyEncoded = customClientCertKeyEncoded;
+        return this;
     }
 
     /**
@@ -192,10 +190,8 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
      * @param customClientCertKey 客户端证书
      */
     public CertAndTrustedIssuerSupplier setCustomClientCertKey(Key customClientCertKey) {
-        // TODO SSL mutual authentication
-        throw new UnsupportedOperationException("Currently does not support SSL mutual authentication");
-//        this.customClientCertKey = customClientCertKey;
-//        return this;
+        this.customClientCertKey = customClientCertKey;
+        return this;
     }
 
     @Override
@@ -208,7 +204,7 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
             return null;
         }
 
-        return createSslConfig(null, trustManager);
+        return createSslConfig(keyManager, trustManager);
     }
 
     /**
@@ -389,8 +385,17 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
                 ", customClientCertsEncoded=" + Arrays.toString(customClientCertsEncoded) +
                 ", customClientCert=" + customClientCert +
                 ", customClientCerts=" + Arrays.toString(customClientCerts) +
-                ", customClientCertKeyEncoded='" + customClientCertKeyEncoded + '\'' +
-                ", customClientCertKey=" + customClientCertKey +
+                ", customClientCertKeyEncoded(SHA256)='" + desensitization(customClientCertKeyEncoded) + '\'' +
+                ", customClientCertKey(SHA256)='" + desensitization(customClientCertKey) + '\'' +
                 '}';
     }
+
+    private String desensitization(String string){
+        return string != null ? ByteUtils.bytesToHex(DigestCipher.digest(string.getBytes(StandardCharsets.UTF_8), DigestCipher.TYPE_SHA256)) : "null";
+    }
+
+    private String desensitization(Key key){
+        return key != null ? ByteUtils.bytesToHex(DigestCipher.digest(key.getEncoded(), DigestCipher.TYPE_SHA256)) : "null";
+    }
+
 }

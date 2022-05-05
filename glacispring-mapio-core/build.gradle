@@ -1,0 +1,29 @@
+
+dependencies {
+    //import bom
+//    api platform(project(':glacimon-bom'))//只对未指定版本的依赖生效
+//    api platform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")//只对未指定版本的依赖生效
+//    api enforcedPlatform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")//强制覆盖依赖版本
+
+    //required
+    [
+            project(':glacimon-spi-core') { group project_group_id; version project_version },
+            project(':glacispring-common') { group project_group_id; version project_version },
+            project(':glacispring-mapio-api') { group project_group_id; version project_version },
+
+    ].forEach{ api it }
+
+    //compile only
+    [
+            "ch.qos.logback:logback-classic:$version_logback",
+
+    ].forEach{ compileOnly it; testImplementation it }
+
+    //test
+    [
+            "junit:junit:$version_junit",
+            "org.mockito:mockito-core:$version_mockito",
+
+    ].forEach{ testImplementation it }
+
+}

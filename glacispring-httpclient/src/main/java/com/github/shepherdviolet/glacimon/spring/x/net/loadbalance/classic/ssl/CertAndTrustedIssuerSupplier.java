@@ -367,7 +367,7 @@ public class CertAndTrustedIssuerSupplier implements SslConfigSupplier {
         try {
             SSLContext sslContext = SslUtils.sslContext();
             sslContext.init(keyManager != null ? new KeyManager[]{keyManager} : null,
-                    trustManager != null ? new TrustManager[]{trustManager} : null, null);
+                    trustManager != null ? new TrustManager[]{trustManager} : null, null);// lgtm [java/insecure-trustmanager]
             return new SslConfig(sslContext.getSocketFactory(), trustManager);
         } catch (Throwable t) {
             throw new RuntimeException("CertAndTrustedIssuerSupplier | Failed to initialize SSLSocketFactory by keyManager and trustManager", t);

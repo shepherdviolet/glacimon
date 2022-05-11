@@ -7,6 +7,12 @@
 服务请求数据(Input Map)通过MapIO过滤字段, 输入到上下文中; 上下文中的数据通过MapIO过滤字段, 输出到服务响应数据(Output Map)中.
 ```
 
+## 关于日志
+
+* SLF4J日志包路径: `com.github.shepherdviolet.glacimon.spring.x.conversion.mapio`
+* 日志关键字: `MapIO`
+* 日志内容: 异常日志(含规则定位信息), 字典预加载日志...
+
 <br>
 
 ## 使用说明

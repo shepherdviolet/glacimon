@@ -29,8 +29,6 @@ import java.util.*;
 /**
  * 规则子句, 对应字典中的@InputElementFilter/@OutputElementFilter
  *
- * TODO 测试map的key是其他类型的情况
- *
  * @author shepherdviolet
  */
 class ElementFilterClause extends RuleClause {

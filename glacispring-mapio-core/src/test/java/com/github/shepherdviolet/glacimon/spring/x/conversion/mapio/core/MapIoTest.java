@@ -29,6 +29,8 @@ import com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filters
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MapIoTest {
@@ -39,6 +41,7 @@ public class MapIoTest {
     }
 
     protected MapIo getMapIo() {
+        // 换一种异常
         return new MapIoImpl().setExceptionFactory(new DefaultExceptionFactory() {
             @Override
             protected RuntimeException newException(String errorMsg) {
@@ -48,15 +51,29 @@ public class MapIoTest {
     }
 
     protected final void doTest() {
-        MapIoImpl mapIo = (MapIoImpl) getMapIo();
+
+        // 跑测试的时候关掉错误日志打印
+        Debug.setErrorLogEnabled(false);
+
+        MapIo mapIo = getMapIo();
         preloadTest(mapIo);
+        preloadErrorTest(mapIo);
         mapTest(mapIo);
+        mapErrorTest(mapIo);
+
     }
 
-    private void preloadTest(MapIoImpl mapIo) {
+    private void preloadTest(MapIo mapIo) {
+
+        // 预加载测试
         mapIo.preloadDictionaries(FooDict.class, CommonDict.class, ComplexDict.class);
         System.out.println(mapIo.printCachedMappers());
 
+    }
+
+    private void preloadErrorTest(MapIo mapIo) {
+
+        // 预加载异常测试 / 规则报错测试
         assertThrowable("MapIO | Because the field has multiple rule categories, and one rule category has multiple rule clauses, in this case, the program cannot determine the code writing order. Please set 'clauseOrder' for each rule (@Input... or @Output... series annotation) for this field, to clarify the order of rules' execution. See https://github.com/shepherdviolet/glacimon/blob/master/docs/mapio/guide.md",
                 () -> mapIo.preloadDictionaries(BadComplexDict1.class));
         assertThrowable("MapIO | Because the field has multiple rule categories, and one rule category has multiple rule clauses, in this case, the program cannot determine the code writing order. Please set 'clauseOrder' for each rule (@Input... or @Output... series annotation) for this field, to clarify the order of rules' execution. See https://github.com/shepherdviolet/glacimon/blob/master/docs/mapio/guide.md",
@@ -72,10 +89,24 @@ public class MapIoTest {
 
     }
 
-    private void mapTest(MapIoImpl mapIo) {
+    private void mapTest(MapIo mapIo) {
+
+        // INPUT 映射测试
         Map<String, Object> map = LambdaBuilder.hashMap(m -> {
+            m.put("User", LambdaBuilder.hashMap(mm -> {
+                mm.put("Name", "tom");
+                mm.put("Addr", Arrays.asList(
+                        "Mars",
+                        "Pluto"
+                ));
+                mm.put("ExtInfo", LambdaBuilder.hashMap(mmm -> {
+                    mmm.put("Boat", "A0001");
+                    mmm.put("Car", "L854A");
+                    mmm.put("Others", "Field that should be present");
+                }));
+                mm.put("Others", "Field that should not be present");
+            }));
             m.put("Id", "2022042101");
-            m.put("Comment", "hello");
             m.put("Req-Date", "20220421");
             m.put("--trace-id--", "a5d765df65340ce686546546835410");
             m.put("ScoreMap", LambdaBuilder.linkedHashMap(mm -> {
@@ -88,9 +119,9 @@ public class MapIoTest {
         map = mapIo.doMap(map, IoMode.INPUT, FieldScreeningMode.DISCARD_BY_DEFAULT, FooDict.class, CommonDict.class);
         System.out.println(map);
 
+        // OUTPUT 映射测试
         EnumKeyMapWrapper<Object> wrappedMap = EnumKeyMapWrapper.wrap(map);
         wrappedMap.put(CommonDict.RetCode, "00");
-        wrappedMap.put(CommonDict.RetMsg, "success");
         wrappedMap.put(CommonDict.ResDate, "20220421");
         wrappedMap.put(FooDict.TelephoneMap, LambdaBuilder.hashMap(m -> {
             m.put("1", 123);
@@ -100,6 +131,18 @@ public class MapIoTest {
 
         map = mapIo.doMap(map, IoMode.OUTPUT, FieldScreeningMode.DISCARD_BY_DEFAULT, FooDict.class, CommonDict.class);
         System.out.println(map);
+
+    }
+
+    private void mapErrorTest(MapIo mapIo) {
+
+        // 映射报错测试
+        assertThrowable("Missing required field 'ScoreMap'. Mapper rule in dictionary 'com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.MapIoTest$FooDict'",
+                () -> mapIo.doMap(new HashMap<>(), IoMode.INPUT, FieldScreeningMode.DISCARD_BY_DEFAULT, FooDict.class, CommonDict.class));
+
+        assertThrowable("Length of field 'String' out of range [10000, ∞], field length: 3. Mapper rule in dictionary 'com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.MapIoTest$ErrorDict1' on field 'String' ('String' -> 'String'), the filter 'com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filters.StringCheckLength'",
+                () -> mapIo.doMap(LambdaBuilder.hashMap(m -> m.put("String", "123")), IoMode.OUTPUT, FieldScreeningMode.DISCARD_BY_DEFAULT, ErrorDict1.class));
+
     }
 
     private void assertThrowable(String expectedErrorMsg, ThrowableRunnable process) {
@@ -120,14 +163,21 @@ public class MapIoTest {
         return throwable;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private enum CommonDict {
 
         @Input
+        @InputMapper(dictionary = SubDict.class, fieldScreeningMode = FieldScreeningMode.DISCARD_BY_DEFAULT)
+        User,
+
+        @Input
         @InputFilter(type = StringCheckLength.class, args = {"0", "10"})
-        @InputFilter(type = StringToInteger.class)
+        @InputFilter(type = FooFilter.class)
         Id,
 
         @Input(required = false)
+        @InputFilter(type = StringCheckLength.class, args = {"10000"})
         Comment,
 
         @Input(fromKey = "Req-Date")
@@ -144,6 +194,7 @@ public class MapIoTest {
         RetCode,
 
         @Output(required = false)
+        @OutputFilter(type = StringCheckLength.class, args = {"10000"})
         RetMsg,
 
         @Output(toKey = "Res-Date")
@@ -155,16 +206,16 @@ public class MapIoTest {
 
         @Input
         @InputElementFilter(type = StringCheckLength.class, args = {"1", "8"})
-        @InputElementFilter(type = StringToInteger.class)
+        @InputElementFilter(type = FooFilter.class)
         ScoreMap,
 
         @Input(fromKey = "ScoreMap")
-        @InputElementFilter(type = StringToInteger.class, keepOrder = true)
+        @InputElementFilter(type = FooFilter.class, keepOrder = true)
         ScoreMapOrdered,
 
         @Input(fromKey = "ScoreMap")
         @InputFilter(type = MapValuesToList.class)
-        @InputElementFilter(type = StringToInteger.class)
+        @InputElementFilter(type = FooFilter.class)
         ScoreList,
 
         @Output(toKey = "TelephoneList")
@@ -176,7 +227,47 @@ public class MapIoTest {
 
     private enum SubDict {
 
+        @Input(fromKey = "Name")
+        @InputFilter(type = FooFilter.class)
+        UserName,
+
+        @Input(fromKey = "Addr")
+        @InputElementFilter(type = FooFilter.class)
+        UserAddr,
+
+        @Input(fromKey = "Comment", required = false)
+        @InputFilter(type = StringCheckLength.class, args = {"10000"})
+        UserComment,
+
+        @Input(fromKey = "ExtInfo")
+        @InputMapper(dictionary = SubDict2.class, fieldScreeningMode = FieldScreeningMode.PASS_BY_DEFAULT)
+        UserExtInfo,
+
     }
+
+    private enum SubDict2 {
+
+        @Input
+        @InputFilter(type = FooFilter.class)
+        Boat,
+
+        @Input
+        @InputFilter(type = FooFilter.class)
+        Car,
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private enum ErrorDict1 {
+
+        @Output
+        @OutputFilter(type = StringCheckLength.class, args = {"10000"})
+        String,
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private enum ComplexDict {
 
@@ -185,6 +276,7 @@ public class MapIoTest {
         @InputElementFilter(clauseOrder = 1, type = StringCheckLength.class, args = {"6", "8"})
         @InputElementFilter(clauseOrder = 2, type = StringToInteger.class)
         @InputFilter(clauseOrder = 3, type = DummyFilter.class)
+        @InputMapper(clauseOrder = 4, dictionary = SubDict.class, fieldScreeningMode = FieldScreeningMode.DISCARD_BY_DEFAULT)
         FieldApple,
 
         @Output
@@ -192,6 +284,7 @@ public class MapIoTest {
         @OutputElementFilter(clauseOrder = 1, type = StringCheckLength.class, args = {"6", "8"})
         @OutputElementFilter(clauseOrder = 2, type = StringToInteger.class)
         @OutputFilter(clauseOrder = 3, type = DummyFilter.class)
+        @OutputMapper(clauseOrder = 4, dictionary = SubDict.class, fieldScreeningMode = FieldScreeningMode.PASS_BY_DEFAULT)
         FieldPie,
 
     }
@@ -245,8 +338,8 @@ public class MapIoTest {
         @Input
         @InputFilter(clauseOrder = 1, type = MapValuesToList.class)
         @InputElementFilter(clauseOrder = 1, type = StringCheckLength.class, args = {"6", "8"})
-        @InputElementFilter(type = StringToInteger.class)
-        @InputFilter(type = DummyFilter.class)
+        @InputElementFilter(clauseOrder = 1, type = StringToInteger.class)
+        @InputFilter(clauseOrder = 1, type = DummyFilter.class)
         FieldApple,
 
     }
@@ -254,8 +347,8 @@ public class MapIoTest {
     private enum BadComplexDict6 {
 
         @Output
-        @OutputFilter(type = MapValuesToList.class)
-        @OutputElementFilter(type = StringCheckLength.class, args = {"6", "8"})
+        @OutputFilter(clauseOrder = 1, type = MapValuesToList.class)
+        @OutputElementFilter(clauseOrder = 1, type = StringCheckLength.class, args = {"6", "8"})
         @OutputElementFilter(clauseOrder = 1, type = StringToInteger.class)
         @OutputFilter(clauseOrder = 1, type = DummyFilter.class)
         FieldPie,

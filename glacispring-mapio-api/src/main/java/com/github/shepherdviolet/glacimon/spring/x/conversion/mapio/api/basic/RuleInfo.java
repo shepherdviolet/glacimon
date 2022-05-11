@@ -99,7 +99,7 @@ public class RuleInfo {
             string += ", the filter '" + filterName + "'";
         }
         if (subMapper != null) {
-            string += ", the sub-mapper '@" + subMapper + "'";
+            string += ", the sub-mapper '" + subMapper + "'";
         }
         return string;
     }

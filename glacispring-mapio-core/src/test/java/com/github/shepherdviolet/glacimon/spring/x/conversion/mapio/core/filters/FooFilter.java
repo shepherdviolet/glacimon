@@ -31,7 +31,10 @@ public class FooFilter implements Filter {
 
     @Override
     public Object doFilter(Object element, String[] args, RuleInfo ruleInfo) {
-        return element;
+        if (!(element instanceof String)) {
+            throw new IllegalArgumentException("Input element is not an instance of String");
+        }
+        return "filtered:" + element;
     }
 
 }

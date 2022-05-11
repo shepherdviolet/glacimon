@@ -71,6 +71,10 @@ public class SpiMapIo {
             provider.preloadDictionaries(dictionaries);
         }
 
+        @Override
+        public String printCachedMappers() {
+            return provider.printCachedMappers();
+        }
     }
 
 }

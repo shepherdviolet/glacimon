@@ -30,8 +30,6 @@ import java.util.*;
 /**
  * 规则子句, 对应字典中的@InputMapper/@OutputMapper
  *
- * TODO 测试map的key是其他类型的情况
- *
  * @author shepherdviolet
  */
 class MapperClause extends RuleClause {

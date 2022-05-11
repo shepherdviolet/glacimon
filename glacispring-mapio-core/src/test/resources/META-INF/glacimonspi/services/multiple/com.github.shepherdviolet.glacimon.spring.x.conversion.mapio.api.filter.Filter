@@ -2,3 +2,4 @@
 # MapIO Filters
 
 +com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filters.DummyFilter
++com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filters.FooFilter

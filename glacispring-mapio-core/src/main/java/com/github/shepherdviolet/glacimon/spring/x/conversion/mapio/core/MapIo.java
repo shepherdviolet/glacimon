@@ -52,4 +52,9 @@ public interface MapIo {
      */
     void preloadDictionaries(Class<?>... dictionaries);
 
+    /**
+     * 打印映射器缓存信息
+     */
+    String printCachedMappers();
+
 }

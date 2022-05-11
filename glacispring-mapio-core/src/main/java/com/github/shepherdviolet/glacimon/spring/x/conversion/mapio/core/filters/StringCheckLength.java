@@ -35,8 +35,6 @@ import com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.
  *     字段长度[0, 8]: @...Filter(type = StringCheckLength.class, args = {"0", "8"})
  * </pre>
  *
- * TODO 测试两种过滤参数
- *
  * @author shepherdviolet
  */
 @ImplementationName("StringCheckLength")

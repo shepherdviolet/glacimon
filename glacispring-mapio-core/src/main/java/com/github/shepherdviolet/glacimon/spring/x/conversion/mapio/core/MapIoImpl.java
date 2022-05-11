@@ -135,6 +135,7 @@ public class MapIoImpl implements MapIo {
     /**
      * 打印映射器缓存信息
      */
+    @Override
     public String printCachedMappers() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Map.Entry<Class<?>, Mapper> entry : mappers.entrySet()) {
@@ -320,14 +321,14 @@ public class MapIoImpl implements MapIo {
                     InputFilterRule inputFilter = (InputFilterRule) rule;
                     clause = buildFilterClause(inputFilter.type(), inputFilter.name(), inputFilter.args(),
                             new RuleInfo(dictionary.getName(), fieldName, fromKey, toKey,
-                                    inputFilter.type().getName() + "@" + inputFilter.name(), null));
+                                    printFilterName(inputFilter.type(), inputFilter.name()), null));
 
                 } else if (rule instanceof InputElementFilterRule) {
 
                     InputElementFilterRule inputElementFilter = (InputElementFilterRule) rule;
                     clause = buildElementFilterClause(inputElementFilter.type(), inputElementFilter.name(), inputElementFilter.args(), inputElementFilter.keepOrder(),
                             new RuleInfo(dictionary.getName(), fieldName, fromKey, toKey,
-                                    inputElementFilter.type().getName() + "@" + inputElementFilter.name(), null));
+                                    printFilterName(inputElementFilter.type(), inputElementFilter.name()), null));
 
                 } else if (rule instanceof InputMapperRule) {
 
@@ -339,7 +340,7 @@ public class MapIoImpl implements MapIo {
                     }
                     clause = buildMapperClause(inputMapper.fieldScreeningMode(), inputMapper.dictionary(), IoMode.INPUT,
                             new RuleInfo(dictionary.getName(), fieldName, fromKey, toKey,
-                                    null, "InputMapper{dictionary=" + inputMapper.dictionary().getName() + "}"));
+                                    null, "@InputMapper{dictionary=" + inputMapper.dictionary().getName() + "}"));
 
                 }
 
@@ -401,14 +402,14 @@ public class MapIoImpl implements MapIo {
                     OutputFilterRule outputFilter = (OutputFilterRule) rule;
                     clause = buildFilterClause(outputFilter.type(), outputFilter.name(), outputFilter.args(),
                             new RuleInfo(dictionary.getName(), fieldName, fromKey, toKey,
-                                    outputFilter.type().getName() + "@" + outputFilter.name(), null));
+                                    printFilterName(outputFilter.type(), outputFilter.name()), null));
 
                 } else if (rule instanceof OutputElementFilterRule) {
 
                     OutputElementFilterRule outputElementFilter = (OutputElementFilterRule) rule;
                     clause = buildElementFilterClause(outputElementFilter.type(), outputElementFilter.name(), outputElementFilter.args(), outputElementFilter.keepOrder(),
                             new RuleInfo(dictionary.getName(), fieldName, fromKey, toKey,
-                                    outputElementFilter.type().getName() + "@" + outputElementFilter.name(), null));
+                                    printFilterName(outputElementFilter.type(), outputElementFilter.name()), null));
 
                 } else if (rule instanceof OutputMapperRule) {
 
@@ -420,7 +421,7 @@ public class MapIoImpl implements MapIo {
                     }
                     clause = buildMapperClause(outputMapper.fieldScreeningMode(), outputMapper.dictionary(), IoMode.OUTPUT,
                             new RuleInfo(dictionary.getName(), fieldName, fromKey, toKey,
-                                    null, "OutputMapper{dictionary=" + outputMapper.dictionary() + "}"));
+                                    null, "@OutputMapper{dictionary=" + outputMapper.dictionary() + "}"));
 
                 }
 
@@ -571,6 +572,17 @@ public class MapIoImpl implements MapIo {
         }
 
         return filter;
+    }
+
+    private String printFilterName(Class<? extends Filter> type, String name) {
+        if (type == null) {
+            type = Filter.class;
+        }
+        if (CheckUtils.notEmpty(name)) {
+            return type.getName() + "@" + name;
+        } else {
+            return type.getName();
+        }
     }
 
 }

@@ -31,7 +31,7 @@ public class DefaultExceptionFactoryTest {
 
         RuleInfo dictionaryRuleInfo = new RuleInfo(Object.class.getName(), null, null, null, null, null);
         RuleInfo filterRuleInfo = new RuleInfo(Object.class.getName(), "fieldName1", "from1", "to1", "test.test.FooFilter@fooFilter", null);
-        RuleInfo mapperRuleInfo = new RuleInfo(Object.class.getName(), "fieldName1", "from1", "to1", null, "OutputMapper{dictionary=test.test.MyDict}");
+        RuleInfo mapperRuleInfo = new RuleInfo(Object.class.getName(), "fieldName1", "from1", "to1", null, "@OutputMapper{dictionary=test.test.MyDict}");
 
         check(exceptionFactory.createRuntimeException(dictionaryRuleInfo, ErrorCode.MISSING_REQUIRED_FIELD, "key-name-1"),
                 "Missing required field 'key-name-1'. Mapper rule in dictionary 'java.lang.Object'");

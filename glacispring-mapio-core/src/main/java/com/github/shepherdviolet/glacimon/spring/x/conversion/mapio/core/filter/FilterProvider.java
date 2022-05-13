@@ -25,11 +25,11 @@ import com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.api.filter.F
 /**
  * <p>[扩展点: Spring扩展 / GlacimonSpi扩展]</p>
  *
- * <p>过滤器提供者: 为了使MapIo可以适配普通的java程序和基于Spring的应用工程, 我们将过滤器的查找逻辑作为扩展点开放出来.
- * 默认提供了JavaFilterProvider和SpringFilterProvider两种方式, 普通Java程序请使用JavaFilterProvider (MapIoUtils就是用这个),
- * Spring应用工程请使用SpringFilterProvider.</p>
+ * <p>过滤器提供者: 为了使MapIo可以适配普通的java程序和基于Spring的应用工程, 我们将过滤器的查找逻辑作为扩展点开放出来. </p>
  *
- * <p>JavaFilterProvider: 通过GlacimonSpi方式配置和加载过滤器.</p>
+ * <p>默认实现:</p>
+ * <p>JavaFilterProvider: 简易过滤器提供者, 只支持通过type查找, 简单的用反射实例化过滤器实例.</p>
+ * <p>GlacimonSpiFilterProvider: 通过GlacimonSpi方式配置和加载过滤器.</p>
  * <p>SpringFilterProvider: 从Spring上下文中, 用类型和名称获取过滤器.</p>
  *
  * @author shepherdviolet

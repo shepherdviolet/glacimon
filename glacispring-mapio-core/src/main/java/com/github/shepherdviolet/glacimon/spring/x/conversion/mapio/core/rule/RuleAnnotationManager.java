@@ -50,7 +50,7 @@ public interface RuleAnnotationManager {
     List<OrderedRule> getInputSeriesRules(Field field);
 
     /**
-     * 从Field中获取Input...系列注解规则(不含Input注解), 默认为@InputFilter/@InputElementFilter/@InputMapper
+     * 从Field中获取Output...系列注解规则(不含Output注解), 默认为@OutputFilter/@OutputElementFilter/@OutputMapper
      */
     List<OrderedRule> getOutputSeriesRules(Field field);
 

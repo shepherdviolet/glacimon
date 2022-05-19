@@ -64,15 +64,15 @@ public class TestConfig {
 
 ```text
 /**
- * 过滤器需要实现com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.api.filter.Filter接口. 
+ * 过滤器需要实现com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.Filter接口. 
  *
- * 如果过滤参数需要转为其他类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.ArgsConvertedFilter
- * 如果过滤参数需要转为Integer类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.IntArgsConvertedFilter
- * 如果过滤参数需要缓存, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.ArgsCachedFilter
+ * 如果过滤参数需要转为其他类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.ArgsConvertedFilter
+ * 如果过滤参数需要转为Integer类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.IntArgsConvertedFilter
+ * 如果过滤参数需要缓存, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.ArgsCachedFilter
  * 
  * 可以参考默认提供的过滤器:
- * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter包
- * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filters包
+ * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter包
+ * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filters包
  *
  * ImplementationName注解指定过滤器名称, 这样规则注解里可以通过名称查找这个过滤器.
  */
@@ -149,25 +149,25 @@ public class TestConfig {
 
 ### 规则注解管理器
 
-* 扩展点: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.rule.RuleAnnotationManager
-* 默认实现: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.rule.DefaultRuleAnnotationManager
+* 扩展点: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.rule.RuleAnnotationManager
+* 默认实现: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.rule.DefaultRuleAnnotationManager
 * 说明: 将枚举类/POJO类字段上的注解解析为过滤规则. 如果想自定义注解类型, 可以扩展它.
 
 ### 过滤器提供者
 
-* 扩展点: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.FilterProvider
-* 默认实现: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.GlacimonSpiFilterProvider (GlacimonSpi专用)
+* 扩展点: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.FilterProvider
+* 默认实现: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.GlacimonSpiFilterProvider (GlacimonSpi专用)
 * 说明: MapIo通过它查找字段过滤器. GlacimonSpiFilterProvider会通过SPI服务加载机制加载字段过滤器(Filter).
 
 ### 异常工厂
 
-* 扩展点: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.basic.ExceptionFactory
-* 默认实现: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.basic.DefaultExceptionFactory
+* 扩展点: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.basic.ExceptionFactory
+* 默认实现: com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.basic.DefaultExceptionFactory
 * 说明: MapIo的公共逻辑和自带的过滤器在映射Map的过程中, 如果遇到错误, 会调用这个工厂创建异常, 默认异常类型是RuntimeException. 如果想自定义异常类型, 可以扩展它.
 
 ### 字段过滤器
 
-* 扩展点(multi-service): com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.api.filter.Filter
+* 扩展点(multi-service): com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.Filter
 * 默认实现: ToString / StringToInteger / StringCheckLength / StringCheckRegex / MapKeysToList / MapValuesToList ...
 * 说明: 通过此扩展点添加字段过滤器
 
@@ -177,15 +177,15 @@ public class TestConfig {
 
 ```text
 /**
- * 过滤器需要实现com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.api.filter.Filter接口. 
+ * 过滤器需要实现com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.Filter接口. 
  *
- * 如果过滤参数需要转为其他类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.ArgsConvertedFilter
- * 如果过滤参数需要转为Integer类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.IntArgsConvertedFilter
- * 如果过滤参数需要缓存, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.ArgsCachedFilter
+ * 如果过滤参数需要转为其他类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.ArgsConvertedFilter
+ * 如果过滤参数需要转为Integer类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.IntArgsConvertedFilter
+ * 如果过滤参数需要缓存, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.ArgsCachedFilter
  * 
  * 可以参考默认提供的过滤器:
- * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter包
- * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filters包
+ * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter包
+ * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filters包
  *
  * ImplementationName注解指定过滤器名称, 这样规则注解里可以通过名称查找这个过滤器.
  */
@@ -226,7 +226,7 @@ public final class FooFilter implements Filter {
 }
 ```
 
-* 2.在类路径下创建配置文件: /META-INF/glacimonspi/services/multiple/com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.api.filter.Filter
+* 2.在类路径下创建配置文件: /META-INF/glacimonspi/services/multiple/com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.Filter
 * 3.在配置文件中添加过滤器:
 
 ```text
@@ -268,15 +268,15 @@ public class Test {
 
 ```text
 /**
- * 过滤器需要实现com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.api.filter.Filter接口. 
+ * 过滤器需要实现com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.Filter接口. 
  *
- * 如果过滤参数需要转为其他类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.ArgsConvertedFilter
- * 如果过滤参数需要转为Integer类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.IntArgsConvertedFilter
- * 如果过滤参数需要缓存, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter.ArgsCachedFilter
+ * 如果过滤参数需要转为其他类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.ArgsConvertedFilter
+ * 如果过滤参数需要转为Integer类型, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.IntArgsConvertedFilter
+ * 如果过滤参数需要缓存, 可以继承com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.ArgsCachedFilter
  * 
  * 可以参考默认提供的过滤器:
- * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filter包
- * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.core.filters包
+ * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter包
+ * com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filters包
  *
  * ImplementationName注解指定过滤器名称, 这样规则注解里可以通过名称查找这个过滤器.
  */

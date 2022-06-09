@@ -53,6 +53,11 @@ public class SM4Cipher {
     public static final String CRYPTO_ALGORITHM_SM4_ECB_PKCS5PADDING = "SM4/ECB/PKCS5Padding";
 
     /**
+     * 加密算法:SM4 + ECB/PKCS7Padding填充
+     */
+    public static final String CRYPTO_ALGORITHM_SM4_ECB_PKCS7PADDING = "SM4/ECB/PKCS7Padding";
+
+    /**
      * 加密算法:SM4 + CBC/PKCS5Padding填充
      */
     public static final String CRYPTO_ALGORITHM_SM4_CBC_PKCS5PADDING = "SM4/CBC/PKCS5Padding";

@@ -68,6 +68,11 @@ public class MapIoImpl implements MapIo {
      */
     @Override
     public Map<String, Object> doMap(Map<String, Object> rawData, IoMode ioMode, FieldScreeningMode fieldScreeningMode, Class<?>... dictionaries) {
+        return doMap(rawData, ioMode, fieldScreeningMode, new Class[][]{dictionaries});
+    }
+
+    @Override
+    public Map<String, Object> doMap(Map<String, Object> rawData, IoMode ioMode, FieldScreeningMode fieldScreeningMode, Class<?>[]... dictionaries) {
         try {
             // do map
             return doMapInner(rawData, ioMode, fieldScreeningMode, dictionaries);
@@ -148,7 +153,7 @@ public class MapIoImpl implements MapIo {
     /**
      * [inner] do map
      */
-    Map<String, Object> doMapInner(Map<String, Object> rawData, IoMode ioMode, FieldScreeningMode fieldScreeningMode, Class<?>... dictionaries) {
+    Map<String, Object> doMapInner(Map<String, Object> rawData, IoMode ioMode, FieldScreeningMode fieldScreeningMode, Class<?>[][] dictionaries) {
 
         // checks
 
@@ -162,7 +167,7 @@ public class MapIoImpl implements MapIo {
             throw new IllegalArgumentException("MapIO | fieldScreeningMode is null");
         }
         if (dictionaries == null) {
-            dictionaries = new Class[0];
+            dictionaries = new Class[0][0];
         }
 
         if (Debug.isTraceLogEnabled() && logger.isTraceEnabled()) {
@@ -177,23 +182,28 @@ public class MapIoImpl implements MapIo {
 
         // map by mappers
 
-        for (Class<?> dictionary : dictionaries) {
-            if (dictionary == null) {
+        for (Class<?>[] dictionaryArray : dictionaries) {
+            if (dictionaryArray == null) {
                 continue;
             }
-
-            try {
-                Mapper mapper = getMapper(dictionary);
-                mapper.doMap(rawData, ioMode, mappedData, mappedKeys);
-            } catch (RuntimeException t) {
-                if (Debug.isErrorLogEnabled()) {
-                    Debug.addErrorTrace(", rules in dictionary '" + dictionary.getName() + "'");
+            for (Class<?> dictionary : dictionaryArray) {
+                if (dictionary == null) {
+                    continue;
                 }
-                throw t;
-            }
 
-            if (Debug.isTraceLogEnabled() && logger.isTraceEnabled()) {
-                logger.trace("MapIO | doMap | Mapped by rules in " + dictionary.getName() + " : " + mappedData);
+                try {
+                    Mapper mapper = getMapper(dictionary);
+                    mapper.doMap(rawData, ioMode, mappedData, mappedKeys);
+                } catch (RuntimeException t) {
+                    if (Debug.isErrorLogEnabled()) {
+                        Debug.addErrorTrace(", rules in dictionary '" + dictionary.getName() + "'");
+                    }
+                    throw t;
+                }
+
+                if (Debug.isTraceLogEnabled() && logger.isTraceEnabled()) {
+                    logger.trace("MapIO | doMap | Mapped by rules in " + dictionary.getName() + " : " + mappedData);
+                }
             }
         }
 

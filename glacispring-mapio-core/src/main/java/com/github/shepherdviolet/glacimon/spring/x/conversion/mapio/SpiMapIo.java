@@ -67,6 +67,11 @@ public class SpiMapIo {
         }
 
         @Override
+        public Map<String, Object> doMap(Map<String, Object> rawData, IoMode ioMode, FieldScreeningMode fieldScreeningMode, Class<?>[]... dictionaries) {
+            return provider.doMap(rawData, ioMode, fieldScreeningMode, dictionaries);
+        }
+
+        @Override
         public void preloadDictionaries(Class<?>... dictionaries) {
             provider.preloadDictionaries(dictionaries);
         }

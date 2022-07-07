@@ -58,7 +58,7 @@ class MapperClause extends RuleClause {
     public Object doFilter(Object value) {
         try {
             if (value instanceof Map) {
-                return mapIo.doMapInner((Map<String, Object>) value, ioMode, fieldScreeningMode, dictionary);
+                return mapIo.doMapInner((Map<String, Object>) value, ioMode, fieldScreeningMode, new Class[][]{{dictionary}});
             } else {
                 throw exceptionFactory.createRuntimeException(getRuleInfo(), ErrorCode.FIELD_TYPE_NOT_MATCH_IO_MAPPER_EXPECT,
                         getRuleInfo().getFromKey(), value != null ? value.getClass().getName() : "null");

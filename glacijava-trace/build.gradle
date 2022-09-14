@@ -12,6 +12,12 @@ dependencies {
 
     ].forEach{ api it }
 
+    //required, version strictly
+//    [
+//            "com.alibaba:fastjson:$version_fastjson", //Fix security bugs
+//
+//    ].forEach{ api (it) { version { strictly it.version } } }
+
     //compile only
     [
             "org.slf4j:slf4j-api:$version_slf4j",

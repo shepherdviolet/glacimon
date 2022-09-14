@@ -13,6 +13,12 @@ dependencies {
 
     ].forEach{ api it }
 
+    //required, version strictly
+//    [
+//            "com.alibaba:fastjson:$version_fastjson", //Fix security bugs
+//
+//    ].forEach{ api (it) { version { strictly it.version } } }
+
     //compile only
     [
             "ch.qos.logback:logback-classic:$version_logback",

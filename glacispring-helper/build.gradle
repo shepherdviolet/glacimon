@@ -11,6 +11,12 @@ dependencies {
 
     ].forEach{ api it }
 
+    //required, version strictly
+//    [
+//            "com.alibaba:fastjson:$version_fastjson", //Fix security bugs
+//
+//    ].forEach{ api (it) { version { strictly it.version } } }
+
     //compile only
     [
             "com.jcraft:jsch:$version_jsch",
@@ -31,10 +37,10 @@ dependencies {
     ].forEach{ compileOnly it; testImplementation it }
 
     //compile only, force version
-    [
-            "com.alibaba:fastjson:$version_fastjson", //Fix security bugs of fastjson
-
-    ].forEach{ compileOnly (it) { version { strictly it.version } }; testImplementation (it) { version { strictly it.version } } }
+//    [
+//            "com.alibaba:fastjson:$version_fastjson", //Fix security bugs of fastjson
+//
+//    ].forEach{ compileOnly (it) { version { strictly it.version } }; testImplementation (it) { version { strictly it.version } } }
 
     //test
     [

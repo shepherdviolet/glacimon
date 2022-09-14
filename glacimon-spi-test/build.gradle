@@ -7,8 +7,16 @@ dependencies {
 
     ].forEach{ implementation it }
 
+    //required, version strictly
+//    [
+//            "com.alibaba:fastjson:$version_fastjson", //Fix security bugs
+//
+//    ].forEach{ api (it) { version { strictly it.version } } }
+
     //compile only
-    [].forEach{ compileOnly it; testImplementation it }
+    [
+
+    ].forEach{ compileOnly it; testImplementation it }
 
     //test
     [

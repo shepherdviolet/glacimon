@@ -15,7 +15,7 @@ dependencies {
 
     //required, version strictly
 //    [
-//            "com.alibaba:fastjson:$version_fastjson", //Fix security bugs
+//            "com.alibaba:fastjson:$version_fastjson", //Fix security issue
 //
 //    ].forEach{ api (it) { version { strictly it.version } } }
 

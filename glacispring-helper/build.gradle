@@ -36,11 +36,12 @@ dependencies {
 
     ].forEach{ compileOnly it; testImplementation it }
 
-    //compile only, force version
-//    [
-//            "com.alibaba:fastjson:$version_fastjson", //Fix security bugs of fastjson
-//
-//    ].forEach{ compileOnly (it) { version { strictly it.version } }; testImplementation (it) { version { strictly it.version } } }
+    //compile only, version strictly
+    [
+            "com.alibaba:fastjson:$version_fastjson", //Fix security issue
+            "io.netty:netty-all:$version_netty", //Fix security issue
+
+    ].forEach{ compileOnly (it) { version { strictly it.version } }; testImplementation (it) { version { strictly it.version } } }
 
     //test
     [

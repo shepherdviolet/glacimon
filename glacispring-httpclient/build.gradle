@@ -25,10 +25,14 @@ dependencies {
             "com.google.code.gson:gson:$version_gson",
             "org.springframework.boot:spring-boot-autoconfigure:$version_spring_boot",
             "com.ctrip.framework.apollo:apollo-client:$version_apollo",
-            //version alignment
-            "org.yaml:snakeyaml:$version_snakeyaml",
 
     ].forEach{ compileOnly it; testImplementation it }
+
+    //compile only, version strictly
+    [
+            "org.yaml:snakeyaml:$version_snakeyaml", //Fix security issue
+
+    ].forEach{ compileOnly (it) { version { strictly it.version } }; testImplementation (it) { version { strictly it.version } } }
 
     //test
     [

@@ -32,7 +32,6 @@ dependencies {
             //version alignment
             "ch.qos.logback:logback-classic:$version_logback",
             "org.springframework.boot:spring-boot-starter:$version_spring_boot",
-            "org.yaml:snakeyaml:$version_snakeyaml",
 
     ].forEach{ compileOnly it; testImplementation it }
 
@@ -40,6 +39,7 @@ dependencies {
     [
             "com.alibaba:fastjson:$version_fastjson", //Fix security issue
             "io.netty:netty-all:$version_netty", //Fix security issue
+            "org.yaml:snakeyaml:$version_snakeyaml", //Fix security issue
 
     ].forEach{ compileOnly (it) { version { strictly it.version } }; testImplementation (it) { version { strictly it.version } } }
 

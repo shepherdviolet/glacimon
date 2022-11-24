@@ -47,7 +47,7 @@ EzSentinel的EzSentinelConfiguration中监听了spring.cloud.sentinel.enabled参
 
 ```text
 //Sentinel官方依赖
-compile "com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel:$version_sentinel"
+compile "com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel:$version_sentinel_starter"
 //EzSentinel依赖 (glacispring-helper)
 compile "com.github.shepherdviolet.glacimon:glacispring-helper:$version_glacimon"
 //默认的JsonEzSentinelRuleConfigurer使用GSON解析JSON, 你也可以不要GSON, 自行实现AbstractEzSentinelRuleConfigurer

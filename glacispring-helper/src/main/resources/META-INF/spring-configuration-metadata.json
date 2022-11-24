@@ -13,6 +13,34 @@
       "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.sentinel.EzSentinelConfiguration",
       "description": "Annotation: com.github.shepherdviolet.glacimon.spring.helper.sentinel.EnableEzSentinel",
       "defaultValue": ""
+    },
+    {
+      "name": "glacispring.helper.rocketmq.namesrv",
+      "type": "java.lang.String",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
+      "description": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
+      "defaultValue": ""
+    },
+    {
+      "name": "glacispring.helper.rocketmq.print-message-when-exception",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
+      "description": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
+      "defaultValue": "true"
+    },
+    {
+      "name": "glacispring.helper.rocketmq.print-message-when-reconsume",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
+      "description": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
+      "defaultValue": "true"
+    },
+    {
+      "name": "glacispring.helper.rocketmq.default-charset",
+      "type": "java.lang.String",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
+      "description": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
+      "defaultValue": "UTF-8"
     }
   ],
   "hints": [

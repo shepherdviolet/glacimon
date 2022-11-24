@@ -30,6 +30,17 @@ public class AppConfiguration {
 glacispring.helper.rocketmq.namesrv=host1:9876;host2:9876
 ```
 
+* 其他配置
+
+```text
+# 绑定的方法抛出异常时在日志中打印消息信息, 默认true
+glacispring.helper.rocketmq.print-message-when-exception=true
+# 消息被打回重新消费(RECONSUME)时在日志中打印消息信息, 默认true
+glacispring.helper.rocketmq.print-message-when-reconsume=true
+# 默认字符集
+glacispring.helper.rocketmq.default-charset=UTF-8
+```
+
 <br>
 
 ### Spring
@@ -60,6 +71,17 @@ public class RocketMqHelperConfiguration {
 
 ```text
 glacispring.helper.rocketmq.namesrv=host1:9876;host2:9876
+```
+
+* 其他配置
+
+```text
+# 绑定的方法抛出异常时在日志中打印消息信息, 默认true
+glacispring.helper.rocketmq.print-message-when-exception=true
+# 消息被打回重新消费(RECONSUME)时在日志中打印消息信息, 默认true
+glacispring.helper.rocketmq.print-message-when-reconsume=true
+# 默认字符集
+glacispring.helper.rocketmq.default-charset=UTF-8
 ```
 
 <br>

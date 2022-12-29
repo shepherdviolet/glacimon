@@ -39,6 +39,7 @@ buildscript {
     // 构建脚本用的依赖(插件)
     dependencies {
         classpath localGroovy() // [Gradle Advanced Modularity] Depends on groovy, avoid importing groovy package errors
+        classpath "org.owasp:dependency-check-gradle:$version_owasp"
 //        classpath "org.springframework.boot:spring-boot-gradle-plugin:$version_spring_boot"
     }
 
@@ -69,3 +70,6 @@ apply from: 'build-common.gradle'
 
 // Maven仓库上传配置
 apply from: 'build-upload.gradle'
+
+// OWASP依赖漏洞(版本)检查
+apply from: 'build-owasp.gradle'

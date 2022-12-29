@@ -1,0 +1,56 @@
+/**
+ * # OWASP依赖漏洞(版本)检查
+ *
+ * 1.注意: 国内更新CVE数据库很慢哦
+ * 2.执行检查: ./gradlew dependencyCheckAggregate
+ * 3.查看报告: build/reports/*
+ *
+ * # 如何离线使用
+ *
+ * 1.从外网获取CVE数据库
+ * 1.1.方法一: Gradle下载后从缓存获取
+ *      1) 在外网执行: ./gradlew dependencyCheckAggregate
+ *      2) 从缓存获取(默认在): C:\Users\USERNAME\.gradle\dependency-check-data\7.0\nvdcache\
+ * 1.2.方法二: 手动下载
+ *      https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.meta
+ *      https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.json.gz
+ *      https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2022.json.gz
+ *      ......
+ *      https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2002.json.gz
+ *
+ * 2.在内网使用Nginx搭建CVE数据文件服务器
+ * 2.1.把外网下载的数据文件放在Nginx服务器上
+ *      /home/user/cvedata/nvdcve-1.1-modified.meta
+ *      /home/user/cvedata/nvdcve-1.1-modified.json.gz
+ *      /home/user/cvedata/nvdcve-1.1-2022.json.gz
+ *      ......
+ *      /home/user/cvedata/nvdcve-1.1-2002.json.gz
+ * 2.2.配置Nginx, 将数据文件作为静态资源发布
+ *          server {
+ *              listen 17643;
+ *              server_name localhost;
+ *              location / {
+ *                  alias /home/user/cvedata/;
+ *              }
+ *          }
+ *
+ * 3.在Gradle中配置, 调整CVE获取URL
+ *      dependencyCheck {
+ *          cve {
+ *              urlModified = "http://localhost:17643/nvdcve-1.1-modified.json.gz"
+ *              // %d表示年份
+ *              urlBase = "http://localhost:17643/nvdcve-1.1-%d.json.gz"
+ *          }
+ *      }
+ *
+ */
+
+apply plugin: 'org.owasp.dependencycheck'
+
+//dependencyCheck {
+//    cve {
+//        urlModified = "$owasp_cve_data_feed/nvdcve-1.1-modified.json.gz"
+//        urlBase = "$owasp_cve_data_feed/nvdcve-1.1-%d.json.gz"
+//    }
+//}
+

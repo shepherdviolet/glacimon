@@ -1,56 +1,132 @@
 /**
  * # OWASP依赖漏洞(版本)检查
  *
- * 1.注意: 国内更新CVE数据库很慢哦
+ * 1.注意: 国内更新CVE数据库很慢哦, 建议直接敲命令 (retirejs更新失败的话, 手动下载复制到缓存)
  * 2.执行检查: ./gradlew dependencyCheckAggregate
  * 3.查看报告: build/reports/*
  *
+ * **********************************************************************************************************
+ *
  * # 如何离线使用
  *
- * 1.从外网获取CVE数据库
- * 1.1.方法一: Gradle下载后从缓存获取
- *      1) 在外网执行: ./gradlew dependencyCheckAggregate
- *      2) 从缓存获取(默认在): C:\Users\USERNAME\.gradle\dependency-check-data\7.0\nvdcache\
- * 1.2.方法二: 手动下载
- *      https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.meta
- *      https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.json.gz
- *      https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2022.json.gz
- *      ......
- *      https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2002.json.gz
+ * ## 从外网获取漏洞数据库文件
  *
- * 2.在内网使用Nginx搭建CVE数据文件服务器
- * 2.1.把外网下载的数据文件放在Nginx服务器上
- *      /home/user/cvedata/nvdcve-1.1-modified.meta
- *      /home/user/cvedata/nvdcve-1.1-modified.json.gz
- *      /home/user/cvedata/nvdcve-1.1-2022.json.gz
- *      ......
- *      /home/user/cvedata/nvdcve-1.1-2002.json.gz
- * 2.2.配置Nginx, 将数据文件作为静态资源发布
- *          server {
- *              listen 17643;
- *              server_name localhost;
- *              location /cvedata {
- *                  alias /home/user/cvedata/;
- *              }
- *          }
+ * ### 方法一: Gradle下载后从缓存获取
  *
- * 3.在Gradle中配置, 调整CVE获取URL
- *      dependencyCheck {
- *          cve {
- *              urlModified = "http://localhost:17643/cvedata/nvdcve-1.1-modified.json.gz"
- *              // %d表示年份
- *              urlBase = "http://localhost:17643/cvedata/nvdcve-1.1-%d.json.gz"
- *          }
+ * ```text
+ * 1) 在外网执行(国内更新很慢哦): ./gradlew dependencyCheckAggregate
+ * 2) 从缓存获取CVE数据库(默认在): C:\Users\USERNAME\.gradle\dependency-check-data\7.0\nvdcache\*
+ * 3) 从缓存获取JS数据库(默认在): C:\Users\USERNAME\.gradle\dependency-check-data\7.0\jsrepository.json
+ *
+ * ### 方法二: 手动下载
+ *
+ * ```text
+ * # cve
+ * https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.meta
+ * https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.json.gz
+ * https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2022.json.gz
+ * ......
+ * https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2002.json.gz
+ *
+ * # js
+ * https://raw.githubusercontent.com/Retirejs/retire.js/master/repository/jsrepository.json
+ * ```
+ *
+ * ## 在内网使用Nginx搭建漏洞数据文件服务器
+ *
+ * ### 把外网下载的数据文件放在Nginx服务器上
+ *
+ * ```text
+ * # cve
+ * /home/user/cvedata/nvdcve-1.1-modified.meta
+ * /home/user/cvedata/nvdcve-1.1-modified.json.gz
+ * /home/user/cvedata/nvdcve-1.1-2022.json.gz
+ * ......
+ * /home/user/cvedata/nvdcve-1.1-2002.json.gz
+ *
+ * # js
+ * /home/user/js/jsrepository.json
+ * ```
+ *
+ * ### 配置Nginx, 将数据文件作为静态资源发布
+ *
+ * ```text
+ *  server {
+ *      listen 17643;
+ *      server_name localhost;
+ *      location /cvedata/ {
+ *          alias /home/user/cvedata/;
  *      }
+ *      location /js/ {
+ *          alias /home/user/js/;
+ *      }
+ *  }
+ * ```
+ *
+ * ## 在Gradle中配置, 调整CVE获取URL
+ *
+ * ```text
+ *  dependencyCheck {
+ *      cve {
+ *          // 离线用法: 设置CVE数据库下载地址为私服, %d表示年份
+ *          urlModified = "http://localhost:17643/cvedata/nvdcve-1.1-modified.json.gz"
+ *          urlBase = "http://localhost:17643/cvedata/nvdcve-1.1-%d.json.gz"
+ *      }
+ *      analyzers {
+ *          retirejs {
+ *              // 离线用法一: 设置JS检查数据库下载地址为私服
+ *              retireJsUrl = "http://localhost:17643/js/jsrepository.json"
+ *              // 离线用法二: 也可以直接禁了JS漏洞检查, 这样就不需要JS漏洞数据了
+ *              //enabled = false
+ *          }
+ *
+ *          // 禁用其他漏洞检查
+ *          // ...此处省略...
+ *      }
+ *  }
+ * ```
  *
  */
 
 apply plugin: 'org.owasp.dependencycheck'
 
-//dependencyCheck {
-//    cve {
+dependencyCheck {
+    cve {
+        // 离线用法: 设置CVE数据库下载地址为私服, %d表示年份
 //        urlModified = "$owasp_cve_data_feed/nvdcve-1.1-modified.json.gz"
 //        urlBase = "$owasp_cve_data_feed/nvdcve-1.1-%d.json.gz"
-//    }
-//}
+    }
+    analyzers {
+        retirejs {
+            // 离线用法一: 设置JS检查数据库下载地址为私服
+//            retireJsUrl = "$owasp_retirejs_url/jsrepository.json"
+            // 离线用法二: 也可以直接禁了JS漏洞检查, 这样就不需要JS漏洞数据了
+            //enabled = false
+        }
+
+        // 禁用其他漏洞检查
+        dartEnabled = false
+        centralEnabled = false
+        nexusEnabled = false
+        pyDistributionEnabled = false
+        pyPackageEnabled = false
+        rubygemsEnabled = false
+        opensslEnabled = false
+        nuspecEnabled = false
+        nugetconfEnabled = false
+        assemblyEnabled = false
+        msbuildEnabled = false
+        cmakeEnabled = false
+        autoconfEnabled = false
+        composerEnabled = false
+        cpanEnabled = false
+        nodeEnabled = false
+        cocoapodsEnabled = false
+        swiftEnabled = false
+        swiftPackageResolvedEnabled = false
+        bundleAuditEnabled = false
+        golangDepEnabled = false
+        golangModEnabled = false
+    }
+}
 

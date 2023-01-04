@@ -29,7 +29,7 @@
  *          server {
  *              listen 17643;
  *              server_name localhost;
- *              location / {
+ *              location /cvedata {
  *                  alias /home/user/cvedata/;
  *              }
  *          }
@@ -37,9 +37,9 @@
  * 3.在Gradle中配置, 调整CVE获取URL
  *      dependencyCheck {
  *          cve {
- *              urlModified = "http://localhost:17643/nvdcve-1.1-modified.json.gz"
+ *              urlModified = "http://localhost:17643/cvedata/nvdcve-1.1-modified.json.gz"
  *              // %d表示年份
- *              urlBase = "http://localhost:17643/nvdcve-1.1-%d.json.gz"
+ *              urlBase = "http://localhost:17643/cvedata/nvdcve-1.1-%d.json.gz"
  *          }
  *      }
  *

@@ -19,11 +19,11 @@
 
 package com.github.shepherdviolet.glacimon.java.net;
 
+import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
+
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * 网络工具
@@ -135,11 +135,74 @@ public class NetworkUtils {
         return list;
     }
 
-    private static final LocalIpFilter DEFAULT_LOCAL_IP_FILTER = new LocalIpFilter() {
+    private static final LocalIpFilter DEFAULT_LOCAL_IP_FILTER = new DefaultLocalIpFilter();
+
+    /**
+     * 默认本地IP过滤规则
+     */
+    private static class DefaultLocalIpFilter implements LocalIpFilter {
+
+        private static final String IGNORED_INTERFACE = "glacimon.networkutils.ignored.interface";
+        private static final String IGNORED_ADDRESS = "glacimon.networkutils.ignored.address";
+        private static final String IGNORED_ADDRESS_PREFIX = "glacimon.networkutils.ignored.address.prefix";
+
+        private static final Set<String> IGNORED_INTERFACE_SET = getPropertySet(IGNORED_INTERFACE);
+        private static final Set<String> IGNORED_ADDRESS_SET = getPropertySet(IGNORED_ADDRESS);
+        private static final Set<String> IGNORED_ADDRESS_PREFIX_SET = getPropertySet(IGNORED_ADDRESS_PREFIX);
+
         @Override
         public boolean filter(NetworkInterface networkInterface, InetAddress inetAddress) throws SocketException {
-            return inetAddress != null && !inetAddress.isLoopbackAddress() && (networkInterface.isPointToPoint() || !inetAddress.isLinkLocalAddress());
+            if (!networkInterface.isUp() || // 网卡禁用
+                    networkInterface.isLoopback() || // 环回地址
+                    networkInterface.isVirtual() || // 虚拟网卡
+                    inetAddress == null || // 地址为空
+                    inetAddress.isLoopbackAddress()){ // 环回地址
+                return false;
+            }
+
+            // 局域网地址(169.254.0.0/16), 且不是点到点网络(例如拨号器)
+            if (inetAddress.isLinkLocalAddress() && !networkInterface.isPointToPoint()) {
+                return false;
+            }
+
+            // 根据网卡名忽略(lo eth0 wlan0 ...)
+            if (IGNORED_INTERFACE_SET != null && IGNORED_INTERFACE_SET.contains(networkInterface.getName())) {
+                return false;
+            }
+
+            String hostAddress = inetAddress.getHostAddress();
+
+            // 根据IP地址忽略
+            if (IGNORED_ADDRESS_SET != null && IGNORED_ADDRESS_SET.contains(hostAddress)) {
+                return false;
+            }
+
+            // 根据IP地址前缀忽略
+            if (IGNORED_ADDRESS_PREFIX_SET != null) {
+                for (String ignoredPrefix : IGNORED_ADDRESS_PREFIX_SET) {
+                    if (hostAddress.startsWith(ignoredPrefix)) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
+
+        private static Set<String> getPropertySet(String propertyKey) {
+            Set<String> set = null;
+            String propertyValue = System.getProperty(propertyKey);
+            if (CheckUtils.notEmptyNotBlank(propertyValue)) {
+                for (String subValue : propertyValue.split(",")) {
+                    if (set == null) {
+                        set = new HashSet<>();
+                    }
+                    set.add(subValue.trim());
+                }
+            }
+            return set;
+        }
+
     };
 
     /**
@@ -148,24 +211,5 @@ public class NetworkUtils {
     public interface LocalIpFilter {
         boolean filter(NetworkInterface networkInterface, InetAddress inetAddress) throws SocketException;
     }
-
-    //获取本机IP精简版
-//    private String getFirstLocalIp() throws SocketException {
-//        Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-//        if (networkInterfaces == null) {
-//            return null;
-//        }
-//        while (networkInterfaces.hasMoreElements()) {
-//            NetworkInterface networkInterface = networkInterfaces.nextElement();
-//            Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-//            while (addresses.hasMoreElements()) {
-//                InetAddress address = addresses.nextElement();
-//                if (address != null && !address.isLoopbackAddress() && (networkInterface.isPointToPoint() || !address.isLinkLocalAddress())) {
-//                    return address.getHostAddress();
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
 }

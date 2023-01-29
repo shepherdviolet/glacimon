@@ -33,6 +33,10 @@ dependencies {
             "junit:junit:$version_junit",
             "org.mockito:mockito-core:$version_mockito",
 
+            //demo dependencies
+            "com.alibaba:hessian-lite:$version_hessian_lite",
+            "joda-time:joda-time:$version_joda",
+
     ].forEach{ testImplementation it }
 
 }

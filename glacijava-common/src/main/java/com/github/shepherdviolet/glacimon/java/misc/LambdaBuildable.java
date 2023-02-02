@@ -43,12 +43,7 @@ public interface LambdaBuildable {
      * @since 1.8
      */
     default <K, V> Map<K, V> buildHashMap(Consumer<Map<K, V>> supplier) {
-        Map<K, V> map = new HashMap<>(16);
-        if (supplier == null) {
-            return map;
-        }
-        supplier.accept(map);
-        return map;
+        return LambdaBuilder.hashMap(supplier);
     }
 
     /**
@@ -64,12 +59,7 @@ public interface LambdaBuildable {
      * @since 1.8
      */
     default <K, V> Map<K, V> buildLinkedHashMap(Consumer<Map<K, V>> supplier) {
-        Map<K, V> map = new LinkedHashMap<>(16);
-        if (supplier == null) {
-            return map;
-        }
-        supplier.accept(map);
-        return map;
+        return LambdaBuilder.linkedHashMap(supplier);
     }
 
     /**
@@ -85,12 +75,7 @@ public interface LambdaBuildable {
      * @since 1.8
      */
     default <T> Set<T> buildHashSet(Consumer<Set<T>> supplier) {
-        Set<T> set = new HashSet<>(16);
-        if (supplier == null) {
-            return set;
-        }
-        supplier.accept(set);
-        return set;
+        return LambdaBuilder.hashSet(supplier);
     }
 
     /**
@@ -108,7 +93,7 @@ public interface LambdaBuildable {
      * @since 1.8
      */
     default <T> T buildObject(Supplier<T> supplier) {
-        return supplier.get();
+        return LambdaBuilder.object(supplier);
     }
 
     /**
@@ -131,12 +116,7 @@ public interface LambdaBuildable {
      * @since 1.8
      */
     default <T> List<T> buildArrayList(Consumer<List<T>> supplier) {
-        List<T> list = new ArrayList<>();
-        if (supplier == null) {
-            return list;
-        }
-        supplier.accept(list);
-        return list;
+        return LambdaBuilder.arrayList(supplier);
     }
 
     /**
@@ -152,12 +132,7 @@ public interface LambdaBuildable {
      * @since 1.8
      */
     default <T> List<T> buildLinkedList(Consumer<List<T>> supplier) {
-        List<T> list = new LinkedList<>();
-        if (supplier == null) {
-            return list;
-        }
-        supplier.accept(list);
-        return list;
+        return LambdaBuilder.linkedList(supplier);
     }
 
 }

@@ -19,6 +19,10 @@
 
 package com.github.shepherdviolet.glacimon.java.misc;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+
 /**
  * <p>[非线程安全|NOT THREAD SAFE] 流式创建Map/Set/Object/List</p>
  *
@@ -42,6 +46,30 @@ public interface StreamingBuildable {
      */
     default <K, V> StreamingBuilder.MapKeySetter<K, V> buildLinkedHashMap() {
         return StreamingBuilder.linkedHashMap();
+    }
+
+    /**
+     * 流式创建一个ArrayList
+     * @param <E> element type
+     */
+    default <E> StreamingBuilder.ListElementAdder<E> buildArrayList() {
+        return StreamingBuilder.arrayList();
+    }
+
+    /**
+     * 流式创建一个LinkedList
+     * @param <E> element type
+     */
+    default <E> StreamingBuilder.ListElementAdder<E> buildLinkedList() {
+        return StreamingBuilder.linkedList();
+    }
+
+    /**
+     * 流式创建一个Set
+     * @param <E> element type
+     */
+    default <E> StreamingBuilder.SetElementAdder<E> buildHashSet() {
+        return StreamingBuilder.hashSet();
     }
 
 }

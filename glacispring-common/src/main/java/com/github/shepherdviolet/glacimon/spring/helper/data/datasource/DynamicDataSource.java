@@ -86,7 +86,7 @@ import java.util.Map;
  *     }
  * </pre>
  *
- * <p>最后, 只要在每次数据库调用前, 设置数据源名称即可, 设置以后当前线程就会用指定数据源操作数据库(无数次)</p>
+ * <p>最后, 只要在每次数据库调用前, 设置数据源名称即可, 设置以后当前线程就会用指定数据源操作数据库(一直有效, 无限次, 直到再调用本方法更改)</p>
  *
  * <pre>
  *     DynamicDataSource.selectDataSource("dataSource2");
@@ -103,7 +103,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     private final String defaultDataSourceName;
 
     /**
-     * 在操作数据库前调用该方法选择数据源, 设置以后当前线程就会用指定数据源操作数据库(无数次)
+     * 在操作数据库前调用该方法选择数据源, 设置以后当前线程就会用指定数据源操作数据库(一直有效, 无限次, 直到再调用本方法更改)
      * @param dataSourceName 数据源名称(BeanName)
      */
     public static void selectDataSource(String dataSourceName){

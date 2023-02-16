@@ -81,9 +81,12 @@ public class ServiceContext implements Closeable {
     private final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>>> MULTIPLE_SERVICE_LOADERS = new ConcurrentHashMap<>();
 
     //preload
+    private final Object PRELOAD_DONE = new Object();
     private final ConcurrentHashMap<String, Object> PRELOAD_FLAGS = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Integer> PRELOAD_CHECK_SUMS = new ConcurrentHashMap<>();
-    private final Object PRELOAD_DONE = new Object();
+
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final ConcurrentHashMap<String, String> PRELOAD_REPORTS = new ConcurrentHashMap<>();//Get preload report by heap dump
 
     private ServiceContext(String serviceContextId, String serviceContextClassLoaderId) {
         this.serviceContextId = serviceContextId;
@@ -316,33 +319,30 @@ public class ServiceContext implements Closeable {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(serviceContextId + "-?? | Preload | Preloading Complete! classloader:" + classloaderId, null);
         }
+        //preload report
+        StringBuilder reportBuilder = new StringBuilder();
+        for (SingleServiceLoader<?> loader : singleServiceLoaders) {
+            String report = String.valueOf(loader);
+            reportBuilder.append(report);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(serviceContextId + "-?? | Preload | Loaded " + report, null);
+            }
+        }
+        for (MultipleServiceLoader<?> loader : multipleServiceLoaders) {
+            String report = String.valueOf(loader);
+            reportBuilder.append(report);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(serviceContextId + "-?? | Preload | Loaded " + report, null);
+            }
+        }
+        String report = reportBuilder.toString();
+        PRELOAD_REPORTS.put(classloaderId, report);
         //checksum
-        if (LOGGER.isInfoEnabled() || Constants.FLAG_PRELOAD_CHECKSUM) {
-            StringBuilder checkSumBuilder = new StringBuilder();
-            for (SingleServiceLoader<?> loader : singleServiceLoaders) {
-                String report = String.valueOf(loader);
-                if (Constants.FLAG_PRELOAD_CHECKSUM) {
-                    checkSumBuilder.append(report);
-                }
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(serviceContextId + "-?? | Preload | Loaded " + report, null);
-                }
-            }
-            for (MultipleServiceLoader<?> loader: multipleServiceLoaders) {
-                String report = String.valueOf(loader);
-                if (Constants.FLAG_PRELOAD_CHECKSUM) {
-                    checkSumBuilder.append(report);
-                }
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(serviceContextId + "-?? | Preload | Loaded " + report, null);
-                }
-            }
-            if (Constants.FLAG_PRELOAD_CHECKSUM) {
-                int checkSum = checkSumBuilder.toString().hashCode();
-                PRELOAD_CHECK_SUMS.put(classloaderId, checkSum);
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info(serviceContextId + "-?? | Preload | CheckSum " + checkSum + ", classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
-                }
+        if (Constants.FLAG_PRELOAD_CHECKSUM) {
+            int checkSum = report.hashCode();
+            PRELOAD_CHECK_SUMS.put(classloaderId, checkSum);
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info(serviceContextId + "-?? | Preload | CheckSum " + checkSum + ", classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
             }
         }
     }

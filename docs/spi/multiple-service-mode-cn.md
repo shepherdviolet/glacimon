@@ -13,7 +13,7 @@
 
 ## 服务调用方
 
-### 1.编写一个接口类
+### 1.编写一个`接口类`
 
 ```text
 package sample;
@@ -25,7 +25,7 @@ public interface SampleMultipleService {
 }
 ```
 
-### 2.在定义文件中声明
+### 2.在`接口定义文件`中声明
 
 * 编辑文件`META-INF/glacimonspi/interfaces`
 * 添加一行:
@@ -38,6 +38,7 @@ sample.SampleMultipleService
 
 * 加载服务
 * 若定义文件/接口类/实现类有问题, 会抛出异常
+* 若找不到`实现定义文件`(没有定义实现), 不会抛出异常
 * Spring环境中或设置-Dglacimonspi.conf.preload.auto=true时, 该操作第一次会触发[预加载](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/preload-cn.md)
 
 ```text
@@ -50,12 +51,14 @@ MultipleServiceLoader<SampleMultipleService> loader = GlacimonSpi.loadMultipleSe
 
 * 获取服务实例
 * 若实例化失败, 会抛出异常
+* 若找不到`实现定义文件`(没有定义实现), 会返回空List
+* 若找不到指定名称的实现, 会返回null
 
 ```text
-//指定名称获取
+//指定名称获取, 注意有可能返回null
 SampleMultipleService instance = loader.get("name");
 
-//获取全部(按实现优先度排序, 优先度数值越大, 优先度越高, 第0个优先度最高)
+//获取全部(按实现优先度排序, 优先度数值越大, 优先度越高, 第0个优先度最高), 注意有可能返回空List
 List<SampleMultipleService> instances = loader.getAll();
 ```
 
@@ -82,7 +85,7 @@ class B {
 
 ## 服务提供方
 
-### 1.编写实现类
+### 1.编写`实现类`
 
 ```text
 package sample;
@@ -106,7 +109,7 @@ public class SampleMultipleServiceImpl1 implements SampleMultipleService {
 * `特殊:当实现名称重复时, 只有一个能用名称获取, 其他的只能通过getAll获取到`
 * `特殊:当实现优先度相同时, 根据实现类全限定名的hash排序`
 
-### 2.在定义文件中声明
+### 2.在`实现定义文件`中声明
 
 * 编辑文件`META-INF/glacimonspi/services/multiple/sample.SampleMultipleService`
 * 内容:

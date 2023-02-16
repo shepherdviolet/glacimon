@@ -12,7 +12,7 @@
 
 ## 服务调用方
 
-### 1.编写接口类
+### 1.编写`接口类`
 
 ```text
 package sample;
@@ -22,7 +22,7 @@ public interface SampleSingleService {
 }
 ```
 
-### 2.在定义文件中声明
+### 2.在`接口定义文件`中声明
 
 * 编辑文件`META-INF/glacimonspi/interfaces`
 * 添加一行:
@@ -35,6 +35,7 @@ sample.SampleSingleService
 
 * 加载服务
 * 若定义文件/接口类/实现类有问题, 会抛出异常
+* 若找不到`实现定义文件`(没有定义实现), 不会抛出异常
 * Spring环境中或设置-Dglacimonspi.conf.preload.auto=true时, 该操作第一次会触发[预加载](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/preload-cn.md)
 
 ```text
@@ -46,8 +47,10 @@ SingleServiceLoader<SampleSingleService> loader = GlacimonSpi.loadSingleService(
 
 * 获取服务实例
 * 若实例化失败, 会抛出异常
+* 若找不到`实现定义文件`(没有定义实现), 会返回null
 
 ```text
+//注意有可能返回null
 SampleSingleService instance = loader.get();
 ```
 
@@ -74,7 +77,7 @@ class B {
 
 ## 服务提供方
 
-### 1.编写实现类
+### 1.编写`实现类`
 
 ```text
 package sample;
@@ -89,7 +92,7 @@ public class SampleSingleServiceImpl implements SampleSingleService {
 * 实现类能够注入配置参数, 见[配置注入](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/property-injection-cn.md)
 * 实现类能够监听自身的创建和销毁事件, 见[实现类生命周期](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/implementation-lifecycle-cn.md)
 
-### 2.在定义文件中声明
+### 2.在`实现定义文件`中声明
 
 * 编辑文件`META-INF/glacimonspi/services/single/sample.SampleSingleService`
 * 内容:

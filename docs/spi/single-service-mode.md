@@ -12,7 +12,7 @@ It will load which implementation based on the priority in the definition file.
 
 ## Service caller site
 
-### 1.Write interface class
+### 1.Write `interface class`
 
 ```text
 package sample;
@@ -25,7 +25,7 @@ public interface SampleSingleService {
 }
 ```
 
-### 2.Declare in definition file
+### 2.Declare in `interface definition file`
 
 * Edit file `META-INF/glacimonspi/interfaces`
 * Add a line:
@@ -38,6 +38,7 @@ sample.SampleSingleService
 
 * Load service
 * If there is a problem with the definition file / interface class / implementation class, an exception will be thrown.
+* If the `implementation definition file` cannot be found (no implementation is defined), no exception will be thrown
 * [Preloading](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/preload.md) will be triggered at the first 
 time you load a service. The premise is in the `Spring` environment, or the VM option `-Dglacimonspi.conf.preload.auto=true` is set
 
@@ -51,8 +52,10 @@ SingleServiceLoader<SampleSingleService> loader = GlacimonSpi.loadSingleService(
 
 * Get service instances
 * If the instantiation fails, an exception will be thrown
+* If the `implementation definition file` cannot be found (no implementation is defined), null will be returned
 
 ```text
+//note that it is possible to return null
 SampleSingleService instance = loader.get();
 ```
 
@@ -79,7 +82,7 @@ class B {
 
 ## Service Provider site
 
-### 1.Write implementation class
+### 1.Write `implementation class`
 
 ```text
 package sample;
@@ -98,7 +101,7 @@ public class SampleSingleServiceImpl implements SampleSingleService {
 * Implementation classes can listen for their own creation and closing events, 
 See [Implementation Lifecycle](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/implementation-lifecycle.md)
 
-### 2.Declare in definition file
+### 2.Declare in `implementation definition file`
 
 * Edit file `META-INF/glacimonspi/services/single/sample.SampleSingleService`
 * Contents:

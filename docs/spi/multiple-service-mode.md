@@ -13,7 +13,7 @@ The service loader can get an instance by name or a list of all instances (sorte
 
 ## Service caller site
 
-### 1.Write interface class
+### 1.Write `interface class`
 
 ```text
 package sample;
@@ -26,7 +26,7 @@ public interface SampleMultipleService {
 }
 ```
 
-### 2.Declare in definition file
+### 2.Declare in `interface definition file`
 
 * Edit file `META-INF/glacimonspi/interfaces`
 * Add a line:
@@ -39,6 +39,7 @@ sample.SampleMultipleService
 
 * Load service
 * If there is a problem with the definition file / interface class / implementation class, an exception will be thrown.
+* If the `implementation definition file` cannot be found (no implementation is defined), no exception will be thrown
 * [Preloading](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/preload.md) will be triggered at the first 
 time you load a service. The premise is in the `Spring` environment, or the VM option `-Dglacimonspi.conf.preload.auto=true` is set
 
@@ -52,12 +53,14 @@ MultipleServiceLoader<SampleMultipleService> loader = GlacimonSpi.loadMultipleSe
 
 * Get service instances
 * If the instantiation fails, an exception will be thrown
+* If the `implementation definition file` cannot be found (no implementation is defined), an empty List will be returned
+* If no implementation with the specified name is found, null will be returned
 
 ```text
-//Get by name
+//Get by name, note that it is possible to return null
 SampleMultipleService instance = loader.get("name");
 
-//Get all (Sort by implementation priority, the higher the priority value, the higher the priority, the 0th has the highest priority)
+//Get all (Sort by implementation priority, the higher the priority value, the higher the priority, the 0th has the highest priority), note that it is possible to return empty List
 List<SampleMultipleService> instances = loader.getAll();
 ```
 
@@ -84,7 +87,7 @@ class B {
 
 ## Service Provider site
 
-### 1.Write implementation class
+### 1.Write `implementation class`
 
 ```text
 package sample;
@@ -109,7 +112,7 @@ See [Implementation Lifecycle](https://github.com/shepherdviolet/glacimon/blob/m
 * `TIPS: When the implementation name is repeated, only one can be obtained by name, and the others can only be obtained by getAll.`
 * `TIPS: When the implementation priorities are the same, sort according to the hash of the implementation class name`
 
-### 2.Declare in definition file
+### 2.Declare in `implementation definition file`
 
 * Edit file `META-INF/glacimonspi/services/multiple/sample.SampleMultipleService`
 * Contents:

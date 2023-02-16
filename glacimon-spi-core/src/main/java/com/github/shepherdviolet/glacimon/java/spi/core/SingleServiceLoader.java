@@ -49,99 +49,6 @@ public class SingleServiceLoader<T> implements Closeable {
     public static final String CLASS_NAME = SingleServiceLoader.class.getName();
     private static final SpiLogger LOGGER = LogUtils.getLogger();
 
-    private static final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>>> LOADER_CACHE = new ConcurrentHashMap<>();
-
-    /**
-     * Load single service by DEFAULT classloader.
-     * single-service mode is used when only one service implementation is required.
-     * @param interfaceClass Interface type to load
-     * @return SingleServiceLoader (Cached)
-     */
-    public static <T> SingleServiceLoader<T> load(Class<T> interfaceClass){
-        return load(interfaceClass, ClassUtils.getDefaultClassLoader());
-    }
-
-    /**
-     * Load single service by custom classloader.
-     * single-service mode is used when only one service implementation is required.
-     * @param interfaceClass Interface type to load
-     * @param classLoader Custom classloader
-     * @return SingleServiceLoader (Cached)
-     */
-    public static <T> SingleServiceLoader<T> load(Class<T> interfaceClass, ClassLoader classLoader){
-        //preload
-        if (FLAG_PRELOAD_AUTO) {
-            PreLoader.preload(classLoader);
-        }
-        //create loader
-        return createLoader(interfaceClass, classLoader);
-    }
-
-    /**
-     * Create loader (without preload)
-     */
-    static <T> SingleServiceLoader<T> createLoader(Class<T> interfaceClass, ClassLoader classLoader) {
-        if (interfaceClass == null) {
-            throw new IllegalArgumentException("? | interfaceClass is null");
-        }
-        //get loaders from cache
-        String classloaderId = ClassUtils.getClassLoaderId(classLoader);
-        CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>> loaders = LOADER_CACHE.get(classloaderId);
-        if (loaders == null) {
-            loaders = new CloseableConcurrentHashMap<>(32);
-            CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>> previous = LOADER_CACHE.putIfAbsent(classloaderId, loaders);
-            if (previous != null) {
-                loaders = previous;
-            }
-        }
-        //get loader from cache
-        SingleServiceLoader<T> loader = (SingleServiceLoader<T>) loaders.get(interfaceClass);
-        if (loader == null) {
-            Map<Class<?>, Boolean> interfaces = InterfaceLoader.get(classLoader);
-            //check if the interface has registered
-            if (!interfaces.containsKey(interfaceClass)) {
-                LOGGER.error("? | Interface " + interfaceClass.getName() +
-                        " must be defined in " + PATH_INTERFACES + " file, See doc:" + LOG_HOME_PAGE, null);
-                throw new IllegalDefinitionException("? | Interface " + interfaceClass.getName() +
-                        " must be defined in " + PATH_INTERFACES + " file, See doc:" + LOG_HOME_PAGE);
-            }
-            //create loader
-            loader = new SingleServiceLoader<>(interfaceClass, classLoader);
-            SingleServiceLoader<T> previous = (SingleServiceLoader<T>) loaders.putIfAbsent(interfaceClass, loader);
-            if (previous != null) {
-                loader = previous;
-            }
-        } else if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loader.loaderId + " | Single-service Loader get from cache! " +
-                    interfaceClass.getName() + ", classloader:" + classloaderId, null);
-        }
-        return loader;
-    }
-
-    /**
-     * Remove all loaders of specified classloader from cache
-     * @param classLoader classloader
-     */
-    public static Map<Class<?>, SingleServiceLoader<?>> uninstall(ClassLoader classLoader) {
-        String classloaderId = ClassUtils.getClassLoaderId(classLoader);
-        CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>> loaders = LOADER_CACHE.remove(classloaderId);
-        //close
-        if (loaders != null) {
-            try {
-                loaders.close();
-            } catch (IOException ignore) {
-            }
-        }
-        return loaders;
-    }
-
-    /**
-     * Remove all loaders of DEFAULT classloader from cache
-     */
-    public static Map<Class<?>, SingleServiceLoader<?>> uninstallDefaultClassloader() {
-        return uninstall(ClassUtils.getDefaultClassLoader());
-    }
-
     private final String loaderId = CommonUtils.generateLoaderId();
     private final Class<T> interfaceClass;
     private final ClassLoader classLoader;
@@ -160,7 +67,13 @@ public class SingleServiceLoader<T> implements Closeable {
      * @param interfaceClass Interface type to load
      * @param classLoader Custom classloader
      */
-    private SingleServiceLoader(Class<T> interfaceClass, ClassLoader classLoader) {
+    SingleServiceLoader(Class<T> interfaceClass, ClassLoader classLoader) {
+        if (interfaceClass == null) {
+            throw new IllegalArgumentException("interfaceClass is null");
+        }
+        if (classLoader == null) {
+            throw new IllegalArgumentException("classLoader is null");
+        }
         this.interfaceClass = interfaceClass;
         this.classLoader = classLoader;
         load();
@@ -408,6 +321,10 @@ public class SingleServiceLoader<T> implements Closeable {
             throw new IllegalDefinitionException(loaderId + " | Implementation class " + implementationClassName +
                     " not found, which is selected by " + selectReason, e);
         }
+    }
+
+    String getLoaderId() {
+        return loaderId;
     }
 
 }

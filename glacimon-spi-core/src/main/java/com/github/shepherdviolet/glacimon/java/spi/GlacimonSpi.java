@@ -19,9 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.java.spi;
 
-import com.github.shepherdviolet.glacimon.java.spi.core.SingleServiceLoader;
-import com.github.shepherdviolet.glacimon.java.spi.core.MultipleServiceLoader;
-import com.github.shepherdviolet.glacimon.java.spi.core.PreLoader;
+import com.github.shepherdviolet.glacimon.java.spi.core.*;
 
 import java.util.Map;
 
@@ -35,13 +33,21 @@ public class GlacimonSpi {
     public static final String CLASS_NAME = GlacimonSpi.class.getName();
 
     /**
+     * <p>Default service context.</p>
+     * 1.Build service loader
+     * 2.Cache service loader
+     * 3.Preload
+     */
+    private static final ServiceContext SERVICE_CONTEXT = ServiceContext.getInstance(GlacimonSpi.class.getClassLoader());
+
+    /**
      * Load single service by DEFAULT classloader.
      * single-service mode is used when only one service implementation is required.
      * @param interfaceClass Interface type to load
      * @return SingleServiceLoader (Cached)
      */
     public static <T> SingleServiceLoader<T> loadSingleService(Class<T> interfaceClass){
-        return SingleServiceLoader.load(interfaceClass);
+        return SERVICE_CONTEXT.loadSingleService(interfaceClass);
     }
 
     /**
@@ -52,7 +58,7 @@ public class GlacimonSpi {
      * @return SingleServiceLoader (Cached)
      */
     public static <T> SingleServiceLoader<T> loadSingleService(Class<T> interfaceClass, ClassLoader classLoader){
-        return SingleServiceLoader.load(interfaceClass, classLoader);
+        return SERVICE_CONTEXT.loadSingleService(interfaceClass, classLoader);
     }
 
     /**
@@ -62,7 +68,7 @@ public class GlacimonSpi {
      * @return MultipleServiceLoader (Cached)
      */
     public static <T> MultipleServiceLoader<T> loadMultipleService(Class<T> interfaceClass){
-        return MultipleServiceLoader.load(interfaceClass);
+        return SERVICE_CONTEXT.loadMultipleService(interfaceClass);
     }
 
     /**
@@ -73,26 +79,29 @@ public class GlacimonSpi {
      * @return MultipleServiceLoader (Cached)
      */
     public static <T> MultipleServiceLoader<T> loadMultipleService(Class<T> interfaceClass, ClassLoader classLoader){
-        return MultipleServiceLoader.load(interfaceClass, classLoader);
+        return SERVICE_CONTEXT.loadMultipleService(interfaceClass, classLoader);
     }
 
     /**
-     * Remove all loaders of specified classloader from cache. If you want to get the loader being uninstalled,
-     * invoke SingleServiceLoader#uninstall & MultipleServiceLoader#uninstall instead.
+     * Remove all loaders of specified classloader from cache.
      * @param classLoader classloader
      */
     public static void uninstall(ClassLoader classLoader) {
-        SingleServiceLoader.uninstall(classLoader);
-        MultipleServiceLoader.uninstall(classLoader);
+        SERVICE_CONTEXT.uninstall(classLoader);
     }
 
     /**
-     * Remove all loaders of DEFAULT classloader from cache. If you want to get the loader being uninstalled,
-     * invoke SingleServiceLoader#uninstall & MultipleServiceLoader#uninstall instead.
+     * Remove all loaders of DEFAULT classloader from cache.
      */
     public static void uninstallDefaultClassloader() {
-        SingleServiceLoader.uninstallDefaultClassloader();
-        MultipleServiceLoader.uninstallDefaultClassloader();
+        SERVICE_CONTEXT.uninstallDefaultClassloader();
+    }
+
+    /**
+     * Remove all loaders of all classloaders from cache
+     */
+    public static void uninstallAllClassloader() {
+        SERVICE_CONTEXT.uninstallAllClassloader();
     }
 
     /**
@@ -103,7 +112,7 @@ public class GlacimonSpi {
      * @param classLoader classloader
      */
     public static void preload(ClassLoader classLoader) {
-        PreLoader.preload(classLoader);
+        SERVICE_CONTEXT.preload(classLoader);
     }
 
     /**
@@ -112,7 +121,7 @@ public class GlacimonSpi {
      * NOTICE: Preloading automatically in the Spring environment or set -Dglacimonspi.conf.preload.auto=true.
      */
     public static void preload() {
-        PreLoader.preload();
+        SERVICE_CONTEXT.preload();
     }
 
     /**
@@ -120,7 +129,7 @@ public class GlacimonSpi {
      * Used to determine if the definition has been changed (Someone added or deleted the service without knowing it.)
      */
     public static Map<String, Integer> getPreloadCheckSums() {
-        return PreLoader.getCheckSums();
+        return SERVICE_CONTEXT.getPreloadCheckSums();
     }
 
     /**
@@ -128,7 +137,7 @@ public class GlacimonSpi {
      * Used to determine if the definition has been changed (Someone added or deleted the service without knowing it.)
      */
     public static Integer getPreloadCheckSum(ClassLoader classLoader) {
-        return PreLoader.getCheckSum(classLoader);
+        return SERVICE_CONTEXT.getPreloadCheckSum(classLoader);
     }
 
     /**
@@ -136,7 +145,7 @@ public class GlacimonSpi {
      * Used to determine if the definition has been changed (Someone added or deleted the service without knowing it.)
      */
     public static Integer getPreloadCheckSum() {
-        return PreLoader.getCheckSum();
+        return SERVICE_CONTEXT.getPreloadCheckSum();
     }
 
     private GlacimonSpi() {

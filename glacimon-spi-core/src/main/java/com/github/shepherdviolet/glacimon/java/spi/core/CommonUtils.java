@@ -130,10 +130,9 @@ class CommonUtils {
     private static final Set<String> EQUAL_SKIPS = new HashSet<>(Arrays.asList(
             CommonUtils.class.getName(),
             GlacimonSpi.CLASS_NAME,
-            PreLoader.CLASS_NAME,
+            ServiceContext.CLASS_NAME,
             SingleServiceLoader.CLASS_NAME,
             MultipleServiceLoader.CLASS_NAME
-
     ));
 
     private static final Collection<String> STARTS_WITH_SKIPS = Arrays.asList(

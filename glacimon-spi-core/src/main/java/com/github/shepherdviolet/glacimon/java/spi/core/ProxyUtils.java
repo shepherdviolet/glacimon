@@ -41,6 +41,7 @@ class ProxyUtils {
     /**
      * build proxy instance if some method is abstract, for old version implementation
      */
+    @SuppressWarnings("unchecked")
     static <T> T buildProxyIfNeeded(ClassLoader classLoader, Class<T> interfaceClass, T instance, String loaderId) {
         //check @NewMethod annotation on methods
         Method[] interfaceMethods = interfaceClass.getMethods();
@@ -89,7 +90,7 @@ class ProxyUtils {
         }
         //build proxy
         T proxy = (T) Proxy.newProxyInstance(
-                classLoader != null ? classLoader : ClassUtils.getCurrentClassLoader(),
+                classLoader,
                 new Class[]{ServiceProxy.class, interfaceClass},
                 new ProxyInvocationHandler(interfaceClass, instance, finalMethodProxies));
         //log

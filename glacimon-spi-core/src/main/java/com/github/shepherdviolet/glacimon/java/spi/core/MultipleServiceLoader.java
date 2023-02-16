@@ -49,99 +49,6 @@ public class MultipleServiceLoader<T> implements Closeable {
     public static final String CLASS_NAME = MultipleServiceLoader.class.getName();
     private static final SpiLogger LOGGER = LogUtils.getLogger();
 
-    private static final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>>> LOADER_CACHE = new ConcurrentHashMap<>();
-
-    /**
-     * Load multiple services by DEFAULT classloader.
-     * multiple-service mode is used to load multiple services (has name and ordered).
-     * @param interfaceClass Interface type to load
-     * @return MultipleServiceLoader (Cached)
-     */
-    public static <T> MultipleServiceLoader<T> load(Class<T> interfaceClass){
-        return load(interfaceClass, ClassUtils.getDefaultClassLoader());
-    }
-
-    /**
-     * Load multiple services by custom classloader.
-     * multiple-service mode is used to load multiple services (has name and ordered).
-     * @param interfaceClass Interface type to load
-     * @param classLoader Custom classloader
-     * @return MultipleServiceLoader (Cached)
-     */
-    public static <T> MultipleServiceLoader<T> load(Class<T> interfaceClass, ClassLoader classLoader){
-        //preload
-        if (Constants.FLAG_PRELOAD_AUTO) {
-            PreLoader.preload(classLoader);
-        }
-        //create loader
-        return createLoader(interfaceClass, classLoader);
-    }
-
-    /**
-     * Create loader (without preload)
-     */
-    static <T> MultipleServiceLoader<T> createLoader(Class<T> interfaceClass, ClassLoader classLoader) {
-        if (interfaceClass == null) {
-            throw new IllegalArgumentException("? | interfaceClass is null");
-        }
-        //get loaders from cache
-        String classloaderId = ClassUtils.getClassLoaderId(classLoader);
-        CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>> loaders = LOADER_CACHE.get(classloaderId);
-        if (loaders == null) {
-            loaders = new CloseableConcurrentHashMap<>(32);
-            CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>> previous = LOADER_CACHE.putIfAbsent(classloaderId, loaders);
-            if (previous != null) {
-                loaders = previous;
-            }
-        }
-        //get loader from cache
-        MultipleServiceLoader<T> loader = (MultipleServiceLoader<T>) loaders.get(interfaceClass);
-        if (loader == null) {
-            Map<Class<?>, Boolean> interfaces = InterfaceLoader.get(classLoader);
-            //check if the interface has registered
-            if (!interfaces.containsKey(interfaceClass)) {
-                LOGGER.error("? | Interface " + interfaceClass.getName() +
-                        " must be defined in " + Constants.PATH_INTERFACES + " file, See doc:" + Constants.LOG_HOME_PAGE, null);
-                throw new IllegalDefinitionException("? | Interface " + interfaceClass.getName() +
-                        " must be defined in " + Constants.PATH_INTERFACES + " file, See doc:" + Constants.LOG_HOME_PAGE);
-            }
-            //create loader
-            loader = new MultipleServiceLoader<>(interfaceClass, classLoader);
-            MultipleServiceLoader<T> previous = (MultipleServiceLoader<T>) loaders.putIfAbsent(interfaceClass, loader);
-            if (previous != null) {
-                loader = previous;
-            }
-        } else if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loader.loaderId + " | Multiple-service Loader get from cache! " +
-                    interfaceClass.getName() + ", classloader:" + classloaderId, null);
-        }
-        return loader;
-    }
-
-    /**
-     * Remove all loaders of specified classloader from cache
-     * @param classLoader classloader
-     */
-    public static Map<Class<?>, MultipleServiceLoader<?>> uninstall(ClassLoader classLoader) {
-        String classloaderId = ClassUtils.getClassLoaderId(classLoader);
-        CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>> loaders = LOADER_CACHE.remove(classloaderId);
-        //close
-        if (loaders != null) {
-            try {
-                loaders.close();
-            } catch (IOException ignore) {
-            }
-        }
-        return loaders;
-    }
-
-    /**
-     * Remove all loaders of DEFAULT classloader from cache
-     */
-    public static Map<Class<?>, MultipleServiceLoader<?>> uninstallDefaultClassloader() {
-        return uninstall(ClassUtils.getDefaultClassLoader());
-    }
-
     private final String loaderId = CommonUtils.generateLoaderId();
     private final Class<T> interfaceClass;
     private final ClassLoader classLoader;
@@ -154,7 +61,13 @@ public class MultipleServiceLoader<T> implements Closeable {
     private volatile boolean cached = false;
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private MultipleServiceLoader(Class<T> interfaceClass, ClassLoader classLoader) {
+    MultipleServiceLoader(Class<T> interfaceClass, ClassLoader classLoader) {
+        if (interfaceClass == null) {
+            throw new IllegalArgumentException("interfaceClass is null");
+        }
+        if (classLoader == null) {
+            throw new IllegalArgumentException("classLoader is null");
+        }
         this.interfaceClass = interfaceClass;
         this.classLoader = classLoader;
         load();
@@ -558,4 +471,7 @@ public class MultipleServiceLoader<T> implements Closeable {
         }
     }
 
+    String getLoaderId() {
+        return loaderId;
+    }
 }

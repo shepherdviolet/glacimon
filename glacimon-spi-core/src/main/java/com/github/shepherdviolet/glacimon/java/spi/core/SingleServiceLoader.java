@@ -71,9 +71,6 @@ public class SingleServiceLoader<T> implements Closeable {
         if (interfaceClass == null) {
             throw new IllegalArgumentException("interfaceClass is null");
         }
-        if (classLoader == null) {
-            throw new IllegalArgumentException("classLoader is null");
-        }
         this.interfaceClass = interfaceClass;
         this.classLoader = classLoader;
         load();

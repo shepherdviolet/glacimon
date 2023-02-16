@@ -21,6 +21,7 @@ package com.github.shepherdviolet.glacimon.java.spi.core;
 
 import com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi;
 import com.github.shepherdviolet.glacimon.java.spi.api.exceptions.IllegalDefinitionException;
+import com.github.shepherdviolet.glacimon.java.spi.api.exceptions.IllegalImplementationException;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -117,6 +118,7 @@ class ClassUtils {
         }
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static <T> T createInternalComponent(Class<T> interfaceType, String implementType) throws NoSuchMethodException, ClassNotFoundException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
         Constructor constructor = loadClass(implementType, getCurrentClassLoader()).getDeclaredConstructor();
         constructor.setAccessible(true);
@@ -125,6 +127,20 @@ class ClassUtils {
             throw new RuntimeException("Class " + implementType + " is not an instance of " + interfaceType.getName());
         }
         return (T) component;
+    }
+
+    /**
+     * instantiate class
+     */
+    static <T> T newInstance(Class<T> implementationClass) throws Exception {
+        try {
+            Constructor<T> constructor = implementationClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalImplementationException("Implementation class " + implementationClass.getName() +
+                    " must have a parameterless constructor", e);
+        }
     }
 
 }

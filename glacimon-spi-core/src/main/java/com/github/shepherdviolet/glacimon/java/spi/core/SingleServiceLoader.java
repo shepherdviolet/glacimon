@@ -127,7 +127,7 @@ public class SingleServiceLoader<T> implements Closeable {
         //create instance
         T instance;
         try {
-            instance = InstantiationUtils.newInstance(implementationClass);
+            instance = ClassUtils.newInstance(implementationClass);
         } catch (Exception e) {
             LOGGER.error(loaderId + " | Single-service Instance Create Failed! Error while instantiating class " +
                     implementationClass.getName() + " (" + interfaceClass.getName() + ")", e);

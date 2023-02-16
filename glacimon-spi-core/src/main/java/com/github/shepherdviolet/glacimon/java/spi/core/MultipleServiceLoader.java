@@ -164,7 +164,7 @@ public class MultipleServiceLoader<T> implements Closeable {
             //create instance
             T instance;
             try {
-                instance = InstantiationUtils.newInstance(instanceBuilder.implementationClass);
+                instance = ClassUtils.newInstance(instanceBuilder.implementationClass);
             } catch (Exception e) {
                 LOGGER.error(loaderId + " | Multiple-service Instance Create Failed! Error while instantiating class " +
                         instanceBuilder.implementationClass.getName() + " (" + interfaceClass.getName() + ")", e);

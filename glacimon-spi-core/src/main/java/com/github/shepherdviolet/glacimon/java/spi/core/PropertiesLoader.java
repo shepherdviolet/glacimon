@@ -157,7 +157,7 @@ class PropertiesLoader {
             throw new IllegalImplementationException(loaderId + " | PropInject | Illegal setter method '" + method.getName() +
                     "' in " + implementationClass.getName() + ", it must starts with 'set' and has only one parameter");
         }
-        String fieldName = BeanMethodNameUtils.methodToField(method.getName());
+        String fieldName = BeanUtils.methodToField(method.getName());
         if (fieldName == null) {
             LOGGER.error(loaderId + " | PropInject | Illegal setter method '" +
                     method.getName() + "' in " + implementationClass.getName() +

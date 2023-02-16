@@ -148,6 +148,13 @@ public class GlacimonSpi {
         return SERVICE_CONTEXT.getPreloadCheckSum();
     }
 
+    /**
+     * Get service context report
+     */
+    public static String getContextReport() {
+        return SERVICE_CONTEXT.toString();
+    }
+
     private GlacimonSpi() {
     }
 

@@ -128,6 +128,8 @@ public class ServiceContext implements Closeable {
         if (interfaceClass == null) {
             throw new IllegalArgumentException(serviceContextId + "-?? | interfaceClass is null");
         }
+        //get all interfaces in definition files
+        Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
         //get loaders from cache
         String classloaderId = ClassUtils.getClassLoaderId(classLoader);
         CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>> loaders = SINGLE_SERVICE_LOADERS.get(classloaderId);
@@ -141,7 +143,6 @@ public class ServiceContext implements Closeable {
         //get loader from cache
         SingleServiceLoader<T> loader = (SingleServiceLoader<T>) loaders.get(interfaceClass);
         if (loader == null) {
-            Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
             //check if the interface has registered
             if (!interfaces.containsKey(interfaceClass)) {
                 LOGGER.error(serviceContextId + "-?? | Interface " + interfaceClass.getName() +
@@ -196,6 +197,8 @@ public class ServiceContext implements Closeable {
         if (interfaceClass == null) {
             throw new IllegalArgumentException(serviceContextId + "-?? | interfaceClass is null");
         }
+        //get all interfaces in definition files
+        Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
         //get loaders from cache
         String classloaderId = ClassUtils.getClassLoaderId(classLoader);
         CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>> loaders = MULTIPLE_SERVICE_LOADERS.get(classloaderId);
@@ -209,7 +212,6 @@ public class ServiceContext implements Closeable {
         //get loader from cache
         MultipleServiceLoader<T> loader = (MultipleServiceLoader<T>) loaders.get(interfaceClass);
         if (loader == null) {
-            Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
             //check if the interface has registered
             if (!interfaces.containsKey(interfaceClass)) {
                 LOGGER.error(serviceContextId + "-?? | Interface " + interfaceClass.getName() +
@@ -408,6 +410,36 @@ public class ServiceContext implements Closeable {
     @Override
     public void close() throws IOException {
         uninstallAllClassloader();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("====[SERVICE-CONTEXT]=======================================================================================")
+                .append("\nservice-context-id:").append(serviceContextId)
+                .append("\nservice-context-classloader:").append(serviceContextClassLoaderId);
+
+        for (Map.Entry<String, Map<Class<?>, Boolean>> entry : INTERFACE_CACHE.entrySet()) {
+
+            stringBuilder.append("\n----[CLASS-LOADER]------------------------------------------------------------------------------------------")
+                    .append("\nclassloader:").append(entry.getKey())
+                    .append("\nchecksum:").append(PRELOAD_CHECK_SUMS.get(entry.getKey()))
+                    .append("\n------------------------------------------------------------------------------------------------------------");
+
+            CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>> singleLoaders = SINGLE_SERVICE_LOADERS.get(entry.getKey());
+            if (singleLoaders != null) {
+                for (SingleServiceLoader<?> loader : singleLoaders.values()) {
+                    stringBuilder.append("\n").append(loader);
+                }
+            }
+            CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>> multipleLoaders = MULTIPLE_SERVICE_LOADERS.get(entry.getKey());
+            if (multipleLoaders != null) {
+                for (MultipleServiceLoader<?> loader : multipleLoaders.values()) {
+                    stringBuilder.append("\n").append(loader);
+                }
+            }
+        }
+
+        return stringBuilder.toString();
     }
 
 }

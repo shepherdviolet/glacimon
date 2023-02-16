@@ -30,7 +30,6 @@ import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.shepherdviolet.glacimon.java.spi.core.Constants.*;
@@ -179,8 +178,8 @@ public class SingleServiceLoader<T> implements Closeable {
     private void load(){
         String selectReason;
         //log
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | Single-service Loading Start: " + interfaceClass.getName() +
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info(loaderId + " | Single-service Loading Start: " + interfaceClass.getName() +
                     ", classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
         }
         //check is interface

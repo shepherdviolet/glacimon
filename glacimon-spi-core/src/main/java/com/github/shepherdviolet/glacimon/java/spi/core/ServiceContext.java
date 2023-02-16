@@ -317,7 +317,7 @@ public class ServiceContext implements Closeable {
             }
         }
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info(serviceContextId + "-?? | Preload | Preloading Complete! classloader:" + classloaderId, null);
+            LOGGER.info(serviceContextId + "-?? | Preload | Preloading Complete! classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
         }
         //preload report
         StringBuilder reportBuilder = new StringBuilder();

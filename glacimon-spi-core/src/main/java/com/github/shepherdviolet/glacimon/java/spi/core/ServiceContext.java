@@ -49,15 +49,8 @@ public class ServiceContext implements Closeable {
     public static final String CLASS_NAME = ServiceContext.class.getName();
     private static final SpiLogger LOGGER = LogUtils.getLogger();
 
+    //contexts
     private static final ConcurrentHashMap<String, ServiceContext> SERVICE_CONTEXT_CACHE = new ConcurrentHashMap<>();
-
-    private final Map<String, Map<Class<?>, Boolean>> INTERFACE_CACHE = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>>> SINGLE_SERVICE_LOADERS = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>>> MULTIPLE_SERVICE_LOADERS = new ConcurrentHashMap<>();
-
-    private final ConcurrentHashMap<String, Object> PRELOAD_FLAGS = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, Integer> PRELOAD_CHECK_SUMS = new ConcurrentHashMap<>();
-    private final Object PRELOAD_DONE = new Object();
 
     /**
      * Get ServiceContext for specified classloader.
@@ -75,6 +68,18 @@ public class ServiceContext implements Closeable {
         }
         return serviceContext;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //cache
+    private final Map<String, Map<Class<?>, Boolean>> INTERFACE_CACHE = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>>> SINGLE_SERVICE_LOADERS = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>>> MULTIPLE_SERVICE_LOADERS = new ConcurrentHashMap<>();
+
+    //preload
+    private final ConcurrentHashMap<String, Object> PRELOAD_FLAGS = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Integer> PRELOAD_CHECK_SUMS = new ConcurrentHashMap<>();
+    private final Object PRELOAD_DONE = new Object();
 
     private ServiceContext() {
     }

@@ -154,3 +154,10 @@ the interface, and provide a backward compatible approach.
 
 * Implement the interface:com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger
 * Add VM option:-Dglacimonspi.conf.custom.logger=`classname-of-custom-logger`
+
+### What should I do if I want to troubleshoot the problem without the log?
+
+* 1.HeapDump: jmap -dump:format=b,file=filename.hprof pid
+* 2.Use tool to open the hprof file
+* 3.View the member variables of `com.github.shepherdviolet.glacimon.java.spi.core.ServiceContext` class
+* 4.If the `preload` enabled, you can see `PRELOAD_REPORTS`; you can see `SINGLE_SERVICE_LOADERS` and `MULTIPLE_SERVICE_LOADERS` also

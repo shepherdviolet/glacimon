@@ -145,3 +145,10 @@ dependencies {
 
 * 实现接口:com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger
 * 添加启动参数:-Dglacimonspi.conf.custom.logger=`自定义日志打印器的类名`
+
+### 没开日志又想排查问题怎么办?
+
+* 1.HeapDump: jmap -dump:format=b,file=filename.hprof pid
+* 2.使用工具打开hprof文件
+* 3.查看`com.github.shepherdviolet.glacimon.java.spi.core.ServiceContext`类的成员变量
+* 4.如果开了`预加载(preload)`, 可以看`PRELOAD_REPORTS`; 如果没有开预加载, 就看`SINGLE_SERVICE_LOADERS`和`MULTIPLE_SERVICE_LOADERS`

@@ -26,6 +26,7 @@ import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static com.github.shepherdviolet.glacimon.java.spi.core.Constants.*;
 
@@ -286,55 +287,30 @@ class PropertiesLoader {
     }
 
     private static PropertiesInjector.Injector createMethodInjector(String fieldName, Method method, String stringValue, Class<?> implementationClass, String loaderId, String propertySource){
-        Object value;
-        Class<?> fieldClass = method.getParameterTypes()[0];
+        Class<?> toType = method.getParameterTypes()[0];
 
         //parse value
-        try {
-            if (fieldClass.equals(String.class)) {
-                value = stringValue;
-            } else if (fieldClass.equals(boolean.class)) {
-                value = Boolean.parseBoolean(stringValue);
-            } else if (fieldClass.equals(Boolean.class)) {
-                value = Boolean.valueOf(stringValue);
-            } else if (fieldClass.equals(int.class)) {
-                value = Integer.parseInt(stringValue);
-            } else if (fieldClass.equals(Integer.class)) {
-                value = Integer.valueOf(stringValue);
-            } else if (fieldClass.equals(long.class)) {
-                value = Long.parseLong(stringValue);
-            } else if (fieldClass.equals(Long.class)) {
-                value = Long.valueOf(stringValue);
-            } else if (fieldClass.equals(float.class)) {
-                value = Float.parseFloat(stringValue);
-            } else if (fieldClass.equals(Float.class)) {
-                value = Float.valueOf(stringValue);
-            } else if (fieldClass.equals(double.class)) {
-                value = Double.parseDouble(stringValue);
-            } else if (fieldClass.equals(Double.class)) {
-                value = Double.valueOf(stringValue);
-            } else {
-                LOGGER.error(loaderId + " | PropInject | Illegal setter method '" +
-                        method.getName() + "' in " + implementationClass.getName() +
-                        " ('@PropertyInject' marked), string value can not parse to " + fieldClass.getName() +
-                        ", it only supports String/boolean/int/long/float/double", null);
-                throw new IllegalImplementationException(loaderId + " | PropInject | Illegal setter method '" +
-                        method.getName() + "' in " + implementationClass.getName() +
-                        " ('@PropertyInject' marked), string value can not parse to " + fieldClass.getName() +
-                        ", it only supports String/boolean/int/long/float/double", null);
-            }
-        } catch (IllegalImplementationException e) {
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error(loaderId + " | PropInject | Error while parsing string value '" +
-                    stringValue + "' to " + fieldClass + ", So we can not inject property to method " +
-                    implementationClass.getName() + "#" + method.getName() + ", The property comes from " +
-                    propertySource, e);
-            throw new IllegalArgumentException(loaderId + " | PropInject | Error while parsing string value '" +
-                    stringValue + "' to " + fieldClass + ", So we can not inject property to method " +
-                    implementationClass.getName() + "#" + method.getName() + ", The property comes from " +
-                    propertySource, e);
-        }
+        Object value = parseValue(stringValue, toType,
+                () -> {
+                    LOGGER.error(loaderId + " | PropInject | Illegal setter method '" +
+                            method.getName() + "' in " + implementationClass.getName() +
+                            " ('@PropertyInject' marked), string value can not parse to " + toType.getName() +
+                            ", it only supports String/boolean/int/long/float/double", null);
+                    throw new IllegalImplementationException(loaderId + " | PropInject | Illegal setter method '" +
+                            method.getName() + "' in " + implementationClass.getName() +
+                            " ('@PropertyInject' marked), string value can not parse to " + toType.getName() +
+                            ", it only supports String/boolean/int/long/float/double", null);
+                },
+                throwable -> {
+                    LOGGER.error(loaderId + " | PropInject | Error while parsing string value '" +
+                            stringValue + "' to " + toType + ", So we can not inject property to method " +
+                            implementationClass.getName() + "#" + method.getName() + ", The property comes from " +
+                            propertySource, throwable);
+                    throw new IllegalArgumentException(loaderId + " | PropInject | Error while parsing string value '" +
+                            stringValue + "' to " + toType + ", So we can not inject property to method " +
+                            implementationClass.getName() + "#" + method.getName() + ", The property comes from " +
+                            propertySource, throwable);
+                });
 
         //create injector
         method.setAccessible(true);
@@ -342,55 +318,68 @@ class PropertiesLoader {
     }
 
     private static PropertiesInjector.Injector createFieldInjector(String fieldName, Field field, String stringValue, Class<?> implementationClass, String loaderId, String propertySource){
-        Object value;
-        Class<?> fieldClass = field.getType();
+        Class<?> toType = field.getType();
 
         //parse value
-        try {
-            if (fieldClass.equals(String.class)) {
-                value = stringValue;
-            } else if (fieldClass.equals(boolean.class)) {
-                value = Boolean.parseBoolean(stringValue);
-            } else if (fieldClass.equals(Boolean.class)) {
-                value = Boolean.valueOf(stringValue);
-            } else if (fieldClass.equals(int.class)) {
-                value = Integer.parseInt(stringValue);
-            } else if (fieldClass.equals(Integer.class)) {
-                value = Integer.valueOf(stringValue);
-            } else if (fieldClass.equals(long.class)) {
-                value = Long.parseLong(stringValue);
-            } else if (fieldClass.equals(Long.class)) {
-                value = Long.valueOf(stringValue);
-            } else if (fieldClass.equals(float.class)) {
-                value = Float.parseFloat(stringValue);
-            } else if (fieldClass.equals(Float.class)) {
-                value = Float.valueOf(stringValue);
-            } else if (fieldClass.equals(double.class)) {
-                value = Double.parseDouble(stringValue);
-            } else if (fieldClass.equals(Double.class)) {
-                value = Double.valueOf(stringValue);
-            } else {
-                LOGGER.error(loaderId + " | PropInject | Illegal field '" + fieldName + "' in " +
-                        implementationClass.getName() + " ('@PropertyInject' marked), string value can not parse to " +
-                        fieldClass.getName() + ", it only supports String/boolean/int/long/float/double", null);
-                throw new IllegalImplementationException(loaderId + " | PropInject | Illegal field '" + fieldName + "' in " +
-                        implementationClass.getName() + " ('@PropertyInject' marked), string value can not parse to " +
-                        fieldClass.getName() + ", it only supports String/boolean/int/long/float/double", null);
-            }
-        } catch (IllegalImplementationException e) {
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error(loaderId + " | PropInject | Error while parsing string value '" +
-                    stringValue + "' to " + fieldClass + ", So we can not inject property to field '" + fieldName + "' of " +
-                    implementationClass.getName() + ", The property comes from " + propertySource, e);
-            throw new IllegalArgumentException(loaderId + " | PropInject | Error while parsing string value '" +
-                    stringValue + "' to " + fieldClass + ", So we can not inject property to field '" + fieldName + "' of " +
-                    implementationClass.getName() + ", The property comes from " + propertySource, e);
-        }
+        Object value = parseValue(stringValue, toType,
+                () -> {
+                    LOGGER.error(loaderId + " | PropInject | Illegal field '" + fieldName + "' in " +
+                            implementationClass.getName() + " ('@PropertyInject' marked), string value can not parse to " +
+                            toType.getName() + ", it only supports String/boolean/int/long/float/double", null);
+                    throw new IllegalImplementationException(loaderId + " | PropInject | Illegal field '" + fieldName + "' in " +
+                            implementationClass.getName() + " ('@PropertyInject' marked), string value can not parse to " +
+                            toType.getName() + ", it only supports String/boolean/int/long/float/double", null);
+                },
+                throwable -> {
+                    LOGGER.error(loaderId + " | PropInject | Error while parsing string value '" +
+                            stringValue + "' to " + toType + ", So we can not inject property to field '" + fieldName + "' of " +
+                            implementationClass.getName() + ", The property comes from " + propertySource, throwable);
+                    throw new IllegalArgumentException(loaderId + " | PropInject | Error while parsing string value '" +
+                            stringValue + "' to " + toType + ", So we can not inject property to field '" + fieldName + "' of " +
+                            implementationClass.getName() + ", The property comes from " + propertySource, throwable);
+                });
 
         //create injector
         field.setAccessible(true);
         return new PropertiesInjector.FieldInjector(fieldName, field, value);
+    }
+
+    private static Object parseValue(String stringValue, Class<?> toType, Runnable onNotSupports, Consumer<Throwable> onParseFailed) {
+        Object value;
+        try {
+            if (toType.equals(String.class)) {
+                value = stringValue;
+            } else if (toType.equals(boolean.class)) {
+                value = Boolean.parseBoolean(stringValue);
+            } else if (toType.equals(Boolean.class)) {
+                value = Boolean.valueOf(stringValue);
+            } else if (toType.equals(int.class)) {
+                value = Integer.parseInt(stringValue);
+            } else if (toType.equals(Integer.class)) {
+                value = Integer.valueOf(stringValue);
+            } else if (toType.equals(long.class)) {
+                value = Long.parseLong(stringValue);
+            } else if (toType.equals(Long.class)) {
+                value = Long.valueOf(stringValue);
+            } else if (toType.equals(float.class)) {
+                value = Float.parseFloat(stringValue);
+            } else if (toType.equals(Float.class)) {
+                value = Float.valueOf(stringValue);
+            } else if (toType.equals(double.class)) {
+                value = Double.parseDouble(stringValue);
+            } else if (toType.equals(Double.class)) {
+                value = Double.valueOf(stringValue);
+            } else {
+                onNotSupports.run();
+                return null;
+            }
+        } catch (IllegalImplementationException e) {
+            throw e;
+        } catch (Exception e) {
+            onParseFailed.accept(e);
+            return null;
+        }
+        return value;
     }
 
     private static String getVmOption(String key, String def) {

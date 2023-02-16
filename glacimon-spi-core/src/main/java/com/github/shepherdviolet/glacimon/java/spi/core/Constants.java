@@ -28,7 +28,6 @@ class Constants {
     //log
 
     static final String LOG_HOME_PAGE = "https://github.com/shepherdviolet/glacimon";
-    static final String LOG_GREET = "? | Java SPI Library. Home Page: " + LOG_HOME_PAGE;
 
     //path
 

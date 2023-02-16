@@ -49,7 +49,7 @@ public class SingleServiceLoader<T> implements Closeable {
     public static final String CLASS_NAME = SingleServiceLoader.class.getName();
     private static final SpiLogger LOGGER = LogUtils.getLogger();
 
-    private final String loaderId = CommonUtils.generateLoaderId();
+    private final String loaderId;
     private final Class<T> interfaceClass;
     private final ClassLoader classLoader;
 
@@ -66,13 +66,15 @@ public class SingleServiceLoader<T> implements Closeable {
      * single-service mode is used when only one service implementation is required.
      * @param interfaceClass Interface type to load
      * @param classLoader Custom classloader
+     * @param serviceContextId Service context id
      */
-    SingleServiceLoader(Class<T> interfaceClass, ClassLoader classLoader) {
+    SingleServiceLoader(Class<T> interfaceClass, ClassLoader classLoader, String serviceContextId) {
         if (interfaceClass == null) {
             throw new IllegalArgumentException("interfaceClass is null");
         }
         this.interfaceClass = interfaceClass;
         this.classLoader = classLoader;
+        this.loaderId = serviceContextId + "-" + CommonUtils.generateLoaderId();
         load();
     }
 

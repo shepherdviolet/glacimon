@@ -40,7 +40,11 @@ class CommonUtils {
      * loaderId of service loader
      */
     static String generateLoaderId(){
-        return String.valueOf(LOADER_ID.getAndIncrement());
+        String id = String.valueOf(LOADER_ID.getAndIncrement());
+        if (id.length() < 2) {
+            id = "0" + id;
+        }
+        return id;
     }
 
     /**

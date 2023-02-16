@@ -32,6 +32,13 @@ import static com.github.shepherdviolet.glacimon.java.spi.core.Constants.*;
 
 class ClassUtils {
 
+    static String getClassLoaderHash(ClassLoader classLoader) {
+        if (classLoader == null) {
+            return "0000";
+        }
+        return String.valueOf(classLoader.hashCode() % 10000);
+    }
+
     static String getClassLoaderId(ClassLoader classLoader){
         if (classLoader == null) {
             return "null";

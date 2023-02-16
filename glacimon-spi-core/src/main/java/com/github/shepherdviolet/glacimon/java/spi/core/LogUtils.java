@@ -42,8 +42,6 @@ class LogUtils {
         }
         //load logger
         LOGGER = ClassUtils.loadInternalComponent(Constants.VMOPT_CUSTOM_LOGGER, SpiLogger.class, loggerClassName);
-        //greet
-        LOGGER.info(Constants.LOG_GREET, null);
     }
 
     static SpiLogger getLogger(){

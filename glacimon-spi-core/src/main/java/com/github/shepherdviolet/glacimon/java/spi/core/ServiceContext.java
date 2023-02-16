@@ -284,10 +284,12 @@ public class ServiceContext implements Closeable {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("? | Preload | Preloading Start! classloader:" + classloaderId, null);
         }
+        //get all interfaces in definition files
         Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
         if (interfaces.size() <= 0 && LOGGER.isInfoEnabled()) {
             LOGGER.info("? | Preload | No definition found in " + Constants.PATH_INTERFACES + " files", null);
         }
+        //create service loaders for all interfaces
         List<SingleServiceLoader<?>> singleServiceLoaders = new LinkedList<>();
         List<MultipleServiceLoader<?>> multipleServiceLoaders = new LinkedList<>();
         for (Map.Entry<Class<?>, Boolean> entry : interfaces.entrySet()) {
@@ -302,6 +304,7 @@ public class ServiceContext implements Closeable {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("? | Preload | Preloading Complete! classloader:" + classloaderId, null);
         }
+        //checksum
         if (LOGGER.isInfoEnabled() || Constants.FLAG_PRELOAD_CHECKSUM) {
             StringBuilder checkSumBuilder = new StringBuilder();
             for (SingleServiceLoader<?> loader : singleServiceLoaders) {

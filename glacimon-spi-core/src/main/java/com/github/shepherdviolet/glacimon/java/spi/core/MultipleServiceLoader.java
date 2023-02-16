@@ -120,23 +120,21 @@ public class MultipleServiceLoader<T> implements Closeable {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("[multiple-service] ");
-        stringBuilder.append(interfaceClass.getName()).append(" :");
+        StringBuilder stringBuilder = new StringBuilder("[multiple-service]  ")
+                .append(interfaceClass.getName())
+                .append("  (classloader:").append(ClassUtils.getClassLoaderName(classLoader)).append(")");
         if (instanceBuilders != null) {
             for (InstanceBuilder<?> instanceBuilder : instanceBuilders) {
-                stringBuilder.append("\n> ");
-                stringBuilder.append(instanceBuilder.implementationClass.getName());
-                if (instanceBuilder.isNameValid) {
-                    stringBuilder.append(" ");
-                    stringBuilder.append(instanceBuilder.name);
-                }
+                stringBuilder.append("\n>  ").append(instanceBuilder.implementationClass.getName());
                 if (instanceBuilder.propertiesInjector != null) {
-                    stringBuilder.append(" ");
-                    stringBuilder.append(instanceBuilder.propertiesInjector);
+                    stringBuilder.append("  ").append(instanceBuilder.propertiesInjector);
+                }
+                if (instanceBuilder.isNameValid) {
+                    stringBuilder.append("  \"").append(instanceBuilder.name).append("\"");
                 }
             }
         } else {
-            stringBuilder.append("\nNo implementation");
+            stringBuilder.append("\n>  No implementation");
         }
         return stringBuilder.toString();
     }
@@ -265,7 +263,7 @@ public class MultipleServiceLoader<T> implements Closeable {
             return;
         }
         //sort
-        Collections.sort(definitions, new Comparator<MultipleDefinition>() {
+        definitions.sort(new Comparator<MultipleDefinition>() {
             @Override
             public int compare(MultipleDefinition o1, MultipleDefinition o2) {
                 int hashCompare = o1.calculateImplementationHash() - o2.calculateImplementationHash();

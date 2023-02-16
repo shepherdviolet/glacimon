@@ -99,9 +99,9 @@ public class SingleServiceLoader<T> implements Closeable {
 
     @Override
     public String toString() {
-        return "[single-service] " + interfaceClass.getName() + " :\n> " +
+        return "[single-service]  " + interfaceClass.getName() + "  (classloader:" + ClassUtils.getClassLoaderName(classLoader) + ")\n>  " +
                 (implementationClass != null ? implementationClass.getName() : "No implementation") +
-                (propertiesInjector != null ? " " + propertiesInjector : "");
+                (propertiesInjector != null ? "  " + propertiesInjector : "");
     }
 
     /**
@@ -251,7 +251,7 @@ public class SingleServiceLoader<T> implements Closeable {
         }
         //more than one
         //sort, larger first
-        Collections.sort(definitions, new Comparator<SingleDefinition>() {
+        definitions.sort(new Comparator<SingleDefinition>() {
             @Override
             public int compare(SingleDefinition o1, SingleDefinition o2) {
                 int priorityCompare = o2.getPriority() - o1.getPriority();

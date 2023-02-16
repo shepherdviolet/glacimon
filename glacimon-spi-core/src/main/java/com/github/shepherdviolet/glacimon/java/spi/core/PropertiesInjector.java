@@ -50,7 +50,7 @@ class PropertiesInjector {
         StringBuilder stringBuilder = new StringBuilder("{");
         for (int i = 0 ; i < injectors.size() ; i++) {
             if (i > 0) {
-                stringBuilder.append(',');
+                stringBuilder.append(", ");
             }
             stringBuilder.append(injectors.get(i));
         }

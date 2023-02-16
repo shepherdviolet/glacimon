@@ -39,6 +39,13 @@ class ClassUtils {
         return String.valueOf(classLoader.hashCode() % 10000);
     }
 
+    static String getClassLoaderName(ClassLoader classLoader) {
+        if (classLoader == null) {
+            return "null";
+        }
+        return classLoader.getClass().getName();
+    }
+
     static String getClassLoaderId(ClassLoader classLoader){
         if (classLoader == null) {
             return "null";

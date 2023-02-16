@@ -20,6 +20,7 @@
 package com.github.shepherdviolet.glacimon.java.spi.core;
 
 import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
+import com.github.shepherdviolet.glacimon.java.spi.api.exceptions.IllegalDefinitionException;
 import com.github.shepherdviolet.glacimon.java.spi.api.exceptions.IllegalImplementationException;
 import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger;
 
@@ -47,6 +48,7 @@ class PropertiesLoader {
         List<PropertiesDefinition> definitions = DefinitionLoader.loadPropertiesDefinitions(implementationClass.getName(), classLoader, loaderId);
         //no definition
         if (definitions.size() == 0) {
+            checkAnnotations(implementationClass, loaderId);
             return null;
         }
         //log
@@ -114,6 +116,42 @@ class PropertiesLoader {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(loaderId + " | PropInject | Candidate: priority:" + definition.getPriority() +
                         " properties:" + definition.getProperties() + " url:" + definition.getUrl(), null);
+            }
+        }
+    }
+
+    /**
+     * build injectors
+     */
+    private static void checkAnnotations(Class<?> implementationClass, String loaderId){
+        //all methods
+        Method[] methods = implementationClass.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(PropertyInject.class)) {
+                PropertyInject propertyInject = method.getAnnotation(PropertyInject.class);
+                if (propertyInject.required()) {
+                    LOGGER.error(loaderId + " | PropInject | Missing required properties definition file for method '" +
+                            method.getName() + "' in " + implementationClass.getName() +
+                            ", you should add properties definition file in " + Constants.PATH_PROPERTIES + implementationClass.getName(), null);
+                    throw new IllegalDefinitionException(loaderId + " | PropInject | Missing required properties definition file for method '" +
+                            method.getName() + "' in " + implementationClass.getName() +
+                            ", you should add properties definition file in " + Constants.PATH_PROPERTIES + implementationClass.getName());
+                }
+            }
+        }
+        //all fields
+        Field[] fields = implementationClass.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(PropertyInject.class)) {
+                PropertyInject propertyInject = field.getAnnotation(PropertyInject.class);
+                if (propertyInject.required()) {
+                    LOGGER.error(loaderId + " | PropInject | Missing required properties definition file for field '" +
+                            field.getName() + "' in " + implementationClass.getName() +
+                            ", you should add properties definition file in " + Constants.PATH_PROPERTIES + implementationClass.getName(), null);
+                    throw new IllegalDefinitionException(loaderId + " | PropInject | Missing required properties definition file for field '" +
+                            field.getName() + "' in " + implementationClass.getName() +
+                            ", you should add properties definition file in " + Constants.PATH_PROPERTIES + implementationClass.getName());
+                }
             }
         }
     }
@@ -224,6 +262,15 @@ class PropertiesLoader {
                 LOGGER.debug(loaderId + " | PropInject | Effective property: " + fieldName + " = '" +
                         valueFromDefinition + "', Inject by method", null);
             }
+        } else if (propertyInject.required()) {
+            LOGGER.error(loaderId + " | PropInject | Missing required property for method '" +
+                    method.getName() + "' in " + implementationClass.getName() + ", it can be set by" +
+                    (CommonUtils.isEmptyOrBlank(propertyInject.getVmOptionFirst()) ? "" : " -D" + propertyInject.getVmOptionFirst()) +
+                    " -D" + vmOptionKey + ", or '" + fieldName + "' in definition " + definition.getUrl(), null);
+            throw new IllegalDefinitionException(loaderId + " | PropInject | Missing required property for method '" +
+                    method.getName() + "' in " + implementationClass.getName() + ", it can be set by" +
+                    (CommonUtils.isEmptyOrBlank(propertyInject.getVmOptionFirst()) ? "" : " -D" + propertyInject.getVmOptionFirst()) +
+                    " -D" + vmOptionKey + ", or '" + fieldName + "' in definition " + definition.getUrl());
         }
     }
 
@@ -283,6 +330,15 @@ class PropertiesLoader {
                 LOGGER.debug(loaderId + " | PropInject | Effective property: " + fieldName + " = '" +
                         valueFromDefinition + "', Inject by field", null);
             }
+        } else if (propertyInject.required()) {
+            LOGGER.error(loaderId + " | PropInject | Missing required property for field '" +
+                    fieldName + "' in " + implementationClass.getName() + ", it can be set by" +
+                    (CommonUtils.isEmptyOrBlank(propertyInject.getVmOptionFirst()) ? "" : " -D" + propertyInject.getVmOptionFirst()) +
+                    " -D" + vmOptionKey + ", or '" + fieldName + "' in definition " + definition.getUrl(), null);
+            throw new IllegalDefinitionException(loaderId + " | PropInject | Missing required property for field '" +
+                    fieldName + "' in " + implementationClass.getName() + ", it can be set by" +
+                    (CommonUtils.isEmptyOrBlank(propertyInject.getVmOptionFirst()) ? "" : " -D" + propertyInject.getVmOptionFirst()) +
+                    " -D" + vmOptionKey + ", or '" + fieldName + "' in definition " + definition.getUrl());
         }
     }
 

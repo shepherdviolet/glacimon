@@ -21,12 +21,18 @@ package com.github.shepherdviolet.glacimon.java.spi.test;
 
 import com.github.shepherdviolet.glacimon.java.spi.api.annotation.ImplementationName;
 import com.github.shepherdviolet.glacimon.java.spi.api.annotation.ImplementationPriority;
+import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
 
 @ImplementationName("external")
 @ImplementationPriority(6)
 public class SamplePluginImpl7 implements SamplePlugin {
+
+    @PropertyInject
+    private String dateFormat;
+
     @Override
     public String test() {
         return null;
     }
+
 }

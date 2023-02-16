@@ -34,6 +34,12 @@ import java.lang.annotation.*;
 public @interface PropertyInject {
 
     /**
+     * true (default): throws an exception if the parameter does not exist
+     * false: set null if the parameter does not exist
+     */
+    boolean required() default true;
+
+    /**
      * If this parameter is set, it will first get the value from the vm option (System#getProperty),
      * if it does not exist, then get value from the properties file (META-INF/glacimonspi/properties/...).
      *

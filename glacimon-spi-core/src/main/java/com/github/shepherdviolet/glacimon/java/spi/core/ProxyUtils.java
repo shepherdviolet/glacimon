@@ -44,39 +44,32 @@ class ProxyUtils {
     @SuppressWarnings("unchecked")
     static <T> T buildProxyIfNeeded(ClassLoader classLoader, Class<T> interfaceClass, T instance, String loaderId) {
         //check @NewMethod annotation on methods
-        Method[] interfaceMethods = interfaceClass.getMethods();
-        List<MethodProxy> methodProxies = new LinkedList<>();
-        for (Method method : interfaceMethods) {
-            NewMethod annotation = method.getAnnotation(NewMethod.class);
-            if (annotation != null) {
-                methodProxies.add(new MethodProxy(method, annotation));
-            }
-        }
+        List<MethodProxy> methodsWithAnnotation = getMethodsWithAnnotation(interfaceClass);
         //return raw instance if no @NewMethod
-        if (methodProxies.size() <= 0) {
+        if (methodsWithAnnotation.size() <= 0) {
             return instance;
         }
         //check if there is abstract method
+        List<MethodProxy> methodProxies = new LinkedList<>();
         Method[] methods = instance.getClass().getMethods();
-        List<MethodProxy> finalMethodProxies = new LinkedList<>();
         for (Method method : methods) {
             //abstract method
             if (Modifier.isAbstract(method.getModifiers())) {
                 //if marked by @NewMethod
-                for (MethodProxy methodProxy : methodProxies) {
+                for (MethodProxy methodProxy : methodsWithAnnotation) {
                     if (isMethodMatch(method, methodProxy.method)) {
-                        finalMethodProxies.add(methodProxy);
+                        methodProxies.add(methodProxy);
                     }
                 }
             }
         }
         //return raw instance if no matched abstract method
-        if (finalMethodProxies.size() <= 0) {
+        if (methodProxies.size() <= 0) {
             return instance;
         }
         //initCompatibleApproach method proxies
         StringBuilder proxiedMethods = new StringBuilder();
-        for (MethodProxy methodProxy : finalMethodProxies) {
+        for (MethodProxy methodProxy : methodProxies) {
             if (LOGGER.isDebugEnabled()) {
                 proxiedMethods.append(methodToString(methodProxy.method));
                 proxiedMethods.append(" ");
@@ -92,13 +85,26 @@ class ProxyUtils {
         T proxy = (T) Proxy.newProxyInstance(
                 classLoader,
                 new Class[]{ServiceProxy.class, interfaceClass},
-                new ProxyInvocationHandler(interfaceClass, instance, finalMethodProxies));
+                new ProxyInvocationHandler(interfaceClass, instance, methodProxies));
         //log
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(loaderId + " | Compat | Built a compatible proxy of " + instance.getClass().getName() +
-                    " (Implements the old version interface), proxied methods: " + proxiedMethods.toString(), null);
+                    " (Implements the old version interface), proxied methods: " + proxiedMethods, null);
         }
         return proxy;
+    }
+
+    private static <T> List<MethodProxy> getMethodsWithAnnotation(Class<T> interfaceClass) {
+        //get methods with @NewMethod annotation
+        List<MethodProxy> methodProxies = new LinkedList<>();
+        Method[] interfaceMethods = interfaceClass.getMethods();
+        for (Method method : interfaceMethods) {
+            NewMethod annotation = method.getAnnotation(NewMethod.class);
+            if (annotation != null) {
+                methodProxies.add(new MethodProxy(method, annotation));
+            }
+        }
+        return methodProxies;
     }
 
     private static boolean isMethodMatch(Method method1, Method method2) {
@@ -137,8 +143,8 @@ class ProxyUtils {
 
     private static class MethodProxy {
 
-        private Method method;
-        private NewMethod annotation;
+        private final Method method;
+        private final NewMethod annotation;
         private CompatibleApproach compatibleApproach;
 
         private MethodProxy(Method method, NewMethod annotation) {
@@ -155,11 +161,11 @@ class ProxyUtils {
 
     private static class ProxyInvocationHandler implements InvocationHandler {
 
-        private Class<?> serviceInterface;
-        private Object serviceInstance;
-        private List<MethodProxy> methodProxies;
+        private final Class<?> serviceInterface;
+        private final Object serviceInstance;
+        private final List<MethodProxy> methodProxies;
 
-        private Map<Method, CompatibleApproach> compatibleApproachCache = new ConcurrentHashMap<>();
+        private final Map<Method, CompatibleApproach> compatibleApproachCache = new ConcurrentHashMap<>();
 
         private ProxyInvocationHandler(Class<?> serviceInterface, Object serviceInstance, List<MethodProxy> methodProxies) {
             this.serviceInterface = serviceInterface;

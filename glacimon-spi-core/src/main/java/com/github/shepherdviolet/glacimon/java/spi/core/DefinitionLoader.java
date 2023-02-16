@@ -22,6 +22,7 @@ package com.github.shepherdviolet.glacimon.java.spi.core;
 import com.github.shepherdviolet.glacimon.java.spi.api.exceptions.IllegalDefinitionException;
 import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
@@ -66,7 +67,7 @@ class DefinitionLoader {
             }
         });
         List<InterfaceDefinition> sorted = new ArrayList<>(result);
-        Collections.sort(sorted, new Comparator<InterfaceDefinition>() {
+        sorted.sort(new Comparator<InterfaceDefinition>() {
             @Override
             public int compare(InterfaceDefinition o1, InterfaceDefinition o2) {
                 return o1.calculateInterfaceHash() - o2.calculateInterfaceHash();
@@ -141,7 +142,6 @@ class DefinitionLoader {
                         c = name.charAt(i);
                         if (c == '+') {
                             rank++;
-                            continue;
                         } else if (c == '-') {
                             throw new IllegalDefinitionException(loaderId + " | Illegal multiple-service definition, when the first char is +, it must be followed by +, correct format is '++sample.SampleServiceImpl' (+ can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                         } else {
@@ -155,7 +155,6 @@ class DefinitionLoader {
                         c = name.charAt(i);
                         if (c == '-') {
                             rank++;
-                            continue;
                         } else if (c == '+') {
                             throw new IllegalDefinitionException(loaderId + " | Illegal multiple-service definition, when the first char is -, it must be followed by -, correct format is '--sample.SampleServiceImpl' (- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                         } else {
@@ -243,45 +242,7 @@ class DefinitionLoader {
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             try {
-                //print hash
-                String hash = null;
-                if (LOGGER.isTraceEnabled()) {
-                    hash = CommonUtils.digest(url.openStream(), "MD5");
-                    LOGGER.trace(loaderId + " | Loading file " + url + ", md5:" + hash, null);
-                }
-                //exclude file by vm option
-                if (FILE_EXCLUSIONS.size() > 0) {
-                    if (hash == null) {
-                        hash = CommonUtils.digest(url.openStream(), "MD5");
-                    }
-                    if (FILE_EXCLUSIONS.contains(hash)) {
-                        LOGGER.warn(loaderId + " | Exclude file " + url + " by -D" + Constants.VMOPT_EXCLUDE_FILE, null);
-                        continue;
-                    }
-                }
-                //parse file
-                Properties properties = new Properties();
-                InputStream inputStream = null;
-                try {
-                    properties.load(inputStream = url.openStream());
-                } finally {
-                    CommonUtils.closeQuietly(inputStream);
-                }
-                Enumeration<?> names = properties.propertyNames();
-                if (!names.hasMoreElements()) {
-                    if (LOGGER.isTraceEnabled()) {
-                        LOGGER.trace(loaderId + " | No property in file " + url, null);
-                    }
-                    continue;
-                }
-                //to raw definition info
-                String urlString = String.valueOf(url);
-                visitor.visitFileStart(urlString);
-                while (names.hasMoreElements()) {
-                    String name = String.valueOf(names.nextElement());
-                    visitor.visitDefinition(name, properties.getProperty(name, ""), urlString);
-                }
-                visitor.visitFileEnd();
+                loadFile(url, visitor, loaderId);
             } catch (IllegalDefinitionException e) {
                 throw e;
             } catch (Exception e) {
@@ -289,6 +250,48 @@ class DefinitionLoader {
                 throw new RuntimeException(loaderId + " | Error while loading file " + url, e);
             }
         }
+    }
+
+    private static void loadFile(URL url, DefinitionVisitor visitor, String loaderId) throws IOException {
+        //print hash
+        String hash = null;
+        if (LOGGER.isTraceEnabled()) {
+            hash = CommonUtils.digest(url.openStream(), "MD5");
+            LOGGER.trace(loaderId + " | Loading file " + url + ", md5:" + hash, null);
+        }
+        //exclude file by vm option
+        if (FILE_EXCLUSIONS.size() > 0) {
+            if (hash == null) {
+                hash = CommonUtils.digest(url.openStream(), "MD5");
+            }
+            if (FILE_EXCLUSIONS.contains(hash)) {
+                LOGGER.warn(loaderId + " | Exclude file " + url + " by -D" + Constants.VMOPT_EXCLUDE_FILE, null);
+                return;
+            }
+        }
+        //parse file
+        Properties properties = new Properties();
+        InputStream inputStream = null;
+        try {
+            properties.load(inputStream = url.openStream());
+        } finally {
+            CommonUtils.closeQuietly(inputStream);
+        }
+        Enumeration<?> names = properties.propertyNames();
+        if (!names.hasMoreElements()) {
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace(loaderId + " | No property in file " + url, null);
+            }
+            return;
+        }
+        //to raw definition info
+        String urlString = String.valueOf(url);
+        visitor.visitFileStart(urlString);
+        while (names.hasMoreElements()) {
+            String name = String.valueOf(names.nextElement());
+            visitor.visitDefinition(name, properties.getProperty(name, ""), urlString);
+        }
+        visitor.visitFileEnd();
     }
 
     private interface DefinitionVisitor {

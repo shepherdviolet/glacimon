@@ -27,7 +27,6 @@ import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Loading interfaces defined in META-INF/glacimonspi/interfaces
@@ -37,28 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
 class InterfaceLoader {
 
     private static final SpiLogger LOGGER = LogUtils.getLogger();
-
-    private static final Map<String, Map<Class<?>, Boolean>> INTERFACE_CACHE = new ConcurrentHashMap<>();
-
-    /**
-     * Loading interfaces from classloader (with cache)
-     */
-    static Map<Class<?>, Boolean> get(ClassLoader classLoader){
-        String classloaderId = ClassUtils.getClassLoaderId(classLoader);
-        Map<Class<?>, Boolean> interfaces = INTERFACE_CACHE.get(classloaderId);
-        if (interfaces == null) {
-            interfaces = InterfaceLoader.load(classLoader, "?");
-            INTERFACE_CACHE.put(classloaderId, interfaces);
-        }
-        return interfaces;
-    }
-
-    /**
-     * remove cache
-     */
-    static void uninstall(ClassLoader classLoader) {
-        INTERFACE_CACHE.remove(ClassUtils.getClassLoaderId(classLoader));
-    }
 
     static Map<Class<?>, Boolean> load(ClassLoader classLoader, String loaderId) {
         //load definitions

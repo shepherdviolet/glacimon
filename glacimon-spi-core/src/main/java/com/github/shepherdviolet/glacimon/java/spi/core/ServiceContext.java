@@ -51,6 +51,7 @@ public class ServiceContext implements Closeable {
 
     private static final ConcurrentHashMap<String, ServiceContext> SERVICE_CONTEXT_CACHE = new ConcurrentHashMap<>();
 
+    private final Map<String, Map<Class<?>, Boolean>> INTERFACE_CACHE = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>>> SINGLE_SERVICE_LOADERS = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>>> MULTIPLE_SERVICE_LOADERS = new ConcurrentHashMap<>();
 
@@ -125,7 +126,7 @@ public class ServiceContext implements Closeable {
         //get loader from cache
         SingleServiceLoader<T> loader = (SingleServiceLoader<T>) loaders.get(interfaceClass);
         if (loader == null) {
-            Map<Class<?>, Boolean> interfaces = InterfaceLoader.get(classLoader);
+            Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
             //check if the interface has registered
             if (!interfaces.containsKey(interfaceClass)) {
                 LOGGER.error("? | Interface " + interfaceClass.getName() +
@@ -193,7 +194,7 @@ public class ServiceContext implements Closeable {
         //get loader from cache
         MultipleServiceLoader<T> loader = (MultipleServiceLoader<T>) loaders.get(interfaceClass);
         if (loader == null) {
-            Map<Class<?>, Boolean> interfaces = InterfaceLoader.get(classLoader);
+            Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
             //check if the interface has registered
             if (!interfaces.containsKey(interfaceClass)) {
                 LOGGER.error("? | Interface " + interfaceClass.getName() +
@@ -212,6 +213,19 @@ public class ServiceContext implements Closeable {
                     interfaceClass.getName() + ", classloader:" + classloaderId, null);
         }
         return loader;
+    }
+
+    /**
+     * Loading interfaces from classloader (with cache)
+     */
+    private Map<Class<?>, Boolean> loadInterfaces(ClassLoader classLoader){
+        String classloaderId = ClassUtils.getClassLoaderId(classLoader);
+        Map<Class<?>, Boolean> interfaces = INTERFACE_CACHE.get(classloaderId);
+        if (interfaces == null) {
+            interfaces = InterfaceLoader.load(classLoader, "?");
+            INTERFACE_CACHE.put(classloaderId, interfaces);
+        }
+        return interfaces;
     }
 
     /**
@@ -265,7 +279,7 @@ public class ServiceContext implements Closeable {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("? | Preload | Preloading Start! classloader:" + classloaderId, null);
         }
-        Map<Class<?>, Boolean> interfaces = InterfaceLoader.get(classLoader);
+        Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
         if (interfaces.size() <= 0 && LOGGER.isInfoEnabled()) {
             LOGGER.info("? | Preload | No definition found in " + Constants.PATH_INTERFACES + " files", null);
         }
@@ -321,6 +335,7 @@ public class ServiceContext implements Closeable {
         String classloaderId = ClassUtils.getClassLoaderId(classLoader);
         CloseableConcurrentHashMap<Class<?>, SingleServiceLoader<?>> singleServiceLoaders = SINGLE_SERVICE_LOADERS.remove(classloaderId);
         CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>> multipleServiceLoaders = MULTIPLE_SERVICE_LOADERS.remove(classloaderId);
+        INTERFACE_CACHE.remove(classloaderId);
         CommonUtils.closeQuietly(singleServiceLoaders);
         CommonUtils.closeQuietly(multipleServiceLoaders);
     }
@@ -342,6 +357,7 @@ public class ServiceContext implements Closeable {
         for (Map.Entry<String, CloseableConcurrentHashMap<Class<?>, MultipleServiceLoader<?>>> entry : MULTIPLE_SERVICE_LOADERS.entrySet()) {
             CommonUtils.closeQuietly(MULTIPLE_SERVICE_LOADERS.remove(entry.getKey()));
         }
+        INTERFACE_CACHE.clear();
     }
 
     /**

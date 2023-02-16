@@ -59,8 +59,27 @@ class PropertiesLoader {
                     PROPERTY_PRIORITY + " " + definition.getPriority() + ", url: " + definition.getUrl());
         }
         //more than one
-        //sort, larger first
-        Collections.sort(definitions, new Comparator<PropertiesDefinition>() {
+        //sort by priority
+        sortDefinitions(definitions);
+        //select first (highest priority)
+        PropertiesDefinition selectedDefinition = definitions.get(0);
+        int selectedPriority = selectedDefinition.getPriority();
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(loaderId + " | PropInject | Candidate: priority:" + selectedDefinition.getPriority() +
+                    " properties:" + selectedDefinition.getProperties() + " url:" + selectedDefinition.getUrl(), null);
+        }
+        //check the others
+        checkUnselectedDefinitions(definitions, selectedDefinition, selectedPriority, loaderId);
+        //build injector
+        return buildInjectors(implementationClass, selectedDefinition, loaderId,
+                PROPERTY_PRIORITY + " " + selectedPriority + ", url: " + selectedDefinition.getUrl());
+    }
+
+    /**
+     * sort by priority
+     */
+    private static void sortDefinitions(List<PropertiesDefinition> definitions) {
+        definitions.sort(new Comparator<PropertiesDefinition>() {
             @Override
             public int compare(PropertiesDefinition o1, PropertiesDefinition o2) {
                 int priorityCompare = o2.getPriority() - o1.getPriority();
@@ -70,14 +89,12 @@ class PropertiesLoader {
                 return o1.calculatePropertiesHash() - o2.calculatePropertiesHash();
             }
         });
-        //select first (highest priority)
-        PropertiesDefinition selectedDefinition = definitions.get(0);
-        int selectedPriority = selectedDefinition.getPriority();
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | PropInject | Candidate: priority:" + selectedDefinition.getPriority() +
-                    " properties:" + selectedDefinition.getProperties() + " url:" + selectedDefinition.getUrl(), null);
-        }
-        //check the others
+    }
+
+    /**
+     * Check unchecked definitions
+     */
+    private static void checkUnselectedDefinitions(List<PropertiesDefinition> definitions, PropertiesDefinition selectedDefinition, int selectedPriority, String loaderId) {
         for (int i = 1; i < definitions.size(); i++) {
             PropertiesDefinition definition = definitions.get(i);
             if (definition.getPriority() >= selectedPriority){
@@ -98,9 +115,6 @@ class PropertiesLoader {
                         " properties:" + definition.getProperties() + " url:" + definition.getUrl(), null);
             }
         }
-        //build injector
-        return buildInjectors(implementationClass, selectedDefinition, loaderId,
-                PROPERTY_PRIORITY + " " + selectedPriority + ", url: " + selectedDefinition.getUrl());
     }
 
     /**
@@ -115,23 +129,23 @@ class PropertiesLoader {
         //injector
         PropertiesInjector propertiesInjector = new PropertiesInjector();
         //more reason
-        StringBuilder reasonPlus = new StringBuilder();
+        StringBuilder reason = new StringBuilder();
         //record finished field
         Set<String> finishedSet = new HashSet<>();
         //all methods
         Method[] methods = implementationClass.getDeclaredMethods();
         for (Method method : methods) {
-            handlePropertyInjectOnMethod(implementationClass, definition, loaderId, propertiesInjector, reasonPlus, finishedSet, method);
+            handlePropertyInjectOnMethod(implementationClass, definition, loaderId, propertiesInjector, reason, finishedSet, method);
         }
         //all fields
         Field[] fields = implementationClass.getDeclaredFields();
         for (Field field : fields) {
-            handlePropertyInjectOnField(implementationClass, definition, loaderId, propertiesInjector, reasonPlus, finishedSet, field);
+            handlePropertyInjectOnField(implementationClass, definition, loaderId, propertiesInjector, reason, finishedSet, field);
         }
         //set reason
-        propertiesInjector.setSelectReason(selectReason + (reasonPlus.length() > 0 ? " overwritten by" + reasonPlus.toString() : ""));
+        propertiesInjector.setSelectReason(selectReason + (reason.length() > 0 ? " overwritten by" + reason : ""));
         //sort
-        Collections.sort(propertiesInjector.getInjectors(), new Comparator<PropertiesInjector.Injector>() {
+        propertiesInjector.getInjectors().sort(new Comparator<PropertiesInjector.Injector>() {
             @Override
             public int compare(PropertiesInjector.Injector o1, PropertiesInjector.Injector o2) {
                 return o1.getFieldName().hashCode() - o2.getFieldName().hashCode();
@@ -158,6 +172,7 @@ class PropertiesLoader {
                     "' in " + implementationClass.getName() + ", it must starts with 'set' and has only one parameter");
         }
         String fieldName = BeanUtils.methodToField(method.getName());
+        //check field name
         if (fieldName == null) {
             LOGGER.error(loaderId + " | PropInject | Illegal setter method '" +
                     method.getName() + "' in " + implementationClass.getName() +
@@ -273,6 +288,7 @@ class PropertiesLoader {
     private static PropertiesInjector.Injector createMethodInjector(String fieldName, Method method, String stringValue, Class<?> implementationClass, String loaderId, String propertySource){
         Object value;
         Class<?> fieldClass = method.getParameterTypes()[0];
+
         //parse value
         try {
             if (fieldClass.equals(String.class)) {
@@ -319,6 +335,7 @@ class PropertiesLoader {
                     implementationClass.getName() + "#" + method.getName() + ", The property comes from " +
                     propertySource, e);
         }
+
         //create injector
         method.setAccessible(true);
         return new PropertiesInjector.MethodInjector(fieldName, method, value);
@@ -327,6 +344,7 @@ class PropertiesLoader {
     private static PropertiesInjector.Injector createFieldInjector(String fieldName, Field field, String stringValue, Class<?> implementationClass, String loaderId, String propertySource){
         Object value;
         Class<?> fieldClass = field.getType();
+
         //parse value
         try {
             if (fieldClass.equals(String.class)) {
@@ -369,6 +387,7 @@ class PropertiesLoader {
                     stringValue + "' to " + fieldClass + ", So we can not inject property to field '" + fieldName + "' of " +
                     implementationClass.getName() + ", The property comes from " + propertySource, e);
         }
+
         //create injector
         field.setAccessible(true);
         return new PropertiesInjector.FieldInjector(fieldName, field, value);

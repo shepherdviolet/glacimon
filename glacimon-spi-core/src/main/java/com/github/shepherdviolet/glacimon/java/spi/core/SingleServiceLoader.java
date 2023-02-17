@@ -84,7 +84,7 @@ public class SingleServiceLoader<T> implements Closeable {
     public T get(){
         if (!cached) {
             if (!initialized) {
-                throw new IllegalStateException(loaderId + " | The loader has not been initialized yet");
+                throw new IllegalStateException(loaderId + "|Single-Service| The loader has not been initialized yet");
             }
             synchronized (this) {
                 if (!cached) {
@@ -110,7 +110,7 @@ public class SingleServiceLoader<T> implements Closeable {
     public void close() throws IOException {
         closed.set(true);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | Single-service Loader Closed!", null);
+            LOGGER.debug(loaderId + "|Single-Service| Loader closed!", null);
         }
     }
 
@@ -127,9 +127,9 @@ public class SingleServiceLoader<T> implements Closeable {
         try {
             instance = ClassUtils.newInstance(implementationClass);
         } catch (Exception e) {
-            LOGGER.error(loaderId + " | Single-service Instance Create Failed! Error while instantiating class " +
+            LOGGER.error(loaderId + "|Single-Service| Instance Create Failed! Error while instantiating class " +
                     implementationClass.getName() + " (" + interfaceClass.getName() + ")", e);
-            throw new IllegalImplementationException(loaderId + " | Single-service Instance Create Failed! Error while instantiating class " +
+            throw new IllegalImplementationException(loaderId + "|Single-Service| Instance Create Failed! Error while instantiating class " +
                     implementationClass.getName() + " (" + interfaceClass.getName() + ")", e);
         }
         //inject properties
@@ -137,9 +137,9 @@ public class SingleServiceLoader<T> implements Closeable {
             try {
                 propertiesInjector.inject(instance, loaderId);
             } catch (Exception e) {
-                LOGGER.error(loaderId + " | Single-service Instance Create Failed! Error while injecting properties to service " +
+                LOGGER.error(loaderId + "|Single-Service| Instance Create Failed! Error while injecting properties to service " +
                         implementationClass.getName() + " (" + interfaceClass.getName() + ")", e);
-                throw new IllegalImplementationException(loaderId + " | Single-service Instance Create Failed! Error while injecting properties to service " +
+                throw new IllegalImplementationException(loaderId + "|Single-Service| Instance Create Failed! Error while injecting properties to service " +
                         implementationClass.getName() + " (" + interfaceClass.getName() + ")", e);
             }
         }
@@ -154,9 +154,9 @@ public class SingleServiceLoader<T> implements Closeable {
             try {
                 ((InitializableImplementation) instance).onServiceCreated();
             } catch (Throwable t) {
-                LOGGER.error(loaderId + " | Single-service Instance Create Failed! Error while initializing " +
+                LOGGER.error(loaderId + "|Single-Service| Instance Create Failed! Error while initializing " +
                         "(invoke onServiceCreated) " + implementationClass.getName() + " (" + interfaceClass.getName() + ")", t);
-                throw new IllegalImplementationException(loaderId + " | Single-service Instance Create Failed! Error while initializing " +
+                throw new IllegalImplementationException(loaderId + "|Single-Service| Instance Create Failed! Error while initializing " +
                         "(invoke onServiceCreated) " + implementationClass.getName() + " (" + interfaceClass.getName() + ")", t);
             }
         }
@@ -164,7 +164,7 @@ public class SingleServiceLoader<T> implements Closeable {
         this.instance = finalInstance;
         //log
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | Single-service Instance Created! " +
+            LOGGER.debug(loaderId + "|Single-Service| Instance Created! " +
                     interfaceClass.getName() + ", impl:" + implementationClass.getName() +
                     (finalInstance instanceof ServiceProxy ? "<CompatByProxy>" : "") +
                     (propertiesInjector != null ? ", prop:" + propertiesInjector : "") +
@@ -179,23 +179,23 @@ public class SingleServiceLoader<T> implements Closeable {
         String selectReason;
         //log
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info(loaderId + " | Single-service Loading Start: " + interfaceClass.getName() +
+            LOGGER.info(loaderId + "|Single-Service| Loading Start: " + interfaceClass.getName() +
                     ", classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
         }
         //check is interface
         if (!interfaceClass.isInterface()) {
-            LOGGER.error(loaderId + " | Single-service Loading Failed! Interface '" + interfaceClass.getName() +
-                    "' must be an interface, classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
-            throw new IllegalArgumentException(loaderId + " | Single-service Loading Failed! Interface '" + interfaceClass.getName() +
-                    "' must be an interface, classloader:" + ClassUtils.getClassLoaderId(classLoader));
+            LOGGER.error(loaderId + "|Single-Service| Loading Failed! Interface '" + interfaceClass.getName() +
+                    "' is not an interface, classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
+            throw new IllegalArgumentException(loaderId + "|Single-Service| Loading Failed! Interface '" + interfaceClass.getName() +
+                    "' is not an interface, classloader:" + ClassUtils.getClassLoaderId(classLoader));
         }
         //check annotation
         SingleServiceInterface annotation = interfaceClass.getAnnotation(SingleServiceInterface.class);
         if (annotation == null) {
-            LOGGER.error(loaderId + " | Single-service Loading Failed! Interface '" + interfaceClass.getName() +
-                    "' must have an annotation '@SingleServiceInterface', classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
-            throw new IllegalArgumentException(loaderId + " | Single-service Loading Failed! Interface '" + interfaceClass.getName() +
-                    "' must have an annotation '@SingleServiceInterface', classloader:" + ClassUtils.getClassLoaderId(classLoader));
+            LOGGER.error(loaderId + "|Single-Service| Loading Failed! Missing annotation '@SingleServiceInterface' on Interface '" +
+                    interfaceClass.getName() + "', classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
+            throw new IllegalArgumentException(loaderId + "|Single-Service| Loading Failed! Missing annotation '@SingleServiceInterface' on Interface '" +
+                    interfaceClass.getName() + "', classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
         }
         //check vm option: -Dglacimonspi.select.<interface-class>
         String selectedImplClassName = System.getProperty(VMOPT_SELECT + interfaceClass.getName(), null);
@@ -210,7 +210,7 @@ public class SingleServiceLoader<T> implements Closeable {
         //no properties
         if (implementationClass == null) {
             if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn(loaderId + " | Single-service Loading Failed! No implementation definition found in classpath for " +
+                LOGGER.warn(loaderId + "|Single-Service| Loading Failed! No implementation definition found in classpath for " +
                         "interface '" + interfaceClass.getName() + "', classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
             }
             initialized = true;
@@ -220,7 +220,7 @@ public class SingleServiceLoader<T> implements Closeable {
         propertiesInjector = PropertiesLoader.load(implementationClass, classLoader, loaderId);
         //log
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info(loaderId + " | Single-service Loading Completed! " + interfaceClass.getName() +
+            LOGGER.info(loaderId + "|Single-Service| Loading Completed! " + interfaceClass.getName() +
                     ", impl:" + implementationClass.getName() +
                     (propertiesInjector != null ? ", prop:" + propertiesInjector : "") +
                     ", classloader:" + ClassUtils.getClassLoaderId(classLoader) +
@@ -239,7 +239,7 @@ public class SingleServiceLoader<T> implements Closeable {
         List<SingleDefinition> definitions = DefinitionLoader.loadSingleDefinitions(interfaceClass.getName(), classLoader, loaderId);
         //no definition
         if (definitions.size() <= 0) {
-            LOGGER.warn(loaderId + " | No definitions found in classpath, no single-service will be loaded from this loader", null);
+            LOGGER.warn(loaderId + "|Single-Service| No definitions found in classpath, no single-service will be loaded from this loader", null);
             return null;
         }
         //only one
@@ -265,7 +265,7 @@ public class SingleServiceLoader<T> implements Closeable {
         SingleDefinition selectedDefinition = definitions.get(0);
         int selectedPriority = selectedDefinition.getPriority();
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | Candidate: priority:" + selectedDefinition.getPriority() +
+            LOGGER.debug(loaderId + "|Single-Service| Candidate: priority:" + selectedDefinition.getPriority() +
                     " impl:" + selectedDefinition.getImplementationType() + " url:" + selectedDefinition.getUrl(), null);
         }
         //check the others
@@ -275,7 +275,7 @@ public class SingleServiceLoader<T> implements Closeable {
                 //duplicate priority
                 if (!definition.getImplementationType().equals(selectedDefinition.getImplementationType())) {
                     //duplicate priority with different implementation
-                    LOGGER.warn(loaderId + " | WARNING!!! Duplicate priority '" + selectedPriority + "' of two implementation '" +
+                    LOGGER.warn(loaderId + "|Single-Service| WARNING!!! Duplicate priority '" + selectedPriority + "' of two implementation '" +
                             selectedDefinition.getImplementationType() + "' '" + definition.getImplementationType() +
                             "', The first one will be adopted, the second one will be abandoned, url1: " +
                             selectedDefinition.getUrl() + ", url2:" + definition.getUrl(), null);
@@ -285,7 +285,7 @@ public class SingleServiceLoader<T> implements Closeable {
                 break;
             }
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | Candidate: priority:" + definition.getPriority() +
+                LOGGER.debug(loaderId + "|Single-Service| Candidate: priority:" + definition.getPriority() +
                         " impl:" + definition.getImplementationType() + " url:" + definition.getUrl(), null);
             }
         }
@@ -303,21 +303,21 @@ public class SingleServiceLoader<T> implements Closeable {
             //load class
             Class<?> implClass = ClassUtils.loadClass(implementationClassName, classLoader);
             if (!interfaceClass.isAssignableFrom(implClass)) {
-                LOGGER.error(loaderId + " | The implementation class " + implementationClassName +
+                LOGGER.error(loaderId + "|Single-Service| The implementation class " + implementationClassName +
                         " is not an instance of " + interfaceClass.getName() + ", which is selected by " + selectReason, null);
-                throw new IllegalImplementationException(loaderId + " | The implementation class " + implementationClassName +
+                throw new IllegalImplementationException(loaderId + "|Single-Service| The implementation class " + implementationClassName +
                         " is not an instance of " + interfaceClass.getName() + ", which is selected by " + selectReason, null);
             }
             //ok
             this.implementationClass = (Class<T>) implClass;
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | Selected: " + implementationClassName +
+                LOGGER.debug(loaderId + "|Single-Service| Adopted > " + implementationClassName +
                         ", selected by " + selectReason, null);
             }
         } catch (ClassNotFoundException e) {
-            LOGGER.error(loaderId + " | Implementation class " + implementationClassName +
+            LOGGER.error(loaderId + "|Single-Service| Implementation class " + implementationClassName +
                     " not found, which is selected by " + selectReason, e);
-            throw new IllegalDefinitionException(loaderId + " | Implementation class " + implementationClassName +
+            throw new IllegalDefinitionException(loaderId + "|Single-Service| Implementation class " + implementationClassName +
                     " not found, which is selected by " + selectReason, e);
         }
     }

@@ -400,7 +400,7 @@ public class MultipleServiceLoader<T> implements Closeable {
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(loaderId + "|Multi--Service| Loading Completed! " + interfaceClass.getName() +
-                    ", " + instanceBuilders.size() + " implementations, classloader:" + ClassUtils.getClassLoaderId(classLoader) +
+                    ", adopt " + instanceBuilders.size() + " implementations, classloader:" + ClassUtils.getClassLoaderId(classLoader) +
                     ", caller:" + CommonUtils.getCaller(), null);
         }
         initialized = true;
@@ -409,6 +409,7 @@ public class MultipleServiceLoader<T> implements Closeable {
     /**
      * load implementation class
      */
+    @SuppressWarnings("unchecked")
     private InstanceBuilder<T> loadImplementation(String implementationClassName, String url, String enabledReason) {
         try {
             //load class

@@ -88,8 +88,9 @@ class ProxyUtils {
                 new ProxyInvocationHandler(interfaceClass, instance, methodProxies));
         //log
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | Compat | Built a compatible proxy of " + instance.getClass().getName() +
-                    " (Implements the old version interface), proxied methods: " + proxiedMethods, null);
+            LOGGER.debug(loaderId + "|OldImpl-Compat| Create a compatible proxy for old implementation " +
+                    instance.getClass().getName() + " (which is implements the old version interface), proxied methods: " +
+                    proxiedMethods, null);
         }
         return proxy;
     }

@@ -196,10 +196,12 @@ public class MultipleServiceLoader<T> implements Closeable {
                 try {
                     ((InitializableImplementation) instance).onServiceCreated();
                 } catch (Throwable t) {
-                    LOGGER.error(loaderId + " | Multiple-service Instance Create Failed! Error while initializing (invoke onServiceCreated) " +
-                            instanceBuilder.implementationClass.getName() + " (" + interfaceClass.getName() + ")", t);
-                    throw new IllegalImplementationException(loaderId + " | Multiple-service Instance Create Failed! Error while initializing (invoke onServiceCreated) " +
-                            instanceBuilder.implementationClass.getName() + " (" + interfaceClass.getName() + ")", t);
+                    LOGGER.error(loaderId + " | Multiple-service Instance Create Failed! Error while initializing " +
+                            "(invoke onServiceCreated) " + instanceBuilder.implementationClass.getName() +
+                            " (" + interfaceClass.getName() + ")", t);
+                    throw new IllegalImplementationException(loaderId + " | Multiple-service Instance Create Failed! Error while initializing " +
+                            "(invoke onServiceCreated) " + instanceBuilder.implementationClass.getName() +
+                            " (" + interfaceClass.getName() + ")", t);
                 }
             }
             //add to list
@@ -209,8 +211,8 @@ public class MultipleServiceLoader<T> implements Closeable {
                 instanceMap.put(instanceBuilder.name, finalInstance);
             }
             //log
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info(loaderId + " | Multiple-service Instance: " + index++ + " " +
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(loaderId + " | Multiple-service Instance: " + index++ + " " +
                         instanceBuilder.implementationClass.getName() + (finalInstance instanceof ServiceProxy ? "<CompatByProxy>" : "") +
                         (instanceBuilder.isNameValid ? ", bind name:" + instanceBuilder.name : "") +
                         (instanceBuilder.propertiesInjector != null ? ", prop:" + instanceBuilder.propertiesInjector : ""), null);
@@ -220,8 +222,8 @@ public class MultipleServiceLoader<T> implements Closeable {
         this.instanceList.addAll(instanceList);
         this.instanceMap.putAll(instanceMap);
 
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info(loaderId + " | Multiple-service Instances Created! " + interfaceClass.getName() +
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(loaderId + " | Multiple-service Instances Created! " + interfaceClass.getName() +
                     ", " + instanceBuilders.size() + " instances, caller:" + CommonUtils.getCaller(), null);
         }
 
@@ -238,26 +240,26 @@ public class MultipleServiceLoader<T> implements Closeable {
         }
         //check is interface
         if (!interfaceClass.isInterface()) {
-            LOGGER.error(loaderId + " | " + interfaceClass.getName() +
-                    " must be an interface", null);
-            throw new IllegalArgumentException(loaderId + " | " + interfaceClass.getName() +
-                    " must be an interface");
+            LOGGER.error(loaderId + " | Multiple-service Loading Failed! Interface '" + interfaceClass.getName() +
+                    "' must be an interface, classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
+            throw new IllegalArgumentException(loaderId + " | Multiple-service Loading Failed! Interface '" + interfaceClass.getName() +
+                    "' must be an interface, classloader:" + ClassUtils.getClassLoaderId(classLoader));
         }
         //check annotation
         MultipleServiceInterface annotation = interfaceClass.getAnnotation(MultipleServiceInterface.class);
         if (annotation == null) {
-            LOGGER.error(loaderId + " | " + interfaceClass.getName() +
-                    " must have an annotation '@MultipleServiceInterface'", null);
-            throw new IllegalArgumentException(loaderId + " | " + interfaceClass.getName() +
-                    " must have an annotation '@MultipleServiceInterface'");
+            LOGGER.error(loaderId + " | Multiple-service Loading Failed! Interface '" + interfaceClass.getName() +
+                    "' must have an annotation '@MultipleServiceInterface', classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
+            throw new IllegalArgumentException(loaderId + " | Multiple-service Loading Failed! Interface '" + interfaceClass.getName() +
+                    "' must have an annotation '@MultipleServiceInterface', classloader:" + ClassUtils.getClassLoaderId(classLoader));
         }
         //load definitions
         List<MultipleDefinition> definitions = DefinitionLoader.loadMultipleDefinitions(interfaceClass.getName(), classLoader, loaderId);
         //no definition
         if (definitions.size() <= 0) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info(loaderId + " | Multiple-service Loading Failed! " + interfaceClass.getName() +
-                        ", no implementation found in classpath, classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn(loaderId + " | Multiple-service Loading Failed! No implementation definition found in classpath for " +
+                        "interface '" + interfaceClass.getName() + "', classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
             }
             initialized = true;
             return;
@@ -321,8 +323,8 @@ public class MultipleServiceLoader<T> implements Closeable {
         }
         //print removed
         for (MultipleDefinition definition : removedDefinitions) {
-            if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn(loaderId + " | Removed: " + definition.getImplementationType() +
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info(loaderId + " | Removed: " + definition.getImplementationType() +
                         ", removed by -D" + Constants.VMOPT_REMOVE + interfaceClass.getName(), null);
             }
         }
@@ -335,9 +337,10 @@ public class MultipleServiceLoader<T> implements Closeable {
         }
         //no definition
         if (enabledDefinitions.size() <= 0) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info(loaderId + " | Multiple-service Loading Failed! " + interfaceClass.getName() +
-                        ", no enabled implementation found, classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn(loaderId + " | Multiple-service Loading Failed! No valid implementation definition " +
+                        "found in classpath for interface '" + interfaceClass.getName() +
+                        "', classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
             }
             initialized = true;
             return;
@@ -378,14 +381,14 @@ public class MultipleServiceLoader<T> implements Closeable {
             }
             //log
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info(loaderId + " | Service Enabled: " + index++ + " " + instanceBuilder.implementationClass.getName() +
+                LOGGER.info(loaderId + " | Multiple-service: " + index++ + " " + instanceBuilder.implementationClass.getName() +
                         (instanceBuilder.name != null ? ", name:" + instanceBuilder.name : "") +
                         (duplicateFlag ? "(duplicated, can't get by name)" : "") +
                         ", prop:" + instanceBuilder.propertiesInjector +
                         ", priority:" + instanceBuilder.priority +
                         (LOGGER.isDebugEnabled() ? ", impl enabled by " + instanceBuilder.enabledReason : "") +
-                        (LOGGER.isDebugEnabled() && instanceBuilder.propertiesInjector != null ? (", prop selected by " + instanceBuilder.propertiesInjector.getSelectReason()) : ""),
-                        null);
+                        (LOGGER.isDebugEnabled() && instanceBuilder.propertiesInjector != null ? (", prop selected by " +
+                        instanceBuilder.propertiesInjector.getSelectReason()) : ""), null);
             }
             //record name
             if (!duplicateFlag && instanceBuilder.name != null) {
@@ -397,7 +400,8 @@ public class MultipleServiceLoader<T> implements Closeable {
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(loaderId + " | Multiple-service Loading Completed! " + interfaceClass.getName() +
-                    ", " + instanceBuilders.size() + " implementations, classloader:" + ClassUtils.getClassLoaderId(classLoader), null);
+                    ", " + instanceBuilders.size() + " implementations, classloader:" + ClassUtils.getClassLoaderId(classLoader) +
+                    ", caller:" + CommonUtils.getCaller(), null);
         }
         initialized = true;
     }

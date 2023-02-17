@@ -374,7 +374,7 @@ public class MultipleServiceLoader<T> implements Closeable {
             boolean duplicateFlag = false;
             if (instanceBuilder.name != null && (previousOne = nameMap.get(instanceBuilder.name)) != null) {
                 duplicateFlag = true;
-                LOGGER.warn(loaderId + "|Multi--Service| WARNING!!! Duplicate @ImplementationName\"" + instanceBuilder.name +
+                LOGGER.warn(loaderId + "|Multi--Service| WARNING!!! Duplicate @ImplementationName(\"" + instanceBuilder.name +
                         "\") of two implementation '" + previousOne.implementationClass.getName() + "' '" +
                         instanceBuilder.implementationClass.getName() + "', The first one can be get by 'get(String name)'" +
                         ", the second one can only get by 'getAll()', url1: " + previousOne.url + ", url2:" + instanceBuilder.url, null);

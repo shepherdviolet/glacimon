@@ -93,7 +93,7 @@ public class ServiceContext implements Closeable {
         this.serviceContextClassLoaderId = serviceContextClassLoaderId;
 
         //greet
-        LOGGER.info(serviceContextId + "-?? | Glacimon SPI. service-context-classLoader: " + serviceContextClassLoaderId +
+        LOGGER.info(serviceContextId + "-??? | Glacimon SPI. service-context-classLoader: " + serviceContextClassLoaderId +
                 ". home page: " + LOG_HOME_PAGE, null);
     }
 
@@ -129,7 +129,7 @@ public class ServiceContext implements Closeable {
     @SuppressWarnings("unchecked")
     private <T> SingleServiceLoader<T> createSingleServiceLoader(Class<T> interfaceClass, ClassLoader classLoader) {
         if (interfaceClass == null) {
-            throw new IllegalArgumentException(serviceContextId + "-?? | interfaceClass is null");
+            throw new IllegalArgumentException(serviceContextId + "-??? | interfaceClass is null");
         }
         //get all interfaces in definition files
         Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
@@ -148,9 +148,9 @@ public class ServiceContext implements Closeable {
         if (loader == null) {
             //check if the interface has registered
             if (!interfaces.containsKey(interfaceClass)) {
-                LOGGER.error(serviceContextId + "-?? | Interface " + interfaceClass.getName() +
+                LOGGER.error(serviceContextId + "-??? | Interface " + interfaceClass.getName() +
                         " must be defined in " + PATH_INTERFACES + " file, See doc:" + LOG_HOME_PAGE, null);
-                throw new IllegalDefinitionException(serviceContextId + "-?? | Interface " + interfaceClass.getName() +
+                throw new IllegalDefinitionException(serviceContextId + "-??? | Interface " + interfaceClass.getName() +
                         " must be defined in " + PATH_INTERFACES + " file, See doc:" + LOG_HOME_PAGE);
             }
             //create loader
@@ -198,7 +198,7 @@ public class ServiceContext implements Closeable {
     @SuppressWarnings("unchecked")
     private <T> MultipleServiceLoader<T> createMultipleServiceLoader(Class<T> interfaceClass, ClassLoader classLoader) {
         if (interfaceClass == null) {
-            throw new IllegalArgumentException(serviceContextId + "-?? | interfaceClass is null");
+            throw new IllegalArgumentException(serviceContextId + "-??? | interfaceClass is null");
         }
         //get all interfaces in definition files
         Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
@@ -217,9 +217,9 @@ public class ServiceContext implements Closeable {
         if (loader == null) {
             //check if the interface has registered
             if (!interfaces.containsKey(interfaceClass)) {
-                LOGGER.error(serviceContextId + "-?? | Interface " + interfaceClass.getName() +
+                LOGGER.error(serviceContextId + "-??? | Interface " + interfaceClass.getName() +
                         " must be defined in " + Constants.PATH_INTERFACES + " file, See doc:" + Constants.LOG_HOME_PAGE, null);
-                throw new IllegalDefinitionException(serviceContextId + "-?? | Interface " + interfaceClass.getName() +
+                throw new IllegalDefinitionException(serviceContextId + "-??? | Interface " + interfaceClass.getName() +
                         " must be defined in " + Constants.PATH_INTERFACES + " file, See doc:" + Constants.LOG_HOME_PAGE);
             }
             //create loader
@@ -242,7 +242,7 @@ public class ServiceContext implements Closeable {
         String classloaderId = ClassUtils.getClassLoaderId(classLoader);
         Map<Class<?>, Boolean> interfaces = INTERFACE_CACHE.get(classloaderId);
         if (interfaces == null) {
-            interfaces = InterfaceLoader.load(classLoader, serviceContextId + "-??");
+            interfaces = InterfaceLoader.load(classLoader, serviceContextId + "-???");
             INTERFACE_CACHE.put(classloaderId, interfaces);
         }
         return interfaces;
@@ -297,12 +297,12 @@ public class ServiceContext implements Closeable {
 
     private void preload0(ClassLoader classLoader, String classloaderId){
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(serviceContextId + "-?? | Preload | Preloading Start! classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
+            LOGGER.debug(serviceContextId + "-??? | Preload | Preloading Start! classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
         }
         //get all interfaces in definition files
         Map<Class<?>, Boolean> interfaces = loadInterfaces(classLoader);
         if (interfaces.size() <= 0 && LOGGER.isInfoEnabled()) {
-            LOGGER.info(serviceContextId + "-?? | Preload | No definition found in " + Constants.PATH_INTERFACES + " files", null);
+            LOGGER.info(serviceContextId + "-??? | Preload | No definition found in " + Constants.PATH_INTERFACES + " files", null);
         }
         //create service loaders for all interfaces
         List<SingleServiceLoader<?>> singleServiceLoaders = new LinkedList<>();
@@ -317,7 +317,7 @@ public class ServiceContext implements Closeable {
             }
         }
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info(serviceContextId + "-?? | Preload | Preloading Complete! classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
+            LOGGER.info(serviceContextId + "-??? | Preload | Preloading Complete! classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
         }
         //preload report
         StringBuilder reportBuilder = new StringBuilder();
@@ -325,14 +325,14 @@ public class ServiceContext implements Closeable {
             String report = String.valueOf(loader);
             reportBuilder.append(report);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(serviceContextId + "-?? | Preload | Loaded " + report, null);
+                LOGGER.debug(serviceContextId + "-??? | Preload | Loaded " + report, null);
             }
         }
         for (MultipleServiceLoader<?> loader : multipleServiceLoaders) {
             String report = String.valueOf(loader);
             reportBuilder.append(report);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(serviceContextId + "-?? | Preload | Loaded " + report, null);
+                LOGGER.debug(serviceContextId + "-??? | Preload | Loaded " + report, null);
             }
         }
         String report = reportBuilder.toString();
@@ -342,7 +342,7 @@ public class ServiceContext implements Closeable {
             int checkSum = report.hashCode();
             PRELOAD_CHECK_SUMS.put(classloaderId, checkSum);
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info(serviceContextId + "-?? | Preload | CheckSum " + checkSum + ", classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
+                LOGGER.info(serviceContextId + "-??? | Preload | CheckSum " + checkSum + ", classloader:" + classloaderId + ", service-context-classloader:" + serviceContextClassLoaderId, null);
             }
         }
     }

@@ -34,17 +34,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class CommonUtils {
 
-    private static final AtomicInteger LOADER_ID = new AtomicInteger(0);
+    private static final AtomicInteger LOADER_ID = new AtomicInteger(1000);
 
     /**
      * loaderId of service loader
      */
     static String generateLoaderId(){
         String id = String.valueOf(LOADER_ID.getAndIncrement());
-        if (id.length() < 2) {
-            id = "0" + id;
-        }
-        return id;
+        return id.substring(id.length() - 3);
     }
 
     /**

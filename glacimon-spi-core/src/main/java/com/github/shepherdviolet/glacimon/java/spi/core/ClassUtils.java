@@ -34,9 +34,9 @@ class ClassUtils {
 
     static String getClassLoaderHash(ClassLoader classLoader) {
         if (classLoader == null) {
-            return "0000";
+            return "000";
         }
-        return String.valueOf(classLoader.hashCode() % 10000);
+        return String.valueOf(classLoader.hashCode() % 1000);
     }
 
     static String getClassLoaderName(ClassLoader classLoader) {

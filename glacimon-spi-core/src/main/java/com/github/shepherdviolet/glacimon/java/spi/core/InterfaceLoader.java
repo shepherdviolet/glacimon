@@ -46,30 +46,28 @@ class InterfaceLoader {
             try {
                 Class<?> clazz = ClassUtils.loadClass(definition.getInterfaceType(), classLoader);
                 if (!clazz.isInterface()) {
-                    LOGGER.error(loaderId + " | " + definition.getInterfaceType() +
-                            " must be an interface, which is defined in " + definition.getUrl(), null);
-                    throw new IllegalDefinitionException(loaderId + " | " + definition.getInterfaceType() +
-                            " must be an interface, which is defined in " + definition.getUrl());
+                    LOGGER.error(loaderId + "|Load-Interface| " + definition.getInterfaceType() +
+                            " is not an interface, which is defined in " + definition.getUrl(), null);
+                    throw new IllegalDefinitionException(loaderId + "|Load-Interface| " + definition.getInterfaceType() +
+                            " is not an interface, which is defined in " + definition.getUrl());
                 }
                 if (!clazz.isAnnotationPresent(SingleServiceInterface.class) &&
                         !clazz.isAnnotationPresent(MultipleServiceInterface.class)) {
-                    LOGGER.error(loaderId + " | " + definition.getInterfaceType() +
-                            " must have an annotation '@SingleServiceInterface' or '@MultipleServiceInterface'" +
-                            ", which is defined in " + definition.getUrl(), null);
-                    throw new IllegalDefinitionException(loaderId + " | " + definition.getInterfaceType() +
-                            " must have an annotation '@SingleServiceInterface' or '@MultipleServiceInterface'" +
-                            ", which is defined in " + definition.getUrl());
+                    LOGGER.error(loaderId + "|Load-Interface| Missing annotation '@SingleServiceInterface' or '@MultipleServiceInterface' on " +
+                            definition.getInterfaceType() + ", which is defined in " + definition.getUrl(), null);
+                    throw new IllegalDefinitionException(loaderId + "|Load-Interface| Missing annotation '@SingleServiceInterface' or '@MultipleServiceInterface' on " +
+                            definition.getInterfaceType() + ", which is defined in " + definition.getUrl(), null);
                 }
                 //add to linked map
                 classes.put(clazz, false);
                 if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace(loaderId + " | Loaded interface " + definition.getInterfaceType() +
+                    LOGGER.trace(loaderId + "|Load-Interface| Interface: " + definition.getInterfaceType() +
                             ", url:" + definition.getUrl(), null);
                 }
             } catch (ClassNotFoundException e) {
-                LOGGER.error(loaderId + " | Interface class " + definition +
+                LOGGER.error(loaderId + "|Load-Interface| Interface class " + definition +
                         " not found, which is defined in " + definition.getUrl(), e);
-                throw new IllegalDefinitionException(loaderId + " | Interface class " + definition +
+                throw new IllegalDefinitionException(loaderId + "|Load-Interface| Interface class " + definition +
                         " not found, which is defined in " + definition.getUrl(), e);
             }
         }

@@ -112,7 +112,7 @@ class PropertiesInjector {
                 throw new Exception("Error while injecting value '" + value + "' to " + fieldName + " by method " + method.getName());
             }
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace(loaderId + " | PropInject | Inject '" + value + "' to " + fieldName + " by method " + method.getName(), null);
+                LOGGER.trace(loaderId + "|PropertyInject| Inject '" + value + "' to " + fieldName + " by method " + method.getName(), null);
             }
         }
 
@@ -152,7 +152,7 @@ class PropertiesInjector {
                 throw new Exception("Error while injecting value '" + value + "' to " + fieldName);
             }
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace(loaderId + " | PropInject | Inject '" + value + "' to " + fieldName, null);
+                LOGGER.trace(loaderId + "|PropertyInject| Inject '" + value + "' to " + fieldName, null);
             }
         }
 

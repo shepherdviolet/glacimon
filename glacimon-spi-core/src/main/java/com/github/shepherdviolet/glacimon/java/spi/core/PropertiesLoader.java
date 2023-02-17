@@ -53,7 +53,7 @@ class PropertiesLoader {
         }
         //log
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | PropInject | Loading properties for " + implementationClass.getName(), null);
+            LOGGER.debug(loaderId + "|LoadProperties| Loading properties for " + implementationClass.getName(), null);
         }
         //only one
         if (definitions.size() == 1) {
@@ -68,7 +68,7 @@ class PropertiesLoader {
         PropertiesDefinition selectedDefinition = definitions.get(0);
         int selectedPriority = selectedDefinition.getPriority();
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | PropInject | Candidate: priority:" + selectedDefinition.getPriority() +
+            LOGGER.debug(loaderId + "|LoadProperties| Candidate: priority:" + selectedDefinition.getPriority() +
                     " properties:" + selectedDefinition.getProperties() + " url:" + selectedDefinition.getUrl(), null);
         }
         //check the others
@@ -104,7 +104,7 @@ class PropertiesLoader {
                 //duplicate priority
                 if (!String.valueOf(definition.getProperties()).equals(String.valueOf(selectedDefinition.getProperties()))) {
                     //duplicate priority with different properties
-                    LOGGER.warn(loaderId + " | WARNING!!! PropInject | Duplicate " + PROPERTY_PRIORITY +
+                    LOGGER.warn(loaderId + "|LoadProperties| WARNING!!! Duplicate " + PROPERTY_PRIORITY +
                             " '" + selectedPriority + "' of two properties '" + selectedDefinition.getProperties() + "' '" +
                             definition.getProperties() + "', The first one will be adopted, the second one will be abandoned, url1: " +
                             selectedDefinition.getUrl() + ", url2:" + definition.getUrl(), null);
@@ -114,7 +114,7 @@ class PropertiesLoader {
                 break;
             }
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | PropInject | Candidate: priority:" + definition.getPriority() +
+                LOGGER.debug(loaderId + "|LoadProperties| Candidate: priority:" + definition.getPriority() +
                         " properties:" + definition.getProperties() + " url:" + definition.getUrl(), null);
             }
         }
@@ -130,12 +130,12 @@ class PropertiesLoader {
             if (method.isAnnotationPresent(PropertyInject.class)) {
                 PropertyInject propertyInject = method.getAnnotation(PropertyInject.class);
                 if (propertyInject.required()) {
-                    LOGGER.error(loaderId + " | PropInject | Missing required properties definition file for method '" +
+                    LOGGER.error(loaderId + "|LoadProperties| Missing required properties definition file for method '" +
                             method.getName() + "' in " + implementationClass.getName() +
-                            ", you should add properties definition file in " + Constants.PATH_PROPERTIES + implementationClass.getName(), null);
-                    throw new IllegalDefinitionException(loaderId + " | PropInject | Missing required properties definition file for method '" +
+                            ", you should add properties definition file in classpath:" + Constants.PATH_PROPERTIES + implementationClass.getName(), null);
+                    throw new IllegalDefinitionException(loaderId + "|LoadProperties| Missing required properties definition file for method '" +
                             method.getName() + "' in " + implementationClass.getName() +
-                            ", you should add properties definition file in " + Constants.PATH_PROPERTIES + implementationClass.getName());
+                            ", you should add properties definition file in classpath:" + Constants.PATH_PROPERTIES + implementationClass.getName());
                 }
             }
         }
@@ -145,12 +145,12 @@ class PropertiesLoader {
             if (field.isAnnotationPresent(PropertyInject.class)) {
                 PropertyInject propertyInject = field.getAnnotation(PropertyInject.class);
                 if (propertyInject.required()) {
-                    LOGGER.error(loaderId + " | PropInject | Missing required properties definition file for field '" +
+                    LOGGER.error(loaderId + "|LoadProperties| Missing required properties definition file for field '" +
                             field.getName() + "' in " + implementationClass.getName() +
-                            ", you should add properties definition file in " + Constants.PATH_PROPERTIES + implementationClass.getName(), null);
-                    throw new IllegalDefinitionException(loaderId + " | PropInject | Missing required properties definition file for field '" +
+                            ", you should add properties definition file in classpath:" + Constants.PATH_PROPERTIES + implementationClass.getName(), null);
+                    throw new IllegalDefinitionException(loaderId + "|LoadProperties| Missing required properties definition file for field '" +
                             field.getName() + "' in " + implementationClass.getName() +
-                            ", you should add properties definition file in " + Constants.PATH_PROPERTIES + implementationClass.getName());
+                            ", you should add properties definition file in classpath:" + Constants.PATH_PROPERTIES + implementationClass.getName());
                 }
             }
         }
@@ -162,7 +162,7 @@ class PropertiesLoader {
     private static PropertiesInjector buildInjectors(Class<?> implementationClass, PropertiesDefinition definition, String loaderId, String selectReason){
         //log
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(loaderId + " | PropInject | Selected: " + definition.getProperties() +
+            LOGGER.debug(loaderId + "|LoadProperties| Adopted properties > " + definition.getProperties() +
                     ", selected by " + selectReason, null);
         }
         //injector
@@ -205,23 +205,23 @@ class PropertiesLoader {
         //check method name
         if (!method.getName().startsWith("set") ||
                 method.getParameterTypes().length != 1) {
-            LOGGER.error(loaderId + " | PropInject | Illegal setter method '" + method.getName() +
+            LOGGER.error(loaderId + "|LoadProperties| Illegal setter method '" + method.getName() +
                     "' in " + implementationClass.getName() + ", it must starts with 'set' and has only one parameter", null);
-            throw new IllegalImplementationException(loaderId + " | PropInject | Illegal setter method '" + method.getName() +
+            throw new IllegalImplementationException(loaderId + "|LoadProperties| Illegal setter method '" + method.getName() +
                     "' in " + implementationClass.getName() + ", it must starts with 'set' and has only one parameter");
         }
         String fieldName = BeanUtils.methodToField(method.getName());
         //check field name
         if (fieldName == null) {
-            LOGGER.error(loaderId + " | PropInject | Illegal setter method '" +
+            LOGGER.error(loaderId + "|LoadProperties| Illegal setter method '" +
                     method.getName() + "' in " + implementationClass.getName() +
                     ", it is not a standard setter method, correct format `setLogLevel(String s)`", null);
-            throw new IllegalImplementationException(loaderId + " | PropInject | Illegal setter method '" +
+            throw new IllegalImplementationException(loaderId + "|LoadProperties| Illegal setter method '" +
                     method.getName() + "' in " + implementationClass.getName() +
                     ", it is not a standard setter method, correct format `setLogLevel(String s)`");
         }
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(loaderId + " | PropInject | Injection point: method '" +
+            LOGGER.trace(loaderId + "|LoadProperties| Injection point: method '" +
                     method.getName() + "'", null);
         }
         //get value from annotation specified vm option
@@ -238,7 +238,7 @@ class PropertiesLoader {
             finishedSet.add(fieldName);
             reasonPlus.append(" -D").append(propertyInject.getVmOptionFirst());
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | PropInject | Effective property: " + fieldName + " = '" +
+                LOGGER.debug(loaderId + "|LoadProperties| Adopted property > " + fieldName + " = '" +
                         (valueFromDefinition != null ? valueFromDefinition : "") + "' -> '" + valueFromAnnotation +
                         "', Inject by method, Overwritten by -D" + propertyInject.getVmOptionFirst(), null);
             }
@@ -249,7 +249,7 @@ class PropertiesLoader {
             finishedSet.add(fieldName);
             reasonPlus.append(" -D").append(vmOptionKey);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | PropInject | Effective property: " + fieldName + " = '" +
+                LOGGER.debug(loaderId + "|LoadProperties| Adopted property > " + fieldName + " = '" +
                         (valueFromDefinition != null ? valueFromDefinition : "") + "' -> '" + valueFromVmOption +
                         "', Inject by method, Overwritten by -D" + vmOptionKey, null);
             }
@@ -259,15 +259,15 @@ class PropertiesLoader {
                     implementationClass, loaderId, definition.getUrl()));
             finishedSet.add(fieldName);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | PropInject | Effective property: " + fieldName + " = '" +
+                LOGGER.debug(loaderId + "|LoadProperties| Adopted property > " + fieldName + " = '" +
                         valueFromDefinition + "', Inject by method", null);
             }
         } else if (propertyInject.required()) {
-            LOGGER.error(loaderId + " | PropInject | Missing required property for method '" +
+            LOGGER.error(loaderId + "|LoadProperties| Missing required property for method '" +
                     method.getName() + "' in " + implementationClass.getName() + ", it can be set by" +
                     (CommonUtils.isEmptyOrBlank(propertyInject.getVmOptionFirst()) ? "" : " -D" + propertyInject.getVmOptionFirst()) +
                     " -D" + vmOptionKey + ", or '" + fieldName + "' in definition " + definition.getUrl(), null);
-            throw new IllegalDefinitionException(loaderId + " | PropInject | Missing required property for method '" +
+            throw new IllegalDefinitionException(loaderId + "|LoadProperties| Missing required property for method '" +
                     method.getName() + "' in " + implementationClass.getName() + ", it can be set by" +
                     (CommonUtils.isEmptyOrBlank(propertyInject.getVmOptionFirst()) ? "" : " -D" + propertyInject.getVmOptionFirst()) +
                     " -D" + vmOptionKey + ", or '" + fieldName + "' in definition " + definition.getUrl());
@@ -289,7 +289,7 @@ class PropertiesLoader {
             return;
         }
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(loaderId + " | PropInject | Injection point: field '" +
+            LOGGER.trace(loaderId + "|LoadProperties| Injection point: field '" +
                     fieldName + "'", null);
         }
         //get value from annotation specified vm option
@@ -306,7 +306,7 @@ class PropertiesLoader {
             finishedSet.add(fieldName);
             reasonPlus.append(" -D").append(propertyInject.getVmOptionFirst());
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | PropInject | Effective property: " + fieldName + " = '" +
+                LOGGER.debug(loaderId + "|LoadProperties| Adopted property > " + fieldName + " = '" +
                         (valueFromDefinition != null ? valueFromDefinition : "") + "' -> '" + valueFromAnnotation +
                         "', Inject by field, Overwritten by -D" + propertyInject.getVmOptionFirst(), null);
             }
@@ -317,7 +317,7 @@ class PropertiesLoader {
             finishedSet.add(fieldName);
             reasonPlus.append(" -D").append(vmOptionKey);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | PropInject | Effective property: " + fieldName + " = '" +
+                LOGGER.debug(loaderId + "|LoadProperties| Adopted property > " + fieldName + " = '" +
                         (valueFromDefinition != null ? valueFromDefinition : "") + "' -> '" + valueFromVmOption +
                         "', Inject by field, Overwritten by -D" + vmOptionKey, null);
             }
@@ -327,15 +327,15 @@ class PropertiesLoader {
                     implementationClass, loaderId, definition.getUrl()));
             finishedSet.add(fieldName);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(loaderId + " | PropInject | Effective property: " + fieldName + " = '" +
+                LOGGER.debug(loaderId + "|LoadProperties| Adopted property > " + fieldName + " = '" +
                         valueFromDefinition + "', Inject by field", null);
             }
         } else if (propertyInject.required()) {
-            LOGGER.error(loaderId + " | PropInject | Missing required property for field '" +
+            LOGGER.error(loaderId + "|LoadProperties| Missing required property for field '" +
                     fieldName + "' in " + implementationClass.getName() + ", it can be set by" +
                     (CommonUtils.isEmptyOrBlank(propertyInject.getVmOptionFirst()) ? "" : " -D" + propertyInject.getVmOptionFirst()) +
                     " -D" + vmOptionKey + ", or '" + fieldName + "' in definition " + definition.getUrl(), null);
-            throw new IllegalDefinitionException(loaderId + " | PropInject | Missing required property for field '" +
+            throw new IllegalDefinitionException(loaderId + "|LoadProperties| Missing required property for field '" +
                     fieldName + "' in " + implementationClass.getName() + ", it can be set by" +
                     (CommonUtils.isEmptyOrBlank(propertyInject.getVmOptionFirst()) ? "" : " -D" + propertyInject.getVmOptionFirst()) +
                     " -D" + vmOptionKey + ", or '" + fieldName + "' in definition " + definition.getUrl());
@@ -348,21 +348,21 @@ class PropertiesLoader {
         //parse value
         Object value = parseValue(stringValue, toType,
                 () -> {
-                    LOGGER.error(loaderId + " | PropInject | Illegal setter method '" +
+                    LOGGER.error(loaderId + "|LoadProperties| Illegal setter method '" +
                             method.getName() + "' in " + implementationClass.getName() +
                             " ('@PropertyInject' marked), string value can not parse to " + toType.getName() +
                             ", it only supports String/boolean/int/long/float/double", null);
-                    throw new IllegalImplementationException(loaderId + " | PropInject | Illegal setter method '" +
+                    throw new IllegalImplementationException(loaderId + "|LoadProperties| Illegal setter method '" +
                             method.getName() + "' in " + implementationClass.getName() +
                             " ('@PropertyInject' marked), string value can not parse to " + toType.getName() +
                             ", it only supports String/boolean/int/long/float/double", null);
                 },
                 throwable -> {
-                    LOGGER.error(loaderId + " | PropInject | Error while parsing string value '" +
+                    LOGGER.error(loaderId + "|LoadProperties| Error while parsing string value '" +
                             stringValue + "' to " + toType + ", So we can not inject property to method " +
                             implementationClass.getName() + "#" + method.getName() + ", The property comes from " +
                             propertySource, throwable);
-                    throw new IllegalArgumentException(loaderId + " | PropInject | Error while parsing string value '" +
+                    throw new IllegalArgumentException(loaderId + "|LoadProperties| Error while parsing string value '" +
                             stringValue + "' to " + toType + ", So we can not inject property to method " +
                             implementationClass.getName() + "#" + method.getName() + ", The property comes from " +
                             propertySource, throwable);
@@ -379,18 +379,18 @@ class PropertiesLoader {
         //parse value
         Object value = parseValue(stringValue, toType,
                 () -> {
-                    LOGGER.error(loaderId + " | PropInject | Illegal field '" + fieldName + "' in " +
+                    LOGGER.error(loaderId + "|LoadProperties| Illegal field '" + fieldName + "' in " +
                             implementationClass.getName() + " ('@PropertyInject' marked), string value can not parse to " +
                             toType.getName() + ", it only supports String/boolean/int/long/float/double", null);
-                    throw new IllegalImplementationException(loaderId + " | PropInject | Illegal field '" + fieldName + "' in " +
+                    throw new IllegalImplementationException(loaderId + "|LoadProperties| Illegal field '" + fieldName + "' in " +
                             implementationClass.getName() + " ('@PropertyInject' marked), string value can not parse to " +
                             toType.getName() + ", it only supports String/boolean/int/long/float/double", null);
                 },
                 throwable -> {
-                    LOGGER.error(loaderId + " | PropInject | Error while parsing string value '" +
+                    LOGGER.error(loaderId + "|LoadProperties| Error while parsing string value '" +
                             stringValue + "' to " + toType + ", So we can not inject property to field '" + fieldName + "' of " +
                             implementationClass.getName() + ", The property comes from " + propertySource, throwable);
-                    throw new IllegalArgumentException(loaderId + " | PropInject | Error while parsing string value '" +
+                    throw new IllegalArgumentException(loaderId + "|LoadProperties| Error while parsing string value '" +
                             stringValue + "' to " + toType + ", So we can not inject property to field '" + fieldName + "' of " +
                             implementationClass.getName() + ", The property comes from " + propertySource, throwable);
                 });

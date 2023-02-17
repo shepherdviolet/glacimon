@@ -46,30 +46,30 @@ class InterfaceLoader {
             try {
                 Class<?> clazz = ClassUtils.loadClass(definition.getInterfaceType(), classLoader);
                 if (!clazz.isInterface()) {
-                    LOGGER.error(loaderId + " | Interface register | " + definition.getInterfaceType() +
+                    LOGGER.error(loaderId + " | " + definition.getInterfaceType() +
                             " must be an interface, which is defined in " + definition.getUrl(), null);
-                    throw new IllegalDefinitionException(loaderId + " | Interface register | " + definition.getInterfaceType() +
+                    throw new IllegalDefinitionException(loaderId + " | " + definition.getInterfaceType() +
                             " must be an interface, which is defined in " + definition.getUrl());
                 }
                 if (!clazz.isAnnotationPresent(SingleServiceInterface.class) &&
                         !clazz.isAnnotationPresent(MultipleServiceInterface.class)) {
-                    LOGGER.error(loaderId + " | Interface register | " + definition.getInterfaceType() +
+                    LOGGER.error(loaderId + " | " + definition.getInterfaceType() +
                             " must have an annotation '@SingleServiceInterface' or '@MultipleServiceInterface'" +
                             ", which is defined in " + definition.getUrl(), null);
-                    throw new IllegalDefinitionException(loaderId + " | Interface register | " + definition.getInterfaceType() +
+                    throw new IllegalDefinitionException(loaderId + " | " + definition.getInterfaceType() +
                             " must have an annotation '@SingleServiceInterface' or '@MultipleServiceInterface'" +
                             ", which is defined in " + definition.getUrl());
                 }
                 //add to linked map
                 classes.put(clazz, false);
                 if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace(loaderId + " | Interface register | Loaded interface " + definition.getInterfaceType() +
+                    LOGGER.trace(loaderId + " | Loaded interface " + definition.getInterfaceType() +
                             ", url:" + definition.getUrl(), null);
                 }
             } catch (ClassNotFoundException e) {
-                LOGGER.error(loaderId + " | Interface register | Interface class " + definition +
+                LOGGER.error(loaderId + " | Interface class " + definition +
                         " not found, which is defined in " + definition.getUrl(), e);
-                throw new IllegalDefinitionException(loaderId + " | Interface register | Interface class " + definition +
+                throw new IllegalDefinitionException(loaderId + " | Interface class " + definition +
                         " not found, which is defined in " + definition.getUrl(), e);
             }
         }

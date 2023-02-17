@@ -221,7 +221,7 @@ class PropertiesLoader {
                     ", it is not a standard setter method, correct format `setLogLevel(String s)`");
         }
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(loaderId + " | PropInject | Injection point:  method '" +
+            LOGGER.trace(loaderId + " | PropInject | Injection point: method '" +
                     method.getName() + "'", null);
         }
         //get value from annotation specified vm option
@@ -289,7 +289,7 @@ class PropertiesLoader {
             return;
         }
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(loaderId + " | PropInject | Injection point:  field '" +
+            LOGGER.trace(loaderId + " | PropInject | Injection point: field '" +
                     fieldName + "'", null);
         }
         //get value from annotation specified vm option

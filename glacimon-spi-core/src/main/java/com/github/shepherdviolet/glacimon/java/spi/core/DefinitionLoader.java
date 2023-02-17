@@ -92,8 +92,8 @@ class DefinitionLoader {
             public void visitDefinition(String name, String value, String url) {
                 //check name
                 if (CommonUtils.isEmpty(name)) {
-                    LOGGER.error(loaderId + "|Definition| Illegal single-service definition, find a property with empty key, correct format is 'sample.SampleServiceImpl -1', url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
-                    throw new IllegalDefinitionException(loaderId + "|Definition| Illegal single-service definition, find a property with empty key, correct format is 'sample.SampleServiceImpl -1', url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                    LOGGER.error(loaderId + "|LoadDefinition| Illegal single-service definition, find a property with empty key, correct format is 'sample.SampleServiceImpl -1', url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                    throw new IllegalDefinitionException(loaderId + "|LoadDefinition| Illegal single-service definition, find a property with empty key, correct format is 'sample.SampleServiceImpl -1', url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                 }
                 //parse priority
                 int priority = 0;
@@ -101,8 +101,8 @@ class DefinitionLoader {
                     try {
                         priority = Integer.parseInt(value);
                     } catch (Exception e) {
-                        LOGGER.error(loaderId + "|Definition| Error while parsing priority of single-service, at " + name + " " + value + ", url:" + url + ", see:" + Constants.LOG_HOME_PAGE, e);
-                        throw new IllegalDefinitionException(loaderId + "|Definition| Error while parsing priority of single-service, at " + name + " " + value + ", url:" + url + ", see:" + Constants.LOG_HOME_PAGE, e);
+                        LOGGER.error(loaderId + "|LoadDefinition| Parse single-service priority failed, at " + name + " " + value + ", url:" + url + ", see:" + Constants.LOG_HOME_PAGE, e);
+                        throw new IllegalDefinitionException(loaderId + "|LoadDefinition| Parse single-service priority failed, at " + name + " " + value + ", url:" + url + ", see:" + Constants.LOG_HOME_PAGE, e);
                     }
                 }
                 //add
@@ -131,8 +131,8 @@ class DefinitionLoader {
             public void visitDefinition(String name, String value, String url) {
                 //check name
                 if (CommonUtils.isEmpty(name)) {
-                    LOGGER.error(loaderId + "|Definition| Illegal multiple-service definition, find a property with empty key, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
-                    throw new IllegalDefinitionException(loaderId + "|Definition| Illegal multiple-service definition, find a property with empty key, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                    LOGGER.error(loaderId + "|LoadDefinition| Illegal multiple-service definition, find a property with empty key, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                    throw new IllegalDefinitionException(loaderId + "|LoadDefinition| Illegal multiple-service definition, find a property with empty key, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                 }
                 //parse rank and isDisable
                 boolean isRemove;
@@ -146,8 +146,8 @@ class DefinitionLoader {
                         if (c == '+') {
                             rank++;
                         } else if (c == '-') {
-                            LOGGER.error(loaderId + "|Definition| Illegal multiple-service definition, when the first char is +, it must be followed by +, correct format is '++sample.SampleServiceImpl' (+ can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
-                            throw new IllegalDefinitionException(loaderId + "|Definition| Illegal multiple-service definition, when the first char is +, it must be followed by +, correct format is '++sample.SampleServiceImpl' (+ can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                            LOGGER.error(loaderId + "|LoadDefinition| Illegal multiple-service definition, when the first char is +, it must be followed by +, correct format is '++sample.SampleServiceImpl' (+ can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                            throw new IllegalDefinitionException(loaderId + "|LoadDefinition| Illegal multiple-service definition, when the first char is +, it must be followed by +, correct format is '++sample.SampleServiceImpl' (+ can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                         } else {
                             break;
                         }
@@ -160,20 +160,20 @@ class DefinitionLoader {
                         if (c == '-') {
                             rank++;
                         } else if (c == '+') {
-                            LOGGER.error(loaderId + "|Definition| Illegal multiple-service definition, when the first char is -, it must be followed by -, correct format is '--sample.SampleServiceImpl' (- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
-                            throw new IllegalDefinitionException(loaderId + "|Definition| Illegal multiple-service definition, when the first char is -, it must be followed by -, correct format is '--sample.SampleServiceImpl' (- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                            LOGGER.error(loaderId + "|LoadDefinition| Illegal multiple-service definition, when the first char is -, it must be followed by -, correct format is '--sample.SampleServiceImpl' (- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                            throw new IllegalDefinitionException(loaderId + "|LoadDefinition| Illegal multiple-service definition, when the first char is -, it must be followed by -, correct format is '--sample.SampleServiceImpl' (- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                         } else {
                             break;
                         }
                     }
                 } else {
                     //starts with other char
-                    LOGGER.error(loaderId + "|Definition| Illegal multiple-service definition, a property is not starts with +/-, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                    LOGGER.error(loaderId + "|LoadDefinition| Illegal multiple-service definition, a property is not starts with +/-, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                     throw new IllegalDefinitionException(loaderId + " | Illegal multiple-service definition, a property is not starts with +/-, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                 }
                 if (rank > name.length() - 1) {
-                    LOGGER.error(loaderId + "|Definition| Illegal multiple-service definition, property key cannot only have +/- signs, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
-                    throw new IllegalDefinitionException(loaderId + "|Definition| Illegal multiple-service definition, property key cannot only have +/- signs, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                    LOGGER.error(loaderId + "|LoadDefinition| Illegal multiple-service definition, property key cannot only have +/- signs, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
+                    throw new IllegalDefinitionException(loaderId + "|LoadDefinition| Illegal multiple-service definition, property key cannot only have +/- signs, correct format is '+sample.SampleServiceImpl' or '-sample.SampleServiceImpl' (+/- can be multiple), url:" + url + ", see:" + Constants.LOG_HOME_PAGE, null);
                 }
                 //add
                 result.add(new MultipleDefinition(isRemove, interfaceType, name.substring(rank), rank, url));
@@ -213,8 +213,8 @@ class DefinitionLoader {
                     try {
                         definition.setPriority(Integer.parseInt(priorityStr));
                     } catch (Exception e) {
-                        LOGGER.error(loaderId + "|Definition| Error while parsing " + Constants.PROPERTY_PRIORITY + " of properties file, url:" + definition.getUrl() + ", see:" + Constants.LOG_HOME_PAGE, e);
-                        throw new IllegalDefinitionException(loaderId + "|Definition| Error while parsing " + Constants.PROPERTY_PRIORITY + " of properties file, url:" + definition.getUrl() + ", see:" + Constants.LOG_HOME_PAGE, e);
+                        LOGGER.error(loaderId + "|LoadDefinition| Parse " + Constants.PROPERTY_PRIORITY + " (of properties file) failed, url:" + definition.getUrl() + ", see:" + Constants.LOG_HOME_PAGE, e);
+                        throw new IllegalDefinitionException(loaderId + "|LoadDefinition| Parse " + Constants.PROPERTY_PRIORITY + " (of properties file) failed, url:" + definition.getUrl() + ", see:" + Constants.LOG_HOME_PAGE, e);
                     }
                 }
                 //add definition
@@ -237,12 +237,12 @@ class DefinitionLoader {
         try {
             urls = ClassUtils.loadResources(resourcePath, classLoader);
         } catch (Exception e) {
-            LOGGER.error(loaderId + "|Definition| Error while loading files from classpath " + resourcePath, e);
-            throw new RuntimeException(loaderId + "|Definition| Error while loading files from classpath " + resourcePath, e);
+            LOGGER.error(loaderId + "|LoadDefinition| Error while loading files from classpath " + resourcePath, e);
+            throw new RuntimeException(loaderId + "|LoadDefinition| Error while loading files from classpath " + resourcePath, e);
         }
         if (urls == null || !urls.hasMoreElements()) {
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace(loaderId + "|Definition| No file in classpath " + resourcePath, null);
+                LOGGER.trace(loaderId + "|LoadDefinition| No file in classpath " + resourcePath, null);
             }
             return;
         }
@@ -254,8 +254,8 @@ class DefinitionLoader {
             } catch (IllegalDefinitionException e) {
                 throw e;
             } catch (Exception e) {
-                LOGGER.error(loaderId + "|Definition| Error while loading file " + url, e);
-                throw new RuntimeException(loaderId + "|Definition| Error while loading file " + url, e);
+                LOGGER.error(loaderId + "|LoadDefinition| Error while loading file " + url, e);
+                throw new RuntimeException(loaderId + "|LoadDefinition| Error while loading file " + url, e);
             }
         }
     }
@@ -265,7 +265,7 @@ class DefinitionLoader {
         String hash = null;
         if (LOGGER.isTraceEnabled()) {
             hash = CommonUtils.digest(url.openStream(), "MD5");
-            LOGGER.trace(loaderId + "|Definition| Load file " + url + ", md5:" + hash, null);
+            LOGGER.trace(loaderId + "|LoadDefinition| Load file " + url + ", md5:" + hash, null);
         }
         //exclude file by vm option
         if (FILE_EXCLUSIONS.size() > 0) {
@@ -273,7 +273,7 @@ class DefinitionLoader {
                 hash = CommonUtils.digest(url.openStream(), "MD5");
             }
             if (FILE_EXCLUSIONS.contains(hash)) {
-                LOGGER.warn(loaderId + "|Definition| Exclude file " + url + " by -D" + Constants.VMOPT_EXCLUDE_FILE, null);
+                LOGGER.warn(loaderId + "|LoadDefinition| Exclude file " + url + " by -D" + Constants.VMOPT_EXCLUDE_FILE, null);
                 return;
             }
         }
@@ -288,7 +288,7 @@ class DefinitionLoader {
         Enumeration<?> names = properties.propertyNames();
         if (!names.hasMoreElements()) {
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace(loaderId + "|Definition| No property in file " + url, null);
+                LOGGER.trace(loaderId + "|LoadDefinition| No property in file " + url, null);
             }
             return;
         }

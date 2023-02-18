@@ -58,6 +58,19 @@ class CommonUtils {
     }
 
     /**
+     * Close uninstallable quietly
+     */
+    static void closeQuietly(Uninstallable uninstallable) {
+        if (uninstallable == null) {
+            return;
+        }
+        try {
+            uninstallable.close();
+        } catch (Exception ignore) {
+        }
+    }
+
+    /**
      * Check if string is empty or null
      */
     static boolean isEmpty(String input){

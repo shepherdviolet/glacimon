@@ -44,7 +44,7 @@ import static com.github.shepherdviolet.glacimon.java.spi.core.Constants.*;
  *
  * @author shepherdviolet
  */
-public class ServiceContext implements Closeable {
+public class ServiceContext implements Uninstallable {
 
     public static final String CLASS_NAME = ServiceContext.class.getName();
     private static final SpiLogger LOGGER = LogUtils.getLogger();

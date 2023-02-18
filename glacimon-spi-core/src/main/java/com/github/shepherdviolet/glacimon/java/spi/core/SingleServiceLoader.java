@@ -44,7 +44,7 @@ import static com.github.shepherdviolet.glacimon.java.spi.core.Constants.*;
  * @param <T> Interface of service
  * @author shepherdviolet
  */
-public class SingleServiceLoader<T> implements Closeable {
+public class SingleServiceLoader<T> implements Uninstallable {
 
     public static final String CLASS_NAME = SingleServiceLoader.class.getName();
     private static final SpiLogger LOGGER = LogUtils.getLogger();

@@ -44,7 +44,7 @@ import java.util.function.Function;
  * @param <T> Interface of service
  * @author shepherdviolet
  */
-public class MultipleServiceLoader<T> implements Closeable {
+public class MultipleServiceLoader<T> implements Uninstallable {
 
     public static final String CLASS_NAME = MultipleServiceLoader.class.getName();
     private static final SpiLogger LOGGER = LogUtils.getLogger();

@@ -29,7 +29,6 @@ import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.InitializableI
 import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.ServiceProxy;
 import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -79,7 +78,11 @@ public class MultipleServiceLoader<T> implements Uninstallable {
     }
 
     /**
-     * Get the service instance with the specified name.
+     * <p>Get the service instance with the specified name.</p>
+     *
+     * WARNING: If the implementation does not exist, each get will call the fallback method to recreate an instance,
+     * and it's lifecycle method will not be called, properties will not be inject.
+     *
      * @param name The name of service implementation (Specified by annotation 'ImplementationName')
      * @param fallback Supply instance if no implementation definition found.
      * @return Service instance (Cached), not null
@@ -93,7 +96,10 @@ public class MultipleServiceLoader<T> implements Uninstallable {
     }
 
     /**
-     * Get the service instance with the specified name.
+     * <p>Get the service instance with the specified name.</p>
+     *
+     * WARNING: If the implementation does not exist, return null.
+     *
      * @param name The name of service implementation (Specified by annotation 'ImplementationName')
      * @return Service instance (Cached), Nullable
      */

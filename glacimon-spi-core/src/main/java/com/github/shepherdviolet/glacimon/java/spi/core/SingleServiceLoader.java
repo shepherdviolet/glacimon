@@ -79,7 +79,11 @@ public class SingleServiceLoader<T> implements Uninstallable {
     }
 
     /**
-     * Get the service instance
+     * <p>Get the service instance.</p>
+     *
+     * WARNING: If the implementation does not exist, each get will call the fallback method to recreate an instance,
+     * and it's lifecycle method will not be called, properties will not be inject.
+     *
      * @param fallback Supply instance if no implementation definition found.
      * @return Service instance (Cached), not null
      */
@@ -92,7 +96,10 @@ public class SingleServiceLoader<T> implements Uninstallable {
     }
 
     /**
-     * Get the service instance
+     * <p>Get the service instance.</p>
+     *
+     * WARNING: If the implementation does not exist, return null.
+     *
      * @return Service instance (Cached), Nullable
      */
     public T get(){

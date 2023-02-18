@@ -31,6 +31,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import static com.github.shepherdviolet.glacimon.java.spi.core.Constants.*;
 
@@ -75,6 +76,19 @@ public class SingleServiceLoader<T> implements Closeable {
         this.classLoader = classLoader;
         this.loaderId = serviceContextId + "-" + CommonUtils.generateLoaderId();
         load();
+    }
+
+    /**
+     * Get the service instance
+     * @param fallback Supply instance if no implementation definition found.
+     * @return Service instance (Cached), not null
+     */
+    public T get(Supplier<T> fallback) {
+        T service = get();
+        if (service == null) {
+            return fallback.get();
+        }
+        return service;
     }
 
     /**

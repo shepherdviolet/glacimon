@@ -32,8 +32,8 @@ import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 /**
  * <p>GlacimonSpi: An implementation of Java Service Provider Interface</p>
@@ -80,7 +80,20 @@ public class MultipleServiceLoader<T> implements Closeable {
 
     /**
      * Get the service instance with the specified name.
-     * If there are two services with the same name, an exception will be thrown.
+     * @param name The name of service implementation (Specified by annotation 'ImplementationName')
+     * @param fallback Supply instance if no implementation definition found.
+     * @return Service instance (Cached), not null
+     */
+    public T get(String name, Function<String, T> fallback) {
+        T service = get(name);
+        if (service == null) {
+            return fallback.apply(name);
+        }
+        return service;
+    }
+
+    /**
+     * Get the service instance with the specified name.
      * @param name The name of service implementation (Specified by annotation 'ImplementationName')
      * @return Service instance (Cached), Nullable
      */

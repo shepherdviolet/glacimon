@@ -43,12 +43,7 @@ class CloseableConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> implement
         closed = true;
         //close all
         for (Map.Entry<?, ?> entry : entrySet()) {
-            if (entry.getValue() instanceof Closeable) {
-                try {
-                    ((Closeable) entry.getValue()).close();
-                } catch (IOException ignore) {
-                }
-            }
+            closeQuietly(entry.getValue());
         }
     }
 
@@ -56,12 +51,7 @@ class CloseableConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> implement
     public V put(K key, V value) {
         //close new
         if (closed) {
-            if (value instanceof Closeable) {
-                try {
-                    ((Closeable) value).close();
-                } catch (IOException ignore) {
-                }
-            }
+            closeQuietly(value);
         }
         return super.put(key, value);
     }
@@ -71,12 +61,7 @@ class CloseableConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> implement
         //close new
         if (closed) {
             for (Map.Entry<?, ?> entry : entrySet()) {
-                if (entry.getValue() instanceof Closeable) {
-                    try {
-                        ((Closeable) entry.getValue()).close();
-                    } catch (IOException ignore) {
-                    }
-                }
+                closeQuietly(entry.getValue());
             }
         }
         super.putAll(m);
@@ -86,12 +71,7 @@ class CloseableConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> implement
     public V putIfAbsent(K key, V value) {
         //close new
         if (closed) {
-            if (value instanceof Closeable) {
-                try {
-                    ((Closeable) value).close();
-                } catch (IOException ignore) {
-                }
-            }
+            closeQuietly(value);
         }
         return super.putIfAbsent(key, value);
     }
@@ -105,4 +85,13 @@ class CloseableConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> implement
     public int hashCode() {
         return super.hashCode();
     }
+
+    private static void closeQuietly(Object obj) {
+        if (obj instanceof Uninstallable) {
+            CommonUtils.closeQuietly((Uninstallable) obj);
+        } else if (obj instanceof Closeable) {
+            CommonUtils.closeQuietly((Closeable) obj);
+        }
+    }
+
 }

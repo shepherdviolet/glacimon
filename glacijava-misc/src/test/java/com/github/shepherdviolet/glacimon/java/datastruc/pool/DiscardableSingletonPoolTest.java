@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2022 S.Violet
+ * Copyright (C) 2022-2023 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class DiscardableSingletonPoolTest {
     private static final Logger logger = LoggerFactory.getLogger(DiscardableSingletonPoolTest.class);
 
     private static final ScheduledExecutorService executorService = ThreadPoolExecutorUtils.createScheduled(1,
-            new GuavaThreadFactoryBuilder().setNameFormat("mock-schedule-%d").setDaemon(true).build());
+            new GuavaThreadFactoryBuilder().setNameFormat("mock-schedule-%s").setDaemon(true).build());
 
     public static void main(String[] args) {
 

@@ -79,8 +79,8 @@ public class LoadBalancedInspectManager implements Closeable {
     private long blockDuration = DEFAULT_INSPECT_INTERVAL * 2;
 
     private ExecutorService dispatchThreadPool = ThreadPoolExecutorUtils.createFixed(1,
-            new GuavaThreadFactoryBuilder().setNameFormat("Glacispring-LBInspect-Dispatch-%d").setDaemon(true).build());
-    private ExecutorService inspectThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 60, "Glacispring-LBInspect-Inspect-%d");
+            new GuavaThreadFactoryBuilder().setNameFormat("Glacispring-LBInspect-Dispatch-%s").setDaemon(true).build());
+    private ExecutorService inspectThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 60, "Glacispring-LBInspect-Inspect-%s");
 
     /**
      * 自动开始探测(无需调用start()方法手动开启)

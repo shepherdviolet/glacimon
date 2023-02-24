@@ -254,7 +254,7 @@ public final class DiskLruCache implements Closeable {
     /** This cache uses a single background thread to evict entries. */
     private final ExecutorService executorService = ThreadPoolExecutorUtils.createSingle(
             60L,
-            "DiskLruCache-%d");
+            "DiskLruCache-%s");
     private final Callable<Void> cleanupCallable = new Callable<Void>() {
         @Override public Void call() throws Exception {
             synchronized (DiskLruCache.this) {

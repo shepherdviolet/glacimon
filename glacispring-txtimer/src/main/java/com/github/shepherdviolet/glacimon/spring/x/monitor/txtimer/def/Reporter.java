@@ -44,7 +44,7 @@ class Reporter {
     private static final Logger logger = LoggerFactory.getLogger(Reporter.class);
 
     private DefaultTxTimerProvider2 provider;
-    private ExecutorService reportThreadPool = ThreadPoolExecutorUtils.createLazy(60, "Glacispring-TxTimer-Report-%d");
+    private ExecutorService reportThreadPool = ThreadPoolExecutorUtils.createLazy(60, "Glacispring-TxTimer-Report-%s");
 
     private volatile boolean shutdown = false;
     private long lastReportAllTime = System.currentTimeMillis();

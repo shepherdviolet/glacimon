@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2022 S.Violet
+ * Copyright (C) 2022-2023 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -269,7 +269,7 @@ public class DiscardableSingletonPoolSampleService
      * 注意要设置为守护线程, 否则会影响JVM自然结束
      */
     private final ScheduledExecutorService executorService = ThreadPoolExecutorUtils.createScheduled(1,
-            new GuavaThreadFactoryBuilder().setNameFormat("sample-service-schedule-%d").setDaemon(true).build());
+            new GuavaThreadFactoryBuilder().setNameFormat("sample-service-schedule-%s").setDaemon(true).build());
 
     /**
      * [可选: 定时任务统计信息]

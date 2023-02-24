@@ -140,7 +140,7 @@ public class LoadBalancedHostManager {
      * settings
      */
 
-    private ExecutorService settingThreadPool = ThreadPoolExecutorUtils.createLazy(60L, "Glacispring-LBHostManager-Set-%d");
+    private ExecutorService settingThreadPool = ThreadPoolExecutorUtils.createLazy(60L, "Glacispring-LBHostManager-Set-%s");
     private AtomicReference<List<String>> newSettings = new AtomicReference<>(null);
 
     private volatile boolean initialized = false;

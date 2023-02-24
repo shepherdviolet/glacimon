@@ -58,7 +58,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
     private final Map<String, Updater> clientUpdaters = new HashMap<>(32);
 
     private final LinkedBlockingQueue<OverrideSettings> unsolvedSettings = new LinkedBlockingQueue<>();
-    private final ExecutorService updateExecutor = ThreadPoolExecutorUtils.createLazy(60, "Glacispring-HttpClients-update-%d");
+    private final ExecutorService updateExecutor = ThreadPoolExecutorUtils.createLazy(60, "Glacispring-HttpClients-update-%s");
 
     HttpClientsImpl(GlacispringPropertiesForHttpClient glacispringPropertiesForHttpClient, DataConverter dataConverter) {
         this.dataConverter = dataConverter;

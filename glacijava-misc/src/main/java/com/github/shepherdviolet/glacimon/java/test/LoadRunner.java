@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2022 S.Violet
+ * Copyright (C) 2022-2023 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class LoadRunner implements AutoCloseable, Closeable {
     private final AtomicInteger currentThreadNum = new AtomicInteger(0);
 
     private final ExecutorService dispatcherThreadPool = ThreadPoolExecutorUtils.createLazy(10, "LoadRunner-dispatcher");
-    private final ExecutorService workerThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 10, "LoadRunner-worker-%d");
+    private final ExecutorService workerThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 10, "LoadRunner-worker-%s");
 
     /**
      * @param task 执行的任务

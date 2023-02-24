@@ -31,7 +31,7 @@ public class CountDownWaiterTest {
 
     private final ExecutorService threadPool = ThreadPoolExecutorUtils.createFixed(4,
             new GuavaThreadFactoryBuilder()
-                    .setNameFormat("test-%d")
+                    .setNameFormat("test-%s")
                     .setDaemon(true)
                     .build());
 

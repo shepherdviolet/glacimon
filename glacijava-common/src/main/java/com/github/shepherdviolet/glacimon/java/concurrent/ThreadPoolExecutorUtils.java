@@ -61,7 +61,7 @@ public class ThreadPoolExecutorUtils {
      * </p>
      *
      * @param keepAliveSeconds 线程保活时间(秒)
-     * @param threadNameFormat 线程名称格式(rpc-pool-%d)
+     * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
     public static ExecutorService createSingle(long keepAliveSeconds, String threadNameFormat){
         return create(
@@ -138,7 +138,7 @@ public class ThreadPoolExecutorUtils {
      * </pre>
      *
      * @param keepAliveSeconds 线程保活时间(秒)
-     * @param threadNameFormat 线程名称格式(rpc-pool-%d)
+     * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
     public static ExecutorService createLazy(long keepAliveSeconds, String threadNameFormat){
         return create(
@@ -207,7 +207,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>固定线程数的线程池, 核心线程数poolSize, 最大线程数poolSize, 队列长度Integer.MAX_VALUE</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
@@ -216,7 +216,7 @@ public class ThreadPoolExecutorUtils {
      * </p>
      *
      * @param poolSize 线程数
-     * @param threadNameFormat 线程名称格式(rpc-pool-%d)
+     * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
     public static ExecutorService createFixed(int poolSize, String threadNameFormat){
         return create(
@@ -232,7 +232,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>固定线程数的线程池, 核心线程数poolSize, 最大线程数poolSize, 队列长度Integer.MAX_VALUE</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
@@ -257,7 +257,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>动态线程数的线程池, 核心线程数corePoolSize, 最大线程数maximumPoolSize, 队列长度0</p>
      * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 6.使用SynchronousQueue工作队列时, 并发任务会直接增加线程(包括核心线程和非核心线程).<br>
@@ -268,7 +268,7 @@ public class ThreadPoolExecutorUtils {
      * @param corePoolSize 核心线程数
      * @param maximumPoolSize 最大线程数
      * @param keepAliveSeconds 线程保活时间(秒)
-     * @param threadNameFormat 线程名称格式(rpc-pool-%d)
+     * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
     public static ExecutorService createCached(int corePoolSize,
                                                int maximumPoolSize,
@@ -287,7 +287,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>动态线程数的线程池, 核心线程数corePoolSize, 最大线程数maximumPoolSize, 队列长度0</p>
      * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 6.使用SynchronousQueue工作队列时, 并发任务会直接增加线程(包括核心线程和非核心线程).<br>
@@ -317,7 +317,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建线程池</p>
      * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
@@ -331,7 +331,7 @@ public class ThreadPoolExecutorUtils {
      * @param corePoolSize 核心线程数
      * @param maximumPoolSize 最大线程数
      * @param keepAliveSeconds 线程保活时间(秒)
-     * @param threadNameFormat 线程名称格式(rpc-pool-%d)
+     * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      * @param workQueue 工作队列
      * @param rejectHandler nullable, 拒绝处理器, 默认: new ThreadPoolExecutor.AbortPolicy()
      * @param executeListener nullable, 监听执行前执行后的事件
@@ -357,7 +357,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建线程池</p>
      * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
@@ -405,14 +405,14 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建定时线程池</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 1.定时线程池能够延迟/循环执行任务
      * </p>
      *
      * @param corePoolSize 核心线程数, >= 1
-     * @param threadNameFormat 线程名称格式(rpc-pool-%d)
+     * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
     public static ScheduledExecutorService createScheduled(int corePoolSize, String threadNameFormat){
         return createScheduled(corePoolSize, threadNameFormat, null, null);
@@ -421,7 +421,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建定时线程池</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 1.定时线程池能够延迟/循环执行任务
@@ -437,14 +437,14 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建定时线程池</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 1.定时线程池能够延迟/循环执行任务
      * </p>
      *
      * @param corePoolSize 核心线程数, >= 1
-     * @param threadNameFormat 线程名称格式(rpc-pool-%d)
+     * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      * @param rejectHandler nullable, 拒绝处理器, 默认: new ThreadPoolExecutor.AbortPolicy()
      * @param executeListener nullable, 监听执行前执行后的事件
      */
@@ -462,7 +462,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建定时线程池</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%d").setDaemon(true).build()</p>
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 1.定时线程池能够延迟/循环执行任务

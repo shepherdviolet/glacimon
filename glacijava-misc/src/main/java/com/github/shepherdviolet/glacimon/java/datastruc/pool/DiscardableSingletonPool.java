@@ -114,7 +114,7 @@ public class DiscardableSingletonPool<InstanceType, CreateParamType> {
     private final ConcurrentHashMap<String, ReentrantLock> createLocks;
 
     // 执行异步销毁
-    private final ExecutorService destroyExecutor = ThreadPoolExecutorUtils.createLazy(60, "Glacijava-DiscardableSingletonPool-destroyer-%d");
+    private final ExecutorService destroyExecutor = ThreadPoolExecutorUtils.createLazy(60, "Glacijava-DiscardableSingletonPool-destroyer-%s");
     // 丢弃队列
     private final BlockingQueue<InstanceHolder<InstanceType>> discardingInstances = new LinkedBlockingQueue<>();
     // 丢弃池

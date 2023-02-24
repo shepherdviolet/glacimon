@@ -253,7 +253,7 @@ public class ParasiticVars {
         while (gcTaskPool == null){
             if (!gcTaskPoolInited.get() && gcTaskPoolInited.compareAndSet(false, true)) {
                 //新建gc任务执行线程池
-                gcTaskPool = ThreadPoolExecutorUtils.createLazy(60L, "Glacijava-ParasiticVars-gc-%d");
+                gcTaskPool = ThreadPoolExecutorUtils.createLazy(60L, "Glacijava-ParasiticVars-gc-%s");
             } else {
                 Thread.yield();
             }

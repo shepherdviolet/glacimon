@@ -28,6 +28,9 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Get source code from ThreadFactoryBuilder (Guava)
  *
+ * Enhanced:
+ * 1.Add thread factory id before thread id in thread name (%s or %d)
+ *
  * ---------------------------------------------------------------------
  *
  * A ThreadFactory builder, providing any combination of these features:
@@ -45,6 +48,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * @since 4.0
  */
 public final class GuavaThreadFactoryBuilder {
+
+  private static final AtomicLong threadFactoryIdCount = new AtomicLong(0L);
+
   private String nameFormat = null;
   private Boolean daemon = null;
   private Integer priority = null;
@@ -63,8 +69,8 @@ public final class GuavaThreadFactoryBuilder {
    * @param nameFormat a {@link String#format(String, Object...)}-compatible format String, to which
    *     a unique integer (0, 1, etc.) will be supplied as the single parameter. This integer will
    *     be unique to the built instance of the ThreadFactory and will be assigned sequentially. For
-   *     example, {@code "rpc-pool-%d"} will generate thread names like {@code "rpc-pool-0"},
-   *     {@code "rpc-pool-1"}, {@code "rpc-pool-2"}, etc.
+   *     example, {@code "rpc-pool-%s"} will generate thread names like {@code "rpc-pool-0-0"},
+   *     {@code "rpc-pool-0-1"}, {@code "rpc-pool-0-2"}, etc.
    * @return this for the builder pattern
    */
   public GuavaThreadFactoryBuilder setNameFormat(String nameFormat) {
@@ -155,7 +161,8 @@ public final class GuavaThreadFactoryBuilder {
    * @return ThreadFactory
    */
   private static ThreadFactory doBuild(GuavaThreadFactoryBuilder builder) {
-    final String nameFormat = builder.nameFormat;
+    // Both %d %s are supported
+    final String nameFormat = builder.nameFormat != null ? builder.nameFormat.replaceAll("%d", "%s") : null;
     final Boolean daemon = builder.daemon;
     final Integer priority = builder.priority;
     final UncaughtExceptionHandler uncaughtExceptionHandler = builder.uncaughtExceptionHandler;
@@ -163,13 +170,14 @@ public final class GuavaThreadFactoryBuilder {
         (builder.backingThreadFactory != null)
             ? builder.backingThreadFactory
             : Executors.defaultThreadFactory();
+    final long threadFactoryId = threadFactoryIdCount.getAndIncrement();
     final AtomicLong count = (nameFormat != null) ? new AtomicLong(0) : null;
     return new ThreadFactory() {
       @Override
       public Thread newThread(Runnable runnable) {
         Thread thread = backingThreadFactory.newThread(runnable);
         if (nameFormat != null) {
-          thread.setName(format(nameFormat, count.getAndIncrement()));
+          thread.setName(format(nameFormat, threadFactoryId + "-" + count.getAndIncrement()));
         }
         if (daemon != null) {
           thread.setDaemon(daemon);

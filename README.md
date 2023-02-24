@@ -38,8 +38,6 @@
 
 ### Module: glacijava-common
 
-[![Depends](https://img.shields.io/badge/Depends-glacimon--spi--api-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
-
 > Common utils for JavaSE
 
 #### [Misc utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/misc)
@@ -65,7 +63,7 @@
 
 #### [Concurrent utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/concurrent)
 
-* Lock ...
+* Lock / Waiter / Snapshot ...
 * [ThreadPoolExecutorUtils / GuavaThreadFactoryBuilder : Create thread pool](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/concurrent/ThreadPoolExecutorUtils.java)
 
 #### [Reflect utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect)
@@ -85,6 +83,8 @@
 
 #### [Graph utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/graph)
 
+* [Captcha utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/graph/captcha/ImageCaptchaUtils.java)
+
 #### [Test utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/test)
 
 #### [Protocols](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/protocol)
@@ -102,6 +102,8 @@
 [![Depends](https://img.shields.io/badge/Depends-glacimon--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Uncommonly or incomplete utils for JavaSE
+
+#### [Misc utils (uncommonly or incomplete)](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-misc/src/main/java/com/github/shepherdviolet/glacimon/java)
 
 <br>
 

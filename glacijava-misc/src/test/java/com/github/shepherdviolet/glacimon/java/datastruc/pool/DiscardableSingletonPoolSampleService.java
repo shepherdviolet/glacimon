@@ -19,11 +19,13 @@
 
 package com.github.shepherdviolet.glacimon.java.datastruc.pool;
 
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -80,7 +82,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 //@Service
 public class DiscardableSingletonPoolSampleService
-        implements DiscardableSingletonPool.InstanceManager<DiscardableSingletonPoolSampleService.Client, DiscardableSingletonPoolSampleService.ClientCreateParam> {
+        implements DiscardableSingletonPool.InstanceManager<DiscardableSingletonPoolSampleService.Client, DiscardableSingletonPoolSampleService.ClientCreateParam>,
+        Closeable {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -780,6 +783,17 @@ public class DiscardableSingletonPoolSampleService
      */
     public void setDiscardAllCheckPeriod(long discardAllCheckPeriod) {
         this.discardAllCheckPeriod = discardAllCheckPeriod;
+    }
+
+    /**
+     * 如果当前服务弃用, 请调用close方法停止线程池, 不然核心线程会一直存在(JVM停止前)
+     */
+    @Override
+    public void close() throws IOException {
+        try {
+            executorService.shutdownNow();
+        } catch (Throwable ignore) {
+        }
     }
 
     /**

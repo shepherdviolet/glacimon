@@ -74,7 +74,7 @@ public class ThreadPoolExecutorUtils {
      * @param keepAliveSeconds 线程保活时间(秒)
      * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
-    public static ExecutorService createSingle(long keepAliveSeconds, String threadNameFormat){
+    public static ThreadPoolExecutor createSingle(long keepAliveSeconds, String threadNameFormat){
         return create(
                 0,
                 1,
@@ -105,7 +105,7 @@ public class ThreadPoolExecutorUtils {
      * @param keepAliveSeconds 线程保活时间(秒)
      * @param threadFactory 线程工厂 (可以设置线程名称, 是否daemon等)
      */
-    public static ExecutorService createSingle(long keepAliveSeconds, ThreadFactory threadFactory){
+    public static ThreadPoolExecutor createSingle(long keepAliveSeconds, ThreadFactory threadFactory){
         return create(
                 0,
                 1,
@@ -165,7 +165,7 @@ public class ThreadPoolExecutorUtils {
      * @param keepAliveSeconds 线程保活时间(秒)
      * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
-    public static ExecutorService createLazy(long keepAliveSeconds, String threadNameFormat){
+    public static ThreadPoolExecutor createLazy(long keepAliveSeconds, String threadNameFormat){
         return create(
                 0,
                 1,
@@ -225,7 +225,7 @@ public class ThreadPoolExecutorUtils {
      * @param keepAliveSeconds 线程保活时间(秒)
      * @param threadFactory 线程工厂 (可以设置线程名称, 是否daemon等)
      */
-    public static ExecutorService createLazy(long keepAliveSeconds, ThreadFactory threadFactory){
+    public static ThreadPoolExecutor createLazy(long keepAliveSeconds, ThreadFactory threadFactory){
         return create(
                 0,
                 1,
@@ -257,7 +257,7 @@ public class ThreadPoolExecutorUtils {
      * @param poolSize 线程数
      * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
-    public static ExecutorService createFixed(int poolSize, String threadNameFormat){
+    public static ThreadPoolExecutor createFixed(int poolSize, String threadNameFormat){
         return create(
                 poolSize,
                 poolSize,
@@ -289,7 +289,7 @@ public class ThreadPoolExecutorUtils {
      * @param poolSize 线程数
      * @param threadFactory 线程工厂 (可以设置线程名称, 是否daemon等)
      */
-    public static ExecutorService createFixed(int poolSize, ThreadFactory threadFactory){
+    public static ThreadPoolExecutor createFixed(int poolSize, ThreadFactory threadFactory){
         return create(
                 poolSize,
                 poolSize,
@@ -322,7 +322,7 @@ public class ThreadPoolExecutorUtils {
      * @param keepAliveSeconds 线程保活时间(秒)
      * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
-    public static ExecutorService createCached(int corePoolSize,
+    public static ThreadPoolExecutor createCached(int corePoolSize,
                                                int maximumPoolSize,
                                                long keepAliveSeconds,
                                                String threadNameFormat){
@@ -358,7 +358,7 @@ public class ThreadPoolExecutorUtils {
      * @param keepAliveSeconds 线程保活时间(秒)
      * @param threadFactory 线程工厂 (可以设置线程名称, 是否daemon等)
      */
-    public static ExecutorService createCached(int corePoolSize,
+    public static ThreadPoolExecutor createCached(int corePoolSize,
                                                int maximumPoolSize,
                                                long keepAliveSeconds,
                                                ThreadFactory threadFactory){
@@ -400,7 +400,7 @@ public class ThreadPoolExecutorUtils {
      * @param rejectHandler nullable, 拒绝处理器, 默认: new ThreadPoolExecutor.AbortPolicy()
      * @param executeListener nullable, 监听执行前执行后的事件
      */
-    public static ExecutorService create(int corePoolSize,
+    public static ThreadPoolExecutor create(int corePoolSize,
                                          int maximumPoolSize,
                                          long keepAliveSeconds,
                                          String threadNameFormat,
@@ -446,7 +446,7 @@ public class ThreadPoolExecutorUtils {
      * @param rejectHandler nullable, 拒绝处理器, 默认: new ThreadPoolExecutor.AbortPolicy()
      * @param executeListener nullable, 监听执行前执行后的事件
      */
-    public static ExecutorService create(int corePoolSize,
+    public static ThreadPoolExecutor create(int corePoolSize,
                                          int maximumPoolSize,
                                          long keepAliveSeconds,
                                          ThreadFactory threadFactory,
@@ -491,7 +491,7 @@ public class ThreadPoolExecutorUtils {
      * @param corePoolSize 核心线程数, >= 1
      * @param threadNameFormat 线程名称格式(rpc-pool-%s 或者 rpc-pool-%d)
      */
-    public static ScheduledExecutorService createScheduled(int corePoolSize, String threadNameFormat){
+    public static ScheduledThreadPoolExecutor createScheduled(int corePoolSize, String threadNameFormat){
         return createScheduled(corePoolSize, threadNameFormat, null, null);
     }
 
@@ -514,7 +514,7 @@ public class ThreadPoolExecutorUtils {
      * @param corePoolSize 核心线程数, >= 1
      * @param threadFactory 线程工厂 (可以设置线程名称, 是否daemon等)
      */
-    public static ScheduledExecutorService createScheduled(int corePoolSize, ThreadFactory threadFactory){
+    public static ScheduledThreadPoolExecutor createScheduled(int corePoolSize, ThreadFactory threadFactory){
         return createScheduled(corePoolSize, threadFactory, null, null);
     }
 
@@ -539,7 +539,7 @@ public class ThreadPoolExecutorUtils {
      * @param rejectHandler nullable, 拒绝处理器, 默认: new ThreadPoolExecutor.AbortPolicy()
      * @param executeListener nullable, 监听执行前执行后的事件
      */
-    public static ScheduledExecutorService createScheduled(int corePoolSize,
+    public static ScheduledThreadPoolExecutor createScheduled(int corePoolSize,
                                                            String threadNameFormat,
                                                            RejectedExecutionHandler rejectHandler,
                                                            final ExecuteListener executeListener){
@@ -571,7 +571,7 @@ public class ThreadPoolExecutorUtils {
      * @param rejectHandler nullable, 拒绝处理器, 默认: new ThreadPoolExecutor.AbortPolicy()
      * @param executeListener nullable, 监听执行前执行后的事件
      */
-    public static ScheduledExecutorService createScheduled(int corePoolSize,
+    public static ScheduledThreadPoolExecutor createScheduled(int corePoolSize,
                                          ThreadFactory threadFactory,
                                          RejectedExecutionHandler rejectHandler,
                                          final ExecuteListener executeListener){

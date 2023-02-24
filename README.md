@@ -114,7 +114,7 @@
 [![Depends](https://img.shields.io/badge/Depends-glacijava--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
-> Tracing
+> Tracing utils
 
 #### [Tracing utils]((https://github.com/shepherdviolet/glacimon/blob/master/docs/trace/guide.md))
 
@@ -197,11 +197,25 @@
 [![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
-> Map - Bean converter
+> Map-to-Bean converter
 
 #### Conversion components
 
 * [MapXBean : Map - Bean Converter](https://github.com/shepherdviolet/glacimon/blob/master/docs/mapxbean/guide.md)
+
+<br>
+
+### Module: glacispring-mapip-core
+
+[![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacispring--mapio--api-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+[![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+
+> Configurable Map-to-Map mapping
+
+#### Mapping components
+
+* [MapIO : Map - Map mapping](https://github.com/shepherdviolet/glacimon/blob/master/docs/mapio/guide.md)
 
 <br>
 

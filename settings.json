@@ -3,11 +3,13 @@
     "glacimon-spi-api": "glacimon-spi-api",
     "glacimon-spi-core": "glacimon-spi-core",
     "glacijava-common": "glacijava-common",
+    "glacijava-misc": "glacijava-misc",
     "glacijava-crypto": "glacijava-crypto",
     "glacijava-trace": "glacijava-trace"
   },
   "public-spring": {
     "glacispring-common": "glacispring-common",
+    "glacispring-misc": "glacispring-misc",
     "glacispring-helper": "glacispring-helper",
     "glacispring-httpclient": "glacispring-httpclient",
     "glacispring-mapxbean": "glacispring-mapxbean",
@@ -16,11 +18,9 @@
     "glacispring-mapio-core": "glacispring-mapio-core"
   },
   "private-java": {
-    "glacimon-spi-test": "glacimon-spi-test",
-    "glacijava-private": "glacijava-private"
+    "glacimon-spi-test": "glacimon-spi-test"
   },
   "private-spring": {
-    "glacispring-private": "glacispring-private"
   },
   "public-bom": {
     "glacimon-bom": "glacimon-bom"

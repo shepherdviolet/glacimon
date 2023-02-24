@@ -5,13 +5,9 @@ dependencies {
 //    api platform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")//只对未指定版本的依赖生效
 //    api enforcedPlatform("com.github.shepherdviolet.glacimon:glacimon-bom:$version_glacimon")//强制覆盖依赖版本
 
-    // 依赖所有public-java模块
-    rootProject.subprojects.findAll({ it.PROJECT_GROUP in ['public-java'] }).forEach {
-        api project(":$it.name") { group project_group_id; version project_version }
-    }
-
     //required
     [
+            project(':glacijava-common') { group project_group_id; version project_version },
 
     ].forEach{ api it }
 

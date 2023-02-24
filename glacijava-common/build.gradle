@@ -7,7 +7,6 @@ dependencies {
 
     //required
     [
-            project(':glacimon-spi-api') { group project_group_id; version project_version },
 
     ].forEach{ api it }
 

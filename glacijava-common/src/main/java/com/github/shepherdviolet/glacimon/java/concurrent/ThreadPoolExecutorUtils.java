@@ -29,8 +29,8 @@ import java.util.concurrent.*;
  *
  * <p>
  * ThreadPoolExecutor笔记:<br>
- * 1.核心线程一般不会终止, 始终等待队列中的新任务.<br>
- * 2.非核心线程空闲时会终止, 等待超过设定时间(keepAliveTime)后结束.<br>
+ * 1.核心线程一般不会终止, 始终等待队列中的新任务. 注意!!! 核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). <br>
+ * 2.非核心线程空闲时会终止, 等待超过设定时间(keepAliveTime)后结束. <br>
  * 3.线程数达到corePoolSize之前, 每次执行(execute)都会创建一个新的核心线程.<br>
  * 4.当线程数达到corePoolSize之后, 会将任务(Runnable)加入工作队列(workQueue).<br>
  * --4.1.如果此时线程数为0, 则会创建一个非核心线程(仅此一个).<br>
@@ -52,7 +52,7 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>会超时的单线程池, 核心线程数0, 最大线程数1, 队列长度Integer.MAX_VALUE</p>
-     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0)</p>
+     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0), 超时后线程会结束. </p>
      *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
@@ -76,7 +76,7 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>会超时的单线程池, 核心线程数0, 最大线程数1, 队列长度Integer.MAX_VALUE</p>
-     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0)</p>
+     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0), 超时后线程会结束. </p>
      *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
@@ -100,7 +100,7 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>[特殊用途]惰性单线程池, 核心线程数0, 最大线程数1, 队列长度1, 策略DiscardPolicy</p>
-     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0)</p>
+     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0), 超时后线程会结束. </p>
      * <p></p>
      * <p>
      *     警告: 请明确用途后再使用!!!<br>
@@ -153,7 +153,7 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>[特殊用途]惰性单线程池, 核心线程数0, 最大线程数1, 队列长度1, 策略DiscardPolicy</p>
-     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0)</p>
+     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0), 超时后线程会结束. </p>
      * <p></p>
      * <p>
      *     警告: 请明确用途后再使用!!!<br>
@@ -207,6 +207,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>固定线程数的线程池, 核心线程数poolSize, 最大线程数poolSize, 队列长度Integer.MAX_VALUE</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -232,6 +233,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>固定线程数的线程池, 核心线程数poolSize, 最大线程数poolSize, 队列长度Integer.MAX_VALUE</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -257,6 +259,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>动态线程数的线程池, 核心线程数corePoolSize, 最大线程数maximumPoolSize, 队列长度0</p>
      * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -287,6 +290,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>动态线程数的线程池, 核心线程数corePoolSize, 最大线程数maximumPoolSize, 队列长度0</p>
      * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -317,6 +321,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建线程池</p>
      * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -357,6 +362,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建线程池</p>
      * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -405,6 +411,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建定时线程池</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -421,6 +428,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建定时线程池</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -437,6 +445,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建定时线程池</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -462,6 +471,7 @@ public class ThreadPoolExecutorUtils {
     /**
      * <p>创建定时线程池</p>
      * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
+     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>

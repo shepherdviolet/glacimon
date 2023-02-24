@@ -28,20 +28,24 @@ import java.util.concurrent.*;
  * <p>ThreadPoolExecutor线程池工具</p>
  *
  * <p>
- * ThreadPoolExecutor笔记:<br>
- * 1.核心线程一般不会终止, 始终等待队列中的新任务. 注意!!! 核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). <br>
- * 2.非核心线程空闲时会终止, 等待超过设定时间(keepAliveTime)后结束. <br>
- * 3.线程数达到corePoolSize之前, 每次执行(execute)都会创建一个新的核心线程.<br>
- * 4.当线程数达到corePoolSize之后, 会将任务(Runnable)加入工作队列(workQueue).<br>
- * --4.1.如果此时线程数为0, 则会创建一个非核心线程(仅此一个).<br>
- * --4.2.如果任务入队成功, 存活的线程会从队列中获取任务执行. <br>
- * --4.3.如果任务入队失败(BlockingQueue.offer(E e)返回false), 会尝试增加非核心线程. 如果增加失败, 拒绝任务并由RejectedExecutionHandler处理.<br>
- * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
- * --5.1.如果队列满了, 会尝试增加非核心线程. 如果增加失败, 拒绝任务并由RejectedExecutionHandler处理.<br>
- * --5.2.因此, 一般corePoolSize == maximumPoolSize, 或者corePoolSize = 0 maximumPoolSize = 1(会超时的单线程池).<br>
- * 6.使用SynchronousQueue工作队列时, 并发任务会直接增加线程(包括核心线程和非核心线程).<br>
- * --6.1.当并发量超过maximumPoolSize时, 拒绝任务并由RejectedExecutionHandler处理.<br>
- * --6.2.因此, 一般maximumPoolSize >= corePoolSize.<br>
+ * 1.特别注意!!! 核心线程会一直存在, 执行任务或挂起等待, 直到线程池shutdown. 即使线程池无人持有(引用), GC也不会销毁parking的线程.
+ *   非核心线程在任务完成且闲置超过指定时间(keepAliveTime)后结束. 用户线程(默认, 非Daemon线程)会阻止JVM正常停止(kill, 非kill -9),
+ *   直到所有的用户线程结束. <br>
+ * --1.1.如果线程池需要/可能反复创建, 且核心线程数大于0 (或非核心线程保活时间很长), 必须在合适的时候调用shutdown/shutdownNow方法关闭
+ *       线程池, 否则核心线程会一直存在. <br>
+ * --1.2.如果线程池不会反复创建, 但核心线程数大于0的 (或非核心线程保活时间很长), 可以选择设置为Daemon线程, 或者在合适的时候调用
+ *       shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+ * 2.线程数达到corePoolSize之前, 每次执行(execute)都会创建一个新的核心线程.<br>
+ * 3.当线程数达到corePoolSize之后, 会将任务(Runnable)加入工作队列(workQueue).<br>
+ * --3.1.如果此时线程数为0, 则会创建一个非核心线程(仅此一个).<br>
+ * --3.2.如果任务入队成功, 存活的线程会从队列中获取任务执行. <br>
+ * --3.3.如果任务入队失败(BlockingQueue.offer(E e)返回false), 会尝试增加非核心线程. 如果增加失败, 拒绝任务并由RejectedExecutionHandler处理.<br>
+ * 4.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
+ * --4.1.如果队列满了, 会尝试增加非核心线程. 如果增加失败, 拒绝任务并由RejectedExecutionHandler处理.<br>
+ * --4.2.因此, 一般corePoolSize == maximumPoolSize, 或者corePoolSize = 0 maximumPoolSize = 1(会超时的单线程池).<br>
+ * 5.使用SynchronousQueue工作队列时, 并发任务会直接增加线程(包括核心线程和非核心线程).<br>
+ * --5.1.当并发量超过maximumPoolSize时, 拒绝任务并由RejectedExecutionHandler处理.<br>
+ * --5.2.因此, 一般maximumPoolSize >= corePoolSize.<br>
  * </p>
  *
  * @author shepherdviolet
@@ -52,7 +56,14 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>会超时的单线程池, 核心线程数0, 最大线程数1, 队列长度Integer.MAX_VALUE</p>
-     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0), 超时后线程会结束. </p>
+     *
+     * <p>
+     * 如果线程池需要/可能反复创建, 且keepAliveSeconds较大, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会存在很久. <br>
+     * 如果线程池不会反复创建, 但keepAliveSeconds较大, 可以选择设置为Daemon线程, 或者在合适的时候调用shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数为0, 所以如果keepAliveSeconds较小的话, 不管它也没事.
+     * </p>
+     *
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
@@ -76,7 +87,14 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>会超时的单线程池, 核心线程数0, 最大线程数1, 队列长度Integer.MAX_VALUE</p>
-     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0), 超时后线程会结束. </p>
+     *
+     * <p>
+     * 如果线程池需要/可能反复创建, 且keepAliveSeconds较大, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会存在很久. <br>
+     * 如果线程池不会反复创建, 但keepAliveSeconds较大, 可以选择设置为Daemon线程, 或者在合适的时候调用shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数为0, 所以如果keepAliveSeconds较小的话, 不管它也没事.
+     * </p>
+     *
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
@@ -100,15 +118,22 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>[特殊用途]惰性单线程池, 核心线程数0, 最大线程数1, 队列长度1, 策略DiscardPolicy</p>
-     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0), 超时后线程会结束. </p>
-     * <p></p>
+     *
+     * <p>
+     * 如果线程池需要/可能反复创建, 且keepAliveSeconds较大, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会存在很久. <br>
+     * 如果线程池不会反复创建, 但keepAliveSeconds较大, 可以选择设置为Daemon线程, 或者在合适的时候调用shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数为0, 所以如果keepAliveSeconds较小的话, 不管它也没事.
+     * </p>
+     *
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
+     *
      * <p>
      *     警告: 请明确用途后再使用!!!<br>
      *     WARNING: This ThreadPool should be used with caution!!!<br>
      * </p>
-     * <p></p>
+     *
      * <p>特性:</p>
-     * <p></p>
+     *
      * <p>
      * 1.单线程, 同时只能执行一个任务, 线程有存活期限.<br>
      * 2.队列长度1, 同时执行(execute)多个任务时, 至多执行2个, 多余的任务会被抛弃(且不会抛出异常).<br>
@@ -118,15 +143,15 @@ public class ThreadPoolExecutorUtils {
      * 队列, 能保证队列中的元素都被及时处理(每次execute之后必然会有一次完整的处理流程); 因为核心线程数0, 闲时能释放线程, 比无限
      * 循环的实现方式占资源少, 比定时执行的实现方式实时性高.<br>
      * </p>
-     * <p></p>
+     *
      * <p>笔记:</p>
-     * <p></p>
+     *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
      * --5.1.如果队列满了, 会尝试增加非核心线程. 如果增加失败, 拒绝任务并由RejectedExecutionHandler处理.<br>
      * --5.2.因此, 一般corePoolSize == maximumPoolSize, 或者corePoolSize = 0 maximumPoolSize = 1(会超时的单线程池).<br>
      * </p>
-     * <p></p>
+     *
      * <p>如果忽略掉本工具类提供的新特性, 可以简化为:</p>
      * <pre>
      *          // 这么写就没有本工具类提供的新特性了: 自定义线程名, 执行前后监听, 统一管理和销毁...
@@ -153,15 +178,22 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>[特殊用途]惰性单线程池, 核心线程数0, 最大线程数1, 队列长度1, 策略DiscardPolicy</p>
-     * <p>这个线程池不会阻止JVM自然结束(核心线程数为0), 超时后线程会结束. </p>
-     * <p></p>
+     *
+     * <p>
+     * 如果线程池需要/可能反复创建, 且keepAliveSeconds较大, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会存在很久. <br>
+     * 如果线程池不会反复创建, 但keepAliveSeconds较大, 可以选择设置为Daemon线程, 或者在合适的时候调用shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数为0, 所以如果keepAliveSeconds较小的话, 不管它也没事.
+     * </p>
+     *
+     * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
+     *
      * <p>
      *     警告: 请明确用途后再使用!!!<br>
      *     WARNING: This ThreadPool should be used with caution!!!<br>
      * </p>
-     * <p></p>
+     *
      * <p>特性:</p>
-     * <p></p>
+     *
      * <p>
      * 1.单线程, 同时只能执行一个任务, 线程有存活期限.<br>
      * 2.队列长度1, 同时执行(execute)多个任务时, 至多执行2个, 多余的任务会被抛弃(且不会抛出异常).<br>
@@ -171,15 +203,15 @@ public class ThreadPoolExecutorUtils {
      * 队列, 能保证队列中的元素都被及时处理(每次execute之后必然会有一次完整的处理流程); 因为核心线程数0, 闲时能释放线程, 比无限
      * 循环的实现方式占资源少, 比定时执行的实现方式实时性高.<br>
      * </p>
-     * <p></p>
+     *
      * <p>笔记:</p>
-     * <p></p>
+     *
      * <p>
      * 5.使用LinkedBlockingQueue工作队列时, 在填满核心线程后, 后续任务会加入队列, 队列满之前都不会尝试增加非核心线程.<br>
      * --5.1.如果队列满了, 会尝试增加非核心线程. 如果增加失败, 拒绝任务并由RejectedExecutionHandler处理.<br>
      * --5.2.因此, 一般corePoolSize == maximumPoolSize, 或者corePoolSize = 0 maximumPoolSize = 1(会超时的单线程池).<br>
      * </p>
-     * <p></p>
+     *
      * <p>如果忽略掉本工具类提供的新特性, 可以简化为:</p>
      * <pre>
      *          // 这么写就没有本工具类提供的新特性了: 自定义线程名, 执行前后监听, 统一管理和销毁...
@@ -206,8 +238,14 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>固定线程数的线程池, 核心线程数poolSize, 最大线程数poolSize, 队列长度Integer.MAX_VALUE</p>
-     * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!!!!!注意!!!!!! <br>
+     * 如果线程池需要/可能反复创建, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 也可以选择设置为Daemon线程(shutdown更好), 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数一定大于0, 所以至少要采取一种措施.
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -232,8 +270,14 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>固定线程数的线程池, 核心线程数poolSize, 最大线程数poolSize, 队列长度Integer.MAX_VALUE</p>
-     * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!!!!!注意!!!!!! <br>
+     * 如果线程池需要/可能反复创建, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 也可以选择设置为Daemon线程(shutdown更好), 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数一定大于0, 所以至少要采取一种措施.
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -258,8 +302,13 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>动态线程数的线程池, 核心线程数corePoolSize, 最大线程数maximumPoolSize, 队列长度0</p>
-     * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!注意!!
+     * 如果线程池需要/可能反复创建, 且corePoolSize大于0 (或keepAliveSeconds较大), 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 但corePoolSize大于0 (或keepAliveSeconds较大), 可以选择设置为Daemon线程, 或者在合适的时候调用shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -289,8 +338,13 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>动态线程数的线程池, 核心线程数corePoolSize, 最大线程数maximumPoolSize, 队列长度0</p>
-     * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!注意!!
+     * 如果线程池需要/可能反复创建, 且corePoolSize大于0 (或keepAliveSeconds较大), 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 但corePoolSize大于0 (或keepAliveSeconds较大), 可以选择设置为Daemon线程, 或者在合适的时候调用shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -320,8 +374,13 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>创建线程池</p>
-     * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!注意!!
+     * 如果线程池需要/可能反复创建, 且corePoolSize大于0 (或keepAliveSeconds较大), 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 但corePoolSize大于0 (或keepAliveSeconds较大), 可以选择设置为Daemon线程, 或者在合适的时候调用shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -361,8 +420,13 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>创建线程池</p>
-     * <p>注意!!!这个线程池可能会阻止JVM自然结束(当核心线程数大于0时), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!注意!!
+     * 如果线程池需要/可能反复创建, 且corePoolSize大于0 (或keepAliveSeconds较大), 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 但corePoolSize大于0 (或keepAliveSeconds较大), 可以选择设置为Daemon线程, 或者在合适的时候调用shutdown/shutdownNow方法, 否则会影响JVM正常停止. <br>
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -410,8 +474,14 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>创建定时线程池</p>
-     * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!!!!!注意!!!!!! <br>
+     * 如果线程池需要/可能反复创建, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 也可以选择设置为Daemon线程(shutdown更好), 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数一定大于0, 所以至少要采取一种措施.
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -427,8 +497,14 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>创建定时线程池</p>
-     * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!!!!!注意!!!!!! <br>
+     * 如果线程池需要/可能反复创建, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 也可以选择设置为Daemon线程(shutdown更好), 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数一定大于0, 所以至少要采取一种措施.
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -444,8 +520,14 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>创建定时线程池</p>
-     * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!!!!!注意!!!!!! <br>
+     * 如果线程池需要/可能反复创建, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 也可以选择设置为Daemon线程(shutdown更好), 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数一定大于0, 所以至少要采取一种措施.
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>
@@ -470,8 +552,14 @@ public class ThreadPoolExecutorUtils {
 
     /**
      * <p>创建定时线程池</p>
-     * <p>注意!!!这个线程池会阻止JVM自然结束(核心线程数大于0), 可以考虑设置为守护线程(daemon=true), 或者在合适的时候停止线程池(ExecutorService#shutdown)</p>
-     * <p>注意!!!核心线程会一直存在, 直到线程池被shutdown (当线程池无人持有时, GC并不能销毁核心线程). </p>
+     *
+     * <p>
+     * !!!!!!注意!!!!!! <br>
+     * 如果线程池需要/可能反复创建, 必须在合适的时候调用shutdown/shutdownNow方法关闭线程池, 否则废弃线程池中的线程会一直存在. <br>
+     * 如果线程池不会反复创建, 也可以选择设置为Daemon线程(shutdown更好), 否则会影响JVM正常停止. <br>
+     * 因为这个线程池的核心线程数一定大于0, 所以至少要采取一种措施.
+     * </p>
+     *
      * <p>通过ThreadFactory设置守护线程示例: new GuavaThreadFactoryBuilder().setNameFormat("name-%s").setDaemon(true).build()</p>
      *
      * <p>

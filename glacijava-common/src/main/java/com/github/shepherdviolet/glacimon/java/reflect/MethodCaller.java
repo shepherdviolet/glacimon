@@ -131,12 +131,12 @@ public class MethodCaller {
 
     // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private String callerClass;
-    private String callerMethodName;
-    private String callerFileName;
-    private int callerLineNumber;
-    private int callerIndex;
-    private StackTraceElement[] stackTraces;
+    private final String callerClass;
+    private final String callerMethodName;
+    private final String callerFileName;
+    private final int callerLineNumber;
+    private final int callerIndex;
+    private final StackTraceElement[] stackTraces;
 
     private MethodCaller(StackTraceElement caller, int callerIndex, StackTraceElement[] stackTraces) {
         this.callerClass = caller.getClassName();

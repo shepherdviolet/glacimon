@@ -46,6 +46,7 @@
 
 * Check / Time / Closeable / Properties ... utils
 * [LambdaBuilder : Create Map/Set/Object/List with Lambda Expression](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/misc/LambdaBuilder.java)
+* [StreamingBuilder : Create Map/Set/Object/List in stream style](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/misc/LambdaBuilder.java)
 
 #### [Crypto basic utils](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
 
@@ -93,6 +94,14 @@
 #### [Helpers](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/helper)
 
 * [LogbackHelper](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/helper/logback/LogbackHelper.java)
+
+<br>
+
+### Module: glacijava-misc
+
+[![Depends](https://img.shields.io/badge/Depends-glacimon--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+
+> Uncommonly or incomplete utils for JavaSE
 
 <br>
 

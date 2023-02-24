@@ -22,7 +22,6 @@ package com.github.shepherdviolet.glacimon.spring.basic.servlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
-import com.github.shepherdviolet.glacimon.java.misc.CloseableManageUtils;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -32,8 +31,7 @@ import javax.servlet.ServletContextListener;
  *
  * <p>
  *     Glacispring库统一Servlet监听器<br>
- *     1.销毁所有在CloseableManageUtils注册的Closeable实例<br>
- *     2.销毁所有由ThreadPoolExecutorUtils创建的Executor<br>
+ *     1.销毁所有由ThreadPoolExecutorUtils创建的Executor<br>
  * </p>
  *
  * <p>建议使用本库的Servlet工程, 注册本监听器.</p>
@@ -80,7 +78,6 @@ public class GlacispringServletContextListener implements ServletContextListener
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         logger.info("GlacispringServletContextListener destroy");
-        CloseableManageUtils.closeAll();
         ThreadPoolExecutorUtils.shutdownNowAll();
     }
 

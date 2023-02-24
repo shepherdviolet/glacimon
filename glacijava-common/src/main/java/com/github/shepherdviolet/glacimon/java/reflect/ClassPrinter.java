@@ -125,7 +125,7 @@ public class ClassPrinter {
 
     private static void printClassMethods(Class<?> clazz, StringBuilder stringBuilder, Params params) {
         stringBuilder.append("    ").append(params.buildMethodTitle()).append('\n');
-        Method[] methods = ReflectCache.getDeclaredMethods(clazz);
+        Method[] methods = clazz.getDeclaredMethods();
         if (params.isSorted()) {
             Arrays.sort(methods, METHOD_COMPARATOR);
         }
@@ -164,7 +164,7 @@ public class ClassPrinter {
 
     private static void printClassConstructors(Class<?> clazz, StringBuilder stringBuilder, Params params) {
         stringBuilder.append("    ").append(params.buildConstructorTitle()).append('\n');
-        Constructor<?>[] constructors = ReflectCache.getDeclaredConstructors(clazz);
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
         if (params.isSorted()) {
             Arrays.sort(constructors, CONSTRUCTOR_COMPARATOR);
         }
@@ -197,7 +197,7 @@ public class ClassPrinter {
 
     private static void printClassFields(Class<?> clazz, Object obj, StringBuilder stringBuilder, Params params) throws IllegalAccessException {
         stringBuilder.append("    ").append(params.buildFieldTitle()).append('\n');
-        Field[] fields = ReflectCache.getDeclaredFields(clazz);
+        Field[] fields = clazz.getDeclaredFields();
         if (params.isSorted()) {
             Arrays.sort(fields, FIELD_COMPARATOR);
         }

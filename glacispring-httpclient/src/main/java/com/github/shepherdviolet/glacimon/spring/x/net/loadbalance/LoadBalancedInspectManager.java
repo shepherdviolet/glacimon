@@ -26,7 +26,6 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.Tel
 import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
-import com.github.shepherdviolet.glacimon.java.misc.CloseableManageUtils;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -37,12 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * <p>均衡负载--网络状态探测管理器</p>
  *
- * <p>
- *     注意!!!!!!<br>
- *     1.如果你是Servlet项目, 可以注册com.github.shepherdviolet.glacimon.spring.basic.servlet.GlacispringServletContextListener监听器, 监听器会帮你
- *     自动销毁本探测器.<br>
- *     2.如果不是Servlet项目或没有注册监听器, 请在服务停止的时候调用close()方法销毁本实例, 以释放线程池.<br>
- * </p>
+ * <p>请在服务停止的时候调用close()方法销毁本实例, 以释放线程池.</p>
  *
  * <pre>{@code
  *      //实例化
@@ -101,8 +95,6 @@ public class LoadBalancedInspectManager implements Closeable {
     public LoadBalancedInspectManager(boolean autoStart) {
         //默认telnet探测器
         inspectors.add(new TelnetLoadBalanceInspector());
-        //注册到管理器, 便于集中销毁
-        CloseableManageUtils.register(this);
         //自动开始
         if (autoStart) {
             start();

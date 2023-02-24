@@ -194,11 +194,11 @@ public class BeanInfoUtils {
 
     public static class PropertyInfo {
 
-        private String propertyName;
-        private Class<?> propertyClass;
-        private Type propertyType;
-        private Method readMethod;
-        private Method writeMethod;
+        private final String propertyName;
+        private final Class<?> propertyClass;
+        private final Type propertyType;
+        private final Method readMethod;
+        private final Method writeMethod;
 
         private PropertyInfo(String propertyName, Class<?> propertyClass, Type propertyType, Method readMethod, Method writeMethod) {
             this.propertyName = propertyName;

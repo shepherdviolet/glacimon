@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2022 S.Violet
+ * Copyright (C) 2022-2023 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.java.datastruc;
+package com.github.shepherdviolet.glacimon.java.concurrent;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -176,6 +176,16 @@
 
 <br>
 
+### Module: glacispring-misc
+
+[![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
+
+> Uncommonly or incomplete utils for Java Spring and third-party libraries
+
+#### [Misc utils (uncommonly or incomplete)](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-misc/src/main/java/com/github/shepherdviolet/glacimon/spring)
+
+<br>
+
 ### Module: glacispring-txtimer
 
 [![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)

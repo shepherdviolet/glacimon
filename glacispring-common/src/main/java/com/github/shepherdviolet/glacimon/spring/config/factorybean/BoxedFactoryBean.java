@@ -28,8 +28,8 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class BoxedFactoryBean implements FactoryBean {
 
-    private Class<?> type;
-    private Object obj;
+    private final Class<?> type;
+    private final Object obj;
 
     public BoxedFactoryBean(Class<?> type, Object obj) {
         this.type = type;

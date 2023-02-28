@@ -13,9 +13,7 @@
     "glacispring-helper": "glacispring-helper",
     "glacispring-httpclient": "glacispring-httpclient",
     "glacispring-mapxbean": "glacispring-mapxbean",
-    "glacispring-txtimer": "glacispring-txtimer",
-    "glacispring-mapio-api": "glacispring-mapio-api",
-    "glacispring-mapio-core": "glacispring-mapio-core"
+    "glacispring-txtimer": "glacispring-txtimer"
   },
   "private-java": {
     "glacimon-spi-test": "glacimon-spi-test"

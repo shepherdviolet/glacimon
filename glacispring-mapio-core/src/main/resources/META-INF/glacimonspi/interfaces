@@ -1,6 +1,0 @@
-
-# MapIO
-com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.rule.RuleAnnotationManager
-com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.FilterProvider
-com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.basic.ExceptionFactory
-com.github.shepherdviolet.glacimon.spring.x.conversion.mapio.filter.Filter

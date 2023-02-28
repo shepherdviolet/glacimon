@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,9 +48,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * <p>建议及注意事项 ================================================================================================</p>
  * <p>
  *     1. 正确地销毁Grocer: Grocer内部维护了三个线程池, 如果你需要重复创建-销毁Grocer实例, 务必在销毁时调用Grocer#close方法. <br>
- *     2. '缓存容量'设置建议: 缓存容量 >= fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
- *        例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=30, 补货平均耗时0.5s, 补货阈值0.6,
- *        则缓存容量 >= 30 * 0.5 / 0.6 = 40, 缓存容量建议设置为25以上. <br>
+ *     2. '缓存容量'设置建议: 缓存容量 >= 2 * fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
+ *        例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=120, 补货平均耗时0.2s, 补货阈值0.6,
+ *        则缓存容量 >= 2 * 120 * 0.2 / 0.6 = 80, 缓存容量建议设置为80以上. <br>
  * </p>
  * <p></p>
  * <p>补货器Purchaser实现说明 =======================================================================================</p>
@@ -124,7 +123,7 @@ public class Grocer<E, T extends Throwable> implements Closeable {
     private static final int CACHE_WARNING_THRESHOLD = 1; // 缓存告警值
     private static final long BACKLOG_DIGESTION_TIME = 500L; // 积压消化时间 (在大批量补货后, 留给fetch等待线程返回的时间)
 
-    private static final int CACHE_SIZE = 10; // 缓存容量
+    private static final int CACHE_SIZE = 40; // 缓存容量(默认适用于50TPS, 补货耗时0.2s的场景)
     private static final float PURCHASE_THRESHOLD_PERCENT = 0.5f; // 补货阈值(百分比)
     private static final int PURCHASE_THREAD_NUM = 16; // 补货线程数
     private static final int MAX_PURCHASE_QUANTITY = 10000; // 最大补货数量
@@ -183,9 +182,9 @@ public class Grocer<E, T extends Throwable> implements Closeable {
      * <p>cacheSize设置建议:</p>
      * <p></p>
      * <p>
-     *     缓存容量 >= fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
-     *     例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=30, 补货平均耗时0.5s, 补货阈值0.6,
-     *     则缓存容量 >= 30 * 0.5 / 0.6 = 40, 缓存容量建议设置为25以上.
+     *     缓存容量'设置建议: 缓存容量 >= 2 * fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
+     *     例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=120, 补货平均耗时0.2s, 补货阈值0.6,
+     *     则缓存容量 >= 2 * 120 * 0.2 / 0.6 = 60, 缓存容量建议设置为60以上.
      * </p>
      * <p></p>
      * <p>关于maxPurchaseQuantity:</p>
@@ -208,11 +207,11 @@ public class Grocer<E, T extends Throwable> implements Closeable {
      * </p>
      *
      * @param purchaser 补货器, Grocer从这个补货器获取新的元素
-     * @param cacheSize 默认的缓存容量(每个key都有一个缓存)
-     * @param purchaseThresholdPercent 设置默认的补货阈值. 例如: 0.7表示当缓存中元素数<=70%时, 会触发补货流程.
-     * @param purchaseThreadNum 设置补货流程的工作线程数
-     * @param maxPurchaseQuantity 设置每次补货获取的最大数量.
-     * @param elementExpireSeconds 设置元素过期时间
+     * @param cacheSize 默认的缓存容量(每个key都有一个缓存), 默认40
+     * @param purchaseThresholdPercent 设置默认的补货阈值, 默认0.5. 例如: 0.7表示当缓存中元素数<=70%时, 会触发补货流程.
+     * @param purchaseThreadNum 设置补货流程的工作线程数, 默认16
+     * @param maxPurchaseQuantity 设置每次补货获取的最大数量, 默认10000
+     * @param elementExpireSeconds 设置元素过期时间, 默认3600s
      */
     @SuppressWarnings("resource")
     public Grocer(Purchaser<E, T> purchaser, int cacheSize, float purchaseThresholdPercent, int purchaseThreadNum, int maxPurchaseQuantity, int elementExpireSeconds) {
@@ -273,11 +272,13 @@ public class Grocer<E, T extends Throwable> implements Closeable {
     /**
      * <p>设置默认的缓存容量(每个key都有一个缓存).</p>
      * <p></p>
-     * <p>缓存容量设置建议: 缓存容量 >= fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
-     * 例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=30, 补货平均耗时0.5s, 补货阈值0.6,
-     * 则缓存容量 >= 30 * 0.5 / 0.6 = 40, 缓存容量建议设置为25以上.</p>
+     * <p>
+     *     缓存容量'设置建议: 缓存容量 >= 2 * fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
+     *     例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=120, 补货平均耗时0.2s, 补货阈值0.6,
+     *     则缓存容量 >= 2 * 120 * 0.2 / 0.6 = 60, 缓存容量建议设置为60以上.
+     * </p>
      *
-     * @param cacheSize 缓存容量, 默认10, [4, ∞)
+     * @param cacheSize 缓存容量, 默认40, [4, ∞)
      */
     public Grocer<E, T> setCacheSize(int cacheSize) {
         setCacheSizeAndThreshold(cacheSize, purchaseThresholdPercent);
@@ -288,9 +289,11 @@ public class Grocer<E, T extends Throwable> implements Closeable {
      * <p>设置默认的补货阈值.</p>
      * <p>例如: 0.7表示当缓存中元素数<=70%时, 会触发补货流程. </p>
      * <p></p>
-     * <p>缓存容量设置建议: 缓存容量 >= fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
-     * 例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=30, 补货平均耗时0.5s, 补货阈值0.6,
-     * 则缓存容量 >= 30 * 0.5 / 0.6 = 40, 缓存容量建议设置为25以上.</p>
+     * <p>
+     *     缓存容量'设置建议: 缓存容量 >= 2 * fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
+     *     例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=120, 补货平均耗时0.2s, 补货阈值0.6,
+     *     则缓存容量 >= 2 * 120 * 0.2 / 0.6 = 60, 缓存容量建议设置为60以上.
+     * </p>
      *
      * @param purchaseThresholdPercent 补货阈值, 默认0.5, (0.0, 1.0)
      */
@@ -332,11 +335,13 @@ public class Grocer<E, T extends Throwable> implements Closeable {
      * <p>设置指定KEY的补货阈值. 例如: 0.7表示当缓存中元素数<=70%时, 会触发补货流程</p>
      * <p>如果在指定KEY获取(fetch)前调用本方法, 会提前触发补货流程.</p>
      * <p></p>
-     * <p>缓存容量设置建议: 缓存容量 >= fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
-     * 例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=30, 补货平均耗时0.5s, 补货阈值0.6,
-     * 则缓存容量 >= 30 * 0.5 / 0.6 = 40, 缓存容量建议设置为25以上.</p>
+     * <p>
+     *     缓存容量'设置建议: 缓存容量 >= 2 * fetch平均速率(每秒) * 补货平均耗时(秒) / 补货阈值(purchaseThresholdPercent).
+     *     例如: Grocer作为序列号缓存, 每一次请求产生一个序列号, 系统预估请求TPS=120, 补货平均耗时0.2s, 补货阈值0.6,
+     *     则缓存容量 >= 2 * 120 * 0.2 / 0.6 = 60, 缓存容量建议设置为60以上.
+     * </p>
      * @param key key
-     * @param cacheSize 缓存容量, 默认10, [4, ∞)
+     * @param cacheSize 缓存容量, 默认40, [4, ∞)
      * @param purchaseThresholdPercent 补货阈值, 默认0.5, (0.0, 1.0)
      */
     public Grocer<E, T> setCacheSizeAndPurchaseThreshold(String key, int cacheSize, float purchaseThresholdPercent) {
@@ -379,7 +384,7 @@ public class Grocer<E, T extends Throwable> implements Closeable {
      * 注意, 当maxPurchaseQuantity < cacheSize时, 最大补货数为cacheSize. <br>
      * </p>
      *
-     * @param maxPurchaseQuantity 每次补货获取的最大数量
+     * @param maxPurchaseQuantity 每次补货获取的最大数量, 默认10000
      */
     public Grocer<E, T> setMaxPurchaseQuantity(int maxPurchaseQuantity) {
         if (maxPurchaseQuantity < 4) {
@@ -395,11 +400,11 @@ public class Grocer<E, T extends Throwable> implements Closeable {
      * 当缓存中的元素数量大于缓存数量时, 超出的部分会被清理; 当一个缓存在elementExpireSeconds秒内消耗掉的元素数量小于缓存容量时,
      * 会过期掉一部分元素, 使得这个周期内的元素消耗数达到缓存容量.</p>
      *
-     * @param elementExpireSeconds 元素过期时间, 单位秒, [60, ∞)
+     * @param elementExpireSeconds 元素过期时间, 默认3600s, 单位秒, [10, ∞)
      */
     public Grocer<E, T> setElementExpireSeconds(long elementExpireSeconds) {
-        if (elementExpireSeconds < 60L) {
-            throw new IllegalArgumentException("elementExpireSeconds < 60s");
+        if (elementExpireSeconds < 10L) {
+            throw new IllegalArgumentException("elementExpireSeconds < 10s");
         }
         synchronized (sweepThreadPool) {
             if (destroyed) {
@@ -455,10 +460,9 @@ public class Grocer<E, T extends Throwable> implements Closeable {
 
     /**
      * 停止缓存服务(调用后无法再次工作)
-     * @throws IOException exception
      */
     @Override
-    public void close() throws IOException {
+    public void close() {
         destroyed = true;
         try {
             purchaseDispatchThreadPool.shutdownNow();
@@ -768,7 +772,7 @@ public class Grocer<E, T extends Throwable> implements Closeable {
             Purchaser<E, T> purchaser = Grocer.this.purchaser;
             if (purchaser == null) {
                 // 设置补货错误
-                setError(calculateErrorUntil(null), null,
+                setError(calculateDefaultErrorUntil(null), null,
                         new IllegalStateException("Purchaser is null, you must provide a Purchaser for the Grocer"));
                 return;
             }
@@ -779,14 +783,14 @@ public class Grocer<E, T extends Throwable> implements Closeable {
                 goods = purchaser.purchase(key, quantity);
             } catch (Throwable t) {
                 // 设置补货错误
-                setError(calculateErrorUntil(purchaser), null,
+                setError(calculateDefaultErrorUntil(purchaser), null,
                         new RuntimeException("Catch an unexpected exception thrown by the purchaser when executing the purchase method", t));
                 return;
             }
 
             if (goods == null) {
                 // 设置补货错误
-                setError(calculateErrorUntil(purchaser), null,
+                setError(calculateDefaultErrorUntil(purchaser), null,
                         new RuntimeException("Wrong purchaser implementation, Purchaser#purchase() returns null"));
                 return;
             }
@@ -880,7 +884,7 @@ public class Grocer<E, T extends Throwable> implements Closeable {
         /**
          * 计算补货错误维持到什么时候
          */
-        private long calculateErrorUntil(Purchaser<E, T> purchaser) {
+        private long calculateDefaultErrorUntil(Purchaser<E, T> purchaser) {
             long errorDuration = defaultErrorDuration;
             if (purchaser == null) {
                 return System.currentTimeMillis() + errorDuration;

@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class LoadRunner implements AutoCloseable, Closeable {
 
-    private final Task task;
+    private Task task;
 
     private volatile boolean started = false;
     private volatile int maxThreadNum = 0;
@@ -53,25 +53,31 @@ public class LoadRunner implements AutoCloseable, Closeable {
     private final ExecutorService dispatcherThreadPool = ThreadPoolExecutorUtils.createLazy(10, "LoadRunner-dispatcher");
     private final ExecutorService workerThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 10, "LoadRunner-worker-%s");
 
+    public LoadRunner() {
+    }
+
     /**
      * @param task 执行的任务
      * @param maxThreadNum 最大线程数
      * @param intervalMillis 单线程执行间隔
      */
+    @SuppressWarnings("resource")
     public LoadRunner(Task task, int maxThreadNum, int intervalMillis) {
+        setTask(task);
+        setMaxThreadNum(maxThreadNum);
+        setIntervalMillis(intervalMillis);
+    }
+
+    /**
+     * 设置执行的任务
+     * @param task 任务
+     */
+    public LoadRunner setTask(Task task) {
         if (task == null) {
             throw new IllegalArgumentException("task is null");
         }
-        if (maxThreadNum < 0) {
-            throw new IllegalArgumentException("maxThreadNum < 0");
-        }
-        if (intervalMillis < 0) {
-            throw new IllegalArgumentException("intervalMillis < 0");
-        }
-
         this.task = task;
-        this.maxThreadNum = maxThreadNum;
-        this.intervalMillis = intervalMillis;
+        return this;
     }
 
     /**
@@ -79,6 +85,9 @@ public class LoadRunner implements AutoCloseable, Closeable {
      * @param maxThreadNum 最大执行线程数
      */
     public LoadRunner setMaxThreadNum(int maxThreadNum) {
+        if (maxThreadNum < 0) {
+            throw new IllegalArgumentException("maxThreadNum < 0");
+        }
         this.maxThreadNum = maxThreadNum;
         if (started) {
             dispatcherThreadPool.execute(DISPATCH_TASK);
@@ -91,6 +100,9 @@ public class LoadRunner implements AutoCloseable, Closeable {
      * @param intervalMillis 每个线程执行任务的间隔, ms
      */
     public LoadRunner setIntervalMillis(int intervalMillis) {
+        if (intervalMillis < 0) {
+            throw new IllegalArgumentException("intervalMillis < 0");
+        }
         this.intervalMillis = intervalMillis;
         return this;
     }
@@ -100,6 +112,9 @@ public class LoadRunner implements AutoCloseable, Closeable {
      * @param startupDelay 启动延迟, ms
      */
     public LoadRunner setStartupDelay(long startupDelay){
+        if (startupDelay < 0) {
+            throw new IllegalArgumentException("startupDelay < 0");
+        }
         this.startupDelay = startupDelay;
         return this;
     }
@@ -109,6 +124,9 @@ public class LoadRunner implements AutoCloseable, Closeable {
      * @param createThreadDelay 线程创建延迟, ms
      */
     public LoadRunner setCreateThreadDelay(long createThreadDelay){
+        if (createThreadDelay < 0) {
+            throw new IllegalArgumentException("createThreadDelay < 0");
+        }
         this.createThreadDelay = createThreadDelay;
         return this;
     }
@@ -117,6 +135,9 @@ public class LoadRunner implements AutoCloseable, Closeable {
      * 启动
      */
     public LoadRunner start() {
+        if (task == null) {
+            throw new IllegalArgumentException("task is null");
+        }
         started = true;
         dispatcherThreadPool.execute(DISPATCH_TASK);
         return this;
@@ -167,17 +188,28 @@ public class LoadRunner implements AutoCloseable, Closeable {
                     public void run() {
                         int id = currentThreadNum.getAndIncrement();
                         while (started && id < maxThreadNum) {
-                            try {
-                                if (intervalMillis > 0L) {
+                            Task task = LoadRunner.this.task;
+                            if (task == null) {
+                                try {
                                     //noinspection BusyWait
-                                    Thread.sleep(intervalMillis);
+                                    Thread.sleep(1000L);
+                                } catch (InterruptedException ignore) {
                                 }
+                                continue;
+                            }
+                            try {
                                 task.onExecute(id);
-                            } catch (InterruptedException ignore) {
                             } catch (Throwable t) {
                                 try {
                                     task.onException(id, t);
                                 } catch (Throwable ignore) {
+                                }
+                            }
+                            if (intervalMillis > 0L) {
+                                try {
+                                    //noinspection BusyWait
+                                    Thread.sleep(intervalMillis);
+                                } catch (InterruptedException ignore) {
                                 }
                             }
                         }
@@ -197,7 +229,7 @@ public class LoadRunner implements AutoCloseable, Closeable {
         /**
          * 任务执行代码
          */
-        void onExecute(int id);
+        void onExecute(int id) throws Throwable;
 
         /**
          * 异常处理

@@ -931,6 +931,18 @@ public class Grocer<E, T extends Throwable> implements Closeable {
             return new Goods<>(null, error, errorDuration);
         }
 
+        public Collection<E> getElements() {
+            return elements;
+        }
+
+        public T getError() {
+            return error;
+        }
+
+        public long getErrorDuration() {
+            return errorDuration;
+        }
+
     }
 
     public interface Purchaser<E, T extends Throwable> {

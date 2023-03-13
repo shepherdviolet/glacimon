@@ -58,10 +58,8 @@ import java.util.concurrent.atomic.AtomicLong;
  *     方法1. purchase方法: 实现根据指定KEY和数量, 返回所需元素的逻辑. 如果成功, 则返回Goods.success(), 注意null元素无效; 如果失败,
  *        则返回Goods.fail(), 设置异常和'补货错误延迟时间', 例如 Goods.fail(new MyException("补货失败"), 2000) , 表示停止补货
  *        2秒, 同时fetch方法在此期间会抛出new MyException("补货失败")异常; 如果该方法返回null或者抛出异常, 补货也视为失败, '补货
- *        错误延迟时间'为默认值(Purchaser#defaultErrorDuration或Grocer.defaultErrorDuration). <br>
- *     方法2. defaultErrorDuration方法: 返回默认的'补货错误延迟时间'. (即purchase方法抛出异常或返回null时的错误延迟时间) <br>
+ *        错误延迟时间'为默认值(Grocer#setDefaultErrorDuration). <br>
  *     注意1. purchase方法会被多线程同时调用(最大线程数为purchaseThreadNum), 但同一个KEY的补货不会同时发起. <br>
- *     注意2. 如果Purchaser实现了Closeable接口, 当调用Grocer#close方法时, Purchase#close方法也会被调用到. <br>
  * </p>
  * <p></p>
  * <p>获取(fetch)操作的过程及机制 ====================================================================================</p>
@@ -93,7 +91,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *     补货流程3. 计算补货数量, 如果未缺货, 补货数量 = 缓存容量 - 缓存中元素数量; 如果缺货(元素数量<=告警值),
  *               会加大补货量 = (缓存容量 + 请求积压数) * (1 + 连续缺货次数) <br>
  *     补货流程4. 调用Purchaser#purchase进行补货, 若方法抛出异常或返回null(不建议这样), 视为补货失败, 补货错误维持时间为默认值
- *               (Purchaser#defaultErrorDuration或Grocer.defaultErrorDuration) --> [结束] <br>
+ *               (Grocer#setDefaultErrorDuration) --> [结束] <br>
  *     补货流程5. 若Purchaser#purchase返回Goods.fail(), 视为补货失败, 补货错误维持时间为Goods.fails()方法设定值 --> [结束] <br>
  *     补货流程6. 若Purchaser#purchase返回Goods.success(), 视为补货成功, 将元素加入队列 (注意, null元素不会加入队列). <br>
  *     补货流程7. 若本次补充的元素数量小于预期, 会再次通知补货. <br>
@@ -445,8 +443,8 @@ public class Grocer<E, T extends Throwable> implements Closeable {
      * <p>[高级设置] 默认的补货错误维持时间, 如果设置为<=0, 则不阻断补货(fetch不抛出异常, 会继续等待), 单位ms
      * (补货错误维持时间: 当发生补货错误, 指定时间内不会发起补货, 且期间的fetch都会抛出指定异常).</p>
      * <p></p>
-     * <p>Grocer内部补货逻辑发生错误, 或者Purchaser#defaultErrorDuration()方法抛出异常时, 会采用这个"补货错误维持时间".
-     * 如果Purchaser#purchase()方法抛出异常, 会采用Purchaser#defaultErrorDuration()方法返回的时间.
+     * <p>Grocer内部补货逻辑发生错误, 或者Purchaser#purchase()方法抛出异常或返回null时, 会采用这个"补货错误维持时间".
+     * 如果Purchaser#purchase()方法抛出异常, 会采用Grocer#setDefaultErrorDuration()指定的时间.
      * 如果Purchaser#purchase()方法返回Goods#fail(), 会采用Goods#fail()指定的时间.</p>
      * @param defaultErrorDuration 单位ms, 默认2000ms
      */
@@ -474,12 +472,6 @@ public class Grocer<E, T extends Throwable> implements Closeable {
         }
         try {
             purchaseWorkerThreadPool.shutdownNow();
-        } catch (Throwable ignore) {
-        }
-        try {
-            if (purchaser instanceof Closeable) {
-                ((Closeable) purchaser).close();
-            }
         } catch (Throwable ignore) {
         }
     }
@@ -772,7 +764,7 @@ public class Grocer<E, T extends Throwable> implements Closeable {
             Purchaser<E, T> purchaser = Grocer.this.purchaser;
             if (purchaser == null) {
                 // 设置补货错误
-                setError(calculateDefaultErrorUntil(null), null,
+                setError(System.currentTimeMillis() + defaultErrorDuration, null,
                         new IllegalStateException("Purchaser is null, you must provide a Purchaser for the Grocer"));
                 return;
             }
@@ -783,14 +775,14 @@ public class Grocer<E, T extends Throwable> implements Closeable {
                 goods = purchaser.purchase(key, quantity);
             } catch (Throwable t) {
                 // 设置补货错误
-                setError(calculateDefaultErrorUntil(purchaser), null,
+                setError(System.currentTimeMillis() + defaultErrorDuration, null,
                         new RuntimeException("Catch an unexpected exception thrown by the purchaser when executing the purchase method", t));
                 return;
             }
 
             if (goods == null) {
                 // 设置补货错误
-                setError(calculateDefaultErrorUntil(purchaser), null,
+                setError(System.currentTimeMillis() + defaultErrorDuration, null,
                         new RuntimeException("Wrong purchaser implementation, Purchaser#purchase() returns null"));
                 return;
             }
@@ -881,21 +873,6 @@ public class Grocer<E, T extends Throwable> implements Closeable {
             notifyPurchase();
         }
 
-        /**
-         * 计算补货错误维持到什么时候
-         */
-        private long calculateDefaultErrorUntil(Purchaser<E, T> purchaser) {
-            long errorDuration = defaultErrorDuration;
-            if (purchaser == null) {
-                return System.currentTimeMillis() + errorDuration;
-            }
-            try {
-                errorDuration = purchaser.defaultErrorDuration();
-            } catch (Throwable ignore) {
-            }
-            return System.currentTimeMillis() + errorDuration;
-        }
-
         private void setError(long errorUntil, T error, RuntimeException errorInner) {
             this.errorUntil = errorUntil;
             this.error = error;
@@ -962,22 +939,14 @@ public class Grocer<E, T extends Throwable> implements Closeable {
          * 实现补货逻辑(会有多线程执行本方法). 注意! IO操作一定要注意设置超时, 不要挂死线程!
          * 如果补货成功, 请返回Goods.success(...).
          * 如果补货失败, 请返回Goods.fail(...), 并设置合适的"补货错误维持时间".
-         * 如果本方法直接抛出异常(尽量不要抛出异常), "补货错误维持时间"会采用Purchaser#defaultErrorDuration()方法返回的时间.
-         * 请勿返回null (视为补货失败).
+         * 如果本方法直接抛出异常(尽量不要抛出异常), "补货错误维持时间"会采用Grocer#setDefaultErrorDuration()指定的时间.
+         * 请勿返回null, 如果返回null, 则视为补货失败, "补货错误维持时间"会采用Grocer#setDefaultErrorDuration()指定的时间.
          * (P.S.补货错误维持时间: 当发生补货错误, 指定时间内不会发起补货, 且期间的fetch都会抛出指定异常).
          * @param key key
          * @param quantity 请求数量(返回数量允许小于请求数量)
-         * @return 补货结果(注意, null元素会被忽略)
+         * @return 补货结果
          */
         Goods<E, T> purchase(String key, int quantity);
-
-        /**
-         * 默认的补货错误维持时间, 如果设置为<=0, 则不阻断补货(fetch不抛出异常, 会继续等待), 单位ms , 单位ms
-         * (补货错误维持时间: 当发生补货错误, 指定时间内不会发起补货, 且期间的fetch都会抛出指定异常).
-         * 如果Purchaser#purchase()方法抛出异常, 会采用Purchaser#defaultErrorDuration()方法返回的时间.
-         * 如果Purchaser#purchase()方法返回Goods#fail(), 会采用Goods#fail()指定的时间.
-         */
-        long defaultErrorDuration();
 
     }
 

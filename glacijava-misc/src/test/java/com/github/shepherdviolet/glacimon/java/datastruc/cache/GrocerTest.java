@@ -396,10 +396,6 @@ public class GrocerTest {
                 }
                 return Grocer.Goods.success(elements);
             }
-            @Override
-            public long defaultErrorDuration() {
-                return 2000L;
-            }
         });
     }
 
@@ -430,10 +426,6 @@ public class GrocerTest {
                     System.out.println("<Purchase> " + quantity);
                 }
                 return Grocer.Goods.success(elements);
-            }
-            @Override
-            public long defaultErrorDuration() {
-                return errorDuration;
             }
         });
     }

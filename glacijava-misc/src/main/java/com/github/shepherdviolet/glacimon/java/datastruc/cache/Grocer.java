@@ -238,7 +238,7 @@ public class Grocer<E, T extends Throwable> implements Closeable {
     }
 
     /**
-     * 获取元素, 会挂起等待直到获取成功或超时 (超时时间为wakeupIntervalOnFetch, 默认1000ms)
+     * 获取元素, 会挂起等待直到获取成功或超时
      * @param key key
      * @param timeout 超时时间, 如果等待超过指定时间, 会抛出FetchTimeoutException异常; 注意如果timeout<=0, 获取不到元素一样会抛出异常
      * @return 元素, 不可能为null

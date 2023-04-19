@@ -31,7 +31,6 @@ dependencies {
 
             //demo dependencies
             "com.alibaba:hessian-lite:$version_hessian_lite",
-            "joda-time:joda-time:$version_joda",
 
     ].forEach{ testImplementation it }
 

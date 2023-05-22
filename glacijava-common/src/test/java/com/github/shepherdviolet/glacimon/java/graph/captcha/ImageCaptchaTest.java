@@ -30,7 +30,7 @@ public class ImageCaptchaTest {
     public static void main(String[] args) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageCaptchaUtils.drawImage("Za1s", outputStream, ImageCaptchaUtils.OPTIONS_LARGE_320_100_EASY_COLORFUL);
-        FileUtils.writeBytes(new File("E:\\__Temp\\test.png"), outputStream.toByteArray(), false);
+        FileUtils.writeBytes(new File("D:\\__Temp\\test.png"), outputStream.toByteArray(), false);
     }
 
 }

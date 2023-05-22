@@ -66,7 +66,7 @@ public class ClassReplacer {
      * <p>在一个类被加载前, 可以将它的字节码替换为指定的class(文件)</p>
      *
      * <pre>
-     *     ClassReplacer.replace(new FileInputStream("E:\\_Temp\\TargetClass.classfile"));
+     *     ClassReplacer.replace(new FileInputStream("D:\\_Temp\\TargetClass.classfile"));
      * </pre>
      *
      * @param classDataInputStream 指定的class文件的输入流

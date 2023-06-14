@@ -26,6 +26,8 @@ import com.alicp.jetcache.MultiGetResult;
 import com.alicp.jetcache.redis.lettuce.RedisLettuceCache;
 import com.alicp.jetcache.redis.lettuce.RedisLettuceCacheBuilder;
 import com.alicp.jetcache.redis.lettuce.RedisLettuceCacheConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +42,8 @@ import java.util.concurrent.TimeoutException;
  * @author shepherdviolet
  */
 public class SyncRedisLettuceCacheBuilder extends RedisLettuceCacheBuilder<SyncRedisLettuceCacheBuilder> {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public static SyncRedisLettuceCacheBuilder createSyncRedisLettuceCacheBuilder() {
         return new SyncRedisLettuceCacheBuilder();
@@ -116,9 +120,9 @@ public class SyncRedisLettuceCacheBuilder extends RedisLettuceCacheBuilder<SyncR
                         try {
                             result.future().toCompletableFuture().get(10, TimeUnit.MILLISECONDS);
                         } catch (InterruptedException | TimeoutException e) {
-                            logger.warn(prompt + result.getMessage());
+                            SyncRedisLettuceCacheBuilder.this.logger.warn(prompt + result.getMessage());
                         } catch (ExecutionException e) {
-                            logger.warn(prompt + result.getMessage(), e.getCause());
+                            SyncRedisLettuceCacheBuilder.this.logger.warn(prompt + result.getMessage(), e.getCause());
                         }
                     }
                 }

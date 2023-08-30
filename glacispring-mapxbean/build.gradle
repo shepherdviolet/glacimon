@@ -28,6 +28,7 @@ dependencies {
     [
             "junit:junit:$version_junit",
             "org.mockito:mockito-core:$version_mockito",
+            "ch.qos.logback:logback-classic:$version_logback",
 
     ].forEach{ testImplementation it }
 

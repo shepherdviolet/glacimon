@@ -50,6 +50,12 @@ dependencies {
             "org.mockito:mockito-core:$version_mockito",
             "ch.qos.logback:logback-classic:$version_logback",
 
+            // pdf demo (PdfDemo)
+            "org.apache.poi:poi-ooxml:$version_poi",
+            "org.apache.poi:poi-ooxml-full:$version_poi",
+            "fr.opensagres.xdocreport:xdocreport:$version_xdocreport",
+            "com.itextpdf:html2pdf:$version_itextpdf_html2pdf", //not for commercial use
+
     ].forEach{ testImplementation it }
 
 }

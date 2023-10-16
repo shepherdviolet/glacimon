@@ -55,6 +55,33 @@ public class FileUtils {
     }
 
     /**
+     * 读取整个文件(byte[]形式), 仅限于读取小文件, 小心OOM
+     * @param file 文件
+     * @param maxLength 最大长度, 如果文件大小超过该设定值, 会抛出异常
+     * @return byte[]
+     */
+    public static byte[] readBytes(File file, int maxLength) throws IOException, LengthOutOfLimitException {
+        if (!file.exists() || !file.isFile()) {
+            throw new FileNotFoundException("File not found, path:" + file.getAbsolutePath());
+        }
+
+        if (file.length() > maxLength){
+            throw new LengthOutOfLimitException("File length out of limit, file:" + file.getAbsolutePath() + ", length:" + file.length());
+        }
+
+        // About suppressed warnings: FileInputStream will be closed by BufferedReader
+        try (InputStream inputStream = new FileInputStream(file)) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream((int) file.length());
+            byte[] buff = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buff)) >= 0) {
+                outputStream.write(buff, 0, length);
+            }
+            return outputStream.toByteArray();
+        }
+    }
+
+    /**
      * 向文件写入字符串
      * @param file 文件
      * @param msg 字符串

@@ -88,7 +88,7 @@ public class AsymParamEnc {
      * @param privateKey 私钥, 支持DER格式字符串, 支持PEM格式文件路径(文件路径file:或classpath:开头)
      */
     public static String decrypt(String cipher, String privateKey) {
-        // 送空默认不解密, 头尾不是"ENC()"不解密
+        // 送空默认不解密
         if (cipher == null || cipher.isEmpty() || privateKey == null || privateKey.isEmpty()) {
             return cipher;
         }

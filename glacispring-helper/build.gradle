@@ -30,6 +30,7 @@ dependencies {
             "com.google.code.gson:gson:$version_gson",
             "com.alibaba.csp:sentinel-core:$version_sentinel",
             "joda-time:joda-time:$version_joda",
+            "com.github.ulisesbocchio:jasypt-spring-boot:$version_jasypt",
             //version alignment
             "ch.qos.logback:logback-classic:$version_logback",
             "org.springframework.boot:spring-boot-starter:$version_spring_boot",

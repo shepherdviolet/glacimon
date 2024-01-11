@@ -5,7 +5,7 @@ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 
 /**
  * <p>Spring属性加解密工具-对称 (适用于非Springboot或低版本Springboot项目, Springboot2.0+请使用jasypt-spring-boot-starter).</p>
- * <p>与jasypt-spring-boot-starter默认加解密逻辑相同, 可以根据实际需求调整代码.</p>
+ * <p>与jasypt-spring-boot-starter默认加解密逻辑相同, 但加密算法改为PBEWITHHMACSHA512ANDAES_128 (兼容老版本JDK), 可以根据实际需求调整代码.</p>
  * <p>依赖: com.github.ulisesbocchio:jasypt-spring-boot</p>
  * <p></p>
  *
@@ -36,9 +36,9 @@ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
  *
  * datasource.password=ENC(ES3JF+WF......Qj+1JBI=)
  *
- * * 可以在启动参数配置私钥(DER格式)
+ * * 可以在启动参数配置密码
  *
- * -DparamEnc.password=qFXlp6qEZ4ai5PY5OVHCReoqPcoiOkNE
+ * -DparamEnc.password=IPRGkutx3FfsCYty
  *
  * }</pre>
  */
@@ -96,7 +96,9 @@ public class ParamEnc {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(password);
-        config.setAlgorithm("PBEWITHHMACSHA512ANDAES_256");
+        // algorithm PBEWITHHMACSHA512ANDAES_128 -> PBEWITHHMACSHA512ANDAES_256. Adapt to lower versions of JDK.
+        // 默认是PBEWITHHMACSHA512ANDAES_256, 为了兼容老版本JDK改为128
+        config.setAlgorithm("PBEWITHHMACSHA512ANDAES_128");
         config.setKeyObtentionIterations("1000");
         config.setPoolSize("1");
         config.setProviderName(null);

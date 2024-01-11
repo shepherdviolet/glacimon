@@ -23,15 +23,15 @@ import org.jasypt.encryption.StringEncryptor;
  * 	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
  * 	  <property name="url" value="${datasource.url}" />
  * 	  <property name="username" value="${datasource.username}" />
- *     <!-- XML中支持SpEL, 利用AsymParamEnc对密文解密 -->
- * 	  <property name="password" value="#{T(glacimon.AsymParamEnc).decrypt('${datasource.password}', '${paramEnc.privateKey}')}" />
+ *     <!-- XML中支持SpEL, 利用AsymParamEnc对密文解密; decrypt方法第二个参数'密钥'建议设置个默认值'空'(就是key:), 这样不设置密钥也不会报错, 只是不解密(保持原文) -->
+ * 	  <property name="password" value="#{T(glacimon.AsymParamEnc).decrypt('${datasource.password}', '${paramEnc.privateKey:}')}" />
  *     ......
  * 	</bean>
  *
  * * @Value中支持SpEL
  *
- *   //@Value中支持SpEL, 利用AsymParamEnc对密文解密
- *   @Value("#{T(glacimon.AsymParamEnc).decrypt('${datasource.password}', '${paramEnc.privateKey}')}")
+ *   //@Value中支持SpEL, 利用AsymParamEnc对密文解密; decrypt方法第二个参数'密钥'建议设置个默认值'空'(就是key:), 这样不设置密钥也不会报错, 只是不解密(保持原文)
+ *   @Value("#{T(glacimon.AsymParamEnc).decrypt('${datasource.password}', '${paramEnc.privateKey:}')}")
  *   private String password;
  *
  * * 属性设置密文, ENC(开头, )结尾, 支持设置明文(明文就不解密)

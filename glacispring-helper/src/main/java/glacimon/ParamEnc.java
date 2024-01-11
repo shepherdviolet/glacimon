@@ -59,7 +59,7 @@ public class ParamEnc {
             // 追加头尾
             return "ENC(" + encryptor(password).encrypt(plain) + ")";
         } catch (Throwable t) {
-            throw new RuntimeException("Encryption failed, plain: " + plain + ", password: ******");
+            throw new RuntimeException("Encryption failed, plain: " + plain + ", password: ******", t);
         }
     }
 
@@ -84,7 +84,7 @@ public class ParamEnc {
             String rawCipher = cipher.substring(4, cipher.length() - 1);
             return encryptor(password).decrypt(rawCipher);
         } catch (Throwable t) {
-            throw new RuntimeException("Decryption failed, cipher: " + cipher + ", password: ******");
+            throw new RuntimeException("Decryption failed, cipher: " + cipher + ", password: ******", t);
         }
     }
 

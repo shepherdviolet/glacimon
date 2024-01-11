@@ -78,7 +78,7 @@ public class AsymParamEnc {
             // 追加头尾
             return "ENC(" + encryptor.encrypt(plain) + ")";
         } catch (Throwable t) {
-            throw new RuntimeException("Encryption failed, plain: " + plain + ", publicKey: " + publicKey);
+            throw new RuntimeException("Encryption failed, plain: " + plain + ", publicKey: " + publicKey, t);
         }
     }
 
@@ -117,9 +117,9 @@ public class AsymParamEnc {
             return encryptor.decrypt(rawCipher);
         } catch (Throwable t) {
             if (privateKey.startsWith("file:") || privateKey.startsWith("classpath:")) {
-                throw new RuntimeException("Decryption failed, cipher: " + cipher + ", privateKey: " + privateKey);
+                throw new RuntimeException("Decryption failed, cipher: " + cipher + ", privateKey: " + privateKey, t);
             }
-            throw new RuntimeException("Decryption failed, cipher: " + cipher + ", privateKey: ******");
+            throw new RuntimeException("Decryption failed, cipher: " + cipher + ", privateKey: ******", t);
         }
     }
 

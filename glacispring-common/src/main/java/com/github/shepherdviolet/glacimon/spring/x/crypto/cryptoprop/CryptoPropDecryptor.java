@@ -20,7 +20,7 @@
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 
 /**
- * [Spring属性加密] 属性解密器
+ * [Spring属性解密] 属性解密器
  *
  * @author shepherdviolet
  */

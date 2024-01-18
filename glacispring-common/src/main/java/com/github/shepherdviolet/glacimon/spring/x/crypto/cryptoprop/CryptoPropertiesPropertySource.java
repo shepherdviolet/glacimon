@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 import org.springframework.core.env.PropertiesPropertySource;
 
 /**
- * <p>[Spring属性加密] 支持解密的PropertiesPropertySource</p>
+ * <p>[Spring属性解密] 支持解密的PropertiesPropertySource</p>
  *
  * <p>用于代理并替换PropertySourcesPlaceholderConfigurer中名为'localProperties'的PropertySource.</p>
  *

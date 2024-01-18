@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * [Spring属性加密] 带缓存的属性解密器
+ * [Spring属性解密] 带缓存的属性解密器
  *
  * @author shepherdviolet
  */
@@ -57,6 +57,10 @@ public abstract class CacheCryptoPropDecryptor implements CryptoPropDecryptor {
             throw new CryptoPropDecryptException("Property decrypt failed, the decrypted plain text is null, " +
                     "key: " + key + ", cipher value: " + value);
         }
+        if (plain.equals(cipher)) {
+            // 没解密
+            return value;
+        }
         if (needCache(value) && needCache(plain)) {
             cache.put(value, plain);
         }
@@ -75,6 +79,15 @@ public abstract class CacheCryptoPropDecryptor implements CryptoPropDecryptor {
         return cipher.substring(4, cipher.length() - 1);
     }
 
+    protected void wipeCache() {
+        cache.clear();
+    }
+
+    /**
+     * 实现解密逻辑
+     * @param cipher 密文, 已经去掉前缀和后缀, 不为空
+     * @return 如果不解密, 则返回密文(cipher), 不要返回null
+     */
     protected abstract String decrypt(String cipher);
 
 }

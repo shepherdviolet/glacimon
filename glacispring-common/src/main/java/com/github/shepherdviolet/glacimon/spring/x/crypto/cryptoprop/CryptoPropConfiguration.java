@@ -19,7 +19,10 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
@@ -29,12 +32,14 @@ import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 
 /**
- * [Spring属性加密] 配置类 (For springboot)
+ * [Spring属性解密] 配置类 (For springboot)
  *
  * @author shepherdviolet
  */
 @Configuration
 public class CryptoPropConfiguration {
+
+    private static final Logger logger = LoggerFactory.getLogger(CryptoPropConfiguration.class);
 
     /**
      * 解密器
@@ -42,7 +47,15 @@ public class CryptoPropConfiguration {
     @Bean(name = "glacispring.cryptoProp.decryptor")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.decryptor")
     public static CryptoPropDecryptor decryptor() {
-        return new DefaultCryptoPropDecryptor();
+        return new AutoConfigDefaultCryptoPropDecryptor();
+    }
+
+    public static final class AutoConfigDefaultCryptoPropDecryptor extends DefaultCryptoPropDecryptor {
+        @Value("${glacispring.cryptoProp.key:}")
+        @Override
+        public void setKey(String key) {
+            super.setKey(key);
+        }
     }
 
     /**
@@ -78,7 +91,8 @@ public class CryptoPropConfiguration {
                     "is not an instance of AbstractEnvironment, the 'CryptoPropEnvironment' cannot create." +
                     "You can disable 'CryptoPropEnvironment' bean by -Dglacispring.cryptoProp.cryptoPropEnvironment=false");
         }
-        
+
+        logger.info("CryptoProp | CryptoPropEnvironment Enabled (You can disable it by glacispring.cryptoProp.cryptoPropEnvironment=false)");
         return new CryptoPropEnvironment(((AbstractEnvironment) environment).getPropertySources()).setDecryptor(decryptor);
     }
 

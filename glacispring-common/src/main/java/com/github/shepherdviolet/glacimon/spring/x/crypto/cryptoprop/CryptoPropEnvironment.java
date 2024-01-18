@@ -22,7 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 import org.springframework.core.env.*;
 
 /**
- * <p>[Spring属性加密] 辅助工具: 支持属性解密的Environment</p>
+ * <p>[Spring属性解密] 辅助工具: 支持属性解密的Environment</p>
  *
  * <p>CryptoProp核心逻辑只支持'@Value'和'XML property'中占位符(placeholder)的解密.
  * ApplicationContext中的Environment#getProperty或Environment#resolvePlaceholders方法不支持属性解密.

@@ -40,7 +40,7 @@ import java.util.Map;
 import static org.springframework.context.support.PropertySourcesPlaceholderConfigurer.LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME;
 
 /**
- * [Spring属性加密] BeanDefinitionRegistryPostProcessor
+ * [Spring属性解密] BeanDefinitionRegistryPostProcessor
  *
  * @author shepherdviolet
  */
@@ -57,6 +57,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     private Environment environment;
 
     public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor) {
+        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled");
         this.decryptor = decryptor;
     }
 
@@ -80,6 +81,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
         if (registry.containsBeanDefinition(PLACEHOLDER_CONFIGURER_NAME_ADDED_BY_APOLLO)) {
             placeholderConfigurerAddedByApollo = registry.getBeanDefinition(PLACEHOLDER_CONFIGURER_NAME_ADDED_BY_APOLLO);
             registry.removeBeanDefinition(PLACEHOLDER_CONFIGURER_NAME_ADDED_BY_APOLLO);
+            logger.debug("CryptoProp | Remove 'PropertySourcesPlaceholderConfigurer' registered by APOLLO");
         }
 
         /* **********************************************************************************************************
@@ -99,15 +101,16 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
             if (placeholderConfigurerAddedByApollo != null) {
                 registry.registerBeanDefinition(PLACEHOLDER_CONFIGURER_NAME_ADDED_BY_APOLLO, placeholderConfigurerAddedByApollo);
                 configurers = applicationContext.getBeansOfType(PropertySourcesPlaceholderConfigurer.class, false, false);
+                logger.debug("CryptoProp | Re-register 'PropertySourcesPlaceholderConfigurer' by APOLLO");
             }
             if (configurers.isEmpty()) {
                 if ("true".equals(environment.getProperty("glacispring.cryptoProp.ignoreException"))) {
-                    logger.warn("CryptoProp | Bean of type 'PropertySourcesPlaceholderConfigurer' " +
-                            "cannot be found in the spring application context, the parameter replacement function cannot work.");
+                    logger.warn("CryptoProp | WARNING! Bean of type 'PropertySourcesPlaceholderConfigurer' " +
+                            "cannot be found in the spring application context, the 'CryptoProp' cannot work.");
                     return;
                 }
-                throw new RuntimeException("CryptoProp | Bean of type 'PropertySourcesPlaceholderConfigurer' " +
-                        "cannot be found in the spring application context, the parameter replacement function cannot work." +
+                throw new RuntimeException("CryptoProp | WARNING! Bean of type 'PropertySourcesPlaceholderConfigurer' " +
+                        "cannot be found in the spring application context, the 'CryptoProp' cannot work." +
                         "You can skip this Exception by -Dglacispring.cryptoProp.ignoreException=true");
             }
         }
@@ -118,6 +121,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
          * 在在mybatis提早装载PropertySourcesPlaceholderConfigurer前, 替换掉PropertySource
          */
         for (PropertySourcesPlaceholderConfigurer configurer : configurers.values()) {
+            logger.debug("CryptoProp | Replace 'PropertySource's in '" + configurer.getClass().getName() + "'");
             // 先执行postProcessBeanFactory, 创建内部的PropertySource
             ConfigurableListableBeanFactory beanFactory = new DefaultListableBeanFactory();
             configurer.postProcessBeanFactory(beanFactory);
@@ -151,6 +155,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
             configurer.setPropertySources(configurer.getAppliedPropertySources());//多此一举的操作, 这俩本来就是同一个实例. 不过, 万一哪天PropertySourcesPlaceholderConfigurer逻辑改了呢?
             configurer.postProcessBeanFactory(beanFactory);
         }
+        logger.info("CryptoProp | Enabled");
     }
 
     @Override

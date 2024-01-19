@@ -82,6 +82,8 @@ public class SimpleCryptoPropDecryptor extends AbstractCryptoPropDecryptor {
         key = SimpleCryptoPropUtils.parseDecryptKey(rawKey);
         // 清空缓存
         wipeCache();
+        // 日志
+        logger.info("CryptoProp | Key set to: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)");
     }
 
 }

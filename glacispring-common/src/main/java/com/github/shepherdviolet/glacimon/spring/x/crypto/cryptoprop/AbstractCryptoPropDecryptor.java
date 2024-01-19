@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author shepherdviolet
  */
-public abstract class CacheCryptoPropDecryptor implements CryptoPropDecryptor {
+public abstract class AbstractCryptoPropDecryptor implements CryptoPropDecryptor {
 
     private final Map<String, String> cache = new ConcurrentHashMap<>();
 
@@ -36,18 +36,22 @@ public abstract class CacheCryptoPropDecryptor implements CryptoPropDecryptor {
         if (key == null || value == null) {
             return value;
         }
+        // 非密文跳过
+        if (!isCipher(value)) {
+            return value;
+        }
+        // 尝试从缓存获取
         String plain = cache.get(value);
         if (plain != null) {
             return plain;
         }
-        if (!isCipher(value)) {
-            return value;
-        }
+        // 删除密文前缀后缀
         String cipher = unwrapCipher(value);
         if (cipher == null) {
             throw new CryptoPropDecryptException("Property decrypt failed, raw cipher text from method 'unwrapCipher' " +
                     "is null, key: " + key + ", cipher value: " + value);
         }
+        // 解密
         try {
             plain = decrypt(cipher);
         } catch (Throwable t) {
@@ -57,10 +61,12 @@ public abstract class CacheCryptoPropDecryptor implements CryptoPropDecryptor {
             throw new CryptoPropDecryptException("Property decrypt failed, the decrypted plain text is null, " +
                     "key: " + key + ", cipher value: " + value);
         }
+        // 没解密就返回密文
         if (plain.equals(cipher)) {
-            // 没解密
+            // 返回带前后缀的密文
             return value;
         }
+        // 缓存
         if (needCache(value) && needCache(plain)) {
             cache.put(value, plain);
         }
@@ -72,11 +78,11 @@ public abstract class CacheCryptoPropDecryptor implements CryptoPropDecryptor {
     }
 
     protected boolean isCipher(String s) {
-        return s.length() > 5 && s.startsWith("ENC(") && s.endsWith(")");
+        return CommonCryptoPropUtils.isCipher(s);
     }
 
     protected String unwrapCipher(String cipher) {
-        return cipher.substring(4, cipher.length() - 1);
+        return CommonCryptoPropUtils.unwrapCipher(cipher);
     }
 
     protected void wipeCache() {

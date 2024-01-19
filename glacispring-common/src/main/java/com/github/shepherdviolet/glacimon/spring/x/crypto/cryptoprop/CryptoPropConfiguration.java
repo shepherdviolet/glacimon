@@ -47,14 +47,14 @@ public class CryptoPropConfiguration {
     @Bean(name = "glacispring.cryptoProp.decryptor")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.decryptor")
     public static CryptoPropDecryptor decryptor() {
-        return new AutoConfigDefaultCryptoPropDecryptor();
+        return new AutoConfigDecryptor();
     }
 
-    public static final class AutoConfigDefaultCryptoPropDecryptor extends DefaultCryptoPropDecryptor {
+    private static final class AutoConfigDecryptor extends SimpleCryptoPropDecryptor {
         @Value("${glacispring.cryptoProp.key:}")
         @Override
-        public void setKey(String key) {
-            super.setKey(key);
+        public void setKey(String rawKey) {
+            super.setKey(rawKey);
         }
     }
 

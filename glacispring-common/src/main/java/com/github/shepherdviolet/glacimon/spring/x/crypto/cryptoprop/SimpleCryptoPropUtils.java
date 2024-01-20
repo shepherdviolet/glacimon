@@ -58,8 +58,9 @@ public class SimpleCryptoPropUtils {
      * 私钥文件路径: rsa:file:/home/yourname/crypto_prop_private.pem (PEM格式, 文件里不要有多余的换行)
      * 私钥类路径: rsa:classpath:config/crypto_prop_private.pem (PEM格式, 文件里不要有多余的换行)
      * </pre>
+     *
      * @param cipher 密文 (密文带前后缀)
-     * @param key 密钥
+     * @param key    密钥
      */
     public static String unwrapAndDecrypt(String cipher, String key) {
         return unwrapAndDecrypt(cipher, parseDecryptKey(key));
@@ -67,8 +68,9 @@ public class SimpleCryptoPropUtils {
 
     /**
      * 解密 (输入密文带前后缀)
+     *
      * @param cipher 密文 (密文带前后缀)
-     * @param key 解密密钥
+     * @param key    解密密钥
      */
     public static String unwrapAndDecrypt(String cipher, DecryptKey key) {
         if (CommonCryptoPropUtils.isCipher(cipher)) {
@@ -79,8 +81,9 @@ public class SimpleCryptoPropUtils {
 
     /**
      * 解密 (输入密文不带前后缀)
+     *
      * @param cipher 密文 (密文不带前后缀)
-     * @param key 解密密钥
+     * @param key    解密密钥
      */
     static String decrypt(String cipher, DecryptKey key) {
         try {
@@ -119,8 +122,9 @@ public class SimpleCryptoPropUtils {
      * 公钥文件路径: rsa:file:/home/yourname/crypto_prop_public.pem (PEM格式, 文件里不要有多余的换行)
      * 公钥类路径: rsa:classpath:config/crypto_prop_public.pem (PEM格式, 文件里不要有多余的换行)
      * </pre>
+     *
      * @param plain 明文
-     * @param key 密钥
+     * @param key   密钥
      * @return 密文, 带前后缀
      */
     public static String encryptAndWrap(String plain, String key) {
@@ -129,8 +133,9 @@ public class SimpleCryptoPropUtils {
 
     /**
      * 加密 (返回密文带前后缀)
+     *
      * @param plain 明文
-     * @param key 加密密钥
+     * @param key   加密密钥
      * @return 密文, 带前后缀
      */
     public static String encryptAndWrap(String plain, EncryptKey key) {
@@ -168,6 +173,7 @@ public class SimpleCryptoPropUtils {
      * 私钥文件路径: rsa:file:/home/yourname/crypto_prop_private.pem (PEM格式, 文件里不要有多余的换行)
      * 私钥类路径: rsa:classpath:config/crypto_prop_private.pem (PEM格式, 文件里不要有多余的换行)
      * </pre>
+     *
      * @param rawKey 密钥
      * @return 解密密钥实例
      * @throws CryptoPropDecryptException 异常
@@ -257,6 +263,7 @@ public class SimpleCryptoPropUtils {
      * 公钥文件路径: rsa:file:/home/yourname/crypto_prop_public.pem (PEM格式, 文件里不要有多余的换行)
      * 公钥类路径: rsa:classpath:config/crypto_prop_public.pem (PEM格式, 文件里不要有多余的换行)
      * </pre>
+     *
      * @param rawKey 密钥
      * @return 加密密钥实例
      * @throws CryptoPropDecryptException 异常
@@ -366,10 +373,23 @@ public class SimpleCryptoPropUtils {
         if (key == null) {
             return null;
         }
-        if (key.length() < 2) {
+        if ("true".equals(System.getProperty("glacispring.cryptoProp.printKey"))) {
             return key;
         }
-        StringBuilder stringBuilder = new StringBuilder(key.substring(0, (key.length() - key.length() / 2)));
+
+        float percent = key.contains("file:") || key.contains("classpath:") ? 0.2f : 0.5f;
+        int hideNum = (int) (key.length() * percent);
+        if (hideNum < 3) {
+            hideNum = 3;
+        }
+        if (hideNum > key.length() - 3) {
+            hideNum = key.length() - 3;
+        }
+        if (hideNum < 0) {
+            hideNum = 0;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder(key.substring(0, (key.length() - hideNum)));
         while (stringBuilder.length() < key.length()) {
             stringBuilder.append("*");
         }

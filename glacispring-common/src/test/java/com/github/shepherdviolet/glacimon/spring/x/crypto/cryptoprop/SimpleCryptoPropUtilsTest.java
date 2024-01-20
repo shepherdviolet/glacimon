@@ -43,6 +43,7 @@ public class SimpleCryptoPropUtilsTest {
 //        System.out.println(SimpleCryptoPropUtils.encryptAndWrap("test-message",
 //                "rsa:MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNdKzQtr8SdsQmOdshUSO3S2/PWR2KZJ9FM5xcIDcMMueGXBSrfy3Y8yf3WLZOmfMPWRu0Mhza1PQzDsceq/AvRAx06WOOB7VdYQPj7Z6+A196sAIHPBkakWAzUanak36dpYzAQCDp2IG6tQGBJOELsqrSkJI42wKgGTyBceeM9QIDAQAB"));
 
+        // SimpleCryptoPropUtils AES加解密测试
         Assert.assertEquals("test-message-1",
                 SimpleCryptoPropUtils.unwrapAndDecrypt(SimpleCryptoPropUtils.encryptAndWrap(
                         "test-message-1", "aes:KrIjtliPM3MIlHPh+l3ylA=="), "aes:KrIjtliPM3MIlHPh+l3ylA=="));
@@ -54,6 +55,7 @@ public class SimpleCryptoPropUtilsTest {
 //                        "test-message-1", "aes:file:../glacispring-common/src/test/resources/data/cryptoprop-key.txt"),
 //                        "aes:file:../glacispring-common/src/test/resources/data/cryptoprop-key.txt"));
 
+        // SimpleCryptoPropUtils RSA加解密测试
         Assert.assertEquals("test-message-2",
                 SimpleCryptoPropUtils.unwrapAndDecrypt(SimpleCryptoPropUtils.encryptAndWrap(
                         "test-message-2", "rsa:MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNdKzQtr8SdsQmOdshUSO3S2/PWR2KZJ9FM5xcIDcMMueGXBSrfy3Y8yf3WLZOmfMPWRu0Mhza1PQzDsceq/AvRAx06WOOB7VdYQPj7Z6+A196sAIHPBkakWAzUanak36dpYzAQCDp2IG6tQGBJOELsqrSkJI42wKgGTyBceeM9QIDAQAB"),
@@ -66,6 +68,27 @@ public class SimpleCryptoPropUtilsTest {
 //                SimpleCryptoPropUtils.unwrapAndDecrypt(SimpleCryptoPropUtils.encryptAndWrap(
 //                        "test-message-2", "rsa:file:../glacispring-common/src/test/resources/data/cryptoprop-public-key.pem"),
 //                        "rsa:file:../glacispring-common/src/test/resources/data/cryptoprop-private-key.pem"));
+
+        // SimpleCryptoPropDecryptor 解密测试
+        SimpleCryptoPropDecryptor decryptor = new SimpleCryptoPropDecryptor("aes:KrIjtliPM3MIlHPh+l3ylA==");
+        Assert.assertEquals("test-message-3",
+                decryptor.decrypt("somekey", SimpleCryptoPropUtils.encryptAndWrap("test-message-3", "aes:KrIjtliPM3MIlHPh+l3ylA==")));
+
+        decryptor.setKey("rsa:classpath:data/cryptoprop-private-key.pem");
+        Assert.assertEquals("test-message-4",
+                decryptor.decrypt("somekey", SimpleCryptoPropUtils.encryptAndWrap("test-message-4", "rsa:classpath:data/cryptoprop-public-key.pem")));
+
+        // 密钥隐藏测试
+//        String key = "aes:1234567890123456";
+//        while (key.length() > 0) {
+//            System.out.println(SimpleCryptoPropUtils.hidePartially(key));
+//            key = key.substring(0, key.length() - 1);
+//        }
+//        key = "aes:classpath:1234567890123456";
+//        while (key.length() > 0) {
+//            System.out.println(SimpleCryptoPropUtils.hidePartially(key));
+//            key = key.substring(0, key.length() - 1);
+//        }
 
     }
 

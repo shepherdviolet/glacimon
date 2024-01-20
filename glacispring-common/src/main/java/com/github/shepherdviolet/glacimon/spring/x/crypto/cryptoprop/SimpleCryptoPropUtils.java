@@ -187,7 +187,7 @@ public class SimpleCryptoPropUtils {
                 if (inputStream == null) {
                     throw new FileNotFoundException("File not found in classpath, path: " + rawKey.substring("aes:classpath:".length()));
                 }
-                aesKey = Base64Utils.decode(readFromInputStream(inputStream));
+                aesKey = Base64Utils.decode(trimAndRemoveLineBreaks(readFromInputStream(inputStream)));
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
@@ -195,7 +195,7 @@ public class SimpleCryptoPropUtils {
             }
         } else if (rawKey.startsWith("aes:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("aes:file:".length())))) {
-                aesKey = Base64Utils.decode(readFromInputStream(inputStream));
+                aesKey = Base64Utils.decode(trimAndRemoveLineBreaks(readFromInputStream(inputStream)));
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
@@ -276,7 +276,7 @@ public class SimpleCryptoPropUtils {
                 if (inputStream == null) {
                     throw new FileNotFoundException("File not found in classpath, path: " + rawKey.substring("aes:classpath:".length()));
                 }
-                aesKey = Base64Utils.decode(readFromInputStream(inputStream));
+                aesKey = Base64Utils.decode(trimAndRemoveLineBreaks(readFromInputStream(inputStream)));
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
@@ -284,7 +284,7 @@ public class SimpleCryptoPropUtils {
             }
         } else if (rawKey.startsWith("aes:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("aes:file:".length())))) {
-                aesKey = Base64Utils.decode(readFromInputStream(inputStream));
+                aesKey = Base64Utils.decode(trimAndRemoveLineBreaks(readFromInputStream(inputStream)));
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
@@ -375,6 +375,14 @@ public class SimpleCryptoPropUtils {
         }
         return stringBuilder.toString();
     }
+
+    private static String trimAndRemoveLineBreaks(String s) {
+        if (s == null) {
+            return s;
+        }
+        return s.replaceAll("\n", "").replaceAll("\r", "").trim();
+    }
+
 
     private static String readFromInputStream(InputStream inputStream) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

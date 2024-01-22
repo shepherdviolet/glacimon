@@ -50,7 +50,7 @@ public class SimpleCryptoPropDecryptor extends AbstractCryptoPropDecryptor {
      * 解密
      */
     @Override
-    protected String decrypt(String cipher) {
+    protected String doDecrypt(String cipher) {
         return SimpleCryptoPropUtils.decrypt(cipher, key);
     }
 
@@ -85,6 +85,11 @@ public class SimpleCryptoPropDecryptor extends AbstractCryptoPropDecryptor {
         wipeCache();
         // 日志
         logger.info("CryptoProp | Key set to: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)");
+    }
+
+    @Override
+    protected void printLogWhenKeyNull(String name, String value) {
+        logger.warn("CryptoProp | Can not decrypt cipher '" + value + "', because the decrypt key is null");
     }
 
 }

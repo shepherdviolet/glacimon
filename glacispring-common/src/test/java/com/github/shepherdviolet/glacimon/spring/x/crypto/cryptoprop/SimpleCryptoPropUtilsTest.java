@@ -40,9 +40,9 @@ public class SimpleCryptoPropUtilsTest {
 //        System.out.println("===================================================================");
 
         // 密文样例
-//        System.out.println(SimpleCryptoPropUtils.encryptAndWrap("test-message",
+//        System.out.println(SimpleCryptoPropUtils.encryptAndWrap("test-message-aaa",
 //                "aes:KrIjtliPM3MIlHPh+l3ylA=="));
-//        System.out.println(SimpleCryptoPropUtils.encryptAndWrap("test-message",
+//        System.out.println(SimpleCryptoPropUtils.encryptAndWrap("test-message-bbb",
 //                "rsa:MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNdKzQtr8SdsQmOdshUSO3S2/PWR2KZJ9FM5xcIDcMMueGXBSrfy3Y8yf3WLZOmfMPWRu0Mhza1PQzDsceq/AvRAx06WOOB7VdYQPj7Z6+A196sAIHPBkakWAzUanak36dpYzAQCDp2IG6tQGBJOELsqrSkJI42wKgGTyBceeM9QIDAQAB"));
 
         // SimpleCryptoPropUtils AES加解密测试

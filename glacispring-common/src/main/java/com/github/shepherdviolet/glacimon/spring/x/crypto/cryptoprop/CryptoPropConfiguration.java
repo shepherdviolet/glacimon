@@ -40,23 +40,49 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class CryptoPropConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(CryptoPropConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 解密器
      */
     @Bean(name = "glacispring.cryptoProp.decryptor")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.decryptor")
-    public static CryptoPropDecryptor decryptor() {
-        return new AutoConfigDecryptor();
+    public CryptoPropDecryptor decryptor(Environment environment) {
+        // 这里无法通过@Value获取密钥, 只能用Environment#getProperty获取,
+        // 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
+        // Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新密钥 (密钥变更后需要重启应用).
+        // 为了使SimpleCryptoPropDecryptor运行时接收新密钥, 下面加了一个DecryptorKeyUpdater.
+        return new SimpleCryptoPropDecryptor(environment.getProperty("glacispring.crypto-prop.key", "")) {
+            @Override
+            protected void printLogWhenKeyNull(String name, String value) {
+                logger.warn("CryptoProp | Can not decrypt cipher '" + value + "', because the decrypt key 'glacispring.crypto-prop.key' is null");
+            }
+        };
     }
 
-    private static final class AutoConfigDecryptor extends SimpleCryptoPropDecryptor {
-        @Value("${glacispring.cryptoProp.key:}")
-        @Override
-        public void setKey(String rawKey) {
-            super.setKey(rawKey);
+    /**
+     * 因为CryptoPropDecryptor本身无法通过@Value获取属性, 所以我们增加一个DecryptorKeyUpdater, 实现运行时接收新密钥.
+     */
+    @Bean(name = "glacispring.cryptoProp.decryptorKeyUpdater")
+    public DecryptorKeyUpdater decryptorKeyUpdater(@Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
+        return new DecryptorKeyUpdater(decryptor);
+    }
+
+    public static final class DecryptorKeyUpdater {
+
+        private final CryptoPropDecryptor decryptor;
+
+        public DecryptorKeyUpdater(CryptoPropDecryptor decryptor) {
+            this.decryptor = decryptor;
         }
+
+        @Value("${glacispring.crypto-prop.key:}")
+        public void updateKey(String key) {
+            if (decryptor instanceof SimpleCryptoPropDecryptor) {
+                ((SimpleCryptoPropDecryptor) decryptor).setKey(key);
+            }
+        }
+
     }
 
     /**
@@ -66,9 +92,8 @@ public class CryptoPropConfiguration {
      */
     @Bean(name = "glacispring.cryptoProp.beanDefinitionRegistryPostProcessor")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.beanDefinitionRegistryPostProcessor")
-    public static CryptoPropBeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor(
+    public CryptoPropBeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor(
             @Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
-
         return new CryptoPropBeanDefinitionRegistryPostProcessor(decryptor);
     }
 
@@ -83,7 +108,7 @@ public class CryptoPropConfiguration {
     @Bean(name = "glacispring.cryptoProp.cryptoPropEnvironment")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.cryptoPropEnvironment")
     @ConditionalOnProperty(name = "glacispring.cryptoProp.cryptoPropEnvironment", matchIfMissing = true)
-    public static CryptoPropEnvironment cryptoPropEnvironment(ApplicationContext applicationContext,
+    public CryptoPropEnvironment cryptoPropEnvironment(ApplicationContext applicationContext,
                                                               @Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
 
         Environment environment = applicationContext.getEnvironment();

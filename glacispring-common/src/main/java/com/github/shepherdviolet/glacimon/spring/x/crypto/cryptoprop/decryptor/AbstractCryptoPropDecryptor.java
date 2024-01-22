@@ -26,7 +26,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * [Spring属性解密] 带缓存的属性解密器
+ * <p>[Spring属性解密] 带缓存的属性解密器</p>
+ *
+ * <p>注意, CryptoPropDecryptor里无法通过@Value获取属性, 只能用Environment#getProperty获取,
+ * 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
+ * Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新属性 (属性变更后需要重启应用).</p>
  *
  * @author shepherdviolet
  */
@@ -35,8 +39,8 @@ public abstract class AbstractCryptoPropDecryptor implements CryptoPropDecryptor
     private final Map<String, String> cache = new ConcurrentHashMap<>();
 
     @Override
-    public String decrypt(String key, String value) {
-        if (key == null || value == null) {
+    public String decrypt(String name, String value) {
+        if (name == null || value == null) {
             return value;
         }
         // 非密文跳过
@@ -52,21 +56,22 @@ public abstract class AbstractCryptoPropDecryptor implements CryptoPropDecryptor
         String cipher = unwrapCipher(value);
         if (cipher == null) {
             throw new CryptoPropDecryptException("Property decrypt failed, raw cipher text from method 'unwrapCipher' " +
-                    "is null, key: " + key + ", cipher value: " + value);
+                    "is null, name: " + name + ", cipher value: " + value);
         }
         // 解密
         try {
-            plain = decrypt(cipher);
+            plain = doDecrypt(cipher);
         } catch (Throwable t) {
-            throw new CryptoPropDecryptException("Property decrypt failed, key: " + key + ", cipher value: " + value, t);
+            throw new CryptoPropDecryptException("Property decrypt failed, name: " + name + ", cipher value: " + value, t);
         }
         if (plain == null) {
             throw new CryptoPropDecryptException("Property decrypt failed, the decrypted plain text is null, " +
-                    "key: " + key + ", cipher value: " + value);
+                    "name: " + name + ", cipher value: " + value);
         }
         // 没解密就返回密文
         if (plain.equals(cipher)) {
             // 返回带前后缀的密文
+            printLogWhenKeyNull(name, value);
             return value;
         }
         // 缓存
@@ -92,11 +97,14 @@ public abstract class AbstractCryptoPropDecryptor implements CryptoPropDecryptor
         cache.clear();
     }
 
+    protected void printLogWhenKeyNull(String name, String value) {
+    }
+
     /**
      * 实现解密逻辑
      * @param cipher 密文, 已经去掉前缀和后缀, 不为空
      * @return 如果不解密, 则返回密文(cipher), 不要返回null
      */
-    protected abstract String decrypt(String cipher);
+    protected abstract String doDecrypt(String cipher);
 
 }

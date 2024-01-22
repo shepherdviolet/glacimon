@@ -46,7 +46,7 @@ import java.lang.annotation.*;
  * <p>配置密钥:</p>
  *
  * <pre>
- * glacispring.cryptoProp.key=[密钥内容]
+ * glacispring.crypto-prop.key=[密钥内容]
  * P.S.非必须, 不配置密钥就不解密
  * </pre>
  *

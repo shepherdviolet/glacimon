@@ -472,6 +472,9 @@ public class SimpleCryptoPropUtils {
         private final RSAPrivateKey rsaKey;
 
         public DecryptKey(String rawKey, Algorithm algorithm, byte[] aesKey, RSAPrivateKey rsaKey) {
+            if (algorithm == null) {
+                algorithm = Algorithm.NULL;
+            }
             this.rawKey = rawKey;
             this.algorithm = algorithm;
             this.aesKey = aesKey;
@@ -504,6 +507,9 @@ public class SimpleCryptoPropUtils {
         private final RSAPublicKey rsaKey;
 
         public EncryptKey(String rawKey, Algorithm algorithm, byte[] aesKey, RSAPublicKey rsaKey) {
+            if (algorithm == null) {
+                algorithm = Algorithm.NULL;
+            }
             this.rawKey = rawKey;
             this.algorithm = algorithm;
             this.aesKey = aesKey;

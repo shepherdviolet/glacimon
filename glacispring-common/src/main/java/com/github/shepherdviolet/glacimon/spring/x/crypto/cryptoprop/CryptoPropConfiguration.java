@@ -25,11 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 
 /**
@@ -95,31 +92,6 @@ public class CryptoPropConfiguration {
     public CryptoPropBeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor(
             @Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
         return new CryptoPropBeanDefinitionRegistryPostProcessor(decryptor);
-    }
-
-    /**
-     * <p>辅助工具: 支持属性解密的Environment</p>
-     *
-     * <p>CryptoProp核心逻辑只支持'@Value'和'XML property'中占位符(placeholder)的解密.
-     * ApplicationContext中的Environment#getProperty或Environment#resolvePlaceholders方法不支持属性解密.
-     * 一般情况下不建议使用Environment获取属性, 因为它无法获取到'XML placeholder'声明的配置文件中的属性.
-     * 如果一定要用Environment获取属性并解密, 请注入'CryptoPropEnvironment'并调用它的getProperty或resolvePlaceholders方法. </p>
-     */
-    @Bean(name = "glacispring.cryptoProp.cryptoPropEnvironment")
-    @ConditionalOnMissingBean(name = "glacispring.cryptoProp.cryptoPropEnvironment")
-    @ConditionalOnProperty(name = "glacispring.cryptoProp.cryptoPropEnvironment", matchIfMissing = true)
-    public CryptoPropEnvironment cryptoPropEnvironment(ApplicationContext applicationContext,
-                                                              @Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
-
-        Environment environment = applicationContext.getEnvironment();
-        if (!(environment instanceof AbstractEnvironment)) {
-            throw new RuntimeException("CryptoProp | 'Environment' in 'ApplicationContext' " +
-                    "is not an instance of AbstractEnvironment, the 'CryptoPropEnvironment' cannot create." +
-                    "You can disable 'CryptoPropEnvironment' bean by -Dglacispring.cryptoProp.cryptoPropEnvironment=false");
-        }
-
-        logger.info("CryptoProp | CryptoPropEnvironment Enabled (You can disable it by glacispring.cryptoProp.cryptoPropEnvironment=false)");
-        return new CryptoPropEnvironment(((AbstractEnvironment) environment).getPropertySources()).setDecryptor(decryptor);
     }
 
 }

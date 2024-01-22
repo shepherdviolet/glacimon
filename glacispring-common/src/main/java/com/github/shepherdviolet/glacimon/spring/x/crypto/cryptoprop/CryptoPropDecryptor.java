@@ -32,9 +32,9 @@ public interface CryptoPropDecryptor {
 
     /**
      * 尝试解密
-     * @param name 属性name
-     * @param value 属性value, 需要判断它是否是加密属性
-     * @return 返回属性值 (如果不需要解密, 也要返回原value)
+     * @param name property name, 可为空
+     * @param value property value, 可能是未加密的
+     * @return 返回解密后的属性 (如果不需要解密, 也要返回原value)
      */
     String decrypt(String name, String value);
 

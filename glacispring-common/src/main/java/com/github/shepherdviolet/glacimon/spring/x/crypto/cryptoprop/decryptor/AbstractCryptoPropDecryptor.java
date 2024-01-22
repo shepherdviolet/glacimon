@@ -40,8 +40,8 @@ public abstract class AbstractCryptoPropDecryptor implements CryptoPropDecryptor
 
     @Override
     public String decrypt(String name, String value) {
-        if (name == null || value == null) {
-            return value;
+        if (value == null) {
+            return null;
         }
         // 非密文跳过
         if (!isCipher(value)) {

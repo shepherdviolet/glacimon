@@ -17,11 +17,14 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor;
 
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import com.github.shepherdviolet.glacimon.java.crypto.*;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropCommonException;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropDecryptException;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropEncryptException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;

@@ -17,13 +17,14 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor;
 
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropDecryptException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.SimpleCryptoPropUtils.DECRYPT_KEY_NULL;
-import static com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.SimpleCryptoPropUtils.isKeyNull;
+import static com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropUtils.DECRYPT_KEY_NULL;
+import static com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropUtils.isKeyNull;
 
 /**
  * [Spring属性解密] 简易版属性解密器 (只支持aes和rsa算法, 不支持协议扩展)

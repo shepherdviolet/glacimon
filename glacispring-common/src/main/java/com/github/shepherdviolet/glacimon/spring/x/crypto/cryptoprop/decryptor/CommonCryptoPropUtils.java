@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor;
 
 /**
  * [Spring属性解密] 通用工具类

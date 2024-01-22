@@ -19,6 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropDecryptor;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -17,17 +17,17 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity;
 
-public class CryptoPropCommonException extends RuntimeException {
+public class CryptoPropEncryptException extends RuntimeException {
 
     private static final long serialVersionUID = -4729901393387266837L;
 
-    public CryptoPropCommonException(String message) {
+    public CryptoPropEncryptException(String message) {
         super(message);
     }
 
-    public CryptoPropCommonException(String message, Throwable cause) {
+    public CryptoPropEncryptException(String message, Throwable cause) {
         super(message, cause);
     }
 

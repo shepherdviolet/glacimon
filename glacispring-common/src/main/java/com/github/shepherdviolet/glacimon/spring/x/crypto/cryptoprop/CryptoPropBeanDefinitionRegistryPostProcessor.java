@@ -160,15 +160,8 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-            /*
-             * 按照常理, BeanDefinitionRegistryPostProcessor里不应该随便地实例化(装配)Bean, PropertySourcesPlaceholderConfigurer里
-             * 的PropertySource替换操作也应该在BeanFactoryPostProcessor#postProcessBeanFactory里执行.
-             * 但是, Mybatis那么干了, org.mybatis.spring.mapper.MapperScannerConfigurer是个BeanDefinitionRegistryPostProcessor,
-             * 优先级比BeanFactoryPostProcessor高, 而且它还提前装配了PropertyResourceConfigurer并执行了它们的postProcessBeanFactory
-             * 方法. Mybatis提前初始化了PropertyResourceConfigurer, 使得我们的替换操作无法成功.
-             * 因此, 我们只能把替换操作提前到BeanDefinitionRegistryPostProcessor中进行(且优先级比mybatis的高), 反正Mybatis也会提前装配
-             * PropertyResourceConfigurer, 我们提前PropertySourcesPlaceholderConfigurer也不会更糟糕.
-             */
+
+
     }
 
     @Override
@@ -192,6 +185,80 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    /**
+     * <p>[Spring属性解密] 支持解密的PropertiesPropertySource</p>
+     *
+     * <p>用于代理并替换PropertySourcesPlaceholderConfigurer中名为'localProperties'的PropertySource.</p>
+     */
+    public static class CryptoPropertiesPropertySource extends PropertiesPropertySource {
+
+        private final PropertiesPropertySource provider;
+        private final CryptoPropDecryptor encryptor;
+
+        public CryptoPropertiesPropertySource(PropertiesPropertySource provider, CryptoPropDecryptor encryptor) {
+            // 沿用原有的name和source
+            super(provider.getName(), provider.getSource());
+            this.provider = provider;
+            this.encryptor = encryptor;
+        }
+
+        @Override
+        public String[] getPropertyNames() {
+            return provider.getPropertyNames();
+        }
+
+        @Override
+        public Object getProperty(String name) {
+            Object value = provider.getProperty(name);
+            // 如果属性值是String则尝试解密
+            if (value instanceof String) {
+                return encryptor.decrypt(name, (String) value);
+            }
+            return value;
+        }
+
+        @Override
+        public boolean containsProperty(String name) {
+            return provider.containsProperty(name);
+        }
+
+    }
+
+    /**
+     * <p>[Spring属性解密] 支持解密的PropertySource</p>
+     *
+     * <p>用于代理并替换PropertySourcesPlaceholderConfigurer中名为'environmentProperties'的PropertySource.
+     * 如果有其他PropertySource, 也用这个代理</p>
+     */
+    public static class CryptoPropertySource extends PropertySource<Object> {
+
+        private final PropertySource<?> provider;
+        private final CryptoPropDecryptor replacer;
+
+        public CryptoPropertySource(PropertySource<?> provider, CryptoPropDecryptor replacer) {
+            // 沿用原有的name和source
+            super(provider.getName(), provider.getSource());
+            this.provider = provider;
+            this.replacer = replacer;
+        }
+
+        @Override
+        public Object getProperty(String name) {
+            Object value = provider.getProperty(name);
+            // 如果属性值是String则尝试解密
+            if (value instanceof String) {
+                return replacer.decrypt(name, (String) value);
+            }
+            return value;
+        }
+
+        @Override
+        public boolean containsProperty(String name) {
+            return provider.containsProperty(name);
+        }
+
     }
 
 }

@@ -195,13 +195,13 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     public static class CryptoPropertiesPropertySource extends PropertiesPropertySource {
 
         private final PropertiesPropertySource provider;
-        private final CryptoPropDecryptor encryptor;
+        private final CryptoPropDecryptor decryptor;
 
-        public CryptoPropertiesPropertySource(PropertiesPropertySource provider, CryptoPropDecryptor encryptor) {
+        public CryptoPropertiesPropertySource(PropertiesPropertySource provider, CryptoPropDecryptor decryptor) {
             // 沿用原有的name和source
             super(provider.getName(), provider.getSource());
             this.provider = provider;
-            this.encryptor = encryptor;
+            this.decryptor = decryptor;
         }
 
         @Override
@@ -214,7 +214,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
             Object value = provider.getProperty(name);
             // 如果属性值是String则尝试解密
             if (value instanceof String) {
-                return encryptor.decrypt(name, (String) value);
+                return decryptor.decrypt(name, (String) value);
             }
             return value;
         }
@@ -235,13 +235,13 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     public static class CryptoPropertySource extends PropertySource<Object> {
 
         private final PropertySource<?> provider;
-        private final CryptoPropDecryptor replacer;
+        private final CryptoPropDecryptor decryptor;
 
-        public CryptoPropertySource(PropertySource<?> provider, CryptoPropDecryptor replacer) {
+        public CryptoPropertySource(PropertySource<?> provider, CryptoPropDecryptor decryptor) {
             // 沿用原有的name和source
             super(provider.getName(), provider.getSource());
             this.provider = provider;
-            this.replacer = replacer;
+            this.decryptor = decryptor;
         }
 
         @Override
@@ -249,7 +249,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
             Object value = provider.getProperty(name);
             // 如果属性值是String则尝试解密
             if (value instanceof String) {
-                return replacer.decrypt(name, (String) value);
+                return decryptor.decrypt(name, (String) value);
             }
             return value;
         }

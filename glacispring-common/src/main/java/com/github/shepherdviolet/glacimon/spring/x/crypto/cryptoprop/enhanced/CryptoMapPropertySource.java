@@ -6,6 +6,11 @@ import org.springframework.core.env.PropertySource;
 
 import java.util.Map;
 
+/**
+ * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ *
+ * @author shepherdviolet
+ */
 public class CryptoMapPropertySource extends MapPropertySource implements ICryptoPropertySource<Map<String, Object>> {
 
     private final MapPropertySource delegate;

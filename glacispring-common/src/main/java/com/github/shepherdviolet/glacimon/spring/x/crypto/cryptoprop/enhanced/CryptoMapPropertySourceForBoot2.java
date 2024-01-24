@@ -5,6 +5,11 @@ import org.springframework.boot.origin.Origin;
 import org.springframework.boot.origin.OriginLookup;
 import org.springframework.core.env.MapPropertySource;
 
+/**
+ * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑), 适配SpringBoot2.0, 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ *
+ * @author shepherdviolet
+ */
 public class CryptoMapPropertySourceForBoot2 extends CryptoMapPropertySource implements OriginLookup<String> {
 
     public CryptoMapPropertySourceForBoot2(MapPropertySource delegate, CryptoPropDecryptor decryptor) {

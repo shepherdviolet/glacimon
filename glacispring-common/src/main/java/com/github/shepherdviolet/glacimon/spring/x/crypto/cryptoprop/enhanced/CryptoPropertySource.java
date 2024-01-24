@@ -22,6 +22,11 @@ package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
 import org.springframework.core.env.PropertySource;
 
+/**
+ * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ *
+ * @author shepherdviolet
+ */
 public class CryptoPropertySource<T> extends PropertySource<T> implements ICryptoPropertySource<T> {
 
     private final PropertySource<T> delegate;

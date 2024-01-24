@@ -24,6 +24,13 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.env.PropertySource;
 
+/**
+ * <p>[Spring属性解密] PropertySource代理拦截器, 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ *
+ * <p>对Environment中的PropertySource进行代理, 实现属性解密</p>
+ *
+ * @author shepherdviolet
+ */
 public class CryptoPropertySourceMethodInterceptor<T> implements MethodInterceptor {
 
     private final PropertySource<T> delegate;
@@ -63,4 +70,5 @@ public class CryptoPropertySourceMethodInterceptor<T> implements MethodIntercept
                 && invocation.getMethod().getParameters().length == 1
                 && invocation.getMethod().getParameters()[0].getType() == String.class;
     }
+
 }

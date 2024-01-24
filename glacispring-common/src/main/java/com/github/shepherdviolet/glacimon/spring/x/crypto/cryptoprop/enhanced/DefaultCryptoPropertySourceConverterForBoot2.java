@@ -25,8 +25,20 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.SystemEnvironmentPropertySource;
 
+/**
+ * <p>[Spring属性解密] PropertySource转换器(切入解密逻辑), SpringBoot2.0专用(支持OriginLookup), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ *
+ * <p>加强模式(或CUT_IN_ENVIRONMENT模式)用这个转换器, 对Environment中的PropertySource进行转换, 切入解密逻辑.</p>
+ *
+ * @author shepherdviolet
+ */
 public class DefaultCryptoPropertySourceConverterForBoot2 extends DefaultCryptoPropertySourceConverter {
 
+    /**
+     * @param decryptor 解密器
+     * @param skipPropertySourceClasses 指定哪些PropertySource不转换(多个用','分割)
+     * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
+     */
     public DefaultCryptoPropertySourceConverterForBoot2(CryptoPropDecryptor decryptor, String skipPropertySourceClasses, boolean interceptByProxy) {
         super(decryptor, skipPropertySourceClasses, interceptByProxy);
     }

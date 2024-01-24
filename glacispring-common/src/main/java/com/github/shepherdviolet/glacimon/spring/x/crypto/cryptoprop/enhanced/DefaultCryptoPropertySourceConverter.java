@@ -31,8 +31,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * <p>[Spring属性解密] PropertySource转换器(切入解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ *
+ * <p>加强模式(或CUT_IN_ENVIRONMENT模式)用这个转换器, 对Environment中的PropertySource进行转换, 切入解密逻辑.</p>
+ *
+ * @author shepherdviolet
+ */
 public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySourceConverter {
 
+    // 这些PropertySource不转换
     private static final List<String> DEFAULT_SKIP_PROPERTY_SOURCE_CLASSES = Arrays.asList(
             "org.springframework.core.env.PropertySource$StubPropertySource",
             "org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource"
@@ -44,11 +52,17 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
     private final Set<String> skipPropertySourceClasses;
     private boolean interceptByProxy;
 
+    /**
+     * @param decryptor 解密器
+     * @param skipPropertySourceClasses 指定哪些PropertySource不转换(多个用','分割)
+     * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
+     */
     public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor, String skipPropertySourceClasses, boolean interceptByProxy) {
         this.decryptor = decryptor;
         this.skipPropertySourceClasses = new HashSet<>(DEFAULT_SKIP_PROPERTY_SOURCE_CLASSES);
         this.interceptByProxy = interceptByProxy;
 
+        // 指定哪些PropertySource不转换
         if (skipPropertySourceClasses != null && !skipPropertySourceClasses.isEmpty()) {
             String[] classNames = skipPropertySourceClasses.split(",");
             for (String className : classNames) {
@@ -67,14 +81,18 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
             return;
         }
         for (PropertySource<?> propertySource : propertySources) {
+            // 已经切入过的跳过
             if (propertySource instanceof ICryptoPropertySource) {
                 continue;
             }
+            // 指定PropertySource不转换
             if (skipPropertySourceClasses.contains(propertySource.getClass().getName())) {
                 logger.info("CryptoProp | Enhanced | Skip PropertySource, name: " + propertySource.getName() + ", class: " + propertySource.getClass().getName());
                 continue;
             }
+            // 转换
             PropertySource<?> cryptoPropertySource = interceptByProxy ? proxyPropertySource(propertySource) : wrapPropertySource(propertySource);
+            // 替换
             propertySources.replace(cryptoPropertySource.getName(), cryptoPropertySource);
         }
     }
@@ -115,4 +133,5 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
     protected CryptoPropDecryptor getDecryptor() {
         return decryptor;
     }
+
 }

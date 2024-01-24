@@ -25,6 +25,11 @@ import org.springframework.boot.origin.OriginLookup;
 import org.springframework.boot.origin.SystemEnvironmentOrigin;
 import org.springframework.core.env.SystemEnvironmentPropertySource;
 
+/**
+ * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑), 适配SpringBoot2.0, 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ *
+ * @author shepherdviolet
+ */
 public class CryptoSystemEnvironmentPropertySourceForBoot2 extends CryptoSystemEnvironmentPropertySource implements OriginLookup<String> {
 
     public CryptoSystemEnvironmentPropertySourceForBoot2(SystemEnvironmentPropertySource delegate, CryptoPropDecryptor decryptor) {
@@ -41,6 +46,7 @@ public class CryptoSystemEnvironmentPropertySourceForBoot2 extends CryptoSystemE
             }
         }
 
+        // 参考jasypt-spring-boot
         String property = resolvePropertyName(key);
         if (super.containsProperty(property)) {
             return new SystemEnvironmentOrigin(property);

@@ -23,6 +23,11 @@ import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropD
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
 
+/**
+ * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ *
+ * @author shepherdviolet
+ */
 public class CryptoEnumerablePropertySource<T> extends EnumerablePropertySource<T> implements ICryptoPropertySource<T> {
 
     private final EnumerablePropertySource<T> delegate;

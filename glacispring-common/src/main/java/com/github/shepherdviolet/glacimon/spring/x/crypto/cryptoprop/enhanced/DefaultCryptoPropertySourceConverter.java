@@ -38,14 +38,16 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
             "org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource"
     );
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CryptoPropDecryptor decryptor;
     private final Set<String> skipPropertySourceClasses;
+    private boolean interceptByProxy;
 
-    public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor, String skipPropertySourceClasses) {
+    public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor, String skipPropertySourceClasses, boolean interceptByProxy) {
         this.decryptor = decryptor;
         this.skipPropertySourceClasses = new HashSet<>(DEFAULT_SKIP_PROPERTY_SOURCE_CLASSES);
+        this.interceptByProxy = interceptByProxy;
 
         if (skipPropertySourceClasses != null && !skipPropertySourceClasses.isEmpty()) {
             String[] classNames = skipPropertySourceClasses.split(",");
@@ -72,7 +74,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
                 logger.info("CryptoProp | Enhanced | Skip PropertySource, name: " + propertySource.getName() + ", class: " + propertySource.getClass().getName());
                 continue;
             }
-            PropertySource<?> cryptoPropertySource = proxyPropertySource(propertySource);
+            PropertySource<?> cryptoPropertySource = interceptByProxy ? proxyPropertySource(propertySource) : wrapPropertySource(propertySource);
             propertySources.replace(cryptoPropertySource.getName(), cryptoPropertySource);
         }
     }
@@ -84,13 +86,13 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
                 || Modifier.isFinal(propertySource.getClass().getModifiers())) {
             return wrapPropertySource(propertySource);
         }
-        logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " proxied");
         ProxyFactory proxyFactory = new ProxyFactory();
         proxyFactory.setTargetClass(propertySource.getClass());
         proxyFactory.setProxyTargetClass(true);
         proxyFactory.addInterface(ICryptoPropertySource.class);
         proxyFactory.setTarget(propertySource);
         proxyFactory.addAdvice(new CryptoPropertySourceMethodInterceptor<>(propertySource, decryptor));
+        logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " proxied");
         return (PropertySource<T>) proxyFactory.getProxy();
     }
 
@@ -106,6 +108,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
         } else {
             cryptoPropertySource = new CryptoPropertySource<>(propertySource, decryptor);
         }
+        logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " wrapped to " + cryptoPropertySource.getClass().getName());
         return cryptoPropertySource;
     }
 

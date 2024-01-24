@@ -27,8 +27,8 @@ import org.springframework.core.env.SystemEnvironmentPropertySource;
 
 public class DefaultCryptoPropertySourceConverterForBoot2 extends DefaultCryptoPropertySourceConverter {
 
-    public DefaultCryptoPropertySourceConverterForBoot2(CryptoPropDecryptor decryptor, String skipPropertySourceClasses) {
-        super(decryptor, skipPropertySourceClasses);
+    public DefaultCryptoPropertySourceConverterForBoot2(CryptoPropDecryptor decryptor, String skipPropertySourceClasses, boolean interceptByProxy) {
+        super(decryptor, skipPropertySourceClasses, interceptByProxy);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -43,6 +43,7 @@ public class DefaultCryptoPropertySourceConverterForBoot2 extends DefaultCryptoP
         } else {
             cryptoPropertySource = new CryptoPropertySourceForBoot2<>(propertySource, getDecryptor());
         }
+        this.logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " wrapped to " + cryptoPropertySource.getClass().getName());
         return cryptoPropertySource;
     }
 

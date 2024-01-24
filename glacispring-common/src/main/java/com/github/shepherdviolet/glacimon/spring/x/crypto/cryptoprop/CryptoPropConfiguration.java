@@ -41,7 +41,8 @@ import org.springframework.core.env.Environment;
 public class CryptoPropConfiguration {
 
     public static final String OPTION_DECRYPT_KEY = "glacispring.crypto-prop.key";
-    public static final String OPTION_SKIP_PROPERTY_SOURCES = "glacispring.crypto-prop.skip-property-sources";
+    public static final String OPTION_SKIP_PROPERTY_SOURCES = "glacispring.crypto-prop.enhanced.skip-property-sources";
+    public static final String OPTION_INTERCEPT_BY_PROXY = "glacispring.crypto-prop.enhanced.intercept-by-proxy";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -79,16 +80,18 @@ public class CryptoPropConfiguration {
             isBoot2 = false;
         }
 
-        // 这里无法通过@Value获取glacispring.crypto-prop.skip-property-sources, 只能用Environment#getProperty获取,
-        // 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
+        // 这里无法通过@Value获取glacispring.crypto-prop.enhanced.skip-property-sources和intercept-by-proxy,
+        // 只能用Environment#getProperty获取, 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
         // Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新属性 (属性变更后需要重启应用).
-        // glacispring.crypto-prop.skip-property-sources不支持动态调整!
+        // 因此glacispring.crypto-prop.enhanced.skip-property-sources和intercept-by-proxy不支持动态调整!
         if (isBoot2) {
             return new DefaultCryptoPropertySourceConverterForBoot2(decryptor,
-                    environment.getProperty(OPTION_SKIP_PROPERTY_SOURCES, ""));
+                    environment.getProperty(OPTION_SKIP_PROPERTY_SOURCES, ""),
+                    "true".equals(environment.getProperty(OPTION_INTERCEPT_BY_PROXY, "")));
         }
         return new DefaultCryptoPropertySourceConverter(decryptor,
-                environment.getProperty(OPTION_SKIP_PROPERTY_SOURCES, ""));
+                environment.getProperty(OPTION_SKIP_PROPERTY_SOURCES, ""),
+                "true".equals(environment.getProperty(OPTION_INTERCEPT_BY_PROXY, "")));
     }
 
     /**

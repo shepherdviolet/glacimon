@@ -28,12 +28,13 @@ public class CommonCryptoPropUtils {
 
     public static final String CIPHER_PREFIX = "CIPHER(";
     public static final String CIPHER_SUFFIX = ")";
+    public static final int CIPHER_MIN_LENGTH = CIPHER_PREFIX.length() + CIPHER_SUFFIX.length();
 
     /**
      * 判断是否为密文
      */
     public static boolean isCipher(String s) {
-        return s.length() > CIPHER_PREFIX.length() + CIPHER_SUFFIX.length()
+        return s.length() > CIPHER_MIN_LENGTH
                 && s.startsWith(CIPHER_PREFIX)
                 && s.endsWith(CIPHER_SUFFIX);
     }

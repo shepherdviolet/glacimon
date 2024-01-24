@@ -62,13 +62,13 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     private Environment environment;
 
     public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor, ICryptoPropertySourceConverter enhancedModeConverter) {
-        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled");
         this.decryptor = decryptor;
         this.enhancedModeConverter = enhancedModeConverter;
     }
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled, mode: " + environment.getProperty(OPTION_MODE, CryptoPropMode.NORMAL.name()));
         /*
          * **********************************************************************************************************
          * 删除Apollo添加的可能多余的PropertySourcesPlaceholderConfigurer
@@ -129,7 +129,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
         if (!getMode().isCutInConfigurer()) {
             return;
         }
-        logger.info("CryptoProp | Feature Enabled (Cut in PropertySourcesPlaceholderConfigurer)");
+        logger.info("CryptoProp | Crypto Property Decryption Feature Enabled (Cut in PropertySourcesPlaceholderConfigurer)");
         for (PropertySourcesPlaceholderConfigurer configurer : configurers.values()) {
             logger.debug("CryptoProp | Replace 'PropertySource's in '" + configurer.getClass().getName() + "'");
             // 先执行postProcessBeanFactory, 创建内部的PropertySource
@@ -172,7 +172,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
         if (!getMode().isCutInEnvironment()) {
             return;
         }
-        logger.info("CryptoProp | Feature Enabled (Enhanced mode, Cut in Environment)");
+        logger.info("CryptoProp | Crypto Property Decryption Feature Enabled (Cut in Environment, enhanced mode)");
 
         if (!(environment instanceof ConfigurableEnvironment)) {
             if ("true".equals(environment.getProperty(OPTION_IGNORE_EXCEPTION))) {

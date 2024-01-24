@@ -68,7 +68,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled, mode: " + environment.getProperty(OPTION_MODE, CryptoPropMode.NORMAL.name()));
+        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled, mode: " + getMode());
         /*
          * **********************************************************************************************************
          * 删除Apollo添加的可能多余的PropertySourcesPlaceholderConfigurer

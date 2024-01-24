@@ -62,12 +62,6 @@ import java.lang.annotation.*;
  * 私钥类路径: rsa:classpath:config/crypto_prop_private.pem (PEM格式, 文件里不要有多余的换行)
  * </pre>
  *
- * <p>不创建CryptoPropEnvironment(可选):</p>
- *
- * <pre>
- * glacispring.cryptoProp.cryptoPropEnvironment=false
- * </pre>
- *
  * @author shepherdviolet
  */
 @Target(ElementType.TYPE)

@@ -47,8 +47,8 @@ import static org.springframework.context.support.PropertySourcesPlaceholderConf
  */
 public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor, PriorityOrdered, ApplicationContextAware, EnvironmentAware {
 
-    public static final String OPTION_IGNORE_EXCEPTION = "glacispring.cryptoProp.ignoreException";
-    public static final String OPTION_MODE = "glacispring.cryptoProp.mode";
+    public static final String OPTION_IGNORE_EXCEPTION = "glacispring.crypto-prop.ignore-exception";
+    public static final String OPTION_MODE = "glacispring.crypto-prop.mode";
 
     // APOLLO客户端添加的PropertySourcesPlaceholderConfigurer的BeanName. 当Apollo客户端认为Context中没有定义...Configurer的时候就会强制添加一个, 某些情况下我们需要将它移除
     private static final String PLACEHOLDER_CONFIGURER_NAME_ADDED_BY_APOLLO = "org.springframework.context.support.PropertySourcesPlaceholderConfigurer";

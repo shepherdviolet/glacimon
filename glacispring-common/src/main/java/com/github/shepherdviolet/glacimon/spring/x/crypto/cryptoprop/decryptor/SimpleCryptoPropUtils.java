@@ -376,7 +376,7 @@ public class SimpleCryptoPropUtils {
         if (key == null) {
             return null;
         }
-        if ("true".equals(System.getProperty("glacispring.cryptoProp.printKey"))) {
+        if ("true".equals(System.getProperty("glacispring.crypto-prop.print-key-unsafe"))) {
             return key;
         }
 

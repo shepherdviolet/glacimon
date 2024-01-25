@@ -38,11 +38,11 @@ public class SimpleCryptoPropDecryptor extends AbstractCryptoPropDecryptor {
     private SimpleCryptoPropUtils.DecryptKey key = DECRYPT_KEY_NULL;
 
     public SimpleCryptoPropDecryptor() {
-        logger.info("CryptoProp | DefaultCryptoPropDecryptor Enabled");
+        logger.info("CryptoProp | SimpleCryptoPropDecryptor Enabled");
     }
 
     public SimpleCryptoPropDecryptor(String key) {
-        logger.info("CryptoProp | DefaultCryptoPropDecryptor Enabled");
+        logger.info("CryptoProp | SimpleCryptoPropDecryptor Enabled");
         setKey(key);
     }
 

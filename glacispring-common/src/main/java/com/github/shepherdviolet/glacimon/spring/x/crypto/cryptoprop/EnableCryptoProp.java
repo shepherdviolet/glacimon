@@ -28,8 +28,8 @@ import java.lang.annotation.*;
  *
  * <p>
  * 说明:<br>
- * 1.支持'@Value'和'XML property'中占位符(placeholder)的解密<br>
- * 2.提供一个CryptoPropEnvironment, 用于手动解密CryptoPropEnvironment#getProperty/resolvePlaceholders<br>
+ * 1.普通模式(NORMAL)支持'@Value'和'XML property'中占位符(placeholder)的解密, 不支持Environment#getProperty解密, 侵入点少兼容性好. <br>
+ * 2.加强模式(ENHANCED)支持Environment#getProperty解密, 侵入点较多, 可能会出现一些兼容性问题. <br>
  * </p>
  *
  * <p></p>
@@ -60,6 +60,44 @@ import java.lang.annotation.*;
  * 私钥字符串: rsa:MIICdwIB......KM2wnjk1ZY= (DER格式)
  * 私钥文件路径: rsa:file:/home/yourname/crypto_prop_private.pem (PEM格式, 文件里不要有多余的换行)
  * 私钥类路径: rsa:classpath:config/crypto_prop_private.pem (PEM格式, 文件里不要有多余的换行)
+ * </pre>
+ *
+ * <p>属性用工具类加密:</p>
+ *
+ * <pre>
+ * String plain = "decrypted successfully 111";
+ *
+ * //非对称加密
+ * System.out.println(SimpleCryptoPropUtils.encryptAndWrap(plain,
+ *         "rsa:classpath:config/demo/common/cryptoprop/cryptoprop-public-key.pem"));
+ *
+ * // 对称加密
+ * System.out.println(SimpleCryptoPropUtils.encryptAndWrap(plain,
+ *         "aes:classpath:config/demo/common/cryptoprop/cryptoprop-key.txt"));
+ * </pre>
+ *
+ * <p>在@Value中引用密文属性:</p>
+ *
+ * <pre>
+ * <code/>@Value("${foo.param.name}")
+ * </pre>
+ *
+ * <p>在XML中引用密文</p>
+ *
+ * <pre>
+ * &lt property name="foo" value="${foo.param.name}" /&gt
+ * </pre>
+ *
+ * <p>在properties或yaml中配置密文属性</p>
+ *
+ * <pre>
+ * foo:
+ *   param:
+ *     name: CIPHER(bhkSKmy/80y8kW91XRFoVQesS/UpT6Mq1zWxcuMUGNQ=)
+ * </pre>
+ *
+ * <pre>
+ * foo.param.name=CIPHER(bhkSKmy/80y8kW91XRFoVQesS/UpT6Mq1zWxcuMUGNQ=)
  * </pre>
  *
  * @author shepherdviolet

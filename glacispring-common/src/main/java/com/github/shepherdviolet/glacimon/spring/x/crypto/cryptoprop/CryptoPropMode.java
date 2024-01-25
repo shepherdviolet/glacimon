@@ -19,6 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 
+import org.slf4j.LoggerFactory;
+
 /**
  * [Spring属性解密] 属性解密模式
  *
@@ -52,6 +54,7 @@ public enum CryptoPropMode {
     CUT_IN_ALL(true, true);
 
 
+
     private final boolean cutInConfigurer;
     private final boolean cutInEnvironment;
 
@@ -66,6 +69,15 @@ public enum CryptoPropMode {
 
     public boolean isCutInEnvironment() {
         return cutInEnvironment;
+    }
+
+    public static CryptoPropMode parseMode(String modeString){
+        try {
+            return CryptoPropMode.valueOf(modeString.toUpperCase());
+        } catch (Throwable t) {
+            LoggerFactory.getLogger(CryptoPropMode.class).warn("CryptoProp | Illegal CryptoPropMode '" + modeString + "', fail back to 'NORMAL'");
+        }
+        return CryptoPropMode.NORMAL;
     }
 
 }

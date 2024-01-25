@@ -47,16 +47,15 @@ import static org.springframework.context.support.PropertySourcesPlaceholderConf
  */
 public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor, PriorityOrdered, ApplicationContextAware, EnvironmentAware {
 
-    public static final String OPTION_IGNORE_EXCEPTION = "glacispring.crypto-prop.ignore-exception";
-    public static final String OPTION_MODE = "glacispring.crypto-prop.mode";
-
     // APOLLO客户端添加的PropertySourcesPlaceholderConfigurer的BeanName. 当Apollo客户端认为Context中没有定义...Configurer的时候就会强制添加一个, 某些情况下我们需要将它移除
     private static final String PLACEHOLDER_CONFIGURER_NAME_ADDED_BY_APOLLO = "org.springframework.context.support.PropertySourcesPlaceholderConfigurer";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private CryptoPropDecryptor decryptor;
-    private ICryptoPropertySourceConverter enhancedModeConverter;
+    private final CryptoPropDecryptor decryptor;
+    private final ICryptoPropertySourceConverter enhancedModeConverter;
+    private final CryptoPropMode mode;
+    private final boolean ignoreException;
 
     private ApplicationContext applicationContext;
     private Environment environment;
@@ -66,14 +65,26 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
         this(decryptor, null);
     }
 
-    public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor, ICryptoPropertySourceConverter enhancedModeConverter) {
+    public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor,
+                                                         ICryptoPropertySourceConverter enhancedModeConverter) {
+
+        this(decryptor, enhancedModeConverter, CryptoPropMode.NORMAL.name(), false);
+    }
+
+    public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor,
+                                                         ICryptoPropertySourceConverter enhancedModeConverter,
+                                                         String mode,
+                                                         boolean ignoreException) {
+
         this.decryptor = decryptor;
         this.enhancedModeConverter = enhancedModeConverter;
+        this.mode = CryptoPropMode.parseMode(mode);
+        this.ignoreException = ignoreException;
     }
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled, mode: " + getMode());
+        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled, mode: " + mode);
         /*
          * **********************************************************************************************************
          * 删除Apollo添加的可能多余的PropertySourcesPlaceholderConfigurer
@@ -115,14 +126,14 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
                 logger.debug("CryptoProp | Re-register 'PropertySourcesPlaceholderConfigurer' by APOLLO");
             }
             if (configurers.isEmpty()) {
-                if ("true".equals(environment.getProperty(OPTION_IGNORE_EXCEPTION))) {
+                if (ignoreException) {
                     logger.warn("CryptoProp | WARNING! Bean of type 'PropertySourcesPlaceholderConfigurer' " +
                             "cannot be found in the spring application context, the 'CryptoProp' cannot work.");
                     return;
                 }
                 throw new RuntimeException("CryptoProp | WARNING! Bean of type 'PropertySourcesPlaceholderConfigurer' " +
                         "cannot be found in the spring application context, the 'CryptoProp' cannot work." +
-                        "You can skip this Exception by -D" + OPTION_IGNORE_EXCEPTION + "=true");
+                        ignoreExceptionPrompt());
             }
         }
 
@@ -131,7 +142,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
          * **********************************************************************************************************
          * 在在mybatis提早装载PropertySourcesPlaceholderConfigurer前, 替换掉PropertySource
          */
-        if (!getMode().isCutInConfigurer()) {
+        if (!mode.isCutInConfigurer()) {
             return;
         }
         logger.info("CryptoProp | Crypto Property Decryption Feature Enabled (Cut in PropertySourcesPlaceholderConfigurer)");
@@ -145,14 +156,14 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
             // propertySources必须是MutablePropertySources
             if (!(propertySources instanceof MutablePropertySources)) {
                 if (configurers.isEmpty()) {
-                    if ("true".equals(environment.getProperty(OPTION_IGNORE_EXCEPTION))) {
+                    if (ignoreException) {
                         logger.warn("CryptoProp | 'propertySources' in 'PropertySourcesPlaceholderConfigurer' " +
                                 "is not an instance of MutablePropertySources, the crypto properties decryption feature cannot work.");
                         return;
                     }
                     throw new RuntimeException("CryptoProp | 'propertySources' in 'PropertySourcesPlaceholderConfigurer' " +
                             "is not an instance of MutablePropertySources, the crypto properties decryption feature cannot work." +
-                            "You can skip this Exception by -D" + OPTION_IGNORE_EXCEPTION + "=true");
+                            ignoreExceptionPrompt());
                 }
             }
             // 替换掉每一个PropertySource (其实就两个, 为了以防万一就都处理一下)
@@ -174,7 +185,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        if (!getMode().isCutInEnvironment()) {
+        if (!mode.isCutInEnvironment()) {
             return;
         }
         if (enhancedModeConverter == null) {
@@ -185,14 +196,14 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
         logger.info("CryptoProp | Crypto Property Decryption Feature Enabled (Cut in Environment, enhanced mode)");
 
         if (!(environment instanceof ConfigurableEnvironment)) {
-            if ("true".equals(environment.getProperty(OPTION_IGNORE_EXCEPTION))) {
+            if (ignoreException) {
                 logger.warn("CryptoProp | 'environment' in ApplicationContext " +
                         "is not an instance of ConfigurableEnvironment, the crypto properties decryption feature cannot work.");
                 return;
             }
             throw new RuntimeException("CryptoProp | 'environment' in ApplicationContext " +
                     "is not an instance of ConfigurableEnvironment, the crypto properties decryption feature cannot work." +
-                    "You can skip this Exception by -D" + OPTION_IGNORE_EXCEPTION + "=true");
+                    ignoreExceptionPrompt());
         }
         
         enhancedModeConverter.convertPropertySources(((ConfigurableEnvironment)environment).getPropertySources());
@@ -221,14 +232,8 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
         this.environment = environment;
     }
 
-    private CryptoPropMode getMode() {
-        String modeString = environment.getProperty(OPTION_MODE, CryptoPropMode.NORMAL.name());
-        try {
-            return CryptoPropMode.valueOf(modeString.toUpperCase());
-        } catch (Throwable t) {
-            logger.warn("CryptoProp | Illegal mode " + OPTION_MODE + "=" + modeString + ", fail back to 'NORMAL'");
-        }
-        return CryptoPropMode.NORMAL;
+    protected String ignoreExceptionPrompt() {
+        return " (CryptoProp provides an option to temporarily skip this exception. Please read the documentation or source code.)";
     }
 
     /**

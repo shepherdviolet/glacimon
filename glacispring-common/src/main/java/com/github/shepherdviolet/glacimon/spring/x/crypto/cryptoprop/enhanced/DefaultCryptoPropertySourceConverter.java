@@ -49,18 +49,33 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CryptoPropDecryptor decryptor;
+    private final boolean interceptByProxy;
     private final Set<String> skipPropertySourceClasses;
-    private boolean interceptByProxy;
 
     /**
      * @param decryptor 解密器
-     * @param skipPropertySourceClasses 指定哪些PropertySource不转换(多个用','分割)
+     */
+    public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor) {
+        this(decryptor, false);
+    }
+
+    /**
+     * @param decryptor 解密器
      * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
      */
-    public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor, String skipPropertySourceClasses, boolean interceptByProxy) {
+    public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor, boolean interceptByProxy) {
+        this(decryptor, interceptByProxy, null);
+    }
+
+    /**
+     * @param decryptor 解密器
+     * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
+     * @param skipPropertySourceClasses 指定哪些PropertySource不转换(多个用','分割)
+     */
+    public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor, boolean interceptByProxy, String skipPropertySourceClasses) {
         this.decryptor = decryptor;
-        this.skipPropertySourceClasses = new HashSet<>(DEFAULT_SKIP_PROPERTY_SOURCE_CLASSES);
         this.interceptByProxy = interceptByProxy;
+        this.skipPropertySourceClasses = new HashSet<>(DEFAULT_SKIP_PROPERTY_SOURCE_CLASSES);
 
         // 指定哪些PropertySource不转换
         if (skipPropertySourceClasses != null && !skipPropertySourceClasses.isEmpty()) {

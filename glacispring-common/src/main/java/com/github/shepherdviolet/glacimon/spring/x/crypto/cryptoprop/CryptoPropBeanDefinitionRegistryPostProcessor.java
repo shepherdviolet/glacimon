@@ -61,6 +61,11 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     private ApplicationContext applicationContext;
     private Environment environment;
 
+    public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor) {
+        // 不配置ICryptoPropertySourceConverter不能使用加强模式
+        this(decryptor, null);
+    }
+
     public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor, ICryptoPropertySourceConverter enhancedModeConverter) {
         this.decryptor = decryptor;
         this.enhancedModeConverter = enhancedModeConverter;
@@ -172,6 +177,11 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
         if (!getMode().isCutInEnvironment()) {
             return;
         }
+        if (enhancedModeConverter == null) {
+            throw new RuntimeException("CryptoProp | 'ICryptoPropertySourceConverter' is not configured in ApplicationContext, " +
+                    "enhanced mode cannot be used.");
+        }
+
         logger.info("CryptoProp | Crypto Property Decryption Feature Enabled (Cut in Environment, enhanced mode)");
 
         if (!(environment instanceof ConfigurableEnvironment)) {

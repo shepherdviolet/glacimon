@@ -26,7 +26,6 @@ import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.IC
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,7 +54,6 @@ public class CryptoPropConfiguration {
         // 这里无法通过@Value获取密钥, 只能用Environment#getProperty获取,
         // 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
         // Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新密钥 (密钥变更后需要重启应用).
-        // 为了使SimpleCryptoPropDecryptor运行时接收新密钥, 下面加了一个DecryptorKeyUpdater.
         return new SimpleCryptoPropDecryptor(environment.getProperty(OPTION_DECRYPT_KEY, "")) {
             @Override
             protected void printLogWhenKeyNull(String name, String value) {
@@ -83,7 +81,6 @@ public class CryptoPropConfiguration {
         // 这里无法通过@Value获取glacispring.crypto-prop.enhanced.skip-property-sources和intercept-by-proxy,
         // 只能用Environment#getProperty获取, 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
         // Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新属性 (属性变更后需要重启应用).
-        // 因此glacispring.crypto-prop.enhanced.skip-property-sources和intercept-by-proxy不支持动态调整!
         if (isBoot2) {
             return new DefaultCryptoPropertySourceConverterForBoot2(decryptor,
                     environment.getProperty(OPTION_SKIP_PROPERTY_SOURCES, ""),
@@ -92,31 +89,6 @@ public class CryptoPropConfiguration {
         return new DefaultCryptoPropertySourceConverter(decryptor,
                 environment.getProperty(OPTION_SKIP_PROPERTY_SOURCES, ""),
                 "true".equals(environment.getProperty(OPTION_INTERCEPT_BY_PROXY, "")));
-    }
-
-    /**
-     * 因为CryptoPropDecryptor本身无法通过@Value获取属性, 所以我们增加一个DecryptorKeyUpdater, 实现运行时接收新密钥.
-     */
-    @Bean(name = "glacispring.cryptoProp.decryptorKeyUpdater")
-    public DecryptorKeyUpdater decryptorKeyUpdater(@Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
-        return new DecryptorKeyUpdater(decryptor);
-    }
-
-    public static final class DecryptorKeyUpdater {
-
-        private final CryptoPropDecryptor decryptor;
-
-        public DecryptorKeyUpdater(CryptoPropDecryptor decryptor) {
-            this.decryptor = decryptor;
-        }
-
-        @Value("${" + OPTION_DECRYPT_KEY + ":}")
-        public void updateKey(String key) {
-            if (decryptor instanceof SimpleCryptoPropDecryptor) {
-                ((SimpleCryptoPropDecryptor) decryptor).setKey(key);
-            }
-        }
-
     }
 
     /**
@@ -131,5 +103,31 @@ public class CryptoPropConfiguration {
             @Qualifier("glacispring.cryptoProp.enhancedModePropertySourceConverter") ICryptoPropertySourceConverter enhancedModePropertySourceConverter) {
         return new CryptoPropBeanDefinitionRegistryPostProcessor(decryptor, enhancedModePropertySourceConverter);
     }
+
+//    /**
+//     * 密钥没必要支持运行时动态配置
+//     * 因为CryptoPropDecryptor本身无法通过@Value获取属性, 所以我们增加一个DecryptorKeyUpdater, 实现运行时接收新密钥.
+//     */
+//    @Bean(name = "glacispring.cryptoProp.decryptorKeyUpdater")
+//    public DecryptorKeyUpdater decryptorKeyUpdater(@Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
+//        return new DecryptorKeyUpdater(decryptor);
+//    }
+//
+//    public static final class DecryptorKeyUpdater {
+//
+//        private final CryptoPropDecryptor decryptor;
+//
+//        public DecryptorKeyUpdater(CryptoPropDecryptor decryptor) {
+//            this.decryptor = decryptor;
+//        }
+//
+//        @Value("${" + OPTION_DECRYPT_KEY + ":}")
+//        public void updateKey(String key) {
+//            if (decryptor instanceof SimpleCryptoPropDecryptor) {
+//                ((SimpleCryptoPropDecryptor) decryptor).setKey(key);
+//            }
+//        }
+//
+//    }
 
 }

@@ -1,4 +1,4 @@
-# Glacimon 2024.0.0
+# Glacimon 2024.1.0
 
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/shepherdviolet/glacimon.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/shepherdviolet/glacimon/context:java)
 
@@ -154,6 +154,10 @@
 
 * [InterfaceInstantiation : Instantiate interfaces into Spring context](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/guide.md)
 * [MemberProcessor : Process all fields/methods (of bean) in Spring context (To implement custom injection / method binding...)](https://github.com/shepherdviolet/glacimon/blob/master/docs/mbrproc/guide.md)
+
+#### [Spring crypto components](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/x/crypto)
+
+* [CryptoProp : Spring property encryption (protection)](https://github.com/shepherdviolet/glacimon/blob/master/docs/cryptoprop/guide.md)
 
 #### [Spring config utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/config)
 

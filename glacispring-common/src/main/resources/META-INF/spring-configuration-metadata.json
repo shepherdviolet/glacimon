@@ -4,6 +4,11 @@
       "name": "glacispring.common",
       "type": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties"
+    },
+    {
+      "name": "glacispring.crypto-prop",
+      "type": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration"
     }
   ],
   "properties": [
@@ -13,6 +18,41 @@
       "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringServletContextListenerConfig",
       "description": "Properties: com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties",
       "defaultValue": true
+    },
+    {
+      "name": "glacispring.crypto-prop.key",
+      "type": "java.lang.String",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
+      "description": "starts with: aes: | aes:file: | aes:classpath: | rsa: | rsa:file: | rsa:classpath: ",
+      "defaultValue": ""
+    },
+    {
+      "name": "glacispring.crypto-prop.mode",
+      "type": "java.lang.String",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
+      "description": "NORMAL | ENHANCED | CUT_IN_CONFIGURER | CUT_IN_ENVIRONMENT | CUT_IN_ALL",
+      "defaultValue": "NORMAL"
+    },
+    {
+      "name": "glacispring.crypto-prop.ignore-exception",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
+      "description": "",
+      "defaultValue": "false"
+    },
+    {
+      "name": "glacispring.crypto-prop.enhanced.skip-property-sources",
+      "type": "java.lang.String",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
+      "description": "Example: com.packagename.FooPropertySource1,com.packagename.FooPropertySource2",
+      "defaultValue": ""
+    },
+    {
+      "name": "glacispring.crypto-prop.enhanced.intercept-by-proxy",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
+      "description": "",
+      "defaultValue": "false"
     }
   ],
   "hints": [

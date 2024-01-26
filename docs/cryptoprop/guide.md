@@ -362,13 +362,35 @@ public void test() {
 }
 ```
 
-## 增强模式已知兼容问题
+<br>
+<br>
 
-* 不支持apollo-client 1.3.0及以下版本 (请使用1.4.0及以上版本)
+# 其他
+
+## 增强模式 兼容性问题
+
+* 增强模式下, apollo-client 1.3.0及以下版本不支持实时属性修改 (请使用1.4.0及以上版本)
 
 ```
 apollo-client 1.3.0及以下版本中, AutoUpdateConfigChangeListener类中, 存在shouldTriggerAutoUpdate方法, 
 它会判断ConfigChangeEvent中的新属性值和environment#getProperty返回值是否相等, 相等才会更新属性.
 因为ConfigChangeEvent中的新属性值是密文, 而增强模式下environment#getProperty返回值是明文, 两个结果不相等, 
 所以属性实时更新被跳过. 更新apollo-client 1.4.0及以上版本解决.
+P.S.低版本用也能用, 只是不支持
+```
+
+## 增强模式 局限性
+
+* 未监听Environment中PropertySources的增删事件, 对于后续增加的PropertySource不会进行处理
+
+```
+某些组件会在CryptoPropBeanDefinitionRegistryPostProcessor处理完成后, 往Environment添加PropertySource.
+例如apollo-client有可能会在之后添加一个CompositePropertySource (不一定, 与apollo客户端配置有关).
+因此, 手动调用Environment#getProperty获取属性依然有可能会返回密文; 在@Value和XML中使用占位符${}仍然能获得
+解密后的明文, 因为增强模式仍然会侵入PropertySourcesPlaceholderConfigurer作为兜底, 即使新增的PropertySource
+不会进行解密, PropertySourcesPlaceholderConfigurer中的PropertiesSources仍然会进行解密.
+
+其实这个缺陷有办法优化, 但是现有逻辑已经能够满足大部分需求 (增强模式也并不建议开启, Environment#getProperty也不建议手动调用).
+如果需要优化, 可以参考jasypt-spring-boot的RefreshScopeRefreshedEventListener, 在捕获到事件时重新调用
+ICryptoPropertySourceConverter#convertPropertySources处理一遍即可.
 ```

@@ -1,4 +1,4 @@
-# Glacimon 2024.1.0
+# Glacimon 2024.1.1
 
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/shepherdviolet/glacimon.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/shepherdviolet/glacimon/context:java)
 
@@ -157,7 +157,7 @@
 
 #### [Spring crypto components](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/x/crypto)
 
-* [CryptoProp : Spring property encryption (protection)](https://github.com/shepherdviolet/glacimon/blob/master/docs/cryptoprop/guide.md)
+* [CryptoProp : Spring property encryption (2024.1+)](https://github.com/shepherdviolet/glacimon/blob/master/docs/cryptoprop/guide.md)
 
 #### [Spring config utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/config)
 

@@ -22,8 +22,6 @@ package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConstants;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropEnv;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropDecryptException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropUtils.DECRYPT_KEY_NULL;
 import static com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropUtils.isKeyNull;
@@ -34,8 +32,6 @@ import static com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decr
  * @author shepherdviolet
  */
 public class SimpleCryptoPropDecryptor extends AbstractCryptoPropDecryptor {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SimpleCryptoPropUtils.DecryptKey key = DECRYPT_KEY_NULL;
 

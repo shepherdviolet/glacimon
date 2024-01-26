@@ -21,6 +21,8 @@ package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropDecryptException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,6 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author shepherdviolet
  */
 public abstract class AbstractCryptoPropDecryptor implements CryptoPropDecryptor {
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Map<String, String> cache = new ConcurrentHashMap<>();
 
@@ -77,6 +81,9 @@ public abstract class AbstractCryptoPropDecryptor implements CryptoPropDecryptor
         // 缓存
         if (needCache(value) && needCache(plain)) {
             cache.put(value, plain);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("CryptoProp | Cipher property '" + cipher + "' decrypted");
         }
         return plain;
     }

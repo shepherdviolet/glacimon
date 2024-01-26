@@ -3,14 +3,23 @@
 * [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/x/crypto/cryptoprop)
 
 ```
-CryptoProp是一个Spring属性(property)加解密方案. 用于保护敏感属性(例如数据库密码), 避免在工程源码中明文配置被开发人员获取, 
-避免直接在启动脚本中明文配置被生产查询(query)用户获取.
+CryptoProp是一个Spring属性(property)加解密方案. 用于保护敏感属性(例如数据库密码), 避免属性明文配置在工程源码中被开发人员获取.
+启用CryptoProp并配置密钥后, 你可以将敏感属性加密后配置到属性文件(properties/yaml)中, 应用启动后会自动将属性解密并注入Bean中.
+CryptoProp支持在'@Value'和'XML'中使用占位符(${...})获取解密的属性, 支持使用'@ConfigurationProperties'绑定属性的Bean获得
+解密的属性, 支持Environment#getProperty手动获取解密的属性(普通模式不支持, 会返回密文, 需要开启'增强模式'!).
+
+```
+* 支持Apollo配置中心 (apollo-client 1.4.0及以上版本)
+
+```
+CryptoProp支持Apollo配置中心, 支持实时修改属性(Apollo上发布后无需重启应用), 请使用apollo-client 1.4.0及以上版本! 老版本在
+开启'增强模式'后, 实时修改属性会出现异常! (注意, 对Apollo实时修改的支持仅限于业务属性, CryptoProp本身的配置参数不支持实时修改)
 ```
 
 <br>
 <br>
 
-# 使用说明
+# 配置及使用说明
 
 ## 添加依赖
 
@@ -64,6 +73,8 @@ public class MyConfiguration {
 ```
 
 * 在application.yaml(或其他配置文件)中配置参数
+
+> 注意, CryptoProp本身的配置参数(glacispring.crypto-prop.*)不支持Apollo实时修改, 修改后需要重启应用, 对Apollo实时修改的支持仅限于业务属性
 
 ```
 glacispring:
@@ -128,6 +139,8 @@ glacispring:
 ```
 
 * 在application.properties(或其他配置文件)中配置参数
+
+> 注意, CryptoProp本身的配置参数(glacispring.crypto-prop.*)不支持Apollo实时修改, 修改后需要重启应用, 对Apollo实时修改的支持仅限于业务属性
 
 ```
 ## 解密密钥: RSA算法, 引用外部密钥文件, 注意文件内容必须为PEM格式, 文件权限建议设置为600
@@ -200,6 +213,9 @@ public class CryptoPropertyUtils {
 <br>
 
 ## 在properties/yaml/启动参数中使用密文
+
+> CryptoProp支持实时修改属性(Apollo上发布后无需重启应用), 请使用apollo-client 1.4.0及以上版本! 老版本在 开启'增强模式'后, 
+> 实时修改属性会出现异常! (注意, 对Apollo实时修改的支持仅限于业务属性, CryptoProp本身的配置参数不支持实时修改)
 
 ```
 # properties
@@ -286,14 +302,14 @@ spring.datasource.password=123456
 
 > CryptoProp有两种模式, 普通模式(NORMAL)下, 手动从Environment#getProperty获取参数是不支持解密的, 它会返回密文.
 > 建议使用普通模式, Spring应用尽量避免用Environment#getProperty手动获取属性(里面属性不全, 没有XML配置的properties), 请通过占位符(${...})的方式注入属性.
-> 如果必须要支持Environment#getProperty解密, 可以将模式修改为加强模式, 加强模式侵入点比较多, 有可能会有兼容性问题. 
+> 如果必须要使Environment#getProperty支持自动解密, 可以将模式修改为增强模式(glacispring.crypto-prop.mode=ENHANCED), 加强模式侵入点比较多, 有可能会有兼容性问题.
 
-| 模式               | @Value Placeholder | XML Placeholder | @ConfigurationProperties Binding | Environment#getProperty | 说明 |
-|------------------| ------------------ | --------------- | -------------------------------- | ----------------------- | ---- |
-| 普通模式(NORMAL) `默认` | 支持解密 | 支持解密 | 支持解密 | `不支持解密` | 只侵入`PropertySourcesPlaceholderConfigurer`, 侵入点少, 兼容性好 |
-| 增强模式(ENHANCED)   | 支持解密 | 支持解密 | 支持解密 | 支持解密 | 同时侵入`Environment的PropertySources`, 侵入点较多, 可能会有兼容性问题 |
+| 模式               | @Value中的${...} | XML中的${...} | 用@ConfigurationProperties绑定属性的Bean | Environment#getProperty | 说明 |
+| ----------------- |----------------| --------------- | -------------------------------- | ----------------------- | ---- |
+| 普通模式 <br> NORMAL   | 支持自动解密  | 支持自动解密 | 支持自动解密 | `不支持自动解密(返回密文)` | 只侵入`PropertySourcesPlaceholderConfigurer`, 侵入点少, 兼容性好 |
+| 增强模式 <br> ENHANCED | 支持自动解密  | 支持自动解密 | 支持自动解密 | 支持自动解密 | 同时侵入`Environment的PropertySources`, 侵入点较多, 可能会有兼容性问题(见下文) |
 
-* @Value Placeholder 支持解密
+* `@Value`中的`${...}`占位符 支持自动解密
 
 ```
 @Value("${bar.foo}")
@@ -305,7 +321,7 @@ public void setFoo(String foo)
 }
 ```
 
-* XML Placeholder 支持解密
+* `@Value`中的`${...}`占位符 支持自动解密
 
 ```
 <bean id="foo" class="bar.FooService">
@@ -313,7 +329,7 @@ public void setFoo(String foo)
 </bean>
 ```
 
-* @ConfigurationProperties Binding 属性绑定支持解密
+* 用@ConfigurationProperties绑定属性的Bean 支持自动解密
 
 ```
 @Component
@@ -333,7 +349,7 @@ public class FooProperties {
 }
 ```
 
-* Environment#getProperty 需要开启`增强模式`才支持解密
+* 调用Environment#getProperty获取属性 需要开启`增强模式`才支持自动解密 (否则返回密文)
 
 ```
 @Autowired
@@ -346,3 +362,13 @@ public void test() {
 }
 ```
 
+## 增强模式已知兼容问题
+
+* 不支持apollo-client 1.3.0及以下版本 (请使用1.4.0及以上版本)
+
+```
+apollo-client 1.3.0及以下版本中, AutoUpdateConfigChangeListener类中, 存在shouldTriggerAutoUpdate方法, 
+它会判断ConfigChangeEvent中的新属性值和environment#getProperty返回值是否相等, 相等才会更新属性.
+因为ConfigChangeEvent中的新属性值是密文, 而增强模式下environment#getProperty返回值是明文, 两个结果不相等, 
+所以属性实时更新被跳过. 更新apollo-client 1.4.0及以上版本解决.
+```

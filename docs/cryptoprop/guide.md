@@ -295,7 +295,7 @@ spring.datasource.password=123456
 ## 关于模式 (为什么Environment#getProperty返回的是密文?)
 
 > CryptoProp有两种模式, 普通模式(NORMAL)下, 手动从Environment#getProperty获取参数是不支持解密的, 它会返回密文.
-> 建议使用普通模式, Spring应用尽量避免用Environment#getProperty直接获取属性, 建议通过占位符(placeholder, ${...})的方式注入属性.
+> 建议使用普通模式, Spring应用尽量避免用Environment#getProperty手动获取属性(里面属性不全, 没有XML配置的properties), 请通过占位符(${...})的方式注入属性.
 > 如果必须要支持Environment#getProperty解密, 可以将模式修改为加强模式, 加强模式侵入点比较多, 有可能会有兼容性问题. 
 
 | 模式               | @Value Placeholder | XML Placeholder | @ConfigurationProperties Binding | Environment#getProperty | 说明 |

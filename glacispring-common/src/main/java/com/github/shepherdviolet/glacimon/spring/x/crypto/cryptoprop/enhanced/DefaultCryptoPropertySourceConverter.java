@@ -112,7 +112,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
         } else {
             cryptoPropertySource = new CryptoPropertySource<>(propertySource, decryptor);
         }
-        logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " wrapped to " + cryptoPropertySource.getClass().getName());
+        logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " ---> " + cryptoPropertySource.getClass().getName());
         return cryptoPropertySource;
     }
 
@@ -134,6 +134,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
      */
     public void setInterceptByProxy(boolean interceptByProxy) {
         this.interceptByProxy = interceptByProxy;
+        logger.info("CryptoProp | Enhanced | interceptByProxy set to " + interceptByProxy);
     }
 
     /**
@@ -152,6 +153,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
             }
         }
 
+        logger.info("CryptoProp | Enhanced | skipPropertySources set to " + skipPropertySources);
         this.skipPropertySourceClasses = skipPropertySourceClasses;
     }
 }

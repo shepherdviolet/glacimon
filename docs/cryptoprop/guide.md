@@ -102,8 +102,6 @@ glacispring:
   crypto-prop:
     ## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容新问题)
 #    mode: ENHANCED
-    ## (仅限应急) true:当CryptoProp初始化失败时不抛出异常, 但属性解密功能也会失效; false:默认, 抛出异常启动失败
-#    ignore-exception: true
     ## 增强模式相关配置: skip-property-sources指定一些PropertySource不被侵入; intercept-by-proxy侵入模式从包装方式改为代理方式
 #    enhanced:
 #      skip-property-sources: com.packagename.SomePropertySource1,com.packagename.SomePropertySource2
@@ -118,20 +116,14 @@ glacispring:
 
 ```
     <!-- CryptoProp Spring属性解密 -->
-    <!-- 注意, 这里必须用#{environment.getProperty('propertyname')}获取参数, 不能直接用${propertyname}, 因为BeanDefinitionRegistryPostProcessor在Spring启动初期执行 -->
-    <bean id="glacispring.cryptoProp.decryptor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropDecryptor">
-        <constructor-arg index="0" value="#{environment.getProperty('glacispring.crypto-prop.key')}"/>
-    </bean>
+    <!-- 注意, 这里不能用占位符${propertyname}注入属性, 因为BeanDefinitionRegistryPostProcessor在Spring启动初期执行 -->
+    <bean id="glacispring.cryptoProp.decryptor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropDecryptor"/>
     <bean id="glacispring.cryptoProp.enhancedModePropertySourceConverter" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.DefaultCryptoPropertySourceConverter">
         <constructor-arg index="0" ref="glacispring.cryptoProp.decryptor"/>
-        <constructor-arg index="1" value="#{'true'.equals(environment.getProperty('glacispring.crypto-prop.enhanced.intercept-by-proxy'))}"/>
-        <constructor-arg index="2" value="#{environment.getProperty('glacispring.crypto-prop.enhanced.skip-property-sources')}"/>
     </bean>
     <bean id="glacispring.cryptoProp.beanDefinitionRegistryPostProcessor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropBeanDefinitionRegistryPostProcessor">
         <constructor-arg index="0" ref="glacispring.cryptoProp.decryptor"/>
         <constructor-arg index="1" ref="glacispring.cryptoProp.enhancedModePropertySourceConverter"/>
-        <constructor-arg index="2" value="#{environment.getProperty('glacispring.crypto-prop.mode', 'NORMAL')}"/>
-        <constructor-arg index="3" value="#{'true'.equals(environment.getProperty('glacispring.crypto-prop.ignore-exception'))}"/>
     </bean>
 ```
 
@@ -169,8 +161,6 @@ glacispring.crypto-prop.key=rsa:file:/home/username/cryptoprop-private-key.pem
 # 其他参数说明
 ## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容新问题)
 #glacispring.crypto-prop.mode=ENHANCED
-## (仅限应急) true:当CryptoProp初始化失败时不抛出异常, 但属性解密功能也会失效; false:默认, 抛出异常启动失败
-#glacispring.crypto-prop.ignore-exception=true
 ## 增强模式相关配置: skip-property-sources指定一些PropertySource不被侵入; intercept-by-proxy侵入模式从包装方式改为代理方式
 #glacispring.crypto-prop.enhanced.skip-property-sources=com.packagename.SomePropertySource1,com.packagename.SomePropertySource2
 #glacispring.crypto-prop.enhanced.intercept-by-proxy=true
@@ -230,9 +220,9 @@ bar:
 <br>
 <br>
 
-## 最佳实践
+# 最佳实践
 
-### 生产环境: 启用加密
+## 生产环境: 启用加密
 
 * 生成一个`生产专用`密钥, 由运维人员专人管理, 防止泄露
 * 在`生产`服务器中放置密钥文件`/home/username/key.pem`, 并设置权限600, 禁止其他用户访问
@@ -251,7 +241,7 @@ spring:
 spring.datasource.password=CIPHER(bhkSKmy/80y8kW91XRFoVQesS/UpT6Mq1zWxcuMUGNQ=)
 ```
 
-### UAT测试环境: 启用加密
+## UAT测试环境: 启用加密
 
 * 生成一个`测试专用`密钥, 按照生产环境的方式配置, 提高生产环境与测试环境的一致性
 * 在`UAT环境`服务器中放置密钥文件`/home/username/key.pem`, 并设置权限600, 禁止其他用户访问
@@ -270,7 +260,7 @@ spring:
 spring.datasource.password=CIPHER(bhkSKmy/80y8kW91XRFoVQesS/UpT6Mq1zWxcuMUGNQ=)
 ```
 
-### 开发环境(SIT测试环境): 不加密
+## 开发环境(SIT测试环境): 不加密
 
 > 为了便于开发, 建议开发环境和SIT环境不加密
 
@@ -292,7 +282,7 @@ spring.datasource.password=123456
 <br>
 <br>
 
-## 关于模式 (为什么Environment#getProperty返回的是密文?)
+# 关于模式 (为什么Environment#getProperty返回的是密文?)
 
 > CryptoProp有两种模式, 普通模式(NORMAL)下, 手动从Environment#getProperty获取参数是不支持解密的, 它会返回密文.
 > 建议使用普通模式, Spring应用尽量避免用Environment#getProperty手动获取属性(里面属性不全, 没有XML配置的properties), 请通过占位符(${...})的方式注入属性.

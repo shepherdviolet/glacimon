@@ -19,6 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
 
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropEnv;
 import org.springframework.core.env.MutablePropertySources;
 
 /**
@@ -31,5 +32,14 @@ import org.springframework.core.env.MutablePropertySources;
 public interface ICryptoPropertySourceConverter {
 
     void convertPropertySources(MutablePropertySources propSources);
+
+    /**
+     * 由于BeanDefinitionRegistryPostProcessor早于Bean实例化, CryptoPropBeanDefinitionRegistryPostProcessor自身和它依赖的
+     * Bean无法通过@Value注入需要的参数, 我们只能从Environment和PropertySourcesPlaceholderConfigurer获取Spring启动早期的参数(属性).
+     * CryptoPropBeanDefinitionRegistryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
+     *
+     * @param env CryptoProp内部使用的参数集合
+     */
+    void setEnv(CryptoPropEnv env);
 
 }

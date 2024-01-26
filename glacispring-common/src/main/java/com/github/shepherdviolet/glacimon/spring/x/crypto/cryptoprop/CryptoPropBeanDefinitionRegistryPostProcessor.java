@@ -54,37 +54,24 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
 
     private final CryptoPropDecryptor decryptor;
     private final ICryptoPropertySourceConverter enhancedModeConverter;
-    private final CryptoPropMode mode;
-    private final boolean ignoreException;
+    private CryptoPropMode mode = CryptoPropMode.NORMAL;
 
     private ApplicationContext applicationContext;
     private Environment environment;
+    private CryptoPropEnv cryptoPropEnv;
 
     public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor) {
         // 不配置ICryptoPropertySourceConverter不能使用加强模式
         this(decryptor, null);
     }
 
-    public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor,
-                                                         ICryptoPropertySourceConverter enhancedModeConverter) {
-
-        this(decryptor, enhancedModeConverter, CryptoPropMode.NORMAL.name(), false);
-    }
-
-    public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor,
-                                                         ICryptoPropertySourceConverter enhancedModeConverter,
-                                                         String mode,
-                                                         boolean ignoreException) {
-
+    public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor, ICryptoPropertySourceConverter enhancedModeConverter) {
         this.decryptor = decryptor;
         this.enhancedModeConverter = enhancedModeConverter;
-        this.mode = CryptoPropMode.parseMode(mode);
-        this.ignoreException = ignoreException;
     }
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled, mode: " + mode);
         /*
          * **********************************************************************************************************
          * 删除Apollo添加的可能多余的PropertySourcesPlaceholderConfigurer
@@ -126,16 +113,35 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
                 logger.debug("CryptoProp | Re-register 'PropertySourcesPlaceholderConfigurer' by APOLLO");
             }
             if (configurers.isEmpty()) {
-                if (ignoreException) {
+                if ("true".equals(System.getProperty(CryptoPropConstants.OPTION_IGNORE_EXCEPTION))) {
                     logger.warn("CryptoProp | WARNING! Bean of type 'PropertySourcesPlaceholderConfigurer' " +
-                            "cannot be found in the spring application context, the 'CryptoProp' cannot work.");
+                            "cannot be found in the spring application context, the crypto properties decryption feature cannot work.");
                     return;
                 }
                 throw new RuntimeException("CryptoProp | WARNING! Bean of type 'PropertySourcesPlaceholderConfigurer' " +
-                        "cannot be found in the spring application context, the 'CryptoProp' cannot work." +
+                        "cannot be found in the spring application context, the crypto properties decryption feature cannot work." +
                         ignoreExceptionPrompt());
             }
         }
+
+        /* **********************************************************************************************************
+         * 获取CryptoProp自身需要的参数
+         * **********************************************************************************************************
+         * 由于BeanDefinitionRegistryPostProcessor早于Bean实例化, CryptoPropBeanDefinitionRegistryPostProcessor自身和它依赖的
+         * Bean无法通过@Value注入需要的参数, 我们只能从Environment和PropertySourcesPlaceholderConfigurer获取Spring启动早期的参数(属性).
+         * 这里创建一个CryptoPropEnv, 传递给依赖的Bean, 供它们获取需要的参数.
+         */
+        // 根据Environment和PropertySourcesPlaceholderConfigurer创建一个CryptoPropEnv
+        cryptoPropEnv = new CryptoPropEnv(environment, configurers.values());
+        // 模式
+        mode = CryptoPropMode.parseMode(cryptoPropEnv.getProperty(CryptoPropConstants.OPTION_MODE, CryptoPropMode.NORMAL.name()));
+        // 给依赖的Bean提供CryptoPropEnv
+        decryptor.setEnv(cryptoPropEnv);
+        if (enhancedModeConverter != null) {
+            enhancedModeConverter.setEnv(cryptoPropEnv);
+        }
+
+        logger.info("CryptoProp | CryptoPropBeanDefinitionRegistryPostProcessor Enabled, mode: " + mode);
 
         /* **********************************************************************************************************
          * 替换PropertySourcesPlaceholderConfigurer中的PropertySource, 使得它们支持解密
@@ -156,7 +162,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
             // propertySources必须是MutablePropertySources
             if (!(propertySources instanceof MutablePropertySources)) {
                 if (configurers.isEmpty()) {
-                    if (ignoreException) {
+                    if ("true".equals(System.getProperty(CryptoPropConstants.OPTION_IGNORE_EXCEPTION))) {
                         logger.warn("CryptoProp | 'propertySources' in 'PropertySourcesPlaceholderConfigurer' " +
                                 "is not an instance of MutablePropertySources, the crypto properties decryption feature cannot work.");
                         return;
@@ -196,7 +202,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
         logger.info("CryptoProp | Crypto Property Decryption Feature Enabled (Cut in Environment, enhanced mode)");
 
         if (!(environment instanceof ConfigurableEnvironment)) {
-            if (ignoreException) {
+            if ("true".equals(System.getProperty(CryptoPropConstants.OPTION_IGNORE_EXCEPTION))) {
                 logger.warn("CryptoProp | 'environment' in ApplicationContext " +
                         "is not an instance of ConfigurableEnvironment, the crypto properties decryption feature cannot work.");
                 return;
@@ -233,7 +239,7 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     }
 
     protected String ignoreExceptionPrompt() {
-        return " (CryptoProp provides an option to temporarily skip this exception. Please read the documentation or source code.)";
+        return "You can temporarily skip this exception by -D" + CryptoPropConstants.OPTION_IGNORE_EXCEPTION + "=true";
     }
 
     /**

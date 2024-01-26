@@ -41,23 +41,6 @@ public class DefaultCryptoPropertySourceConverterForBoot2 extends DefaultCryptoP
         super(decryptor);
     }
 
-    /**
-     * @param decryptor 解密器
-     * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
-     */
-    public DefaultCryptoPropertySourceConverterForBoot2(CryptoPropDecryptor decryptor, boolean interceptByProxy) {
-        super(decryptor, interceptByProxy);
-    }
-
-    /**
-     * @param decryptor 解密器
-     * @param skipPropertySourceClasses 指定哪些PropertySource不转换(多个用','分割)
-     * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
-     */
-    public DefaultCryptoPropertySourceConverterForBoot2(CryptoPropDecryptor decryptor, boolean interceptByProxy, String skipPropertySourceClasses) {
-        super(decryptor, interceptByProxy, skipPropertySourceClasses);
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected <T> PropertySource<T> wrapPropertySource(PropertySource<T> propertySource) {
         PropertySource<T> cryptoPropertySource;

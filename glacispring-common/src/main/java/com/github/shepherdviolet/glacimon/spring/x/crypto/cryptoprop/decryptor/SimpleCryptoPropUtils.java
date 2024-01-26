@@ -22,6 +22,7 @@ package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor;
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import com.github.shepherdviolet.glacimon.java.crypto.*;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConstants;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropCommonException;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropDecryptException;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.entity.CryptoPropEncryptException;
@@ -376,7 +377,7 @@ public class SimpleCryptoPropUtils {
         if (key == null) {
             return null;
         }
-        if ("true".equals(System.getProperty("glacispring.crypto-prop.print-key-unsafe"))) {
+        if ("true".equals(System.getProperty(CryptoPropConstants.OPTION_PRINT_KEY_UNSAFE))) {
             return key;
         }
 

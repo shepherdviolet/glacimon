@@ -19,7 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
 
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConstants;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropEnv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactory;
@@ -49,45 +51,14 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CryptoPropDecryptor decryptor;
-    private final boolean interceptByProxy;
-    private final Set<String> skipPropertySourceClasses;
+    private boolean interceptByProxy = false;
+    private Set<String> skipPropertySourceClasses = new HashSet<>(DEFAULT_SKIP_PROPERTY_SOURCE_CLASSES);
 
     /**
      * @param decryptor 解密器
      */
     public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor) {
-        this(decryptor, false);
-    }
-
-    /**
-     * @param decryptor 解密器
-     * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
-     */
-    public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor, boolean interceptByProxy) {
-        this(decryptor, interceptByProxy, null);
-    }
-
-    /**
-     * @param decryptor 解密器
-     * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
-     * @param skipPropertySourceClasses 指定哪些PropertySource不转换(多个用','分割)
-     */
-    public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor, boolean interceptByProxy, String skipPropertySourceClasses) {
         this.decryptor = decryptor;
-        this.interceptByProxy = interceptByProxy;
-        this.skipPropertySourceClasses = new HashSet<>(DEFAULT_SKIP_PROPERTY_SOURCE_CLASSES);
-
-        // 指定哪些PropertySource不转换
-        if (skipPropertySourceClasses != null && !skipPropertySourceClasses.isEmpty()) {
-            String[] classNames = skipPropertySourceClasses.split(",");
-            for (String className : classNames) {
-                className = className.trim();
-                if (className.isEmpty()) {
-                    continue;
-                }
-                this.skipPropertySourceClasses.add(className);
-            }
-        }
     }
 
     @Override
@@ -149,4 +120,38 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
         return decryptor;
     }
 
+    @Override
+    public void setEnv(CryptoPropEnv env) {
+        // 由于BeanDefinitionRegistryPostProcessor早于Bean实例化, CryptoPropBeanDefinitionRegistryPostProcessor自身和它依赖的
+        // Bean无法通过@Value注入需要的参数, 我们只能从Environment和PropertySourcesPlaceholderConfigurer获取Spring启动早期的参数(属性).
+        // CryptoPropBeanDefinitionRegistryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
+        setInterceptByProxy("true".equalsIgnoreCase(env.getProperty(CryptoPropConstants.OPTION_INTERCEPT_BY_PROXY)));
+        setSkipPropertySources(env.getProperty(CryptoPropConstants.OPTION_SKIP_PROPERTY_SOURCES));
+    }
+
+    /**
+     * @param interceptByProxy true:优先使用代理切入, false:使用包装类切入
+     */
+    public void setInterceptByProxy(boolean interceptByProxy) {
+        this.interceptByProxy = interceptByProxy;
+    }
+
+    /**
+     * @param skipPropertySources 指定哪些PropertySource不转换(多个用','分割)
+     */
+    public void setSkipPropertySources(String skipPropertySources) {
+        Set<String> skipPropertySourceClasses = new HashSet<>(DEFAULT_SKIP_PROPERTY_SOURCE_CLASSES);
+        if (skipPropertySources != null && !skipPropertySources.isEmpty()) {
+            String[] classNames = skipPropertySources.split(",");
+            for (String className : classNames) {
+                className = className.trim();
+                if (className.isEmpty()) {
+                    continue;
+                }
+                skipPropertySourceClasses.add(className);
+            }
+        }
+
+        this.skipPropertySourceClasses = skipPropertySourceClasses;
+    }
 }

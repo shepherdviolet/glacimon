@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 /**
  * [Spring属性解密] 配置类 (For springboot)
@@ -39,12 +38,6 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class CryptoPropConfiguration {
 
-    public static final String OPTION_DECRYPT_KEY = "glacispring.crypto-prop.key";
-    public static final String OPTION_MODE = "glacispring.crypto-prop.mode";
-    public static final String OPTION_SKIP_PROPERTY_SOURCES = "glacispring.crypto-prop.enhanced.skip-property-sources";
-    public static final String OPTION_INTERCEPT_BY_PROXY = "glacispring.crypto-prop.enhanced.intercept-by-proxy";
-    public static final String OPTION_IGNORE_EXCEPTION = "glacispring.crypto-prop.ignore-exception";
-
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
@@ -52,16 +45,11 @@ public class CryptoPropConfiguration {
      */
     @Bean(name = "glacispring.cryptoProp.decryptor")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.decryptor")
-    public CryptoPropDecryptor decryptor(Environment environment) {
-        // 这里无法通过@Value获取密钥, 只能用Environment#getProperty获取,
-        // 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
-        // Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新密钥 (密钥变更后需要重启应用).
-        return new SimpleCryptoPropDecryptor(environment.getProperty(OPTION_DECRYPT_KEY, "")) {
-            @Override
-            protected void printLogWhenKeyNull(String name, String value) {
-                logger.warn("CryptoProp | Can not decrypt cipher '" + value + "', because the decrypt key '" + OPTION_DECRYPT_KEY + "' is null");
-            }
-        };
+    public CryptoPropDecryptor decryptor() {
+        // 注意这个Bean无法通过@Value获取密钥, 只能在CryptoPropBeanDefinitionRegistryPostProcessor中
+        // 从Environment和PropertySourcesPlaceholderConfigurer中获取参数.
+        // 详见CryptoPropBeanDefinitionRegistryPostProcessor源码.
+        return new SimpleCryptoPropDecryptor();
     }
 
     /**
@@ -70,10 +58,7 @@ public class CryptoPropConfiguration {
      */
     @Bean(name = "glacispring.cryptoProp.enhancedModePropertySourceConverter")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.enhancedModePropertySourceConverter")
-    public ICryptoPropertySourceConverter enhancedModePropertySourceConverter(
-            Environment environment,
-            @Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor
-    ) {
+    public ICryptoPropertySourceConverter enhancedModePropertySourceConverter(@Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
 
         // 区分springboot2.0项目和其他spring项目
         boolean isBoot2 = true;
@@ -83,17 +68,13 @@ public class CryptoPropConfiguration {
             isBoot2 = false;
         }
 
-        // 这里无法通过@Value获取skip-property-sources和intercept-by-proxy,
-        // 只能用Environment#getProperty获取, 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
-        // Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新属性 (属性变更后需要重启应用).
+        // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanDefinitionRegistryPostProcessor中
+        // 从Environment和PropertySourcesPlaceholderConfigurer中获取参数.
+        // 详见CryptoPropBeanDefinitionRegistryPostProcessor源码.
         if (isBoot2) {
-            return new DefaultCryptoPropertySourceConverterForBoot2(decryptor,
-                    "true".equals(environment.getProperty(OPTION_INTERCEPT_BY_PROXY, "")),
-                    environment.getProperty(OPTION_SKIP_PROPERTY_SOURCES, ""));
+            return new DefaultCryptoPropertySourceConverterForBoot2(decryptor);
         }
-        return new DefaultCryptoPropertySourceConverter(decryptor,
-                "true".equals(environment.getProperty(OPTION_INTERCEPT_BY_PROXY, "")),
-                environment.getProperty(OPTION_SKIP_PROPERTY_SOURCES, ""));
+        return new DefaultCryptoPropertySourceConverter(decryptor);
     }
 
     /**
@@ -104,23 +85,14 @@ public class CryptoPropConfiguration {
     @Bean(name = "glacispring.cryptoProp.beanDefinitionRegistryPostProcessor")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.beanDefinitionRegistryPostProcessor")
     public CryptoPropBeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor(
-            Environment environment,
             @Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor,
             @Qualifier("glacispring.cryptoProp.enhancedModePropertySourceConverter") ICryptoPropertySourceConverter enhancedModePropertySourceConverter
     ) {
 
-        // 这里无法通过@Value获取ignore-exception和mode,
-        // 只能用Environment#getProperty获取, 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
-        // Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新属性 (属性变更后需要重启应用).
-        return new CryptoPropBeanDefinitionRegistryPostProcessor(decryptor,
-                enhancedModePropertySourceConverter,
-                environment.getProperty(OPTION_MODE, "NORMAL"),
-                "true".equals(environment.getProperty(OPTION_IGNORE_EXCEPTION, ""))) {
-            @Override
-            protected String ignoreExceptionPrompt() {
-                return "You can temporarily skip this exception by -D" + OPTION_IGNORE_EXCEPTION + "=true";
-            }
-        };
+        // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanDefinitionRegistryPostProcessor中
+        // 从Environment和PropertySourcesPlaceholderConfigurer中获取参数.
+        // 详见CryptoPropBeanDefinitionRegistryPostProcessor源码.
+        return new CryptoPropBeanDefinitionRegistryPostProcessor(decryptor, enhancedModePropertySourceConverter);
     }
 
 //    /**

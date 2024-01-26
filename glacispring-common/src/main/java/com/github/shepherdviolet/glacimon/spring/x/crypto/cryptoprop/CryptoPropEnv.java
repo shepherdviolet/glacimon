@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
@@ -77,11 +78,12 @@ public class CryptoPropEnv {
 
     private Properties invokeMergeProperties(PropertySourcesPlaceholderConfigurer configurer) {
         try {
-            Method method = configurer.getClass().getDeclaredMethod("mergeProperties");
+            Method method = PropertiesLoaderSupport.class.getDeclaredMethod("mergeProperties");
             method.setAccessible(true);
             return (Properties) method.invoke(configurer);
         } catch (Throwable t) {
-            logger.warn("CryptoProp | invoking method 'mergeProperties' of " + configurer.getClass().getName() + " failed", t);
+            logger.warn("CryptoProp | invoking method 'mergeProperties' of " + configurer.getClass().getName() +
+                    " failed, CryptoProp can not get property from local properties file that defined in XML", t);
             return null;
         }
     }

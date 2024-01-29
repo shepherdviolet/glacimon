@@ -21,11 +21,11 @@ package com.github.shepherdviolet.glacimon.java.spi.core;
 
 import com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi;
 import com.github.shepherdviolet.glacimon.java.spi.test.SamplePlugin;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**

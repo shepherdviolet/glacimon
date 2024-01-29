@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.reflect;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,45 +30,45 @@ public class GenericClassUtilsTest {
 
     @Test
     public void getActualClasses() throws GenericClassUtils.TargetGenericClassNotFoundException, NoSuchMethodException {
-        Assert.assertEquals("{I1T1=class java.lang.Integer}",
+        Assertions.assertEquals("{I1T1=class java.lang.Integer}",
                 String.valueOf(GenericClassUtils.getActualClasses(C3.class, I1.class)));
-        Assert.assertEquals("{I2T1=class java.lang.Object}",
+        Assertions.assertEquals("{I2T1=class java.lang.Object}",
                 String.valueOf(GenericClassUtils.getActualClasses(C3[].class, I2.class)));
-        Assert.assertEquals("{I3T1=class java.lang.Double, I3T2=class java.lang.Integer}",
+        Assertions.assertEquals("{I3T1=class java.lang.Double, I3T2=class java.lang.Integer}",
                 String.valueOf(GenericClassUtils.getActualClasses(C3[][].class, I3.class)));
-        Assert.assertEquals("{C2T1=class java.lang.Long, C2T2=class java.lang.Float, C2T3=class java.lang.Double}",
+        Assertions.assertEquals("{C2T1=class java.lang.Long, C2T2=class java.lang.Float, C2T3=class java.lang.Double}",
                 String.valueOf(GenericClassUtils.getActualClasses(C3[][][].class, C2.class)));
 
-        Assert.assertEquals("{I3T1=class java.lang.Object, I3T2=class java.lang.Object}",
+        Assertions.assertEquals("{I3T1=class java.lang.Object, I3T2=class java.lang.Object}",
                 String.valueOf(GenericClassUtils.getActualClasses(C1[][][][].class, I3.class)));
-        Assert.assertEquals("{C1T1=class java.lang.Object, C1T2=class java.lang.Object, C1T3=class java.lang.Integer}",
+        Assertions.assertEquals("{C1T1=class java.lang.Object, C1T2=class java.lang.Object, C1T3=class java.lang.Integer}",
                 String.valueOf(GenericClassUtils.getActualClasses(C2[][][][][].class, C1.class)));
 
-        Assert.assertEquals("{E=class java.lang.Object}",
+        Assertions.assertEquals("{E=class java.lang.Object}",
                 String.valueOf(GenericClassUtils.getActualClasses(SpecialTypes.class.getMethod("genericArrayType4").getGenericReturnType(), List.class)));
-        Assert.assertEquals("{E=interface java.util.Set}",
+        Assertions.assertEquals("{E=interface java.util.Set}",
                 String.valueOf(GenericClassUtils.getActualClasses(SpecialTypes.class.getMethod("genericArrayType5").getGenericReturnType(), List.class)));
     }
 
     @Test
     public void getActualTypes() throws GenericClassUtils.TargetGenericClassNotFoundException, NoSuchMethodException {
-        Assert.assertEquals("{I1T1=class java.lang.Integer}",
+        Assertions.assertEquals("{I1T1=class java.lang.Integer}",
                 String.valueOf(GenericClassUtils.getActualTypes(C3.class, I1.class)));
-        Assert.assertEquals("{I2T1=class java.lang.Object}",
+        Assertions.assertEquals("{I2T1=class java.lang.Object}",
                 String.valueOf(GenericClassUtils.getActualTypes(C3[].class, I2.class)));
-        Assert.assertEquals("{I3T1=class java.lang.Double, I3T2=class java.lang.Integer}",
+        Assertions.assertEquals("{I3T1=class java.lang.Double, I3T2=class java.lang.Integer}",
                 String.valueOf(GenericClassUtils.getActualTypes(C3[][].class, I3.class)));
-        Assert.assertEquals("{C2T1=class java.lang.Long, C2T2=class java.lang.Float, C2T3=class java.lang.Double}",
+        Assertions.assertEquals("{C2T1=class java.lang.Long, C2T2=class java.lang.Float, C2T3=class java.lang.Double}",
                 String.valueOf(GenericClassUtils.getActualTypes(C3[][][].class, C2.class)));
 
-        Assert.assertEquals("{I3T1=class java.lang.Object, I3T2=class java.lang.Object}",
+        Assertions.assertEquals("{I3T1=class java.lang.Object, I3T2=class java.lang.Object}",
                 String.valueOf(GenericClassUtils.getActualTypes(C1[][][][].class, I3.class)));
-        Assert.assertEquals("{C1T1=class java.lang.Object, C1T2=class java.lang.Object, C1T3=class java.lang.Integer}",
+        Assertions.assertEquals("{C1T1=class java.lang.Object, C1T2=class java.lang.Object, C1T3=class java.lang.Integer}",
                 String.valueOf(GenericClassUtils.getActualTypes(C2[][][][][].class, C1.class)));
 
-        Assert.assertEquals("{E=class java.lang.Object}",
+        Assertions.assertEquals("{E=class java.lang.Object}",
                 String.valueOf(GenericClassUtils.getActualTypes(SpecialTypes.class.getMethod("genericArrayType4").getGenericReturnType(), List.class)));
-        Assert.assertEquals("{E=java.util.Set<java.lang.String>}",
+        Assertions.assertEquals("{E=java.util.Set<java.lang.String>}",
                 String.valueOf(GenericClassUtils.getActualTypes(SpecialTypes.class.getMethod("genericArrayType5").getGenericReturnType(), List.class)));
     }
 
@@ -122,12 +122,12 @@ public class GenericClassUtilsTest {
     @Test
     public void typeToRawClass() throws NoSuchMethodException {
 //        System.out.println(SpecialTypes.class.getMethod("genericArrayType1").getGenericReturnType().getClass());
-        Assert.assertEquals(String.class, GenericClassUtils.typeToRawClass(String.class));
-        Assert.assertEquals(Object.class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("typeVariable").getGenericReturnType()));
-        Assert.assertEquals(List.class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("parameterizedType").getGenericReturnType()));
-        Assert.assertEquals(List[].class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("genericArrayType1").getGenericReturnType()));
-        Assert.assertEquals(List[][].class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("genericArrayType2").getGenericReturnType()));
-        Assert.assertEquals(ArrayList[][][][].class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("genericArrayType4").getGenericReturnType()));
+        Assertions.assertEquals(String.class, GenericClassUtils.typeToRawClass(String.class));
+        Assertions.assertEquals(Object.class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("typeVariable").getGenericReturnType()));
+        Assertions.assertEquals(List.class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("parameterizedType").getGenericReturnType()));
+        Assertions.assertEquals(List[].class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("genericArrayType1").getGenericReturnType()));
+        Assertions.assertEquals(List[][].class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("genericArrayType2").getGenericReturnType()));
+        Assertions.assertEquals(ArrayList[][][][].class, GenericClassUtils.typeToRawClass(SpecialTypes.class.getMethod("genericArrayType4").getGenericReturnType()));
     }
 
     public static class SpecialTypes <A> {

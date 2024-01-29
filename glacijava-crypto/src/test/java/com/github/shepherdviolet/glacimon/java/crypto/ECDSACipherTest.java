@@ -21,8 +21,8 @@ package com.github.shepherdviolet.glacimon.java.crypto;
 
 import com.github.shepherdviolet.glacimon.java.crypto.ECDSACipher;
 import com.github.shepherdviolet.glacimon.java.crypto.ECDSAKeyGenerator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 
 import java.io.File;
@@ -56,7 +56,7 @@ public class ECDSACipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(sign));
 
-        Assert.assertEquals(true, ECDSACipher.verify(dataBytes, sign, pair.getPublicKey(), ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
+        Assertions.assertEquals(true, ECDSACipher.verify(dataBytes, sign, pair.getPublicKey(), ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
 
     }
 
@@ -70,7 +70,7 @@ public class ECDSACipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(sign));
 
-        Assert.assertEquals(true, ECDSACipher.verifyIo(new File(TEST_FILE), sign, publicKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
+        Assertions.assertEquals(true, ECDSACipher.verifyIo(new File(TEST_FILE), sign, publicKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
 
     }
 
@@ -84,7 +84,7 @@ public class ECDSACipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(sign));
 
-        Assert.assertEquals(true, ECDSACipher.verifyNio(new File(TEST_FILE), sign, publicKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
+        Assertions.assertEquals(true, ECDSACipher.verifyNio(new File(TEST_FILE), sign, publicKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
 
     }
 

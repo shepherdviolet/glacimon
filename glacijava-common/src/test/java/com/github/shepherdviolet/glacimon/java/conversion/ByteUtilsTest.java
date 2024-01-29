@@ -19,22 +19,22 @@
 
 package com.github.shepherdviolet.glacimon.java.conversion;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ByteUtilsTest {
 
     @Test
     public void leftTrim() {
-        Assert.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
+        Assertions.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
                 ByteUtils.leftTrim(ByteUtils.hexToBytes("1a1a1a")));
-        Assert.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
+        Assertions.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
                 ByteUtils.leftTrim(ByteUtils.hexToBytes("001a1a1a")));
-        Assert.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
+        Assertions.assertArrayEquals(ByteUtils.hexToBytes("1a1a1a"),
                 ByteUtils.leftTrim(ByteUtils.hexToBytes("00001a1a1a")));
-        Assert.assertArrayEquals(ByteUtils.hexToBytes(""),
+        Assertions.assertArrayEquals(ByteUtils.hexToBytes(""),
                 ByteUtils.leftTrim(ByteUtils.hexToBytes("00")));
-        Assert.assertArrayEquals(ByteUtils.hexToBytes(""),
+        Assertions.assertArrayEquals(ByteUtils.hexToBytes(""),
                 ByteUtils.leftTrim(ByteUtils.hexToBytes("0000")));
     }
 

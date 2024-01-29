@@ -20,8 +20,8 @@
 package com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean;
 
 import ch.qos.logback.classic.Level;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.helper.logback.LogbackHelper;
 
 import java.math.BigDecimal;
@@ -35,19 +35,19 @@ public class MxbTypeJudgerTest {
     public void isIndivisible(){
         LogbackHelper.setLevel("com.github.shepherdviolet.glacimon.java.spi", Level.INFO);
 
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(MyEnum.A.getClass()));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(MyEnum.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(int.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(Long.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(void.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(Object.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(byte[].class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(BigDecimal.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(java.sql.Date.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(LocalDateTime.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(String.class));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(MyIndivisible2.class));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isIndivisible(MxbTypeJudgerTest.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(MyEnum.A.getClass()));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(MyEnum.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(int.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(Long.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(void.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(Object.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(byte[].class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(BigDecimal.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(java.sql.Date.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(LocalDateTime.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(String.class));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isIndivisible(MyIndivisible2.class));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isIndivisible(MxbTypeJudgerTest.class));
     }
 
 //    public static void main(String[] args) {
@@ -65,30 +65,30 @@ public class MxbTypeJudgerTest {
         LogbackHelper.setLevel("com.github.shepherdviolet.glacimon.java.spi", Level.INFO);
 
         //Judged by type
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyEnum.A.getClass(), true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(int.class, true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(java.sql.Date.class, true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(String.class, true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean1[].class, true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(Map.class, true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(AbstractMap.class, true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyIndivisible1.class, true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyIndivisible2.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyEnum.A.getClass(), true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(int.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(java.sql.Date.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(String.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean1[].class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(Map.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(AbstractMap.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyIndivisible1.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyIndivisible2.class, true, true));
 
         //Judged by read write method
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean1.class, true, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean2.class, true, true));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean3.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean1.class, true, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean2.class, true, true));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean3.class, true, true));
 
         //Judged by read method
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean1.class, true, false));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean2.class, true, false));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean3.class, true, false));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean1.class, true, false));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean2.class, true, false));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean3.class, true, false));
 
         //Judged by write method
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean1.class, false, true));
-        Assert.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean2.class, false, true));
-        Assert.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean3.class, false, true));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean1.class, false, true));
+        Assertions.assertFalse(MxbConstants.TYPE_JUDGER.isBean(MyBean2.class, false, true));
+        Assertions.assertTrue(MxbConstants.TYPE_JUDGER.isBean(MyBean3.class, false, true));
     }
 
     public enum MyEnum {

@@ -21,10 +21,8 @@ dependencies {
     //test
     [
             fileTree(include: ['*.jar'], dir: 'libs'),
-            "junit:junit:$version_junit",
-            "org.mockito:mockito-core:$version_mockito",
             "ch.qos.logback:logback-classic:$version_logback",
-            "org.slf4j:slf4j-api:$version_slf4j",
+            "org.springframework.boot:spring-boot-starter-test:$version_spring_boot",
 
     ].forEach{ testImplementation it }
 

@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.crypto;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.common.throwable.IllegalParamException;
 
 import java.security.spec.InvalidKeySpecException;
@@ -90,22 +90,22 @@ public class PEMEncodedTest {
     @Test
     public void common() throws InvalidKeySpecException, IllegalParamException {
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 CERTIFICATE_PEM,
                 PEMEncodeUtils.certificateToPEMEncoded(CERTIFICATE_BASE64)
         );
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 PRIVATE_KEY_PEM,
                 PEMEncodeUtils.rsaPrivateKeyToPEMEncoded(PRIVATE_KEY_BASE64)
         );
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 CERTIFICATE_BASE64,
                 PEMEncodeUtils.pemEncodedToX509EncodedString(CERTIFICATE_PEM)
         );
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 PRIVATE_KEY_BASE64,
                 PEMEncodeUtils.pemEncodedToX509EncodedString(PRIVATE_KEY_PEM)
         );

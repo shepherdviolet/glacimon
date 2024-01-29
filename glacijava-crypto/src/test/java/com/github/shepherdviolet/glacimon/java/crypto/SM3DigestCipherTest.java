@@ -20,8 +20,8 @@
 package com.github.shepherdviolet.glacimon.java.crypto;
 
 import com.github.shepherdviolet.glacimon.java.crypto.SM3DigestCipher;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 
 import java.io.ByteArrayInputStream;
@@ -37,22 +37,22 @@ public class SM3DigestCipherTest {
         //摘要字节
         byte[] hash = SM3DigestCipher.digest("hello".getBytes("utf-8"), SM3DigestCipher.TYPE_SM3);
 
-        Assert.assertEquals(HELLO_RESULT, ByteUtils.bytesToHex(hash));
+        Assertions.assertEquals(HELLO_RESULT, ByteUtils.bytesToHex(hash));
 
         //摘要字符串
         hash = SM3DigestCipher.digestStr("hello", SM3DigestCipher.TYPE_SM3, "utf-8");
 
-        Assert.assertEquals(HELLO_RESULT, ByteUtils.bytesToHex(hash));
+        Assertions.assertEquals(HELLO_RESULT, ByteUtils.bytesToHex(hash));
 
         //摘要十六进制字符串
         hash = SM3DigestCipher.digestHexStr(ByteUtils.bytesToHex("hello".getBytes("utf-8")), SM3DigestCipher.TYPE_SM3);
 
-        Assert.assertEquals(HELLO_RESULT, ByteUtils.bytesToHex(hash));
+        Assertions.assertEquals(HELLO_RESULT, ByteUtils.bytesToHex(hash));
 
         //摘要输入流
         hash = SM3DigestCipher.digestInputStream(new ByteArrayInputStream("hello".getBytes("utf-8")), SM3DigestCipher.TYPE_SM3);
 
-        Assert.assertEquals(HELLO_RESULT, ByteUtils.bytesToHex(hash));
+        Assertions.assertEquals(HELLO_RESULT, ByteUtils.bytesToHex(hash));
     }
 
 }

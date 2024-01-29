@@ -20,8 +20,8 @@
 package com.github.shepherdviolet.glacimon.java.conversion;
 
 import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class SimpleKeyValueEncoderTest {
         Map<String, String> result = SimpleKeyValueEncoder.decode(encoded);
 //        System.out.println(result);
 
-        Assert.assertEquals(map.toString(), result.toString());
+        Assertions.assertEquals(map.toString(), result.toString());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class SimpleKeyValueEncoderTest {
         Map<String, String> result = SimpleKeyValueEncoder.decode(encoded);
 //        System.out.println(result);
 
-        Assert.assertEquals(map.toString(), result.toString());
+        Assertions.assertEquals(map.toString(), result.toString());
     }
 
 }

@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.misc;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -35,17 +35,17 @@ public class LambdaBuilderTest {
             obj.setId("456");
             return obj;
         });
-        Assert.assertEquals("Bean{name='123', id='456'}", bean.toString());
+        Assertions.assertEquals("Bean{name='123', id='456'}", bean.toString());
         Map<String, Object> map = LambdaBuilder.hashMap(i -> {
             i.put("a", "b");
             i.put("c", "d");
         });
-        Assert.assertEquals("{a=b, c=d}", map.toString());
+        Assertions.assertEquals("{a=b, c=d}", map.toString());
         List<String> list = LambdaBuilder.arrayList(i -> {
            i.add("a");
            i.add("b");
         });
-        Assert.assertEquals("[a, b]", list.toString());
+        Assertions.assertEquals("[a, b]", list.toString());
     }
 
     private static final class Bean {

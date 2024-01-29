@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.java.spi.core;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public abstract class AbstractTest {
     /**
      * init before test
      */
-    @Before
+    @BeforeAll // 在所有Test方法前运行一次, BeforeEach在每个Test方法前运行
     public void init(){
         //Enable mockito annotations
         MockitoAnnotations.initMocks(this);

@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.x.trace;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * 临时使用的测试案例
@@ -34,7 +34,7 @@ public class TraceTest {
         Trace.start();
         Trace.setData("hello", "hello");
         Trace.handoff(Trace.getBaton());
-        Assert.assertEquals("hello", Trace.getData("hello"));
+        Assertions.assertEquals("hello", Trace.getData("hello"));
     }
 
 }

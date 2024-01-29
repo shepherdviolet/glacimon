@@ -21,8 +21,8 @@ package com.github.shepherdviolet.glacimon.java.crypto;
 
 import com.github.shepherdviolet.glacimon.java.crypto.RSACipher;
 import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 
 import javax.crypto.BadPaddingException;
@@ -59,7 +59,7 @@ public class RSACipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(sign));
 
-        Assert.assertEquals(true, RSACipher.verify(dataBytes, sign, pair.getPublicKey(), RSACipher.SIGN_ALGORITHM_RSA_SHA1));
+        Assertions.assertEquals(true, RSACipher.verify(dataBytes, sign, pair.getPublicKey(), RSACipher.SIGN_ALGORITHM_RSA_SHA1));
 
     }
 
@@ -73,7 +73,7 @@ public class RSACipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(sign));
 
-        Assert.assertEquals(true, RSACipher.verifyIo(new File(TEST_FILE), sign, publicKey, RSACipher.SIGN_ALGORITHM_RSA_MD5));
+        Assertions.assertEquals(true, RSACipher.verifyIo(new File(TEST_FILE), sign, publicKey, RSACipher.SIGN_ALGORITHM_RSA_MD5));
 
     }
 
@@ -87,7 +87,7 @@ public class RSACipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(sign));
 
-        Assert.assertEquals(true, RSACipher.verifyNio(new File(TEST_FILE), sign, publicKey, RSACipher.SIGN_ALGORITHM_RSA_SHA256));
+        Assertions.assertEquals(true, RSACipher.verifyNio(new File(TEST_FILE), sign, publicKey, RSACipher.SIGN_ALGORITHM_RSA_SHA256));
 
     }
 
@@ -106,7 +106,7 @@ public class RSACipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(decrypted));
 
-        Assert.assertEquals(STRING, new String(decrypted, "UTF-8"));
+        Assertions.assertEquals(STRING, new String(decrypted, "UTF-8"));
 
     }
 
@@ -125,7 +125,7 @@ public class RSACipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(decrypted));
 
-        Assert.assertEquals(STRING, new String(decrypted, "UTF-8"));
+        Assertions.assertEquals(STRING, new String(decrypted, "UTF-8"));
 
     }
 

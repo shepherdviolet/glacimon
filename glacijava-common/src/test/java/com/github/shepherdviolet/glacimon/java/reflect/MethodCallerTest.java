@@ -19,14 +19,14 @@
 
 package com.github.shepherdviolet.glacimon.java.reflect;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MethodCallerTest {
 
     @Test
     public void getMethodCaller(){
-        Assert.assertEquals("MethodCaller{callerClass='sun.reflect.NativeMethodAccessorImpl', callerMethodName='invoke0'}",
+        Assertions.assertEquals("MethodCaller{callerClass='sun.reflect.NativeMethodAccessorImpl', callerMethodName='invoke0'}",
                 String.valueOf(MethodCaller.getMethodCaller(null, null)));
     }
 

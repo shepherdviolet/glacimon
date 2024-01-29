@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.io;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class FileUtilsTest {
             }
         });
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "[0123456789, 0123456, 01234567890123456, 01234567890123456789, 0123456789012345678901234567890123456789, 0123456789012345678901234567890123456789+, 0123]",
                 result.toString());
 

@@ -20,22 +20,22 @@
 package com.github.shepherdviolet.glacimon.java.math;
 
 import com.github.shepherdviolet.glacimon.java.math.MathUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MathUtilsTest {
 
     @Test
     public void atan2(){
-        Assert.assertEquals(0d, MathUtils.atan2(0, 0, 0) * 180d / Math.PI, 1d);
-        Assert.assertEquals(0d, MathUtils.atan2(1, 0, 0) * 180d / Math.PI, 1d);
-        Assert.assertEquals(45d, MathUtils.atan2(1, 1, 0) * 180d / Math.PI, 1d);
-        Assert.assertEquals(90d, MathUtils.atan2(0, 1, 0) * 180d / Math.PI, 1d);
-        Assert.assertEquals(135d, MathUtils.atan2(-1, 1, 0) * 180d / Math.PI, 1d);
-        Assert.assertEquals(180d, MathUtils.atan2(-1, 0, 0) * 180d / Math.PI, 1d);
-        Assert.assertEquals(-135d, MathUtils.atan2(-1, -1, 0) * 180d / Math.PI, 1d);
-        Assert.assertEquals(-90d, MathUtils.atan2(0, -1, 0) * 180d / Math.PI, 1d);
-        Assert.assertEquals(-45d, MathUtils.atan2(1, -1, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(0d, MathUtils.atan2(0, 0, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(0d, MathUtils.atan2(1, 0, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(45d, MathUtils.atan2(1, 1, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(90d, MathUtils.atan2(0, 1, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(135d, MathUtils.atan2(-1, 1, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(180d, MathUtils.atan2(-1, 0, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(-135d, MathUtils.atan2(-1, -1, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(-90d, MathUtils.atan2(0, -1, 0) * 180d / Math.PI, 1d);
+        Assertions.assertEquals(-45d, MathUtils.atan2(1, -1, 0) * 180d / Math.PI, 1d);
     }
 
 }

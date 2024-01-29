@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.def.DefaultTxTimerReportRepository;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.def.DefaultTxTimerReportScanner;
 import com.github.shepherdviolet.glacimon.java.io.FileUtils;
@@ -75,7 +75,7 @@ public class TxTimerReportReaderTest {
 
 //        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(data));
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 EXPECTED,
                 data.toString());
 

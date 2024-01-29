@@ -19,9 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.java.reflect;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,8 +57,7 @@ public class ReflectGetterTest {
                 "hello",
                 ReflectGetter.get(bean, "objectMap.name", true)
         );
-        assertEquals(
-                null,
+        assertNull(
                 ReflectGetter.get(bean, "objectMap.undefined", true)
         );
         assertEquals(

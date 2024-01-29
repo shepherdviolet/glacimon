@@ -24,7 +24,7 @@ import com.github.shepherdviolet.glacimon.java.crypto.AdvancedSignDataUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.security.NoSuchProviderException;

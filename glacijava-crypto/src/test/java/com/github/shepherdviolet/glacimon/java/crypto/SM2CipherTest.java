@@ -25,8 +25,8 @@ import com.github.shepherdviolet.glacimon.java.crypto.SM2KeyGenerator;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.crypto.base.BaseBCAsymKeyGenerator;
 import com.github.shepherdviolet.glacimon.java.crypto.base.CommonCryptoException;
 import com.github.shepherdviolet.glacimon.java.crypto.base.SM2DefaultCurve;
@@ -78,7 +78,7 @@ public class SM2CipherTest {
 
         //用私钥解密(效率低, 用于交换密钥或解密少量数据)
         String decrypted = new String(SM2Cipher.decrypt(encrypted, privateKeyParams, SM2Cipher.CRYPTO_ALGORITHM_SM2), "UTF-8");
-        Assert.assertEquals(STRING, decrypted);
+        Assertions.assertEquals(STRING, decrypted);
 
 //        System.out.println(decrypted);
 
@@ -89,7 +89,7 @@ public class SM2CipherTest {
 
         //用私钥解密, 解密新标准C1C3C2格式的数据(效率低, 用于交换密钥或解密少量数据)
         decrypted = new String(SM2Cipher.decryptFromC1C3C2(encrypted, privateKeyParams, SM2Cipher.CRYPTO_ALGORITHM_SM2), "UTF-8");
-        Assert.assertEquals(STRING, decrypted);
+        Assertions.assertEquals(STRING, decrypted);
 
         //用公钥加密, 结果为DER格式(效率低, 用于交换密钥或加密少量数据)
         encrypted = SM2Cipher.encryptToDER(STRING.getBytes("UTF-8"), publicKeyParams, SM2Cipher.CRYPTO_ALGORITHM_SM2);
@@ -98,19 +98,19 @@ public class SM2CipherTest {
 
         //用私钥解密, 解密DER格式的数据(效率低, 用于交换密钥或解密少量数据)
         decrypted = new String(SM2Cipher.decryptFromDER(encrypted, privateKeyParams, SM2Cipher.CRYPTO_ALGORITHM_SM2), "UTF-8");
-        Assert.assertEquals(STRING, decrypted);
+        Assertions.assertEquals(STRING, decrypted);
 
 //        System.out.println(decrypted);
 
         //私钥签名, 公钥验签, 签名格式为DER
         byte[] sign = SM2Cipher.sign(STRING.getBytes("UTF-8"), null, privateKeyParams, SM2Cipher.SIGN_ALGORITHM_SM2_SM3);
         boolean result = SM2Cipher.verify(STRING.getBytes("UTF-8"), sign, null, publicKeyParams, SM2Cipher.SIGN_ALGORITHM_SM2_SM3);
-        Assert.assertTrue(result);
+        Assertions.assertTrue(result);
 
         //私钥签名, 公钥验签, 签名格式为原始的R+S(32bytes + 32bytes)
         sign = SM2Cipher.signToRS(new ByteArrayInputStream(STRING.getBytes("UTF-8")), null, privateKeyParams, SM2Cipher.SIGN_ALGORITHM_SM2_SM3);
         result = SM2Cipher.verifyFromRS(new ByteArrayInputStream(STRING.getBytes("UTF-8")), sign, null, publicKeyParams, SM2Cipher.SIGN_ALGORITHM_SM2_SM3);
-        Assert.assertTrue(result);
+        Assertions.assertTrue(result);
 
         //特殊:openssl可识别的SEC1标准的私钥数据
         byte[] sec1 = BaseBCAsymKeyGenerator.encodePkcs8ToSec1(pkcs8);
@@ -119,7 +119,7 @@ public class SM2CipherTest {
 //        System.out.println(ByteUtils.bytesToHex(sec1));
 //        System.out.println(ByteUtils.bytesToHex(pkcs8New));
 
-        Assert.assertArrayEquals(pkcs8, pkcs8New);
+        Assertions.assertArrayEquals(pkcs8, pkcs8New);
 
     }
 

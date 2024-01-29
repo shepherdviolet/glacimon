@@ -24,8 +24,8 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.pkcs.PKCSException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.crypto.base.SimpleIssuerProvider;
 
 import java.io.IOException;
@@ -133,8 +133,8 @@ public class SM2CertTest {
                 "test"
         );
 
-        Assert.assertArrayEquals(new Certificate[]{userCert, rootCert}, certificateChainAndKey.getCertificateChain());
-        Assert.assertEquals(userKeyPair.getJdkPrivateKey(), certificateChainAndKey.getPrivateKey());
+        Assertions.assertArrayEquals(new Certificate[]{userCert, rootCert}, certificateChainAndKey.getCertificateChain());
+        Assertions.assertEquals(userKeyPair.getJdkPrivateKey(), certificateChainAndKey.getPrivateKey());
 
         //证书链验证证书有效性
         AdvancedCertificateUtils.verifyCertificateByIssuers(userCert, new Date(), new SimpleIssuerProvider(Collections.singletonList(rootCert)));

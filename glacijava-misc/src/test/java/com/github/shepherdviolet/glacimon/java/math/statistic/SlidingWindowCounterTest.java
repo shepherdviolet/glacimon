@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.math.statistic;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -65,46 +65,46 @@ public class SlidingWindowCounterTest {
         counter.addAndGet(1, 5000);//大抖动
         counter.addAndGet(1, 22000);
 
-        Assert.assertEquals(2, counter.getRecently(1 * SAMPLING_DURATION, 30000));
-        Assert.assertEquals(5, counter.getRecently(2 * SAMPLING_DURATION, 30000));
-        Assert.assertEquals(12, counter.getRecently(Integer.MAX_VALUE, 30000));
+        Assertions.assertEquals(2, counter.getRecently(1 * SAMPLING_DURATION, 30000));
+        Assertions.assertEquals(5, counter.getRecently(2 * SAMPLING_DURATION, 30000));
+        Assertions.assertEquals(12, counter.getRecently(Integer.MAX_VALUE, 30000));
 
         //2 * 2
         counter.addAndGet(2, 41000);
         counter.addAndGet(2, 31000);//大抖动
 
-        Assert.assertEquals(2, counter.getRecently(1 * SAMPLING_DURATION, 50000));
-        Assert.assertEquals(4, counter.getRecently(2 * SAMPLING_DURATION, 50000));
-        Assert.assertEquals(6, counter.getRecently(3 * SAMPLING_DURATION, 50000));
-        Assert.assertEquals(16, counter.getRecently(Integer.MAX_VALUE, 50000));
+        Assertions.assertEquals(2, counter.getRecently(1 * SAMPLING_DURATION, 50000));
+        Assertions.assertEquals(4, counter.getRecently(2 * SAMPLING_DURATION, 50000));
+        Assertions.assertEquals(6, counter.getRecently(3 * SAMPLING_DURATION, 50000));
+        Assertions.assertEquals(16, counter.getRecently(Integer.MAX_VALUE, 50000));
 
         //2
         counter.addAndGet(1, 301000);
         counter.addAndGet(1, 291000);//大抖动
 
-        Assert.assertEquals(1, counter.getRecently(1 * SAMPLING_DURATION, 310000));
-        Assert.assertEquals(2, counter.getRecently(2 * SAMPLING_DURATION, 310000));
-        Assert.assertEquals(8, counter.getRecently(Integer.MAX_VALUE, 310000));
+        Assertions.assertEquals(1, counter.getRecently(1 * SAMPLING_DURATION, 310000));
+        Assertions.assertEquals(2, counter.getRecently(2 * SAMPLING_DURATION, 310000));
+        Assertions.assertEquals(8, counter.getRecently(Integer.MAX_VALUE, 310000));
 
         //1
         counter.addAndGet(1, 311000);
 
-        Assert.assertEquals(1, counter.getRecently(1 * SAMPLING_DURATION, 320000));
-        Assert.assertEquals(2, counter.getRecently(2 * SAMPLING_DURATION, 320000));
-        Assert.assertEquals(7, counter.getRecently(Integer.MAX_VALUE, 320000));
+        Assertions.assertEquals(1, counter.getRecently(1 * SAMPLING_DURATION, 320000));
+        Assertions.assertEquals(2, counter.getRecently(2 * SAMPLING_DURATION, 320000));
+        Assertions.assertEquals(7, counter.getRecently(Integer.MAX_VALUE, 320000));
 
         //1
         counter.addAndGet(1, 0);//时间倒流的话, 计数无效
 
-        Assert.assertEquals(0, counter.getRecently(1 * SAMPLING_DURATION, 10000));//时间回退的话, 取值也无效
-        Assert.assertEquals(0, counter.getRecently(2 * SAMPLING_DURATION, 10000));//时间回退的话, 取值也无效
-        Assert.assertEquals(7, counter.getRecently(Integer.MAX_VALUE, 320000));
+        Assertions.assertEquals(0, counter.getRecently(1 * SAMPLING_DURATION, 10000));//时间回退的话, 取值也无效
+        Assertions.assertEquals(0, counter.getRecently(2 * SAMPLING_DURATION, 10000));//时间回退的话, 取值也无效
+        Assertions.assertEquals(7, counter.getRecently(Integer.MAX_VALUE, 320000));
 
         for (int i = 0 ; i < 10 ; i++) {
             counter.addAndGet(1, 0);//大量的时间倒流可以导致整个重置(默认64次)
         }
 
-        Assert.assertEquals(1, counter.getRecently(Integer.MAX_VALUE, 10000));
+        Assertions.assertEquals(1, counter.getRecently(Integer.MAX_VALUE, 10000));
 
     }
 

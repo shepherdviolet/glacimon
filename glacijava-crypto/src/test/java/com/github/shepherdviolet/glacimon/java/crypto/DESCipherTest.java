@@ -21,8 +21,8 @@ package com.github.shepherdviolet.glacimon.java.crypto;
 
 import com.github.shepherdviolet.glacimon.java.crypto.DESCipher;
 import com.github.shepherdviolet.glacimon.java.crypto.DESKeyGenerator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -57,7 +57,7 @@ public class DESCipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(decrypted));
 
-        Assert.assertEquals(STRING, new String(decrypted, "UTF-8"));
+        Assertions.assertEquals(STRING, new String(decrypted, "UTF-8"));
 
     }
 
@@ -81,7 +81,7 @@ public class DESCipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(decrypted));
 
-        Assert.assertEquals(STRING, new String(decrypted, "UTF-8"));
+        Assertions.assertEquals(STRING, new String(decrypted, "UTF-8"));
 
     }
 
@@ -111,7 +111,7 @@ public class DESCipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(decrypted));
 
-        Assert.assertEquals(STRING, new String(decrypted, "UTF-8"));
+        Assertions.assertEquals(STRING, new String(decrypted, "UTF-8"));
 
     }
 
@@ -141,7 +141,7 @@ public class DESCipherTest {
 
 //        System.out.println(ByteUtils.bytesToHex(decrypted));
 
-        Assert.assertEquals(STRING, new String(decrypted, "UTF-8"));
+        Assertions.assertEquals(STRING, new String(decrypted, "UTF-8"));
 
     }
 

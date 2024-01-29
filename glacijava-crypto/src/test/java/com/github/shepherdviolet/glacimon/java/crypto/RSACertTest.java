@@ -21,8 +21,8 @@ package com.github.shepherdviolet.glacimon.java.crypto;
 
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import com.github.shepherdviolet.glacimon.java.misc.DateTimeUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.base.IssuerProvider;
@@ -93,8 +93,8 @@ public class RSACertTest {
                 "Glacijava test ca alias"
         );
 
-        Assert.assertArrayEquals(new Certificate[]{rootCertificate}, certificateChainAndKey.getCertificateChain());
-        Assert.assertNull(certificateChainAndKey.getPrivateKey());
+        Assertions.assertArrayEquals(new Certificate[]{rootCertificate}, certificateChainAndKey.getCertificateChain());
+        Assertions.assertNull(certificateChainAndKey.getPrivateKey());
 
         PKCS12KeyStoreUtils.CertificateChainAndKey certificateChainAndKey2 = PKCS12KeyStoreUtils.loadCertificateAndKey(
                 "./out/test-case/pkcs12-test.p12",
@@ -102,8 +102,8 @@ public class RSACertTest {
                 "Glacijava test subject alias"
         );
 
-        Assert.assertArrayEquals(new Certificate[]{subjectCertificate}, certificateChainAndKey2.getCertificateChain());
-        Assert.assertEquals(subjectKeyPair.getPrivateKey(), certificateChainAndKey2.getPrivateKey());
+        Assertions.assertArrayEquals(new Certificate[]{subjectCertificate}, certificateChainAndKey2.getCertificateChain());
+        Assertions.assertEquals(subjectKeyPair.getPrivateKey(), certificateChainAndKey2.getPrivateKey());
 
     }
 
@@ -209,18 +209,18 @@ public class RSACertTest {
     public void dnToX500Name() throws CertificateException, NoSuchProviderException, IOException {
         X509Certificate cert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CERT));
         X500NameWrapper x500NameWrapper = AdvancedCertificateUtils.dnToX500Name(cert.getSubjectX500Principal());
-        Assert.assertEquals("baidu.com",
+        Assertions.assertEquals("baidu.com",
                 x500NameWrapper.getObject(BCStyle.CN));
-        Assert.assertEquals("CN",
+        Assertions.assertEquals("CN",
                 x500NameWrapper.getObject(BCStyle.C));
-        Assert.assertArrayEquals(new String[]{"aaa", "bbb", "ccc"},
+        Assertions.assertArrayEquals(new String[]{"aaa", "bbb", "ccc"},
                 AdvancedCertificateUtils.dnToX500Name("CN=aaa+CN=bbb, CN=ccc").getObjects(BCStyle.CN).toArray());
     }
 
     @Test
     public void getDomainNamesFromCertificate() throws CertificateException, NoSuchProviderException, IOException {
         X509Certificate cert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CERT));
-        Assert.assertEquals("[baidu.com, baidu.com, baifubao.com, www.baidu.cn, www.baidu.com.cn, " +
+        Assertions.assertEquals("[baidu.com, baidu.com, baifubao.com, www.baidu.cn, www.baidu.com.cn, " +
                         "mct.y.nuomi.com, apollo.auto, dwz.cn, *.baidu.com, *.baifubao.com, *.baidustatic.com, " +
                         "*.bdstatic.com, *.bdimg.com, *.hao123.com, *.nuomi.com, *.chuanke.com, *.trustgo.com, " +
                         "*.bce.baidu.com, *.eyun.baidu.com, *.map.baidu.com, *.mbd.baidu.com, *.fanyi.baidu.com, " +
@@ -260,36 +260,40 @@ public class RSACertTest {
         AdvancedCertificateUtils.verifyCertificateByIssuers(cert, DateTimeUtils.stringToDate("2020-05-21", "yyyy-MM-dd"), new RootIssuerProvider(Collections.singletonList(rootCert)), Collections.singletonList(caCert));
     }
 
-//    @Test
-    @Test(expected = CertificateException.class)
-    public void verifyCertificateByIssuersError0() throws CertificateException, NoSuchProviderException {
-        X509Certificate cert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CERT));
-        X509Certificate rootCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(ROOT_CERT));
-        AdvancedCertificateUtils.verifyCertificateByIssuers(cert, new Date(), new RootIssuerProvider(Collections.singletonList(rootCert)), null);
+    @Test
+    public void verifyCertificateByIssuersError0() {
+        Assertions.assertThrows(CertificateException.class, () -> {
+            X509Certificate cert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CERT));
+            X509Certificate rootCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(ROOT_CERT));
+            AdvancedCertificateUtils.verifyCertificateByIssuers(cert, new Date(), new RootIssuerProvider(Collections.singletonList(rootCert)), null);
+        });
     }
 
-//    @Test
-    @Test(expected = CertificateException.class)
-    public void verifyCertificateByIssuersError1() throws CertificateException, NoSuchProviderException {
-        X509Certificate cert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CERT));
-        X509Certificate caCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CA_CERT));
-        AdvancedCertificateUtils.verifyCertificateByIssuers(cert, new Date(), new RootIssuerProvider(null), Collections.singletonList(caCert));
+    @Test
+    public void verifyCertificateByIssuersError1() {
+        Assertions.assertThrows(CertificateException.class, () -> {
+            X509Certificate cert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CERT));
+            X509Certificate caCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CA_CERT));
+            AdvancedCertificateUtils.verifyCertificateByIssuers(cert, new Date(), new RootIssuerProvider(null), Collections.singletonList(caCert));
+        });
     }
 
-//    @Test
-    @Test(expected = CertificateException.class)
-    public void verifyCertificateByIssuersError2() throws CertificateException, NoSuchProviderException {
-        X509Certificate cert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CERT));
-        X509Certificate caCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CA_CERT));
-        X509Certificate rootCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(ROOT_CERT));
-        AdvancedCertificateUtils.verifyCertificateByIssuers(cert, new Date(), new RootIssuerProvider(null), Arrays.asList(caCert, rootCert));
+    @Test
+    public void verifyCertificateByIssuersError2() {
+        Assertions.assertThrows(CertificateException.class, () -> {
+            X509Certificate cert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CERT));
+            X509Certificate caCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(CA_CERT));
+            X509Certificate rootCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(ROOT_CERT));
+            AdvancedCertificateUtils.verifyCertificateByIssuers(cert, new Date(), new RootIssuerProvider(null), Arrays.asList(caCert, rootCert));
+        });
     }
 
-//    @Test
-    @Test(expected = CertificateException.class)
-    public void verifyCertificateByIssuersError3() throws CertificateException, NoSuchProviderException {
-        X509Certificate rootCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(ROOT_CERT));
-        AdvancedCertificateUtils.verifyCertificateByIssuers(rootCert, new Date(), new SimpleIssuerProvider(null));
+    @Test
+    public void verifyCertificateByIssuersError3() {
+        Assertions.assertThrows(CertificateException.class, () -> {
+            X509Certificate rootCert = AdvancedCertificateUtils.parseX509ToCertificateAdvanced(Base64Utils.decode(ROOT_CERT));
+            AdvancedCertificateUtils.verifyCertificateByIssuers(rootCert, new Date(), new SimpleIssuerProvider(null));
+        });
     }
 
 }

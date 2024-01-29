@@ -19,7 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.spring;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TempTest {
 

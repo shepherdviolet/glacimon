@@ -26,9 +26,8 @@ dependencies {
 
     //test
     [
-            "junit:junit:$version_junit",
-            "org.mockito:mockito-core:$version_mockito",
             "ch.qos.logback:logback-classic:$version_logback",
+            "org.springframework.boot:spring-boot-starter-test:$version_spring_boot",
 
     ].forEach{ testImplementation it }
 

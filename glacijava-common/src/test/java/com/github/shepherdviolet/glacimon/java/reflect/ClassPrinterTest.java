@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.reflect;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class ClassPrinterTest {
 
     @Test
     public void test() throws IllegalAccessException {
-        Assert.assertEquals("#### Class #########################################################################################\n" +
+        Assertions.assertEquals("#### Class #########################################################################################\n" +
                         "public class com.github.shepherdviolet.glacimon.java.reflect.ClassPrinterTest$SuperElectronicCar\n" +
                         "        extends com.github.shepherdviolet.glacimon.java.reflect.ClassPrinterTest$ElectronicCar\n" +
                         "        implements java.util.concurrent.Callable {\n" +

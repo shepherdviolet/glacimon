@@ -20,32 +20,32 @@
 package com.github.shepherdviolet.glacimon.spring.conversion;
 
 import com.github.shepherdviolet.glacimon.spring.conversion.StringPlaceHolderUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.misc.LambdaBuildable;
 
 public class StringPlaceHolderUtilsTest implements LambdaBuildable {
 
     @Test
     public void test(){
-        Assert.assertEquals("data",
+        Assertions.assertEquals("data",
                 StringPlaceHolderUtils.replaceStandardly("data", buildHashMap(i -> {
                 })));
-        Assert.assertEquals("prefix-001",
+        Assertions.assertEquals("prefix-001",
                 StringPlaceHolderUtils.replaceStandardly("prefix-${id}", buildHashMap(i -> {
                     i.put("id", "001");
                 })));
-        Assert.assertEquals("prefix-000",
+        Assertions.assertEquals("prefix-000",
                 StringPlaceHolderUtils.replaceStandardly("prefix-${id:000}", buildHashMap(i -> {
                 })));
-        Assert.assertEquals("prefix-${id}",
+        Assertions.assertEquals("prefix-${id}",
                 StringPlaceHolderUtils.replaceStandardly("prefix-${id}", buildHashMap(i -> {
                 })));
-        Assert.assertEquals("prefix-999",
+        Assertions.assertEquals("prefix-999",
                 StringPlaceHolderUtils.replaceStandardly("prefix-${id:${def}}", buildHashMap(i -> {
                     i.put("def", "999");
                 })));
-        Assert.assertEquals("prefix-123",
+        Assertions.assertEquals("prefix-123",
                 StringPlaceHolderUtils.replaceStandardly("prefix-${${key}}", buildHashMap(i -> {
                     i.put("key", "mykey");
                     i.put("mykey", "123");

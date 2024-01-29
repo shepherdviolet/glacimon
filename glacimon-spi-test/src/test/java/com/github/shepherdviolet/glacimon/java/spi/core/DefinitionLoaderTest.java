@@ -19,13 +19,13 @@
 
 package com.github.shepherdviolet.glacimon.java.spi.core;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for class SingleServiceLoader

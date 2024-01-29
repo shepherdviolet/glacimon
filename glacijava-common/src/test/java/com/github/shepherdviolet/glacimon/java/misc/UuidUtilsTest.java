@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.misc;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
@@ -29,11 +29,11 @@ public class UuidUtilsTest {
     @Test
     public void test() {
         UUID uuid = UUID.fromString("3e164de2-db66-4773-bdfe-9427dd05e3f8");
-        Assert.assertEquals("3e164de2-db66-4773-bdfe-9427dd05e3f8",
+        Assertions.assertEquals("3e164de2-db66-4773-bdfe-9427dd05e3f8",
                 UuidUtils.toStringUuid(uuid));
-        Assert.assertEquals("3e164de2db664773bdfe9427dd05e3f8",
+        Assertions.assertEquals("3e164de2db664773bdfe9427dd05e3f8",
                 UuidUtils.toStringUuidWithoutDash(uuid));
-        Assert.assertEquals("PhZN4ttmR3O9_pQn3QXj-A",
+        Assertions.assertEquals("PhZN4ttmR3O9_pQn3QXj-A",
                 UuidUtils.toStringUuidCompressed(uuid));
     }
 

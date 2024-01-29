@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.spring.conversion;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.misc.LambdaBuilder;
 
 import java.time.LocalDate;
@@ -40,24 +40,24 @@ public class SequenceFormatterTest {
 
         Object data = 10000111;
 
-        Assert.assertEquals(date + "9910000111",
+        Assertions.assertEquals(date + "9910000111",
                 SequenceFormatter.defaultFormatter().format("{_date_}{module:99}{}", data));
-        Assert.assertEquals(date + "99000113",
+        Assertions.assertEquals(date + "99000113",
                 SequenceFormatter.defaultFormatter().format("{_date_}{module:99}{<+>2<pad-to-len>6}", data));
-        Assert.assertEquals(date + "9910000113",
+        Assertions.assertEquals(date + "9910000113",
                 SequenceFormatter.defaultFormatter().format("{_date_}{module:99}{<++><++>}", data));
 
-        Assert.assertEquals(date + "9910000111",
+        Assertions.assertEquals(date + "9910000111",
                 SequenceFormatter.defaultFormatter().format("{_date_}{module:99}{sequence}", dataMap));
-        Assert.assertEquals(date + "99000113",
+        Assertions.assertEquals(date + "99000113",
                 SequenceFormatter.defaultFormatter().format("{_date_}{module:99}{sequence<+>2<pad-to-len>6}", dataMap));
-        Assert.assertEquals(date + "990010000113",
+        Assertions.assertEquals(date + "990010000113",
                 SequenceFormatter.defaultFormatter().format("{_date_}{module:99}{sequence<+>2<pad-to-len>10}", dataMap));
-        Assert.assertEquals("113",
+        Assertions.assertEquals("113",
                 SequenceFormatter.defaultFormatter().format("{sequence<+>2<trim-to-len>6}", dataMap));
-        Assert.assertEquals("10000113",
+        Assertions.assertEquals("10000113",
                 SequenceFormatter.defaultFormatter().format("{sequence<+>2<trim-to-len>10}", dataMap));
-        Assert.assertEquals(date + "9910000113",
+        Assertions.assertEquals(date + "9910000113",
                 SequenceFormatter.defaultFormatter().format("{_date_}{module:99}{sequence<++><++>}", dataMap));
 
     }

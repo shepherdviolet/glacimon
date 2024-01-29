@@ -20,8 +20,8 @@
 package com.github.shepherdviolet.glacimon.java.conversion;
 
 import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.crypto.DigestCipher;
 
 import java.nio.charset.StandardCharsets;
@@ -34,25 +34,25 @@ public class Base64UtilsTest {
         String plain = "我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%我是123456ABCDefgh$#%@$#%";
 
         String s = new String(Base64Utils.encode(plain.getBytes(StandardCharsets.UTF_8)));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl",
                 s);
         s = new String(Base64Utils.decode(s.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 plain,
                 s);
 
         s = Base64Utils.encodeToString(plain.getBytes(StandardCharsets.UTF_8));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl",
                 s);
         s = new String(Base64Utils.decode(s));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 plain,
                 s);
 
         s = Base64Utils.encodeToMimeString(plain.getBytes(StandardCharsets.UTF_8));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gk\r\n" +
                         "IyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJD\r\n" +
                         "RGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIz\r\n" +
@@ -61,12 +61,12 @@ public class Base64UtilsTest {
                         "JCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl",
                 s);
         s = new String(Base64Utils.decode(s));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 plain,
                 s);
 
         s = Base64Utils.encodeToMimeString(plain.getBytes(StandardCharsets.UTF_8));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gk\r\n" +
                         "IyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJD\r\n" +
                         "RGVmZ2gkIyVAJCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl5oiR5pivMTIz\r\n" +
@@ -75,16 +75,16 @@ public class Base64UtilsTest {
                         "JCMl5oiR5pivMTIzNDU2QUJDRGVmZ2gkIyVAJCMl",
                 s);
         s = new String(Base64Utils.decode(s.getBytes(StandardCharsets.UTF_8)));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 plain,
                 s);
 
         s = Base64Utils.encodeToUrlSafeString(DigestCipher.digest(plain.getBytes(), DigestCipher.TYPE_SHA512));
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 "fuHb4zQto6llioZvkrisqzWl8e9rw0_XJG4bvHYjHLSavrRNBLeWZQSVBg-YeYlhkjbc3TPIh3JZ9pm4LyjmbQ==",
                 s);
         byte[] b = Base64Utils.decodeFromUrlSafeString(s);
-        Assert.assertArrayEquals(
+        Assertions.assertArrayEquals(
                 DigestCipher.digest(plain.getBytes(), DigestCipher.TYPE_SHA512),
                 b);
     }

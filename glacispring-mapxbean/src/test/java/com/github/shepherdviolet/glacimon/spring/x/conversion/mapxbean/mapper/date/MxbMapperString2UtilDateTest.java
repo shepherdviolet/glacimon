@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.conversion.mapxbean.mapper.date;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,23 +39,29 @@ public class MxbMapperString2UtilDateTest {
         test("2018-10-15 00:00:00.000", "20181015");
     }
 
-    @Test(expected = Exception.class)
-    public void testFailed1() throws Exception {
-        test("2018-10-15 09:26:21.333", "2018-10-15 09:26:21?333");
+    @Test
+    public void testFailed1() {
+        Assertions.assertThrows(Exception.class, () -> {
+            test("2018-10-15 09:26:21.333", "2018-10-15 09:26:21?333");
+        });
     }
 
-    @Test(expected = Exception.class)
-    public void testFailed2() throws Exception {
-        test("2018-10-15 09:26:21.333", "2018-10-15 09:26:21.33");
+    @Test
+    public void testFailed2() {
+        Assertions.assertThrows(Exception.class, () -> {
+            test("2018-10-15 09:26:21.333", "2018-10-15 09:26:21.33");
+        });
     }
 
-    @Test(expected = Exception.class)
-    public void testFailed3() throws Exception {
-        test("2018-10-15 09:26:21.333", "2018-10-1509:26:21");
+    @Test
+    public void testFailed3() {
+        Assertions.assertThrows(Exception.class, () -> {
+            test("2018-10-15 09:26:21.333", "2018-10-1509:26:21");
+        });
     }
 
     private void test(String expected, String actual) throws Exception {
-        Assert.assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(expected),
+        Assertions.assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(expected),
                 map(actual));
     }
 

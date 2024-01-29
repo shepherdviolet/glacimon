@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.misc;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class StreamingBuilderTest implements StreamingBuildable {
                 )
                 .build();
 
-        Assert.assertEquals("{key1=hello1, key2=hello2, key3={k1=v1, k2=v2}}", String.valueOf(map));
+        Assertions.assertEquals("{key1=hello1, key2=hello2, key3={k1=v1, k2=v2}}", String.valueOf(map));
 
         map = buildLinkedHashMap()
                 .key("key33").value("hello11")
@@ -55,7 +55,7 @@ public class StreamingBuilderTest implements StreamingBuildable {
                 )
                 .build();
 
-        Assert.assertEquals("{key33=hello11, key22=hello22, key11={k22=v11, k11=v22}}", String.valueOf(map));
+        Assertions.assertEquals("{key33=hello11, key22=hello22, key11={k22=v11, k11=v22}}", String.valueOf(map));
 
         List<String> list = StreamingBuilder.arrayList()
                 .add("l1")
@@ -63,7 +63,7 @@ public class StreamingBuilderTest implements StreamingBuildable {
                 .add("l3")
                 .build();
 
-        Assert.assertEquals("[l1, l2, l3]", String.valueOf(list));
+        Assertions.assertEquals("[l1, l2, l3]", String.valueOf(list));
 
         list = buildLinkedList()
                 .add("l3")
@@ -71,14 +71,14 @@ public class StreamingBuilderTest implements StreamingBuildable {
                 .add("l1")
                 .build();
 
-        Assert.assertEquals("[l3, l2, l1]", String.valueOf(list));
+        Assertions.assertEquals("[l3, l2, l1]", String.valueOf(list));
 
         Set<String> set = buildHashSet()
                 .add("s1")
                 .add("s2")
                 .build();
 
-        Assert.assertEquals("[s1, s2]", String.valueOf(set));
+        Assertions.assertEquals("[s1, s2]", String.valueOf(set));
 
     }
 

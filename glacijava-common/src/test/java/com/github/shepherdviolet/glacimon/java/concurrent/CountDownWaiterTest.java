@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.concurrent;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,7 +68,7 @@ public class CountDownWaiterTest {
             throw new RuntimeException("Timeout");
         }
 
-        Assert.assertEquals(6, result.get());
+        Assertions.assertEquals(6, result.get());
 //        System.out.println("All finished, result: " + result.get());
     }
 

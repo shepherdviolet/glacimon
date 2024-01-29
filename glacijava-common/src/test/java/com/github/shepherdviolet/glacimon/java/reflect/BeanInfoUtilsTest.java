@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.reflect;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.beans.IntrospectionException;
 import java.util.*;
@@ -34,7 +34,7 @@ public class BeanInfoUtilsTest {
         for (BeanInfoUtils.PropertyInfo propertyInfo : propertyInfos.values()) {
             stringBuilder.append(propertyInfo).append("\n");
         }
-        Assert.assertEquals("PropertyInfo{propertyName='a', propertyClass=class [Ljava.util.Map;, propertyType=java.util.Map<java.lang.String, java.util.Set<java.lang.Runnable>[]>[], readMethod=public java.util.Map[] com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean1.getA(), writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.setA(java.lang.Object)}\n" +
+        Assertions.assertEquals("PropertyInfo{propertyName='a', propertyClass=class [Ljava.util.Map;, propertyType=java.util.Map<java.lang.String, java.util.Set<java.lang.Runnable>[]>[], readMethod=public java.util.Map[] com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean1.getA(), writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.setA(java.lang.Object)}\n" +
                         "PropertyInfo{propertyName='b', propertyClass=interface java.util.Collection, propertyType=java.util.Collection<java.lang.Long>, readMethod=public java.lang.Object com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.getB(), writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean1.setB(java.util.Collection)}\n" +
                         "PropertyInfo{propertyName='c', propertyClass=interface java.util.Map, propertyType=java.util.Map<java.lang.String, java.util.List<java.lang.String>>, readMethod=null, writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.setC(java.lang.Object)}\n" +
                         "PropertyInfo{propertyName='d', propertyClass=interface java.util.Set, propertyType=java.util.Set<java.lang.Runnable>, readMethod=null, writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.setD(java.lang.Object)}\n" +

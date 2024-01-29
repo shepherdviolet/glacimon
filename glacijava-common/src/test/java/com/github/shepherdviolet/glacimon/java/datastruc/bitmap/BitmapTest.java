@@ -19,8 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.datastruc.bitmap;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.DigestCipher;
 
@@ -49,45 +49,45 @@ public class BitmapTest {
         bitmap.put(1006, true);
         bitmap.put(1007, true);
         bitmap.put(1008, true);
-        Assert.assertTrue(bitmap.get(999));
-        Assert.assertTrue(bitmap.get(1000));
-        Assert.assertTrue(bitmap.get(1001));
-        Assert.assertTrue(bitmap.get(1002));
-        Assert.assertTrue(bitmap.get(1003));
-        Assert.assertTrue(bitmap.get(1004));
-        Assert.assertTrue(bitmap.get(1005));
-        Assert.assertTrue(bitmap.get(1006));
-        Assert.assertTrue(bitmap.get(1007));
-        Assert.assertTrue(bitmap.get(1008));
+        Assertions.assertTrue(bitmap.get(999));
+        Assertions.assertTrue(bitmap.get(1000));
+        Assertions.assertTrue(bitmap.get(1001));
+        Assertions.assertTrue(bitmap.get(1002));
+        Assertions.assertTrue(bitmap.get(1003));
+        Assertions.assertTrue(bitmap.get(1004));
+        Assertions.assertTrue(bitmap.get(1005));
+        Assertions.assertTrue(bitmap.get(1006));
+        Assertions.assertTrue(bitmap.get(1007));
+        Assertions.assertTrue(bitmap.get(1008));
 
         bitmap.put(998, true);
         bitmap.put(999, false);
         bitmap.put(1000, true);
-        Assert.assertFalse(bitmap.get(999));
+        Assertions.assertFalse(bitmap.get(999));
 
         bitmap.put(0, true);
-        Assert.assertTrue(bitmap.get(0));
+        Assertions.assertTrue(bitmap.get(0));
         bitmap.put(1023, true);
-        Assert.assertTrue(bitmap.get(1023));
+        Assertions.assertTrue(bitmap.get(1023));
 
         byte[] data = bitmap.extractAll();
         String dataString = ByteUtils.bytesToHex(data);
 
         bitmap = new HeapBitmap(data);
-        Assert.assertFalse(bitmap.get(999));
-        Assert.assertTrue(bitmap.get(0));
-        Assert.assertTrue(bitmap.get(1023));
-        Assert.assertTrue(bitmap.get(1001));
-        Assert.assertTrue(bitmap.get(1002));
-        Assert.assertTrue(bitmap.get(1003));
-        Assert.assertTrue(bitmap.get(1004));
-        Assert.assertTrue(bitmap.get(1005));
-        Assert.assertTrue(bitmap.get(1006));
-        Assert.assertTrue(bitmap.get(1007));
-        Assert.assertTrue(bitmap.get(1008));
+        Assertions.assertFalse(bitmap.get(999));
+        Assertions.assertTrue(bitmap.get(0));
+        Assertions.assertTrue(bitmap.get(1023));
+        Assertions.assertTrue(bitmap.get(1001));
+        Assertions.assertTrue(bitmap.get(1002));
+        Assertions.assertTrue(bitmap.get(1003));
+        Assertions.assertTrue(bitmap.get(1004));
+        Assertions.assertTrue(bitmap.get(1005));
+        Assertions.assertTrue(bitmap.get(1006));
+        Assertions.assertTrue(bitmap.get(1007));
+        Assertions.assertTrue(bitmap.get(1008));
 
         String dataString2 = ByteUtils.bytesToHex(bitmap.extractAll());
-        Assert.assertEquals(dataString, dataString2);
+        Assertions.assertEquals(dataString, dataString2);
 //        System.out.println(dataString2);
     }
 
@@ -110,7 +110,7 @@ public class BitmapTest {
         Bitmap result = new HeapBitmap(bitmap1.size());
         bitmap1.computeWith(bitmap2, result, Bitmap.ComputeFunction.XOR);
 //        System.out.println(ByteUtils.bytesToHex(result.extractAll()));
-        Assert.assertArrayEquals(expected, result.extractAll());
+        Assertions.assertArrayEquals(expected, result.extractAll());
     }
 
     /* *********************************************************************************************************** */

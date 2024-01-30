@@ -15,7 +15,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
-    // Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
+    // Junit5: Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
     test {
         useJUnitPlatform()
     }
@@ -49,7 +49,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-s
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
-    // Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
+    // Junit5: Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
     test {
         useJUnitPlatform()
     }

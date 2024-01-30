@@ -15,6 +15,11 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
+    // Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
+    test {
+        useJUnitPlatform()
+    }
+
     // 可选: 测试案例随机并发跑(对大工程有益)
 //    tasks.withType(Test) {
 //        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
@@ -43,6 +48,11 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-s
 
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+
+    // Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
+    test {
+        useJUnitPlatform()
+    }
 
     // 可选: 测试案例随机并发跑(对大工程有益)
 //    tasks.withType(Test) {

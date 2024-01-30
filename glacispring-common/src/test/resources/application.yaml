@@ -1,0 +1,26 @@
+
+app:
+  id: glacispring-common-test
+
+spring:
+  application:
+    name: ${app.id}
+
+glacispring:
+  crypto-prop:
+    key: rsa:classpath:cryptoprop/key/cryptoprop-private-key.pem
+#    key: rsa:file:./src/test/resources/cryptoprop/key/cryptoprop-private-key.pem
+#    key: rsa:MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAI10rNC2vxJ2xCY52yFRI7dLb89ZHYpkn0UznFwgNwwy54ZcFKt/LdjzJ/dYtk6Z8w9ZG7QyHNrU9DMOxx6r8C9EDHTpY44HtV1hA+Ptnr4DX3qwAgc8GRqRYDNRqdqTfp2ljMBAIOnYgbq1AYEk4QuyqtKQkjjbAqAZPIFx54z1AgMBAAECgYBqTcttklhnZM+ltocCM7r2jX96QItdrJ6w38dayG72AO9TXrG96/alep6HWKiwyysJVrrmIV7j6XOXRzzGxQnbJNbvD4C/39S/pll02PdUfNLtWeMVUVAHGb9QEOWF7xXD8cLUCsp+gU4LINGHGe56a2nSczo/z/IShFisW7HewQJBAPMIlAjbd/16H90CUH0QVyzG46fL3t1D+2NTNGnvfBCpIi9XGuTYyMC89H8jxEjnsWAUmiPwA6Tc2gtaMwLtHhECQQCVALf5Cl5cKtQA8lhdHtpqy58m8Ga7e44lImAhUTj0DiuGuW7/0T3/zGcIdZv9pI2UTVjZLqNqZacqleuMJGylAkEAwHZ+pTUIpRfdu+xlSWVzY+ZtyyhMafW4U0RFMc+R9K+8frkAd1KmSNxa04TDoOi7M1edafBdMmYj1vGrjBmzwQJAb3UFKQ4ffXQv97FQdf/BREeiel8ziaSntJFdNS7rmmwLFREavdNIPFMq80H+eKIhocCl6Hehl9IIVKumccNBXQJBAIWl/nETIB1tuln4JZGfyHxte0JBfwohjYUgsNEUVkBMOI31TbQg3QyPOsLAy+l0zKbacx5E2Ad/xfQ6d0WMLKE=
+#    key: aes:classpath:cryptoprop/key/cryptoprop-key.txt
+#    key: aes:file:./src/test/resources/cryptoprop/key/cryptoprop-key.txt
+#    key: aes:KrIjtliPM3MIlHPh+l3ylA==
+#    mode: ENHANCED
+#    enhanced:
+#      intercept-by-proxy: true
+
+test:
+  ## CryptoProp test RSA
+  arg1: CIPHER(U6PI2MIccia3cutZbA4bG0cQR1SPWd5+I9P5UUaAVWnAoJCvB+b2ZYxYHYCpaYhvxihEuRgr8gxY7Bxw7go2aW6Bm2MxZ4wsQMe5r8VtnKbe0UK8TBjYYVuGLSvhQc2rNOiloBlhNr52aToaMWDNKvMXMhc1nSoqn9y3s4gzVhw=)
+  ## CryptoProp test AES
+#  arg1: CIPHER(0OSoGeQtB7sNGOumnHqDxA==)
+

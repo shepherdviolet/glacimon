@@ -96,7 +96,7 @@ public class SimpleCryptoPropUtils {
                     return new String(AESCipher.decryptCBC(
                             Base64Utils.decode(cipher),
                             key.getAesKey(),
-                            "1234567812345678".getBytes(StandardCharsets.UTF_8),
+                            CBC_IV,
                             AESCipher.CRYPTO_ALGORITHM_AES_CBC_PKCS5PADDING
                     ), StandardCharsets.UTF_8);
                 case RSA:
@@ -256,7 +256,7 @@ public class SimpleCryptoPropUtils {
     }
 
     /**
-     * <p>解析解密密钥</p>
+     * <p>解析加密密钥</p>
      * <pre>
      * 对称加密:
      * 密钥字符串: aes:IPRGkutx3FfsCYty (BASE64)

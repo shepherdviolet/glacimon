@@ -35,7 +35,7 @@ public abstract class AbstractTest {
     /**
      * init before test
      */
-    @BeforeEach // BeforeAll在所有Test方法前运行一次(方法必须是static), BeforeEach在每个Test方法前运行
+    @BeforeEach // BeforeAll在所有Test方法前运行一次(方法必须是static!), BeforeEach在每个Test方法前运行
     public void init(){
         //Enable mockito annotations
         MockitoAnnotations.initMocks(this);

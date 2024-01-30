@@ -26,9 +26,6 @@ dependencies {
 
     //test
     [
-            "ch.qos.logback:logback-classic:$version_logback",
-            "org.springframework.boot:spring-boot-starter-test:$version_spring_boot",
-
             //demo dependencies
             "com.alibaba:hessian-lite:$version_hessian_lite",
 

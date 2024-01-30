@@ -15,9 +15,18 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
-    // Junit5: Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
     test {
+        // For JUnit5: Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
+        // NOTICE: All subprojects configured with 'useJUnitPlatform()' must depend on Junit5! (Avoid error "Cannot create Launcher without at least one TestEngine")
         useJUnitPlatform()
+    }
+
+    dependencies {
+        //test
+        [
+                "org.springframework.boot:spring-boot-starter-test:$version_spring_boot", // NOTICE: All subprojects configured with 'useJUnitPlatform()' must depend on Junit5! (Avoid error "Cannot create Launcher without at least one TestEngine")
+                "ch.qos.logback:logback-classic:$version_logback",
+        ].forEach{ testImplementation it }
     }
 
     // 可选: 测试案例随机并发跑(对大工程有益)
@@ -49,9 +58,18 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-s
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
-    // Junit5: Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
     test {
+        // For JUnit5: Avoid IDEA reporting "No tests found for given includes" error when executing tests individually
+        // NOTICE: All subprojects configured with 'useJUnitPlatform()' must depend on Junit5! (Avoid error "Cannot create Launcher without at least one TestEngine")
         useJUnitPlatform()
+    }
+
+    dependencies {
+        //test
+        [
+                "org.springframework.boot:spring-boot-starter-test:$version_spring_boot", // NOTICE: All subprojects configured with 'useJUnitPlatform()' must depend on Junit5! (Avoid error "Cannot create Launcher without at least one TestEngine")
+                "ch.qos.logback:logback-classic:$version_logback",
+        ].forEach{ testImplementation it }
     }
 
     // 可选: 测试案例随机并发跑(对大工程有益)

@@ -24,8 +24,6 @@ dependencies {
 
     //test
     [
-            "ch.qos.logback:logback-classic:$version_logback",
-            "org.springframework.boot:spring-boot-starter-test:$version_spring_boot",
 
     ].forEach{ testImplementation it }
 

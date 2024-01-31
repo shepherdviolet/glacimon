@@ -107,7 +107,7 @@ glacispring:
 ```
 
 ```
-# 其他参数说明
+# 其他可选参数 (一般不需要配置)
 
 glacispring:
   crypto-prop:
@@ -171,7 +171,8 @@ glacispring.crypto-prop.key=rsa:file:/home/username/cryptoprop-private-key.pem
 ```
 
 ```
-# 其他参数说明
+# 其他可选参数 (一般不需要配置)
+
 ## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容性问题)
 #glacispring.crypto-prop.mode=ENHANCED
 ## 增强模式相关配置: skip-property-sources指定一些PropertySource不被侵入; intercept-by-proxy侵入模式从包装方式改为代理方式

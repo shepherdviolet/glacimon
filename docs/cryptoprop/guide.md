@@ -369,14 +369,14 @@ public void test() {
 
 ## 增强模式 兼容性问题
 
-* 增强模式下, apollo-client 1.3.0及以下版本不支持实时属性修改 (请使用1.4.0及以上版本)
+* `增强模式`下, apollo-client 1.3.0及以下版本不支持实时属性修改 (请使用1.4.0及以上版本)
 
 ```
 apollo-client 1.3.0及以下版本中, AutoUpdateConfigChangeListener类中, 存在shouldTriggerAutoUpdate方法, 
 它会判断ConfigChangeEvent中的新属性值和environment#getProperty返回值是否相等, 相等才会更新属性.
 因为ConfigChangeEvent中的新属性值是密文, 而增强模式下environment#getProperty返回值是明文, 两个结果不相等, 
 所以属性实时更新被跳过. 更新apollo-client 1.4.0及以上版本解决.
-P.S.低版本用也能用, 只是不支持
+P.S.低版本用也能用, 只是开启了增强模式后, 可能不支持配置实时更新. (普通模式不存在此问题)
 ```
 
 ## 增强模式 局限性

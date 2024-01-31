@@ -19,6 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.spring;
 
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.EnableCryptoProp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -32,6 +33,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                 "org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration", // 排除(禁用)SpringSecurity (未依赖spring-boot-starter-security则无需排除)
         }
 )
+@EnableCryptoProp // 启用CryptoProp
 public class TestApplication {
 
     public static void main(String[] args) {

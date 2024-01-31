@@ -111,7 +111,7 @@ glacispring:
 
 glacispring:
   crypto-prop:
-    ## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容新问题)
+    ## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容性问题)
 #    mode: ENHANCED
     ## 增强模式相关配置: skip-property-sources指定一些PropertySource不被侵入; intercept-by-proxy侵入模式从包装方式改为代理方式
 #    enhanced:
@@ -172,7 +172,7 @@ glacispring.crypto-prop.key=rsa:file:/home/username/cryptoprop-private-key.pem
 
 ```
 # 其他参数说明
-## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容新问题)
+## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容性问题)
 #glacispring.crypto-prop.mode=ENHANCED
 ## 增强模式相关配置: skip-property-sources指定一些PropertySource不被侵入; intercept-by-proxy侵入模式从包装方式改为代理方式
 #glacispring.crypto-prop.enhanced.skip-property-sources=com.packagename.SomePropertySource1,com.packagename.SomePropertySource2

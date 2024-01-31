@@ -20,8 +20,7 @@
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropDecryptor;
-import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.DefaultCryptoPropertySourceConverter;
-import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.DefaultCryptoPropertySourceConverterForBoot2;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.DefaultCryptoPropertySourceConverterUtils;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.ICryptoPropertySourceConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,22 +58,10 @@ public class CryptoPropConfiguration {
     @Bean(name = "glacispring.cryptoProp.enhancedModePropertySourceConverter")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.enhancedModePropertySourceConverter")
     public ICryptoPropertySourceConverter enhancedModePropertySourceConverter(@Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
-
-        // 区分springboot2.0项目和其他spring项目
-        boolean isBoot2 = true;
-        try {
-            Class.forName("org.springframework.boot.origin.OriginLookup");
-        } catch (Throwable ignore) {
-            isBoot2 = false;
-        }
-
         // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanDefinitionRegistryPostProcessor中
         // 从Environment和PropertySourcesPlaceholderConfigurer中获取参数.
         // 详见CryptoPropBeanDefinitionRegistryPostProcessor源码.
-        if (isBoot2) {
-            return new DefaultCryptoPropertySourceConverterForBoot2(decryptor);
-        }
-        return new DefaultCryptoPropertySourceConverter(decryptor);
+        return DefaultCryptoPropertySourceConverterUtils.createDefault(decryptor);
     }
 
     /**

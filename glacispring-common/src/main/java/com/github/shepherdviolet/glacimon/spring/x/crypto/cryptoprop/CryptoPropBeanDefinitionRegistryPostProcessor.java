@@ -19,6 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropDecryptor;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.DefaultCryptoPropertySourceConverterUtils;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.ICryptoPropertySourceConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,9 +62,14 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     private Environment environment;
     private CryptoPropEnv cryptoPropEnv;
 
+    public CryptoPropBeanDefinitionRegistryPostProcessor() {
+        // 使用默认Decryptor
+        this(new SimpleCryptoPropDecryptor());
+    }
+
     public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor) {
-        // 不配置ICryptoPropertySourceConverter不能使用加强模式
-        this(decryptor, null);
+        // 使用默认Converter
+        this(decryptor, DefaultCryptoPropertySourceConverterUtils.createDefault(decryptor));
     }
 
     public CryptoPropBeanDefinitionRegistryPostProcessor(CryptoPropDecryptor decryptor, ICryptoPropertySourceConverter enhancedModeConverter) {

@@ -126,7 +126,13 @@ glacispring:
 * 在XML中配置CryptoProp
 
 ```
-    <!-- CryptoProp Spring属性解密 -->
+    <!-- 方式一: 简易配置 -->
+    <!-- 注意, 这里不能用占位符${propertyname}注入属性, 因为BeanDefinitionRegistryPostProcessor在Spring启动初期执行 -->
+    <bean id="glacispring.cryptoProp.beanDefinitionRegistryPostProcessor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropBeanDefinitionRegistryPostProcessor"/>
+```
+
+```
+    <!-- 方式二: 高级配置 (可以自定义实现解密器) -->
     <!-- 注意, 这里不能用占位符${propertyname}注入属性, 因为BeanDefinitionRegistryPostProcessor在Spring启动初期执行 -->
     <bean id="glacispring.cryptoProp.decryptor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropDecryptor"/>
     <bean id="glacispring.cryptoProp.enhancedModePropertySourceConverter" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.DefaultCryptoPropertySourceConverter">

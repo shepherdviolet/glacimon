@@ -201,7 +201,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + rawKey, t);
+                throw new CryptoPropCommonException("Key load failed (BASE64 file from classpath), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("aes:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("aes:file:".length())))) {
@@ -209,7 +209,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + rawKey, t);
+                throw new CryptoPropCommonException("Key load failed (BASE64 file from filesystem), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("aes:")) {
             try {
@@ -217,7 +217,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
+                throw new CryptoPropCommonException("Key load failed (BASE64 text), your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
             }
         } else if (rawKey.startsWith("rsa:classpath:")) {
             String path = rawKey.substring("rsa:classpath:".length());
@@ -229,7 +229,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(PEMEncodeUtils.pemEncodedToX509EncodedBytes(readFromInputStream(inputStream)));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + rawKey, t);
+                throw new CryptoPropCommonException("Key load failed (PEM file from classpath), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("rsa:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("rsa:file:".length())))) {
@@ -237,7 +237,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(PEMEncodeUtils.pemEncodedToX509EncodedBytes(readFromInputStream(inputStream)));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + rawKey, t);
+                throw new CryptoPropCommonException("Key load failed (PEM file from filesystem), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("rsa:")) {
             try {
@@ -245,7 +245,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(rawKey.substring("rsa:".length())));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
+                throw new CryptoPropCommonException("Key load failed (DER text), your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
             }
         } else {
             throw new CryptoPropCommonException("Illegal key prefix (Must be aes: / aes:file: / aes:classpath: / " +
@@ -291,7 +291,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + rawKey, t);
+                throw new CryptoPropCommonException("Key load failed (BASE64 file from classpath), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("aes:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("aes:file:".length())))) {
@@ -299,7 +299,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + rawKey, t);
+                throw new CryptoPropCommonException("Key load failed (BASE64 file from filesystem), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("aes:")) {
             try {
@@ -307,7 +307,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = null;
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
+                throw new CryptoPropCommonException("Key load failed (BASE64 text), your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
             }
         } else if (rawKey.startsWith("rsa:classpath:")) {
             String path = rawKey.substring("rsa:classpath:".length());
@@ -319,7 +319,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = RSAKeyGenerator.generatePublicKeyByX509(PEMEncodeUtils.pemEncodedToX509EncodedBytes(readFromInputStream(inputStream)));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + rawKey, t);
+                throw new CryptoPropCommonException("Key load failed (PEM file from classpath), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("rsa:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("rsa:file:".length())))) {
@@ -327,7 +327,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = RSAKeyGenerator.generatePublicKeyByX509(PEMEncodeUtils.pemEncodedToX509EncodedBytes(readFromInputStream(inputStream)));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + rawKey, t);
+                throw new CryptoPropCommonException("Key load failed (PEM file from filesystem), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("rsa:")) {
             try {
@@ -335,7 +335,7 @@ public class SimpleCryptoPropUtils {
                 rsaKey = RSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(rawKey.substring("rsa:".length())));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
-                throw new CryptoPropCommonException("Key load failed, your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
+                throw new CryptoPropCommonException("Key load failed (DER text), your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
             }
         } else {
             throw new CryptoPropCommonException("Illegal key prefix (Must be aes: / aes:file: / aes:classpath: / " +

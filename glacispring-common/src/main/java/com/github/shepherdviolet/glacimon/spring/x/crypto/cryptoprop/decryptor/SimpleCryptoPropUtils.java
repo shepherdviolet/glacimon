@@ -42,7 +42,7 @@ import java.security.interfaces.RSAPublicKey;
  *
  * @author shepherdviolet
  */
-public class SimpleCryptoPropUtils {
+public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
 
     private static final byte[] CBC_IV = "1234567812345678".getBytes(StandardCharsets.UTF_8);
 

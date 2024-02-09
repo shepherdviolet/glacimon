@@ -50,9 +50,12 @@ dependencies {
 * 下面是使用JAVA代码生成密钥的示例:
 
 ```
-// 产生AES对称密钥, 128位
-System.out.println("aesKey:\n" + SimpleCryptoPropUtils.generateAesKey());
-// 产生RSA非对称密钥对, 1024位; 注意, 如果用密钥文件, 必须用PEM格式, 如果直接配置密钥明文, 则使用DER格式
+// 产生AES对称密钥, 128位; 可以记录密钥的sha256值, 用于比对启动日志判断密钥设置是否正确
+String aesKey = SimpleCryptoPropUtils.generateAesKey();
+System.out.println("[aesKey]\n" + aesKey);
+System.out.println("[aesKey sha256]\n" + SimpleCryptoPropUtils.sha256(aesKey));
+
+// 产生RSA非对称密钥对, 1024位; 注意, 如果用密钥文件, 必须用PEM格式, 如果直接配置密钥明文, 则使用DER格式; 可以记录密钥的sha256值, 用于比对启动日志判断密钥设置是否正确
 System.out.println(SimpleCryptoPropUtils.generateRsaKeyPair());
 ```
 

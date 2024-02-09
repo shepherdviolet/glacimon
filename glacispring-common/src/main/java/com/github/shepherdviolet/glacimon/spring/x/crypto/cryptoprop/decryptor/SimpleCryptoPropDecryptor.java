@@ -83,6 +83,12 @@ public class SimpleCryptoPropDecryptor extends AbstractCryptoPropDecryptor {
         wipeCache();
         // 日志
         logger.info("CryptoProp | Key set to: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)");
+        if (key.getAesKey() != null) {
+            logger.info("CryptoProp | AES key sha256: " + SimpleCryptoPropUtils.sha256(key.getAesKeyString()));
+        }
+        if (key.getRsaKey() != null) {
+            logger.info("CryptoProp | RSA decrypt key sha256: " + SimpleCryptoPropUtils.sha256(key.getRsaKeyString()));
+        }
     }
 
     @Override

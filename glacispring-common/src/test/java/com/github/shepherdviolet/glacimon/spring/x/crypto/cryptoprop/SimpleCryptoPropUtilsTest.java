@@ -34,18 +34,26 @@ public class SimpleCryptoPropUtilsTest {
 
         // 生成密钥
 //        System.out.println("====AES密钥=========================================================");
-//        System.out.println("aesKey:\n" + SimpleCryptoPropUtils.generateAesKey());
+//        String aesKey = SimpleCryptoPropUtils.generateAesKey();
+//        System.out.println("[aesKey]\n" + aesKey);
+//        System.out.println("[aesKey sha256]\n" + SimpleCryptoPropUtils.sha256(aesKey));
 //        System.out.println("====RSA密钥=========================================================");
-//        System.out.println(SimpleCryptoPropUtils.generateRsaKeyPair());
-//        System.out.println("===================================================================");
+//        SimpleCryptoPropUtils.RsaKeyPair rsaKeyPair = SimpleCryptoPropUtils.generateRsaKeyPair();
+//        System.out.println(rsaKeyPair);
 
         // 密文样例
-//        System.out.println(SimpleCryptoPropUtils.encryptAndWrap("test-message-aaa",
-//                "aes:KrIjtliPM3MIlHPh+l3ylA=="));
-//        System.out.println(SimpleCryptoPropUtils.encryptAndWrap("test-message-bbb",
-//                "rsa:MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNdKzQtr8SdsQmOdshUSO3S2/PWR2KZJ9FM5xcIDcMMueGXBSrfy3Y8yf3WLZOmfMPWRu0Mhza1PQzDsceq/AvRAx06WOOB7VdYQPj7Z6+A196sAIHPBkakWAzUanak36dpYzAQCDp2IG6tQGBJOELsqrSkJI42wKgGTyBceeM9QIDAQAB"));
+//        String plain = "test-message-aaa";
+//        System.out.println("====AES加密示例=========================================================");
+//        System.out.println(plain);
+//        System.out.println(SimpleCryptoPropUtils.encryptAndWrap(plain, "aes:KrIjtliPM3MIlHPh+l3ylA=="));
+//        System.out.println("plain sha256: " + SimpleCryptoPropUtils.sha256(plain));
+//        System.out.println("====RSA加密示例=========================================================");
+//        System.out.println(plain);
+//        System.out.println(SimpleCryptoPropUtils.encryptAndWrap(plain, "rsa:MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNdKzQtr8SdsQmOdshUSO3S2/PWR2KZJ9FM5xcIDcMMueGXBSrfy3Y8yf3WLZOmfMPWRu0Mhza1PQzDsceq/AvRAx06WOOB7VdYQPj7Z6+A196sAIHPBkakWAzUanak36dpYzAQCDp2IG6tQGBJOELsqrSkJI42wKgGTyBceeM9QIDAQAB"));
+//        System.out.println("plain sha256: " + SimpleCryptoPropUtils.sha256(plain));
 
         // SimpleCryptoPropUtils AES加解密测试
+        System.out.println("====AES加密测试=========================================================");
         Assertions.assertEquals("test-message-1",
                 SimpleCryptoPropUtils.unwrapAndDecrypt(SimpleCryptoPropUtils.encryptAndWrap(
                         "test-message-1", "aes:KrIjtliPM3MIlHPh+l3ylA=="), "aes:KrIjtliPM3MIlHPh+l3ylA=="));
@@ -58,6 +66,7 @@ public class SimpleCryptoPropUtilsTest {
 //                        "aes:file:../glacispring-common/src/test/resources/cryptoprop/key/cryptoprop-key.txt"));
 
         // SimpleCryptoPropUtils RSA加解密测试
+        System.out.println("====RSA加密测试=========================================================");
         Assertions.assertEquals("test-message-2",
                 SimpleCryptoPropUtils.unwrapAndDecrypt(SimpleCryptoPropUtils.encryptAndWrap(
                         "test-message-2", "rsa:MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNdKzQtr8SdsQmOdshUSO3S2/PWR2KZJ9FM5xcIDcMMueGXBSrfy3Y8yf3WLZOmfMPWRu0Mhza1PQzDsceq/AvRAx06WOOB7VdYQPj7Z6+A196sAIHPBkakWAzUanak36dpYzAQCDp2IG6tQGBJOELsqrSkJI42wKgGTyBceeM9QIDAQAB"),
@@ -71,6 +80,7 @@ public class SimpleCryptoPropUtilsTest {
 //                        "test-message-2", "rsa:file:../glacispring-common/src/test/resources/cryptoprop/key/cryptoprop-public-key.pem"),
 //                        "rsa:file:../glacispring-common/src/test/resources/cryptoprop/key/cryptoprop-private-key.pem"));
 
+        System.out.println("====SimpleCryptoPropDecryptor解密测试=========================================================");
         // SimpleCryptoPropDecryptor 解密测试
         SimpleCryptoPropDecryptor decryptor = new SimpleCryptoPropDecryptor("aes:KrIjtliPM3MIlHPh+l3ylA==");
         Assertions.assertEquals("test-message-3",
@@ -81,6 +91,7 @@ public class SimpleCryptoPropUtilsTest {
                 decryptor.decrypt("somekey", SimpleCryptoPropUtils.encryptAndWrap("test-message-4", "rsa:classpath:cryptoprop/key/cryptoprop-public-key.pem")));
 
         // 密钥隐藏测试
+//        System.out.println("====密钥隐藏测试=========================================================");
 //        String key = "aes:1234567890123456";
 //        while (key.length() > 0) {
 //            System.out.println(SimpleCryptoPropUtils.hidePartially(key));

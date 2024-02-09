@@ -19,6 +19,11 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor;
 
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.crypto.DigestCipher;
+
+import java.nio.charset.StandardCharsets;
+
 /**
  * [Spring属性解密] 通用工具类
  *
@@ -51,6 +56,16 @@ public class CommonCryptoPropUtils {
      */
     public static String wrapCipher(String cipher) {
         return CIPHER_PREFIX + cipher + CIPHER_SUFFIX;
+    }
+
+    /**
+     * 对String做sha256摘要
+     */
+    public static String sha256(String text) {
+        if (text == null) {
+            return null;
+        }
+        return ByteUtils.bytesToHex(DigestCipher.digest(text.getBytes(StandardCharsets.UTF_8), DigestCipher.TYPE_SHA256));
     }
 
 }

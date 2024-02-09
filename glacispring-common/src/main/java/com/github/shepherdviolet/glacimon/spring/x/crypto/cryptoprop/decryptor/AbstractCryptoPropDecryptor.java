@@ -82,8 +82,8 @@ public abstract class AbstractCryptoPropDecryptor implements CryptoPropDecryptor
         if (needCache(value) && needCache(plain)) {
             cache.put(value, plain);
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("CryptoProp | Cipher property '" + cipher + "' decrypted");
+        if (logger.isInfoEnabled()) {
+            logger.info("CryptoProp | Cipher property " + name + "=" + cipher + " decrypted, plaintext sha256: " + CommonCryptoPropUtils.sha256(plain));
         }
         return plain;
     }

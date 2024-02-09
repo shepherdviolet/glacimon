@@ -47,8 +47,8 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
     private static final byte[] CBC_IV = "1234567812345678".getBytes(StandardCharsets.UTF_8);
 
     public static final String KEY_NULL = "null";
-    public static final DecryptKey DECRYPT_KEY_NULL = new DecryptKey(null, Algorithm.NULL, null, null);
-    public static final EncryptKey ENCRYPT_KEY_NULL = new EncryptKey(null, Algorithm.NULL, null, null);
+    public static final DecryptKey DECRYPT_KEY_NULL = new DecryptKey(null, Algorithm.NULL, null, null, null, null);
+    public static final EncryptKey ENCRYPT_KEY_NULL = new EncryptKey(null, Algorithm.NULL, null, null, null, null);
 
     /**
      * 解密 (输入密文带前后缀)
@@ -188,8 +188,10 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
         }
 
         Algorithm algorithm;
-        byte[] aesKey;
-        RSAPrivateKey rsaKey;
+        byte[] aesKey = null;
+        String aesKeyString = null;
+        RSAPrivateKey rsaKey = null;
+        String rsaKeyString = null;
 
         if (rawKey.startsWith("aes:classpath:")) {
             String path = rawKey.substring("aes:classpath:".length());
@@ -197,24 +199,24 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
                 if (inputStream == null) {
                     throw new FileNotFoundException("File not found in classpath, path: " + rawKey.substring("aes:classpath:".length()));
                 }
-                aesKey = Base64Utils.decode(trimAndRemoveLineBreaks(readFromInputStream(inputStream)));
-                rsaKey = null;
+                aesKeyString = trimAndRemoveLineBreaks(readFromInputStream(inputStream));
+                aesKey = Base64Utils.decode(aesKeyString);
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (BASE64 file from classpath), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("aes:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("aes:file:".length())))) {
-                aesKey = Base64Utils.decode(trimAndRemoveLineBreaks(readFromInputStream(inputStream)));
-                rsaKey = null;
+                aesKeyString = trimAndRemoveLineBreaks(readFromInputStream(inputStream));
+                aesKey = Base64Utils.decode(aesKeyString);
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (BASE64 file from filesystem), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("aes:")) {
             try {
-                aesKey = Base64Utils.decode(rawKey.substring("aes:".length()));
-                rsaKey = null;
+                aesKeyString = rawKey.substring("aes:".length());
+                aesKey = Base64Utils.decode(aesKeyString);
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (BASE64 text), your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
@@ -225,24 +227,24 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
                 if (inputStream == null) {
                     throw new FileNotFoundException("File not found in classpath, path: " + rawKey.substring("rsa:classpath:".length()));
                 }
-                aesKey = null;
-                rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(PEMEncodeUtils.pemEncodedToX509EncodedBytes(readFromInputStream(inputStream)));
+                rsaKeyString = PEMEncodeUtils.pemEncodedToX509EncodedString(readFromInputStream(inputStream));
+                rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(rsaKeyString));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (PEM file from classpath), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("rsa:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("rsa:file:".length())))) {
-                aesKey = null;
-                rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(PEMEncodeUtils.pemEncodedToX509EncodedBytes(readFromInputStream(inputStream)));
+                rsaKeyString = PEMEncodeUtils.pemEncodedToX509EncodedString(readFromInputStream(inputStream));
+                rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(rsaKeyString));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (PEM file from filesystem), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("rsa:")) {
             try {
-                aesKey = null;
-                rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(rawKey.substring("rsa:".length())));
+                rsaKeyString = rawKey.substring("rsa:".length());
+                rsaKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(rsaKeyString));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (DER text), your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
@@ -252,7 +254,7 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
                     "rsa: / rsa:file: / rsa:classpath:), your decryption key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)");
         }
 
-        return new DecryptKey(rawKey, algorithm, aesKey, rsaKey);
+        return new DecryptKey(rawKey, algorithm, aesKey, aesKeyString, rsaKey, rsaKeyString);
     }
 
     /**
@@ -278,8 +280,10 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
         }
 
         Algorithm algorithm;
-        byte[] aesKey;
-        RSAPublicKey rsaKey;
+        byte[] aesKey = null;
+        String aesKeyString = null;
+        RSAPublicKey rsaKey = null;
+        String rsaKeyString = null;
 
         if (rawKey.startsWith("aes:classpath:")) {
             String path = rawKey.substring("aes:classpath:".length());
@@ -287,24 +291,24 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
                 if (inputStream == null) {
                     throw new FileNotFoundException("File not found in classpath, path: " + rawKey.substring("aes:classpath:".length()));
                 }
-                aesKey = Base64Utils.decode(trimAndRemoveLineBreaks(readFromInputStream(inputStream)));
-                rsaKey = null;
+                aesKeyString = trimAndRemoveLineBreaks(readFromInputStream(inputStream));
+                aesKey = Base64Utils.decode(aesKeyString);
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (BASE64 file from classpath), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("aes:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("aes:file:".length())))) {
-                aesKey = Base64Utils.decode(trimAndRemoveLineBreaks(readFromInputStream(inputStream)));
-                rsaKey = null;
+                aesKeyString = trimAndRemoveLineBreaks(readFromInputStream(inputStream));
+                aesKey = Base64Utils.decode(aesKeyString);
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (BASE64 file from filesystem), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("aes:")) {
             try {
-                aesKey = Base64Utils.decode(rawKey.substring("aes:".length()));
-                rsaKey = null;
+                aesKeyString = rawKey.substring("aes:".length());
+                aesKey = Base64Utils.decode(aesKeyString);
                 algorithm = Algorithm.AES;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (BASE64 text), your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
@@ -315,24 +319,24 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
                 if (inputStream == null) {
                     throw new FileNotFoundException("File not found in classpath, path: " + rawKey.substring("rsa:classpath:".length()));
                 }
-                aesKey = null;
-                rsaKey = RSAKeyGenerator.generatePublicKeyByX509(PEMEncodeUtils.pemEncodedToX509EncodedBytes(readFromInputStream(inputStream)));
+                rsaKeyString = PEMEncodeUtils.pemEncodedToX509EncodedString(readFromInputStream(inputStream));
+                rsaKey = RSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(rsaKeyString));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (PEM file from classpath), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("rsa:file:")) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(rawKey.substring("rsa:file:".length())))) {
-                aesKey = null;
-                rsaKey = RSAKeyGenerator.generatePublicKeyByX509(PEMEncodeUtils.pemEncodedToX509EncodedBytes(readFromInputStream(inputStream)));
+                rsaKeyString = PEMEncodeUtils.pemEncodedToX509EncodedString(readFromInputStream(inputStream));
+                rsaKey = RSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(rsaKeyString));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (PEM file from filesystem), your key: " + rawKey, t);
             }
         } else if (rawKey.startsWith("rsa:")) {
             try {
-                aesKey = null;
-                rsaKey = RSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(rawKey.substring("rsa:".length())));
+                rsaKeyString = rawKey.substring("rsa:".length());
+                rsaKey = RSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(rsaKeyString));
                 algorithm = Algorithm.RSA;
             } catch (Throwable t) {
                 throw new CryptoPropCommonException("Key load failed (DER text), your key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)", t);
@@ -342,7 +346,7 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
                     "rsa: / rsa:file: / rsa:classpath:), your encryption key: " + SimpleCryptoPropUtils.hidePartially(rawKey) + " (hide partially)");
         }
 
-        return new EncryptKey(rawKey, algorithm, aesKey, rsaKey);
+        return new EncryptKey(rawKey, algorithm, aesKey, aesKeyString, rsaKey, rsaKeyString);
     }
 
     /**
@@ -458,10 +462,12 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
 
         @Override
         public String toString() {
-            return "privateKeyDer:\n" + privateKeyDer +
-                    "\nprivateKeyPem:\n" + privateKeyPem +
-                    "\npublicKeyDer:\n" + publicKeyDer +
-                    "\npublicKeyPem:\n" + publicKeyPem;
+            return "[privateKeyDer]\n" + privateKeyDer +
+                    "\n[publicKeyDer]\n" + publicKeyDer +
+                    "\n[privateKeyPem]\n" + privateKeyPem +
+                    "\n[publicKeyPem]\n" + publicKeyPem +
+                    "\n[privateKeyDer sha256]\n" + sha256(privateKeyDer) +
+                    "\n[publicKeyDer sha256]\n" + sha256(publicKeyDer);
         }
     }
 
@@ -470,16 +476,20 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
         private final String rawKey;
         private final Algorithm algorithm;
         private final byte[] aesKey;
+        private final String aesKeyString;
         private final RSAPrivateKey rsaKey;
+        private final String rsaKeyString;
 
-        public DecryptKey(String rawKey, Algorithm algorithm, byte[] aesKey, RSAPrivateKey rsaKey) {
+        public DecryptKey(String rawKey, Algorithm algorithm, byte[] aesKey, String aesKeyString, RSAPrivateKey rsaKey,  String rsaKeyString) {
             if (algorithm == null) {
                 algorithm = Algorithm.NULL;
             }
             this.rawKey = rawKey;
             this.algorithm = algorithm;
             this.aesKey = aesKey;
+            this.aesKeyString = aesKeyString;
             this.rsaKey = rsaKey;
+            this.rsaKeyString = rsaKeyString;
         }
 
         public String getRawKey() {
@@ -498,6 +508,13 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
             return rsaKey;
         }
 
+        public String getAesKeyString() {
+            return aesKeyString;
+        }
+
+        public String getRsaKeyString() {
+            return rsaKeyString;
+        }
     }
 
     public static class EncryptKey {
@@ -505,16 +522,20 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
         private final String rawKey;
         private final Algorithm algorithm;
         private final byte[] aesKey;
+        private final String aesKeyString;
         private final RSAPublicKey rsaKey;
+        private final String rsaKeyString;
 
-        public EncryptKey(String rawKey, Algorithm algorithm, byte[] aesKey, RSAPublicKey rsaKey) {
+        public EncryptKey(String rawKey, Algorithm algorithm, byte[] aesKey, String aesKeyString, RSAPublicKey rsaKey, String rsaKeyString) {
             if (algorithm == null) {
                 algorithm = Algorithm.NULL;
             }
             this.rawKey = rawKey;
             this.algorithm = algorithm;
             this.aesKey = aesKey;
+            this.aesKeyString = aesKeyString;
             this.rsaKey = rsaKey;
+            this.rsaKeyString = rsaKeyString;
         }
 
         public String getRawKey() {
@@ -533,6 +554,13 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
             return rsaKey;
         }
 
+        public String getAesKeyString() {
+            return aesKeyString;
+        }
+
+        public String getRsaKeyString() {
+            return rsaKeyString;
+        }
     }
 
 }

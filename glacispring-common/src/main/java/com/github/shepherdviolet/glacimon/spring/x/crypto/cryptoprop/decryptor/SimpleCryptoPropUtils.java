@@ -77,8 +77,8 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
      * @param key    解密密钥
      */
     public static String unwrapAndDecrypt(String cipher, DecryptKey key) {
-        if (CommonCryptoPropUtils.isCipher(cipher)) {
-            cipher = CommonCryptoPropUtils.unwrapCipher(cipher);
+        if (isCipher(cipher)) {
+            cipher = unwrapCipher(cipher);
         }
         return decrypt(cipher, key);
     }
@@ -146,13 +146,13 @@ public class SimpleCryptoPropUtils extends CommonCryptoPropUtils {
         try {
             switch (key.getAlgorithm()) {
                 case AES:
-                    return CommonCryptoPropUtils.wrapCipher(Base64Utils.encodeToString(AESCipher.encryptCBC(
+                    return wrapCipher(Base64Utils.encodeToString(AESCipher.encryptCBC(
                             plain.getBytes(StandardCharsets.UTF_8),
                             key.getAesKey(),
                             CBC_IV,
                             AESCipher.CRYPTO_ALGORITHM_AES_CBC_PKCS5PADDING)));
                 case RSA:
-                    return CommonCryptoPropUtils.wrapCipher(Base64Utils.encodeToString(RSACipher.encrypt(
+                    return wrapCipher(Base64Utils.encodeToString(RSACipher.encrypt(
                             plain.getBytes(StandardCharsets.UTF_8),
                             key.getRsaKey(),
                             RSACipher.CRYPTO_ALGORITHM_RSA_ECB_PKCS1PADDING)));

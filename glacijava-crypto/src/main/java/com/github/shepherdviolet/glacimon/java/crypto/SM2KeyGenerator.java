@@ -75,6 +75,7 @@ public class SM2KeyGenerator {
     /**
      * 将PKCS8私钥数据解析为私钥实例(与JDK的密钥实例不同)
      * @param pkcs8 PKCS8私钥数据
+     * @deprecated 实际项目中很少使用PKCS8格式的SM2私钥
      */
     public static ECPrivateKeyParameters generatePrivateKeyParamsByPKCS8(byte[] pkcs8) throws InvalidKeySpecException {
         return BaseBCAsymKeyGenerator.ecPrivateKeyToEcPrivateKeyParams(
@@ -86,6 +87,7 @@ public class SM2KeyGenerator {
     /**
      * 将X509公钥数据解析为公钥实例(与JDK的密钥实例不同)
      * @param x509 X509公钥数据
+     * @deprecated 实际项目中很少使用X509格式的SM2公钥
      */
     public static ECPublicKeyParameters generatePublicKeyParamsByX509(byte[] x509) throws InvalidKeySpecException {
         return BaseBCAsymKeyGenerator.ecPublicKeyToEcPublicKeyParams(
@@ -154,9 +156,21 @@ public class SM2KeyGenerator {
     }
 
     /**
-     * 根据已知的坐标(ASN.1编码数据)生成SM2公钥实例(sm2p256v1)
+     * 根据已知的坐标(ASN.1编码数据)生成SM2公钥实例(sm2p256v1),
+     * 某些工具生成的SM2公钥不符合ASN1标准, 长度只有64字节, 直接是X和Y的二进制数据拼接而成, 请在前面增加一个字节: 0x04
      *
-     * @param asn1Encoding 公钥坐标点(ASN.1编码数据)
+     * @param asn1Hex 公钥坐标点, ASN.1编码十六进制字符串(HEX)
+     * @return 公钥实例(与JDK的密钥实例不同)
+     */
+    public static ECPublicKeyParameters generatePublicKeyParamsByASN1(String asn1Hex) throws CommonCryptoException {
+        return BaseBCAsymKeyGenerator.parseEcPublicKeyParams(SM2DefaultCurve.DOMAIN_PARAMS, ByteUtils.hexToBytes(asn1Hex));
+    }
+
+    /**
+     * 根据已知的坐标(ASN.1编码数据)生成SM2公钥实例(sm2p256v1),
+     * 某些工具生成的SM2公钥不符合ASN1标准, 长度只有64字节, 直接是X和Y的二进制数据拼接而成, 请在前面增加一个字节: 0x04
+     *
+     * @param asn1Encoding 公钥坐标点, ASN.1编码数据
      * @return 公钥实例(与JDK的密钥实例不同)
      */
     public static ECPublicKeyParameters generatePublicKeyParamsByASN1(byte[] asn1Encoding) throws CommonCryptoException {
@@ -369,6 +383,14 @@ public class SM2KeyGenerator {
         }
 
         /**
+         * 获取公钥坐标点的ASN.1编码十六进制字符串(非压缩).
+         * 未压缩格式开头有个0x04, 有些加解密工具没0x04.
+         */
+        public String getPublicASN1EncodingHex(){
+            return ByteUtils.bytesToHex(publicKeyParams.getQ().getEncoded(false));
+        }
+
+        /**
          * <p>获取公钥的X值 (QX).</p>
          * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPublicX().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPublicX().toString(16).</p>
@@ -379,11 +401,17 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取公钥的X值 (QX).</p>
-         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPublicX().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPublicX().toString(16).</p>
          */
         public byte[] getPublicXBytes(){
             return ByteUtils.leftTrim(publicKeyParams.getQ().getAffineXCoord().toBigInteger().toByteArray());
+        }
+
+        /**
+         * <p>获取公钥的X值 (QX).</p>
+         */
+        public String getPublicXHex(){
+            return publicKeyParams.getQ().getAffineXCoord().toBigInteger().toString(16);
         }
 
         /**
@@ -397,11 +425,17 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取公钥的Y值 (QY).</p>
-         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPublicY().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPublicY().toString(16).</p>
          */
         public byte[] getPublicYBytes(){
             return ByteUtils.leftTrim(publicKeyParams.getQ().getAffineYCoord().toBigInteger().toByteArray());
+        }
+
+        /**
+         * <p>获取公钥的Y值 (QY).</p>
+         */
+        public String getPublicYHex(){
+            return publicKeyParams.getQ().getAffineYCoord().toBigInteger().toString(16);
         }
 
         /**
@@ -415,17 +449,29 @@ public class SM2KeyGenerator {
 
         /**
          * <p>获取私钥的D值.</p>
-         * <p>转byte[], ByteUtils.leftTrim(SM2KeyParamsPair.getPrivateD().toByteArray())), 注意!!!要去掉头部的0x00!!!</p>
          * <p>转Hex, SM2KeyParamsPair.getPrivateD().toString(16).</p>
          */
         public byte[] getPrivateDBytes(){
             return ByteUtils.leftTrim(privateKeyParams.getD().toByteArray());
         }
 
+        /**
+         * <p>获取私钥的D值的十六进制字符串.</p>
+         */
+        public String getPrivateDHex(){
+            return privateKeyParams.getD().toString(16);
+        }
+
+        /**
+         * @deprecated 实际项目中很少使用X509格式的SM2公钥
+         */
         public byte[] getX509EncodedPublicKey() {
             return encodePublicKeyParamsToX509(publicKeyParams);
         }
 
+        /**
+         * @deprecated 实际项目中很少使用PKCS8的SM2私钥
+         */
         public byte[] getPKCS8EncodedPrivateKey() {
             return encodePrivateKeyParamsToPKCS8(privateKeyParams, publicKeyParams);
         }
@@ -433,7 +479,8 @@ public class SM2KeyGenerator {
         @Override
         public String toString() {
             try {
-                return "SM2KeyParamsPair\n<public>" + Base64Utils.encodeToString(getX509EncodedPublicKey()) + "\n<private>" + Base64Utils.encodeToString(getPKCS8EncodedPrivateKey());
+                return "SM2KeyParamsPair\n<public>" + getPublicASN1EncodingHex() +
+                        "\n<private>" + getPrivateDHex();
             } catch (Exception e) {
                 return "SM2KeyParamsPair\n<exception>" + e.getMessage();
             }

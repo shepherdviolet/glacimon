@@ -19,6 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.java.crypto;
 
+import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.PEMEncodeUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.SM2Cipher;
 import com.github.shepherdviolet.glacimon.java.crypto.SM2KeyGenerator;
@@ -45,8 +46,8 @@ public class SM2CipherTest {
         SM2KeyGenerator.SM2KeyParamsPair keyPair = SM2KeyGenerator.generateKeyParamsPair();
 
 //        System.out.println(keyPair);
-//        System.out.println(keyPair.getPrivateD());
-//        System.out.println(ByteUtils.bytesToHex(keyPair.getPublicASN1Encoding()));
+//        System.out.println(keyPair.getPublicASN1EncodingHex());
+//        System.out.println(keyPair.getPrivateDHex());
 
         //特殊:用公私钥要素反向生成公私钥实例(D, Q), 忽略结果, 仅测试
         SM2KeyGenerator.generatePrivateKeyParams(keyPair.getPrivateD());

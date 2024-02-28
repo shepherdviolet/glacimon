@@ -238,6 +238,13 @@ public class BaseBCAsymKeyGenerator {
         if (pointASN1Encoding == null) {
             throw new RuntimeException("pointASN1Encoding == null");
         }
+        // 某些工具产生的SM2公钥, 仅仅是把X和Y拼在一起, 转为ASN1需要在前面加0x04
+        if (pointASN1Encoding.length == 64) {
+            byte[] asn1 = new byte[65];
+            asn1[0] = 0x04;
+            System.arraycopy(pointASN1Encoding, 0, asn1, 1, 64);
+            pointASN1Encoding = asn1;
+        }
         try {
             //将ASN.1编码的数据转为ECPoint实例
             ECPoint point = domainParameters.getCurve().decodePoint(pointASN1Encoding);

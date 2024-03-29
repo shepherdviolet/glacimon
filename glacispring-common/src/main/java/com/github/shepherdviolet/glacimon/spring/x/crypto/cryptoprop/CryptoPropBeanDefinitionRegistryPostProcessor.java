@@ -226,7 +226,8 @@ public class CryptoPropBeanDefinitionRegistryPostProcessor implements BeanDefini
     public int getOrder() {
         /*
          * 在com.ctrip.framework.apollo.spring.config.ConfigPropertySourcesProcessor(优先级HIGHEST_PRECEDENCE)之后,
-         * 为了删除Apollo创建的可能多余的PropertySourcesPlaceholderConfigurer
+         * 为了删除Apollo创建的可能多余的PropertySourcesPlaceholderConfigurer (执行postProcessBeanDefinitionRegistry方法时).
+         * 为了在Apollo往environment.getPropertySources()添加PropertySource后代理所有的PropertySource (执行postProcessBeanFactory方法时, 在ConfigPropertySourcesProcessor的父类PropertySourcesProcessor).
          */
         /*
          * 在org.mybatis.spring.mapper.MapperScannerConfigurer(优先级0)之前,

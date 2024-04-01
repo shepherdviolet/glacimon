@@ -26,12 +26,6 @@ import java.lang.annotation.*;
 /**
  * <p>[Spring属性解密] 启用属性解密 (For springboot)</p>
  *
- * <p>
- * 说明:<br>
- * 1.普通模式(NORMAL)支持'@Value'和'XML property'中占位符(placeholder)的解密, 不支持Environment#getProperty解密, 侵入点少兼容性好. <br>
- * 2.加强模式(ENHANCED)支持Environment#getProperty解密, 侵入点较多, 可能会出现一些兼容性问题. <br>
- * </p>
- *
  * <p></p>
  * <p>启用:</p>
  *

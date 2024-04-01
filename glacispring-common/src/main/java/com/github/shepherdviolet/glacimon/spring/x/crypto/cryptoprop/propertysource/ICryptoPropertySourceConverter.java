@@ -17,15 +17,15 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropEnv;
 import org.springframework.core.env.MutablePropertySources;
 
 /**
- * <p>[Spring属性解密] PropertySource转换器(切入解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ * <p>[Spring属性解密] PropertySource转换器(切入解密逻辑)</p>
  *
- * <p>加强模式(或CUT_IN_ENVIRONMENT模式)用这个转换器, 对Environment中的PropertySource进行转换, 切入解密逻辑.</p>
+ * <p>对Environment中的PropertySource进行转换, 切入解密逻辑.</p>
  *
  * @author shepherdviolet
  */
@@ -34,9 +34,9 @@ public interface ICryptoPropertySourceConverter {
     void convertPropertySources(MutablePropertySources propSources);
 
     /**
-     * 由于BeanDefinitionRegistryPostProcessor早于Bean实例化, CryptoPropBeanDefinitionRegistryPostProcessor自身和它依赖的
+     * 由于BeanFactoryPostProcessor早于Bean实例化, CryptoPropBeanFactoryPostProcessor自身和它依赖的
      * Bean无法通过@Value注入需要的参数, 我们只能从Environment和PropertySourcesPlaceholderConfigurer获取Spring启动早期的参数(属性).
-     * CryptoPropBeanDefinitionRegistryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
+     * CryptoPropBeanFactoryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
      *
      * @param env CryptoProp内部使用的参数集合
      */

@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
 import org.springframework.core.env.EnumerablePropertySource;
@@ -26,9 +26,9 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.SystemEnvironmentPropertySource;
 
 /**
- * <p>[Spring属性解密] PropertySource转换器(切入解密逻辑), SpringBoot2.0专用(支持OriginLookup), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ * <p>[Spring属性解密] PropertySource转换器(切入解密逻辑), SpringBoot2.0专用(支持OriginLookup)</p>
  *
- * <p>加强模式(或CUT_IN_ENVIRONMENT模式)用这个转换器, 对Environment中的PropertySource进行转换, 切入解密逻辑.</p>
+ * <p>对Environment中的PropertySource进行转换, 切入解密逻辑.</p>
  *
  * @author shepherdviolet
  */
@@ -53,7 +53,7 @@ public class DefaultCryptoPropertySourceConverterForBoot2 extends DefaultCryptoP
         } else {
             cryptoPropertySource = new CryptoPropertySourceForBoot2<>(propertySource, getDecryptor());
         }
-        this.logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " wrapped to " + cryptoPropertySource.getClass().getName());
+        this.logger.info("CryptoProp | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " wrapped to " + cryptoPropertySource.getClass().getName());
         return cryptoPropertySource;
     }
 

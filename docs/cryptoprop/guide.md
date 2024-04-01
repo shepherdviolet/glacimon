@@ -6,14 +6,16 @@
 CryptoProp是一个Spring属性(property)加解密方案. 用于保护敏感属性(例如数据库密码), 避免属性明文配置在工程源码中被开发人员获取.
 启用CryptoProp并配置密钥后, 你可以将敏感属性加密后配置到属性文件(properties/yaml)中, 应用启动后会自动将属性解密并注入Bean中.
 CryptoProp支持在'@Value'和'XML'中使用占位符(${...})获取解密的属性, 支持使用'@ConfigurationProperties'绑定属性的Bean获得
-解密的属性, 支持Environment#getProperty手动获取解密的属性(普通模式不支持, 会返回密文, 需要开启'增强模式'!).
+解密的属性, 支持Environment#getProperty手动获取解密的属性.
 
 ```
-* 支持Apollo配置中心 (apollo-client 1.4.0及以上版本)
+
+* 要求: JDK 8+
+* 要求: apollo-client 1.4.0+
 
 ```
-CryptoProp支持Apollo配置中心, 支持实时修改属性(Apollo上发布后无需重启应用), 请使用apollo-client 1.4.0及以上版本! 老版本在
-开启'增强模式'后, 实时修改属性会出现异常! (注意, 对Apollo实时修改的支持仅限于业务属性, CryptoProp本身的配置参数不支持实时修改)
+CryptoProp支持Apollo配置中心, 支持实时修改属性(Apollo上发布后无需重启应用), 请使用apollo-client 1.4.0及以上版本! 
+老版本实时修改属性会出现异常! (注意, 对Apollo实时修改的支持仅限于业务属性, CryptoProp本身的配置参数不支持实时修改)
 ```
 
 <br>
@@ -114,12 +116,10 @@ glacispring:
 
 glacispring:
   crypto-prop:
-    ## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容性问题)
-#    mode: ENHANCED
-    ## 增强模式相关配置: skip-property-sources指定一些PropertySource不被侵入; intercept-by-proxy侵入模式从包装方式改为代理方式
-#    enhanced:
-#      skip-property-sources: com.packagename.SomePropertySource1,com.packagename.SomePropertySource2
-#      intercept-by-proxy: true
+    ## 指定一些PropertySource不被侵入
+#    skip-property-sources: com.packagename.SomePropertySource1,com.packagename.SomePropertySource2
+    ## intercept-by-proxy侵入模式从包装方式改为代理方式
+#    intercept-by-proxy: true
 ```
 
 <br>
@@ -130,20 +130,19 @@ glacispring:
 
 ```
     <!-- 方式一: 简易配置 (2024.1.4+) -->
-    <!-- 注意, 这里不能用占位符${propertyname}注入属性, 因为BeanDefinitionRegistryPostProcessor在Spring启动初期执行 -->
-    <bean id="glacispring.cryptoProp.beanDefinitionRegistryPostProcessor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropBeanDefinitionRegistryPostProcessor"/>
+    <!-- 注意, 这里不能用占位符${propertyname}注入属性, 因为BeanFactoryPostProcessor在Spring启动初期执行 -->
+    <bean id="glacispring.cryptoProp.beanFactoryPostProcessor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropBeanFactoryPostProcessor"/>
 ```
 
 ```
     <!-- 方式二: 高级配置 (完整配置, 可以自定义实现) -->
-    <!-- 注意, 这里不能用占位符${propertyname}注入属性, 因为BeanDefinitionRegistryPostProcessor在Spring启动初期执行 -->
+    <!-- 注意, 这里不能用占位符${propertyname}注入属性, 因为BeanFactoryPostProcessor在Spring启动初期执行 -->
     <bean id="glacispring.cryptoProp.decryptor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropDecryptor"/>
-    <bean id="glacispring.cryptoProp.enhancedModePropertySourceConverter" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.DefaultCryptoPropertySourceConverter">
+    <bean id="glacispring.cryptoProp.cryptoPropertySourceConverter" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource.DefaultCryptoPropertySourceConverter">
         <constructor-arg index="0" ref="glacispring.cryptoProp.decryptor"/>
     </bean>
-    <bean id="glacispring.cryptoProp.beanDefinitionRegistryPostProcessor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropBeanDefinitionRegistryPostProcessor">
-        <constructor-arg index="0" ref="glacispring.cryptoProp.decryptor"/>
-        <constructor-arg index="1" ref="glacispring.cryptoProp.enhancedModePropertySourceConverter"/>
+    <bean id="glacispring.cryptoProp.beanFactoryPostProcessor" class="com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropBeanFactoryPostProcessor">
+        <constructor-arg index="0" ref="glacispring.cryptoProp.cryptoPropertySourceConverter"/>
     </bean>
 ```
 
@@ -182,11 +181,9 @@ glacispring.crypto-prop.key=rsa:file:/home/username/cryptoprop-private-key.pem
 ```
 # 其他可选参数 (一般不需要配置)
 
-## NORMAL:普通模式(默认); ENHANCED:增强模式(适用范围增大, 侵入点更多, 可能有兼容性问题)
-#glacispring.crypto-prop.mode=ENHANCED
-## 增强模式相关配置: skip-property-sources指定一些PropertySource不被侵入; intercept-by-proxy侵入模式从包装方式改为代理方式
-#glacispring.crypto-prop.enhanced.skip-property-sources=com.packagename.SomePropertySource1,com.packagename.SomePropertySource2
-#glacispring.crypto-prop.enhanced.intercept-by-proxy=true
+## skip-property-sources指定一些PropertySource不被侵入; intercept-by-proxy侵入模式从包装方式改为代理方式
+#glacispring.crypto-prop.skip-property-sources=com.packagename.SomePropertySource1,com.packagename.SomePropertySource2
+#glacispring.crypto-prop.intercept-by-proxy=true
 ```
 
 <br>
@@ -224,8 +221,8 @@ public class CryptoPropertyUtils {
 
 ## 在properties/yaml/启动参数中使用密文
 
-> CryptoProp支持实时修改属性(Apollo上发布后无需重启应用), 请使用apollo-client 1.4.0及以上版本! 老版本在 开启'增强模式'后, 
-> 实时修改属性会出现异常! (注意, 对Apollo实时修改的支持仅限于业务属性, CryptoProp本身的配置参数不支持实时修改)
+> CryptoProp支持实时修改属性(Apollo上发布后无需重启应用), 请使用apollo-client 1.4.0及以上版本!
+> 老版本实时修改属性会出现异常! (注意, 对Apollo实时修改的支持仅限于业务属性, CryptoProp本身的配置参数不支持实时修改)
 
 ```
 # properties
@@ -308,16 +305,33 @@ spring.datasource.password=123456
 <br>
 <br>
 
-# 关于模式 (为什么Environment#getProperty返回的是密文?)
+# 其他
 
-> CryptoProp有两种模式, 普通模式(NORMAL)下, 手动从Environment#getProperty获取参数是不支持解密的, 它会返回密文.
-> 建议使用普通模式, Spring应用尽量避免用Environment#getProperty手动获取属性(里面属性不全, 没有XML配置的properties), 请通过占位符(${...})的方式注入属性.
-> 如果必须要使Environment#getProperty支持自动解密, 可以将模式修改为增强模式(glacispring.crypto-prop.mode=ENHANCED), 加强模式侵入点比较多, 有可能会有兼容性问题.
+## 兼容性问题
 
-| 模式               | @Value中的${...} | XML中的${...} | 用@ConfigurationProperties绑定属性的Bean | Environment#getProperty | 说明 |
-| ----------------- |----------------| --------------- | -------------------------------- | ----------------------- | ---- |
-| 普通模式 <br> NORMAL   | 支持自动解密  | 支持自动解密 | 支持自动解密 | `不支持自动解密(返回密文)` | 只侵入`PropertySourcesPlaceholderConfigurer`, 侵入点少, 兼容性好 |
-| 增强模式 <br> ENHANCED | 支持自动解密  | 支持自动解密 | 支持自动解密 | 支持自动解密 | 同时侵入`Environment的PropertySources`, 侵入点较多, 可能会有兼容性问题(见下文) |
+* apollo-client 1.3.0及以下版本不支持实时属性修改 (请使用1.4.0及以上版本)
+
+```
+apollo-client 1.3.0及以下版本中, AutoUpdateConfigChangeListener类中, 存在shouldTriggerAutoUpdate方法, 
+它会判断ConfigChangeEvent中的新属性值和environment#getProperty返回值是否相等, 相等才会更新属性.
+因为ConfigChangeEvent中的新属性值是密文, 而environment#getProperty返回值是明文, 两个结果不相等, 
+所以属性实时更新被跳过. 更新apollo-client 1.4.0及以上版本解决.
+P.S.低版本用也能用, 只是不支持配置实时更新.
+```
+
+## 局限性
+
+* 未监听Environment中PropertySources的增删事件, 对于后续增加的PropertySource不会进行处理
+
+```
+某些组件会在CryptoPropBeanFactoryPostProcessor处理完成后, 往Environment添加PropertySource.
+CryptoProp未监听Environment中PropertySources的增删事件, 对于后续增加的PropertySource不会进行代理. 
+
+如果需要优化, 可以参考jasypt-spring-boot的RefreshScopeRefreshedEventListener, 在捕获到事件时重新调用
+CryptoPropBeanFactoryPostProcessor#convertPropertySources处理一遍即可.
+```
+
+## 支持哪些属性获取方式?
 
 * `@Value`中的`${...}`占位符 支持自动解密
 
@@ -359,48 +373,15 @@ public class FooProperties {
 }
 ```
 
-* 调用Environment#getProperty获取属性 需要开启`增强模式`才支持自动解密 (否则返回密文)
+* 调用Environment#getProperty获取属性
 
 ```
 @Autowired
 private Environment env;
 
 public void test() {
-    // 从environment手动获取属性, 必须开启增强模式
+    // 从environment手动获取属性
     String value1 = env.getProperty("bar.foo1");
     String value2 = env.resolvePlaceholders("${bar.foo2}")
 }
-```
-
-<br>
-<br>
-
-# 其他
-
-## 增强模式 兼容性问题
-
-* `增强模式`下, apollo-client 1.3.0及以下版本不支持实时属性修改 (请使用1.4.0及以上版本)
-
-```
-apollo-client 1.3.0及以下版本中, AutoUpdateConfigChangeListener类中, 存在shouldTriggerAutoUpdate方法, 
-它会判断ConfigChangeEvent中的新属性值和environment#getProperty返回值是否相等, 相等才会更新属性.
-因为ConfigChangeEvent中的新属性值是密文, 而增强模式下environment#getProperty返回值是明文, 两个结果不相等, 
-所以属性实时更新被跳过. 更新apollo-client 1.4.0及以上版本解决.
-P.S.低版本用也能用, 只是开启了增强模式后, 可能不支持配置实时更新. (普通模式不存在此问题)
-```
-
-## 增强模式 局限性
-
-* 未监听Environment中PropertySources的增删事件, 对于后续增加的PropertySource不会进行处理
-
-```
-某些组件会在CryptoPropBeanDefinitionRegistryPostProcessor处理完成后, 往Environment添加PropertySource.
-例如apollo-client有可能会在之后添加一个CompositePropertySource (不一定, 与apollo客户端配置有关).
-因此, 手动调用Environment#getProperty获取属性依然有可能会返回密文; 在@Value和XML中使用占位符${}仍然能获得
-解密后的明文, 因为增强模式仍然会侵入PropertySourcesPlaceholderConfigurer作为兜底, 即使新增的PropertySource
-不会进行解密, PropertySourcesPlaceholderConfigurer中的PropertiesSources仍然会进行解密.
-
-其实这个缺陷有办法优化, 但是现有逻辑已经能够满足大部分需求 (增强模式也并不建议开启, Environment#getProperty也不建议手动调用).
-如果需要优化, 可以参考jasypt-spring-boot的RefreshScopeRefreshedEventListener, 在捕获到事件时重新调用
-ICryptoPropertySourceConverter#convertPropertySources处理一遍即可.
 ```

@@ -32,19 +32,14 @@ public class CryptoPropConstants {
     public static final String OPTION_DECRYPT_KEY = "glacispring.crypto-prop.key";
 
     /**
-     * 模式: 无法通过APOLLO配置中心运行时修改, 修改后必须重启应用
+     * 指定哪些PropertySource不侵入: 无法通过APOLLO配置中心运行时修改, 修改后必须重启应用
      */
-    public static final String OPTION_MODE = "glacispring.crypto-prop.mode";
+    public static final String OPTION_SKIP_PROPERTY_SOURCES = "glacispring.crypto-prop.skip-property-sources";
 
     /**
-     * [增强模式] 指定哪些PropertySource不侵入: 无法通过APOLLO配置中心运行时修改, 修改后必须重启应用
+     * 使用代理模式侵入: 无法通过APOLLO配置中心运行时修改, 修改后必须重启应用
      */
-    public static final String OPTION_SKIP_PROPERTY_SOURCES = "glacispring.crypto-prop.enhanced.skip-property-sources";
-
-    /**
-     * [增强模式] 使用代理模式侵入: 无法通过APOLLO配置中心运行时修改, 修改后必须重启应用
-     */
-    public static final String OPTION_INTERCEPT_BY_PROXY = "glacispring.crypto-prop.enhanced.intercept-by-proxy";
+    public static final String OPTION_INTERCEPT_BY_PROXY = "glacispring.crypto-prop.intercept-by-proxy";
 
     /**
      * [临时应急] 忽略CryptoProp初始化错误, 仅打印日志, 解密功能不可用: 注意这个参数只能通过启动参数设置 (-Dglacispring.crypto-prop.ignore-exception=true)

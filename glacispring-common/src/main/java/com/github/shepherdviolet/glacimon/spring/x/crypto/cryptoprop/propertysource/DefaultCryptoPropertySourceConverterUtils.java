@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
 
@@ -35,9 +35,9 @@ public class DefaultCryptoPropertySourceConverterUtils {
             isBoot2 = false;
         }
 
-        // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanDefinitionRegistryPostProcessor中
+        // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanFactoryPostProcessor中
         // 从Environment和PropertySourcesPlaceholderConfigurer中获取参数.
-        // 详见CryptoPropBeanDefinitionRegistryPostProcessor源码.
+        // 详见CryptoPropBeanFactoryPostProcessor源码.
         if (isBoot2) {
             return new DefaultCryptoPropertySourceConverterForBoot2(decryptor);
         }

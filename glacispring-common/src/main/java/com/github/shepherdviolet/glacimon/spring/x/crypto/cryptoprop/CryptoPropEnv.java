@@ -33,7 +33,7 @@ import java.util.Properties;
 /**
  * <p>[Spring属性解密] CryptoProp内部使用的参数集合</p>
  *
- * <p>由于BeanDefinitionRegistryPostProcessor早于Bean实例化, CryptoPropBeanDefinitionRegistryPostProcessor自身和它依赖的
+ * <p>由于BeanFactoryPostProcessor早于Bean实例化, CryptoPropBeanFactoryPostProcessor自身和它依赖的
  * Bean无法通过@Value注入需要的参数, 我们只能从Environment和PropertySourcesPlaceholderConfigurer获取Spring启动早期的参数(属性).</p>
  *
  * @author shepherdviolet

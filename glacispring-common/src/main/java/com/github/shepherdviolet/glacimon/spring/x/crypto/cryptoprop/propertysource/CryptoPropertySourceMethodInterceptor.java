@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -25,7 +25,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.env.PropertySource;
 
 /**
- * <p>[Spring属性解密] PropertySource代理拦截器, 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ * <p>[Spring属性解密] PropertySource代理拦截器</p>
  *
  * <p>对Environment中的PropertySource进行代理, 实现属性解密</p>
  *

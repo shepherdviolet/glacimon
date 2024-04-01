@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConstants;
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
@@ -34,9 +34,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * <p>[Spring属性解密] PropertySource转换器(切入解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ * <p>[Spring属性解密] PropertySource转换器(切入解密逻辑)</p>
  *
- * <p>加强模式(或CUT_IN_ENVIRONMENT模式)用这个转换器, 对Environment中的PropertySource进行转换, 切入解密逻辑.</p>
+ * <p>对Environment中的PropertySource进行转换, 切入解密逻辑.</p>
  *
  * @author shepherdviolet
  */
@@ -58,6 +58,10 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
      * @param decryptor 解密器
      */
     public DefaultCryptoPropertySourceConverter(CryptoPropDecryptor decryptor) {
+        if (decryptor == null) {
+            throw new RuntimeException("CryptoProp | 'CryptoPropDecryptor' is not configured in ApplicationContext");
+        }
+
         this.decryptor = decryptor;
     }
 
@@ -73,7 +77,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
             }
             // 指定PropertySource不转换
             if (skipPropertySourceClasses.contains(propertySource.getClass().getName())) {
-                logger.info("CryptoProp | Enhanced | Skip PropertySource, name: " + propertySource.getName() + ", class: " + propertySource.getClass().getName());
+                logger.info("CryptoProp | Skip PropertySource, name: " + propertySource.getName() + ", class: " + propertySource.getClass().getName());
                 continue;
             }
             // 转换
@@ -96,7 +100,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
         proxyFactory.addInterface(ICryptoPropertySource.class);
         proxyFactory.setTarget(propertySource);
         proxyFactory.addAdvice(new CryptoPropertySourceMethodInterceptor<>(propertySource, decryptor));
-        logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " proxied");
+        logger.info("CryptoProp | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " proxied");
         return (PropertySource<T>) proxyFactory.getProxy();
     }
 
@@ -112,7 +116,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
         } else {
             cryptoPropertySource = new CryptoPropertySource<>(propertySource, decryptor);
         }
-        logger.info("CryptoProp | Enhanced | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " ---> " + cryptoPropertySource.getClass().getName());
+        logger.info("CryptoProp | PropertySource '" + propertySource.getName() + "' " + propertySource.getClass().getName() + " ---> " + cryptoPropertySource.getClass().getName());
         return cryptoPropertySource;
     }
 
@@ -122,11 +126,14 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
 
     @Override
     public void setEnv(CryptoPropEnv env) {
-        // 由于BeanDefinitionRegistryPostProcessor早于Bean实例化, CryptoPropBeanDefinitionRegistryPostProcessor自身和它依赖的
+        // 由于BeanFactoryPostProcessor早于Bean实例化, CryptoPropBeanFactoryPostProcessor自身和它依赖的
         // Bean无法通过@Value注入需要的参数, 我们只能从Environment和PropertySourcesPlaceholderConfigurer获取Spring启动早期的参数(属性).
-        // CryptoPropBeanDefinitionRegistryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
+        // CryptoPropBeanFactoryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
         setInterceptByProxy("true".equalsIgnoreCase(env.getProperty(CryptoPropConstants.OPTION_INTERCEPT_BY_PROXY)));
         setSkipPropertySources(env.getProperty(CryptoPropConstants.OPTION_SKIP_PROPERTY_SOURCES));
+
+        // [重要] decryptor也需要从CryptoPropEnv中获取参数
+        decryptor.setEnv(env);
     }
 
     /**
@@ -134,7 +141,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
      */
     public void setInterceptByProxy(boolean interceptByProxy) {
         this.interceptByProxy = interceptByProxy;
-        logger.info("CryptoProp | Enhanced | interceptByProxy set to " + interceptByProxy);
+        logger.info("CryptoProp | interceptByProxy set to " + interceptByProxy);
     }
 
     /**
@@ -153,7 +160,7 @@ public class DefaultCryptoPropertySourceConverter implements ICryptoPropertySour
             }
         }
 
-        logger.info("CryptoProp | Enhanced | skipPropertySources set to " + skipPropertySources);
+        logger.info("CryptoProp | skipPropertySources set to " + skipPropertySources);
         this.skipPropertySourceClasses = skipPropertySourceClasses;
     }
 }

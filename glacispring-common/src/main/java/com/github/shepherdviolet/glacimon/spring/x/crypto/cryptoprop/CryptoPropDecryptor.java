@@ -23,7 +23,7 @@ package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
  * <p>[Spring属性解密] 属性解密器</p>
  *
  * <p>注意, CryptoPropDecryptor里无法通过@Value获取属性, 只能用Environment#getProperty获取,
- * 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
+ * 因为BeanFactoryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
  * Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新属性 (属性变更后需要重启应用).</p>
  *
  * @author shepherdviolet
@@ -39,9 +39,9 @@ public interface CryptoPropDecryptor {
     String decrypt(String name, String value);
 
     /**
-     * 由于BeanDefinitionRegistryPostProcessor早于Bean实例化, CryptoPropBeanDefinitionRegistryPostProcessor自身和它依赖的
+     * 由于BeanFactoryPostProcessor早于Bean实例化, CryptoPropBeanFactoryPostProcessor自身和它依赖的
      * Bean无法通过@Value注入需要的参数, 我们只能从Environment和PropertySourcesPlaceholderConfigurer获取Spring启动早期的参数(属性).
-     * CryptoPropBeanDefinitionRegistryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
+     * CryptoPropBeanFactoryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
      *
      * @param env CryptoProp内部使用的参数集合
      */

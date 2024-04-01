@@ -17,14 +17,14 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
 
 /**
- * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑)</p>
  *
  * @author shepherdviolet
  */

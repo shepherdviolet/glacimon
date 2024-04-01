@@ -17,22 +17,25 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced;
+package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropDecryptor;
 import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
+
+import java.util.Map;
 
 /**
- * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用</p>
+ * <p>[Spring属性解密] PropertySource包装类(实现解密逻辑)</p>
  *
  * @author shepherdviolet
  */
-public class CryptoPropertySource<T> extends PropertySource<T> implements ICryptoPropertySource<T> {
+public class CryptoSystemEnvironmentPropertySource extends SystemEnvironmentPropertySource implements ICryptoPropertySource<Map<String, Object>> {
 
-    private final PropertySource<T> delegate;
+    private final SystemEnvironmentPropertySource delegate;
     private final CryptoPropDecryptor decryptor;
 
-    public CryptoPropertySource(PropertySource<T> delegate, CryptoPropDecryptor decryptor) {
+    public CryptoSystemEnvironmentPropertySource(SystemEnvironmentPropertySource delegate, CryptoPropDecryptor decryptor) {
         super(delegate.getName(), delegate.getSource());
         this.delegate = delegate;
         this.decryptor = decryptor;
@@ -49,7 +52,7 @@ public class CryptoPropertySource<T> extends PropertySource<T> implements ICrypt
     }
 
     @Override
-    public PropertySource<T> getDelegate() {
+    public PropertySource<Map<String, Object>> getDelegate() {
         return delegate;
     }
 

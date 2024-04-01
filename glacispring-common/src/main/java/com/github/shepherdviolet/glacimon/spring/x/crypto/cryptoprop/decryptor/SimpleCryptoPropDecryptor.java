@@ -93,9 +93,9 @@ public class SimpleCryptoPropDecryptor extends AbstractCryptoPropDecryptor {
 
     @Override
     public void setEnv(CryptoPropEnv env) {
-        // 由于BeanDefinitionRegistryPostProcessor早于Bean实例化, CryptoPropBeanDefinitionRegistryPostProcessor自身和它依赖的
+        // 由于BeanFactoryPostProcessor早于Bean实例化, CryptoPropBeanFactoryPostProcessor自身和它依赖的
         // Bean无法通过@Value注入需要的参数, 我们只能从Environment和PropertySourcesPlaceholderConfigurer获取Spring启动早期的参数(属性).
-        // CryptoPropBeanDefinitionRegistryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
+        // CryptoPropBeanFactoryPostProcessor会创建一个CryptoPropEnv, 传递给它依赖的Bean, 供它们获取需要的参数.
         setKey(env.getProperty(CryptoPropConstants.OPTION_DECRYPT_KEY));
     }
 

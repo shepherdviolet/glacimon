@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>[Spring属性解密] 带缓存的属性解密器</p>
  *
  * <p>注意, CryptoPropDecryptor里无法通过@Value获取属性, 只能用Environment#getProperty获取,
- * 因为BeanDefinitionRegistryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
+ * 因为BeanFactoryPostProcessor执行过早, 它依赖的Bean无法通过@Value获取属性.
  * Apollo配置中心的属性Environment#getProperty也能拿到, 但是, 无法在运行时接收新属性 (属性变更后需要重启应用).</p>
  *
  * @author shepherdviolet

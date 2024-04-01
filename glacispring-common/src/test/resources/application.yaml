@@ -14,9 +14,7 @@ glacispring:
 #    key: aes:classpath:cryptoprop/key/cryptoprop-key.txt
 #    key: aes:file:./src/test/resources/cryptoprop/key/cryptoprop-key.txt
 #    key: aes:KrIjtliPM3MIlHPh+l3ylA==
-#    mode: ENHANCED
-#    enhanced:
-#      intercept-by-proxy: true
+#    intercept-by-proxy: true
 
 test:
   ## CryptoProp test RSA

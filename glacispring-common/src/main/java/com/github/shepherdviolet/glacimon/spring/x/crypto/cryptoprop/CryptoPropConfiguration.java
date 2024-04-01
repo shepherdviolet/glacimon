@@ -20,10 +20,8 @@
 package com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop;
 
 import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.decryptor.SimpleCryptoPropDecryptor;
-import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.DefaultCryptoPropertySourceConverterUtils;
-import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.enhanced.ICryptoPropertySourceConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource.DefaultCryptoPropertySourceConverterUtils;
+import com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.propertysource.ICryptoPropertySourceConverter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -36,31 +34,29 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CryptoPropConfiguration {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    
     /**
      * 解密器
      */
     @Bean(name = "glacispring.cryptoProp.decryptor")
     @ConditionalOnMissingBean(name = "glacispring.cryptoProp.decryptor")
     public CryptoPropDecryptor decryptor() {
-        // 注意这个Bean无法通过@Value获取密钥, 只能在CryptoPropBeanDefinitionRegistryPostProcessor中
+        // 注意这个Bean无法通过@Value获取密钥, 只能在CryptoPropBeanFactoryPostProcessor中
         // 从Environment和PropertySourcesPlaceholderConfigurer中获取参数.
-        // 详见CryptoPropBeanDefinitionRegistryPostProcessor源码.
+        // 详见CryptoPropBeanFactoryPostProcessor源码.
         return new SimpleCryptoPropDecryptor();
     }
 
     /**
-     * PropertySource转换器(切入解密逻辑), 加强模式(或CUT_IN_ENVIRONMENT模式)专用
-     * 加强模式(或CUT_IN_ENVIRONMENT模式)用这个转换器, 对Environment中的PropertySource进行转换, 切入解密逻辑.
+     * PropertySource转换器(切入解密逻辑)
+     * 对Environment中的PropertySource进行转换, 切入解密逻辑.
      */
-    @Bean(name = "glacispring.cryptoProp.enhancedModePropertySourceConverter")
-    @ConditionalOnMissingBean(name = "glacispring.cryptoProp.enhancedModePropertySourceConverter")
-    public ICryptoPropertySourceConverter enhancedModePropertySourceConverter(@Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
-        // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanDefinitionRegistryPostProcessor中
+    @Bean(name = "glacispring.cryptoProp.cryptoPropertySourceConverter")
+    @ConditionalOnMissingBean(name = "glacispring.cryptoProp.cryptoPropertySourceConverter")
+    public ICryptoPropertySourceConverter cryptoPropertySourceConverter(@Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
+        // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanFactoryPostProcessor中
         // 从Environment和PropertySourcesPlaceholderConfigurer中获取参数.
-        // 详见CryptoPropBeanDefinitionRegistryPostProcessor源码.
+        // 详见CryptoPropBeanFactoryPostProcessor源码.
         return DefaultCryptoPropertySourceConverterUtils.createDefault(decryptor);
     }
 
@@ -69,43 +65,14 @@ public class CryptoPropConfiguration {
      * 实现'@Value'和'XML property'中占位符(placeholder)的解密. (ApplicationContext中的Environment#getProperty
      * 或Environment#resolvePlaceholders方法不支持属性解密)
      */
-    @Bean(name = "glacispring.cryptoProp.beanDefinitionRegistryPostProcessor")
-    @ConditionalOnMissingBean(name = "glacispring.cryptoProp.beanDefinitionRegistryPostProcessor")
-    public CryptoPropBeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor(
-            @Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor,
-            @Qualifier("glacispring.cryptoProp.enhancedModePropertySourceConverter") ICryptoPropertySourceConverter enhancedModePropertySourceConverter
-    ) {
-
-        // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanDefinitionRegistryPostProcessor中
+    @Bean(name = "glacispring.cryptoProp.beanFactoryPostProcessor")
+    @ConditionalOnMissingBean(name = "glacispring.cryptoProp.beanFactoryPostProcessor")
+    public CryptoPropBeanFactoryPostProcessor beanFactoryPostProcessor(
+            @Qualifier("glacispring.cryptoProp.cryptoPropertySourceConverter") ICryptoPropertySourceConverter cryptoPropertySourceConverter) {
+        // 注意这个Bean无法通过@Value获取参数, 只能在CryptoPropBeanFactoryPostProcessor中
         // 从Environment和PropertySourcesPlaceholderConfigurer中获取参数.
-        // 详见CryptoPropBeanDefinitionRegistryPostProcessor源码.
-        return new CryptoPropBeanDefinitionRegistryPostProcessor(decryptor, enhancedModePropertySourceConverter);
+        // 详见CryptoPropBeanFactoryPostProcessor源码.
+        return new CryptoPropBeanFactoryPostProcessor(cryptoPropertySourceConverter);
     }
-
-//    /**
-//     * 密钥没必要支持运行时动态配置
-//     * 因为CryptoPropDecryptor本身无法通过@Value获取属性, 所以我们增加一个DecryptorKeyUpdater, 实现运行时接收新密钥.
-//     */
-//    @Bean(name = "glacispring.cryptoProp.decryptorKeyUpdater")
-//    public DecryptorKeyUpdater decryptorKeyUpdater(@Qualifier("glacispring.cryptoProp.decryptor") CryptoPropDecryptor decryptor) {
-//        return new DecryptorKeyUpdater(decryptor);
-//    }
-//
-//    public static final class DecryptorKeyUpdater {
-//
-//        private final CryptoPropDecryptor decryptor;
-//
-//        public DecryptorKeyUpdater(CryptoPropDecryptor decryptor) {
-//            this.decryptor = decryptor;
-//        }
-//
-//        @Value("${" + OPTION_DECRYPT_KEY + ":}")
-//        public void updateKey(String key) {
-//            if (decryptor instanceof SimpleCryptoPropDecryptor) {
-//                ((SimpleCryptoPropDecryptor) decryptor).setKey(key);
-//            }
-//        }
-//
-//    }
 
 }

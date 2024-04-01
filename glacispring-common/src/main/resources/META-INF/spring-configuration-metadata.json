@@ -27,13 +27,6 @@
       "defaultValue": ""
     },
     {
-      "name": "glacispring.crypto-prop.mode",
-      "type": "java.lang.String",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
-      "description": "NORMAL | ENHANCED | CUT_IN_CONFIGURER | CUT_IN_ENVIRONMENT | CUT_IN_ALL",
-      "defaultValue": "NORMAL"
-    },
-    {
       "name": "glacispring.crypto-prop.ignore-exception",
       "type": "java.lang.Boolean",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
@@ -41,14 +34,14 @@
       "defaultValue": "false"
     },
     {
-      "name": "glacispring.crypto-prop.enhanced.skip-property-sources",
+      "name": "glacispring.crypto-prop.skip-property-sources",
       "type": "java.lang.String",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
       "description": "Example: com.packagename.FooPropertySource1,com.packagename.FooPropertySource2",
       "defaultValue": ""
     },
     {
-      "name": "glacispring.crypto-prop.enhanced.intercept-by-proxy",
+      "name": "glacispring.crypto-prop.intercept-by-proxy",
       "type": "java.lang.Boolean",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
       "description": "",

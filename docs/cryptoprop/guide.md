@@ -31,7 +31,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacispring-common:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-common:2024.1.5'
 }
 
 ```
@@ -40,7 +40,7 @@ dependencies {
     <dependency>    
         <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>glacispring-common</artifactId>
-        <version>?</version> 
+        <version>2024.1.5</version> 
     </dependency>
 ```
 

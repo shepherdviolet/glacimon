@@ -103,6 +103,9 @@ public class TempFileBucket {
     }
 
     public File get(String filename) throws IOException {
+        if (CheckUtils.isEmptyOrBlank(filename)) {
+            throw new IOException("Temp filename is null or empty");
+        }
         long currentDateLong =  getCurrentDateLong();
         String currentDateString = formatMilliToDateString(currentDateLong);
         tryClean(currentDateLong);

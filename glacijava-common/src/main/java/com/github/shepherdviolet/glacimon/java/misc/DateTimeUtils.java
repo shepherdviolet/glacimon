@@ -32,7 +32,29 @@ import java.util.TimeZone;
  */
 public class DateTimeUtils {
 
-    // Current ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Current date
+     */
+    public static Date getCurrentDate() {
+        return new Date();
+    }
+
+    /**
+     * Current time millis
+     */
+    public static long getCurrentTimeMillis(){
+        return System.currentTimeMillis();
+    }
+
+    /**
+     * Current nano time, can only be used to measure elapsed time and is not related to any other notion of
+     * system or wall-clock time
+     */
+    public static long getNanoTime(){
+        return System.nanoTime();
+    }
+
+    // Current date string ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Current date string, yyyy-MM-dd
@@ -79,22 +101,7 @@ public class DateTimeUtils {
         return formatter.format(new Date());
     }
 
-    /**
-     * Current time millis
-     */
-    public static long getCurrentTimeMillis(){
-        return System.currentTimeMillis();
-    }
-
-    /**
-     * Current nano time, can only be used to measure elapsed time and is not related to any other notion of
-     * system or wall-clock time
-     */
-    public static long getNanoTime(){
-        return System.nanoTime();
-    }
-
-    // Millis / Date to date string //////////////////////////////////////////////////////////////////////////////////
+    // Millis to date string //////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Millis to date string, yyyy-MM-dd
@@ -141,6 +148,8 @@ public class DateTimeUtils {
         return formatter.format(new Date(timeMillis));
     }
 
+    // Date to date string //////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Date to date string, yyyy-MM-dd
      */
@@ -186,7 +195,7 @@ public class DateTimeUtils {
         return formatter.format(date);
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // String to date ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Date string to Date

@@ -62,7 +62,6 @@ import java.util.concurrent.ExecutorService;
 public class TempFileBucket {
 
     private static final String DEFAULT_DATE_DIR_PREFIX = "tmp-";
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final long ONE_DAY_MILLIS = 24 * 60 * 60 * 1000L;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -146,19 +145,23 @@ public class TempFileBucket {
         return file;
     }
 
-    private long parseDateStringToMilli(String dateString) throws DateTimeParseException {
+    protected long parseDateStringToMilli(String dateString) throws DateTimeParseException {
         return LocalDate.from(dateFormatter.parse(dateString)).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
-    private String formatMilliToDateString(long currentDateLong) {
+    protected String formatMilliToDateString(long currentDateLong) {
         return dateFormatter.format(Instant.ofEpochMilli(currentDateLong));
     }
 
-    private long getCurrentDateLong() {
+    protected long getCurrentDateLong() {
         return LocalDate.now()
                 .atStartOfDay(ZoneId.systemDefault())
                 .toInstant()
                 .toEpochMilli();
+    }
+
+    protected boolean isFileExpired(long dateLong, long currentDateLong) {
+        return dateLong <= currentDateLong - fileRetentionDays * ONE_DAY_MILLIS;
     }
 
     private void tryClean(long currentDateLong) {
@@ -193,7 +196,7 @@ public class TempFileBucket {
                         logger.warn("TempFileBucket | Skip a directory that does not comply with date directory rules: " + dateDirFile.getAbsolutePath(), e);
                         continue;
                     }
-                    if (dateLong <= currentDateLong - fileRetentionDays * ONE_DAY_MILLIS) {
+                    if (isFileExpired(dateLong, currentDateLong)) {
                         deleteDirectory(dateDirFile);
                         logger.info("TempFileBucket | Expired date directory deleted (including temp files inside): " + dateDirFile.getAbsolutePath());
                     }

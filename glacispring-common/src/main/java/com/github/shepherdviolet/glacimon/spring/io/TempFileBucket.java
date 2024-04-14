@@ -61,14 +61,14 @@ import java.util.concurrent.ExecutorService;
  */
 public class TempFileBucket {
 
-    private static final String DEFAULT_DATE_DIR_PREFIX = "tmp-";
+    public static final String DEFAULT_DATE_DIR_PREFIX = "tmp-";
     private static final long ONE_DAY_MILLIS = 24 * 60 * 60 * 1000L;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
 
     private final String rootDir;
-    private final int fileRetentionDays;
+    private final long fileRetentionMillis;
     private final String dateDirPrefix;
 
     private final ExecutorService cleanerThreadPool = ThreadPoolExecutorUtils.createLazy(3, "Glacijava-TempFileBucket-%s");// 这里不能设置成daemon线程, 过期文件清理线程要尽量完成
@@ -80,7 +80,7 @@ public class TempFileBucket {
      *                          will not be deleted when set to 0.
      */
     public TempFileBucket(String rootDir, int fileRetentionDays) {
-        this(rootDir, fileRetentionDays, DEFAULT_DATE_DIR_PREFIX);
+        this(rootDir, (long) fileRetentionDays * ONE_DAY_MILLIS, DEFAULT_DATE_DIR_PREFIX);
     }
 
     /**
@@ -90,6 +90,16 @@ public class TempFileBucket {
      * @param dateDirPrefix Date directory name prefix (in root directory)
      */
     public TempFileBucket(String rootDir, int fileRetentionDays, String dateDirPrefix) {
+        this(rootDir, (long) fileRetentionDays * ONE_DAY_MILLIS, dateDirPrefix);
+    }
+
+    /**
+     * @param rootDir Root directory
+     * @param fileRetentionMillis Date directories older than the specified number of milliseconds will be deleted. Expired files
+     *                          will not be deleted when set to 0.
+     * @param dateDirPrefix Date directory name prefix (in root directory)
+     */
+    protected TempFileBucket(String rootDir, long fileRetentionMillis, String dateDirPrefix) {
         if (CheckUtils.isEmptyOrBlank(rootDir)) {
             throw new IllegalArgumentException("rootDir is null or empty");
         }
@@ -97,7 +107,7 @@ public class TempFileBucket {
             throw new IllegalArgumentException("dateDirPrefix is null or empty");
         }
         this.rootDir = rootDir;
-        this.fileRetentionDays = fileRetentionDays;
+        this.fileRetentionMillis = fileRetentionMillis;
         this.dateDirPrefix = dateDirPrefix;
     }
 
@@ -160,12 +170,12 @@ public class TempFileBucket {
                 .toEpochMilli();
     }
 
-    protected boolean isFileExpired(long dateLong, long currentDateLong) {
-        return dateLong <= currentDateLong - fileRetentionDays * ONE_DAY_MILLIS;
+    protected boolean isFileExpired(long dirDateLong, long currentDateLong, long fileRetentionMillis) {
+        return dirDateLong <= currentDateLong - fileRetentionMillis;
     }
 
     private void tryClean(long currentDateLong) {
-        if (fileRetentionDays <= 0) {
+        if (fileRetentionMillis <= 0) {
             return;
         }
         if (cleanedDate != currentDateLong) {
@@ -174,7 +184,7 @@ public class TempFileBucket {
     }
 
     private void deleteExpiredFiles() {
-        if (fileRetentionDays <= 0) {
+        if (fileRetentionMillis <= 0) {
             return;
         }
 
@@ -196,7 +206,7 @@ public class TempFileBucket {
                         logger.warn("TempFileBucket | Skip a directory that does not comply with date directory rules: " + dateDirFile.getAbsolutePath(), e);
                         continue;
                     }
-                    if (isFileExpired(dateLong, currentDateLong)) {
+                    if (isFileExpired(dateLong, currentDateLong, fileRetentionMillis)) {
                         deleteDirectory(dateDirFile);
                         logger.info("TempFileBucket | Expired date directory deleted (including temp files inside): " + dateDirFile.getAbsolutePath());
                     }

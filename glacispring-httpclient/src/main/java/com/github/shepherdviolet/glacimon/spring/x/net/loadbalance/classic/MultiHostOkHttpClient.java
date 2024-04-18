@@ -20,6 +20,7 @@
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic;
 
 import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
+import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.TimerContext;
@@ -1706,6 +1707,24 @@ public class MultiHostOkHttpClient {
     public MultiHostOkHttpClient setHeaders(Map<String, String> headers) {
         settings.headers = headers;
         return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 设置HTTP请求头参数, 格式: key1=value1,key2=value2,key3=value3
+     * 示例: User-Agent=GlacispringHttpClient,Referer=http://github.com
+     * @param headersString 请求头参数
+     */
+    public MultiHostOkHttpClient setHeadersString(String headersString) {
+        if (CheckUtils.isEmptyOrBlank(headersString)) {
+            return setHeaders(null);
+        }
+        try {
+            return setHeaders(SimpleKeyValueEncoder.decode(headersString));
+        } catch (SimpleKeyValueEncoder.DecodeException e) {
+            throw new IllegalArgumentException("Error while parsing headers '" + headersString +
+                    "' to Map, illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", e);
+        }
     }
 
     /**

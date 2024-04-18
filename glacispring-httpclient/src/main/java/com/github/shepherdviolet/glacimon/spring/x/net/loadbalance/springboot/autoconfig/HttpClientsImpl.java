@@ -207,17 +207,6 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
             client.setHostArray(settings.getHostList());
         }
 
-        //headers
-        Map<String, String> headers = null;
-        if (!CheckUtils.isEmptyOrBlank(settings.getHeaders())) {
-            try {
-                headers = SimpleKeyValueEncoder.decode(settings.getHeaders());
-            } catch (SimpleKeyValueEncoder.DecodeException e) {
-                throw new RuntimeException("HttpClients | Error while parsing headers '" + settings.getHeaders() +
-                        "' to Map, illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", e);
-            }
-        }
-
         //custom dn/cn verification, dn has high priority
         if (!CheckUtils.isEmptyOrBlank(settings.getVerifyServerDnByCustomDn())) {
             client.setVerifyServerDnByCustomDn(settings.getVerifyServerDnByCustomDn());
@@ -234,7 +223,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setPassiveBlockDuration(settings.getPassiveBlockDuration())
                 .setMediaType(settings.getMediaType())
                 .setEncode(settings.getEncode())
-                .setHeaders(headers)
+                .setHeadersString(settings.getHeaders())
                 .setDataConverter(dataConverter)
                 .setRecoveryCoefficient(settings.getRecoveryCoefficient())
                 .setMaxIdleConnections(settings.getMaxIdleConnections())
@@ -252,8 +241,8 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setCustomServerIssuerEncoded(settings.getCustomServerIssuerEncoded())
                 .setCustomServerIssuersEncoded(settings.getCustomServerIssuersEncoded())
                 .setCustomClientCertEncoded(settings.getCustomClientCertEncoded())
-                .setCustomClientCertsEncoded(settings.getCustomClientCertsEncoded()).
-                setCustomClientCertKeyEncoded(settings.getCustomClientCertKeyEncoded());
+                .setCustomClientCertsEncoded(settings.getCustomClientCertsEncoded())
+                .setCustomClientCertKeyEncoded(settings.getCustomClientCertKeyEncoded());
     }
 
     private static final class HttpClient extends SimpleOkHttpClient {

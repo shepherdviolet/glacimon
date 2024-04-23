@@ -34,6 +34,7 @@ public class StringUtilsTest {
         Assertions.assertEquals("Hello{} World", StringUtils.replacePlaceholdersByArgs("Hello{} World", "{}"));
         Assertions.assertEquals("Hello World{}", StringUtils.replacePlaceholdersByArgs("Hello World{}", "{}"));
         Assertions.assertEquals("Hello World", StringUtils.replacePlaceholdersByArgs("{}Hello World", "{}", (String)null));
+        Assertions.assertEquals("{}Hello World", StringUtils.replacePlaceholdersByArgs("{}Hello World", "{}", (Object[])null));
 
         Assertions.assertEquals("111Hello World", StringUtils.replacePlaceholdersByArgs("{}Hello World", "{}", "111"));
         Assertions.assertEquals("Hello 111World", StringUtils.replacePlaceholdersByArgs("Hello {}World", "{}", "111"));

@@ -53,7 +53,7 @@ public class StringUtils {
         if (placeholder == null || placeholder.isEmpty()) {
             throw new IllegalArgumentException("placeholder cannot be null or empty");
         }
-        if (string == null || string.isEmpty()) {
+        if (string == null || string.isEmpty() || args == null) {
             return string;
         }
         StringBuilder stringBuilder = new StringBuilder(string.length() + 50);

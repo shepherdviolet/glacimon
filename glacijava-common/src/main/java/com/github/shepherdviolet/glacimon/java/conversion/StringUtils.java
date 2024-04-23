@@ -38,6 +38,42 @@ import java.util.regex.Pattern;
 public class StringUtils {
 
     // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 格式化
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 将字符串中的占位符依次替换为参数.
+     * 例如: replacePlaceholdersByArgs("Hello {}, welcome to new {}", "{}", "foo", "world");
+     * 结果: "Hello foo, welcome to new world". 
+     * @param string 字符串
+     * @param placeholder 占位符, 例如: {}
+     * @param args 参数
+     */
+    public static String replacePlaceholdersByArgs(String string, String placeholder, Object... args) {
+        if (placeholder == null || placeholder.isEmpty()) {
+            throw new IllegalArgumentException("placeholder cannot be null or empty");
+        }
+        if (string == null || string.isEmpty()) {
+            return string;
+        }
+        StringBuilder stringBuilder = new StringBuilder(string.length() + 50);
+        int argIndex = 0;
+        int searchIndex = 0;
+        int placeholderIndex;
+        while (argIndex < args.length && searchIndex < string.length()
+                && (placeholderIndex = string.indexOf(placeholder, searchIndex)) >= 0) {
+            String arg = args[argIndex] != null ? String.valueOf(args[argIndex]) : "";
+            stringBuilder.append(string, searchIndex, placeholderIndex).append(arg);
+            searchIndex = placeholderIndex + placeholder.length();
+            argIndex++;
+        }
+        if (searchIndex < string.length()) {
+            stringBuilder.append(string, searchIndex, string.length());
+        }
+        return stringBuilder.toString();
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 切分
     // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

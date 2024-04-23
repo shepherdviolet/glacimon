@@ -27,6 +27,34 @@ import java.io.UnsupportedEncodingException;
 public class StringUtilsTest {
 
     @Test
+    public void replacePlaceholdersByArgs(){
+        Assertions.assertEquals("Hello World", StringUtils.replacePlaceholdersByArgs("Hello World", "{}"));
+        Assertions.assertEquals("Hello World", StringUtils.replacePlaceholdersByArgs("Hello World", "{}", "111"));
+        Assertions.assertEquals("{}Hello World", StringUtils.replacePlaceholdersByArgs("{}Hello World", "{}"));
+        Assertions.assertEquals("Hello{} World", StringUtils.replacePlaceholdersByArgs("Hello{} World", "{}"));
+        Assertions.assertEquals("Hello World{}", StringUtils.replacePlaceholdersByArgs("Hello World{}", "{}"));
+        Assertions.assertEquals("Hello World", StringUtils.replacePlaceholdersByArgs("{}Hello World", "{}", (String)null));
+
+        Assertions.assertEquals("111Hello World", StringUtils.replacePlaceholdersByArgs("{}Hello World", "{}", "111"));
+        Assertions.assertEquals("Hello 111World", StringUtils.replacePlaceholdersByArgs("Hello {}World", "{}", "111"));
+        Assertions.assertEquals("Hello World111", StringUtils.replacePlaceholdersByArgs("Hello World{}", "{}", "111"));
+        Assertions.assertEquals("Hello World111", StringUtils.replacePlaceholdersByArgs("Hello World{}", "{}", "111", "222"));
+
+        Assertions.assertEquals("111Hello World222", StringUtils.replacePlaceholdersByArgs("{}Hello World{}", "{}", "111", "222", "333"));
+        Assertions.assertEquals("111Hello World{}", StringUtils.replacePlaceholdersByArgs("{}Hello World{}", "{}", "111"));
+        Assertions.assertEquals("aaa111bbb222ccc333ddd444eee555", StringUtils.replacePlaceholdersByArgs("aaa{}bbb{}ccc{}ddd{}eee{}", "{}", "111", "222", "333", "444", "555"));
+
+
+        Assertions.assertEquals("", StringUtils.replacePlaceholdersByArgs("", "{}", "111", "222"));
+        Assertions.assertEquals("111", StringUtils.replacePlaceholdersByArgs("{}", "{}", "111", "222"));
+        Assertions.assertEquals("111222", StringUtils.replacePlaceholdersByArgs("{}{}", "{}", "111", "222"));
+        Assertions.assertEquals("111222{}", StringUtils.replacePlaceholdersByArgs("{}{}{}", "{}", "111", "222"));
+        Assertions.assertEquals("111222{}{}", StringUtils.replacePlaceholdersByArgs("{}{}{}{}", "{}", "111", "222"));
+        Assertions.assertEquals("111222{}{}{}", StringUtils.replacePlaceholdersByArgs("{}{}{}{}{}", "{}", "111", "222"));
+
+    }
+
+    @Test
     public void truncateByUtf8ByteLength() {
 
         String s = "11喵aa汪";

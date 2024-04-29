@@ -12,7 +12,6 @@
     "glacispring-misc": "glacispring-misc",
     "glacispring-helper": "glacispring-helper",
     "glacispring-httpclient": "glacispring-httpclient",
-    "glacispring-mapxbean": "glacispring-mapxbean",
     "glacispring-txtimer": "glacispring-txtimer"
   },
   "private-java": {

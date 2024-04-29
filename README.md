@@ -217,19 +217,6 @@
 
 <br>
 
-### Module: glacispring-mapxbean
-
-[![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
-[![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
-
-> Map-to-Bean converter
-
-#### Conversion components
-
-* [MapXBean : Map - Bean Converter](https://github.com/shepherdviolet/glacimon/blob/master/docs/mapxbean/guide.md)
-
-<br>
-
 ### Module: glacispring-helper
 
 [![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)

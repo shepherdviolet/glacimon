@@ -483,4 +483,21 @@ public class StringUtils {
         return new BigDecimal(string).setScale(2, RoundingMode.HALF_UP).toString();
     }
 
+    /**
+     * 数字转序数字符串
+     * @param number 数字
+     * @return 序数字符串
+     */
+    public static String numberToOrdinalString(int number){
+        if (number == 1) {
+            return "1st";
+        } else if (number == 2) {
+            return "2nd";
+        } else if (number == 3) {
+            return "3rd";
+        } else {
+            return number + "th";
+        }
+    }
+
 }

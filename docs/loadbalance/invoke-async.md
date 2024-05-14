@@ -17,8 +17,8 @@
 * 每个HttpClient实例对应一个后端集群, 多个后端集群应创建多个HttpClient实例.
 
 ```text
-    SimpleOkHttpClient clientFoo;
-    SimpleOkHttpClient clientBar;
+    GlaciHttpClient clientFoo;
+    GlaciHttpClient clientBar;
     
     public byte[] sendToFoo(byte[] request) {
         return client.post("/path/path")
@@ -36,7 +36,7 @@
 * `严禁用一个HttpClient请求不同的后端集群, 这会导致请求被发往错误的后端!!!`
 
 ```text
-    SimpleOkHttpClient client;
+    GlaciHttpClient client;
 
     /**
      * 严禁用一个HttpClient请求不同的后端集群. 
@@ -79,7 +79,7 @@
          //.httpHeader("Accept", "application/json;charset=utf-8")
          //.mediaType("application/json;charset=utf-8")
          //.encode("utf-8")
-         .enqueue(new MultiHostOkHttpClient.BytesCallback() {
+         .enqueue(new GlaciHttpClient.BytesCallback() {
              public void onSucceed(byte[] body) {
                  ......
              }
@@ -111,7 +111,7 @@
          //.httpHeader("Accept", "application/json;charset=utf-8")
          //.mediaType("application/json;charset=utf-8")
          //.encode("utf-8")
-         .enqueue(new MultiHostOkHttpClient.InputStreamCallback() {
+         .enqueue(new GlaciHttpClient.InputStreamCallback() {
              public void onSucceed(InputStream inputStream) throws Exception {
                  ......
              }
@@ -143,8 +143,8 @@
          //.httpHeader("Accept", "application/json;charset=utf-8")
          //.mediaType("application/json;charset=utf-8")
          //.encode("utf-8")
-         .enqueue(new MultiHostOkHttpClient.ResponsePackageCallback() {
-             public void onSucceed(MultiHostOkHttpClient.ResponsePackage responsePackage) throws Exception {
+         .enqueue(new GlaciHttpClient.ResponsePackageCallback() {
+             public void onSucceed(GlaciHttpClient.ResponsePackage responsePackage) throws Exception {
                  ......
              }
              protected void onErrorBeforeSend(Exception e) {
@@ -170,7 +170,7 @@ requestMap.put("name", "wang wang");
 requestMap.put("key", "963");
 client.post("/path/path")
         .beanBody(requestMap)
-        .enqueue(new MultiHostOkHttpClient.BeanCallback<Map<String, Object>>() {
+        .enqueue(new GlaciHttpClient.BeanCallback<Map<String, Object>>() {
             @Override
             public void onSucceed(Map<String, Object> bean) throws Exception {
                 ......
@@ -202,7 +202,7 @@ client.post("/path/path")
          //.httpHeader("Accept", "application/json;charset=utf-8")
          //.mediaType("application/json;charset=utf-8")
          //.encode("utf-8")
-         .enqueue(new MultiHostOkHttpClient.BeanCallback<ResponseBean>() {
+         .enqueue(new GlaciHttpClient.BeanCallback<ResponseBean>() {
              public void onSucceed(ResponseBean response) {
                  ......
              }
@@ -232,7 +232,7 @@ client.post("/path/path")
          //.httpHeader("Accept", "application/json;charset=utf-8")
          //.mediaType("application/json;charset=utf-8")
          //.encode("utf-8")
-         .enqueue(new MultiHostOkHttpClient.BytesCallback() {
+         .enqueue(new GlaciHttpClient.BytesCallback() {
              public void onSucceed(byte[] body) {
                  ......
              }
@@ -262,7 +262,7 @@ client.post("/path/path")
          //.httpHeader("Accept", "application/json;charset=utf-8")
          //.mediaType("application/json;charset=utf-8")
          //.encode("utf-8")
-         .enqueue(new MultiHostOkHttpClient.InputStreamCallback() {
+         .enqueue(new GlaciHttpClient.InputStreamCallback() {
              public void onSucceed(InputStream inputStream) throws Exception {
                  ......
              }
@@ -292,8 +292,8 @@ client.post("/path/path")
          //.httpHeader("Accept", "application/json;charset=utf-8")
          //.mediaType("application/json;charset=utf-8")
          //.encode("utf-8")
-         .enqueue(new MultiHostOkHttpClient.ResponsePackageCallback() {
-             public void onSucceed(MultiHostOkHttpClient.ResponsePackage responsePackage) throws Exception {
+         .enqueue(new GlaciHttpClient.ResponsePackageCallback() {
+             public void onSucceed(GlaciHttpClient.ResponsePackage responsePackage) throws Exception {
                  ......
              }
              protected void onErrorBeforeSend(Exception e) {
@@ -317,7 +317,7 @@ client.post("/path/path")
 client.get("/path/path")
         .urlParam("name", "000000001")
         .urlParam("key", "000000001")
-        .enqueue(new MultiHostOkHttpClient.BeanCallback<Map<String, Object>>() {
+        .enqueue(new GlaciHttpClient.BeanCallback<Map<String, Object>>() {
             @Override
             public void onSucceed(Map<String, Object> bean) throws Exception {
                 ......
@@ -347,7 +347,7 @@ client.get("/path/path")
          //.httpHeader("Accept", "application/json;charset=utf-8")
          //.mediaType("application/json;charset=utf-8")
          //.encode("utf-8")
-         .enqueue(new MultiHostOkHttpClient.BeanCallback<ResponseBean>() {
+         .enqueue(new GlaciHttpClient.BeanCallback<ResponseBean>() {
              public void onSucceed(ResponseBean response) {
                  ......
              }

@@ -8,12 +8,12 @@
 
 # 配置客户端
 
-* 若HttpClient在Spring中注册为Bean, 服务停止时会自动销毁客户端, 否则需要手动调用SimpleOkHttpClient.close()方法销毁实例.
-* 若HttpClient在Spring中注册为Bean, 主动探测器会在Spring启动后自动开始. 否则需要手动调用SimpleOkHttpClient.start()方法开始主动探测.
+* 若HttpClient在Spring中注册为Bean, 服务停止时会自动销毁客户端, 否则需要手动调用GlaciHttpClient.close()方法销毁实例.
+* 若HttpClient在Spring中注册为Bean, 主动探测器会在Spring启动后自动开始. 否则需要手动调用GlaciHttpClient.start()方法开始主动探测.
 * 默认采用TELNET方式探测后端, 可以改为HttpGet方式
 
 ```text
-    <bean id="simpleOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient">
+    <bean id="glaciHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient">
         <property name="hosts" value="http://127.0.0.1:8081,http://127.0.0.1:8082"/>
         <property name="initiativeInspectInterval" value="5000"/><!-- 健康主动探测间隔为5000ms -->
         <property name="passiveBlockDuration" value="30000"/><!-- 健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近 -->
@@ -40,7 +40,7 @@
 ```text
     <!-- HTTP请求客户端 -->
     <!-- 调用该实例发送请求 -->
-    <bean id="multiHostOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.MultiHostOkHttpClient">
+    <bean id="glaciHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient">
         ......
         <property name="dataConverter" ref="dataConverter"/><!-- 设置数据转换器 -->
     </bean>
@@ -69,31 +69,31 @@
 ```text
 public class MyHttpTransport implements InitializingBean {
 
-    private SimpleOkHttpClient simpleOkHttpClient;
+    private GlaciHttpClient glaciHttpClient;
     
-    public void setSimpleOkHttpClient(SimpleOkHttpClient simpleOkHttpClient) {
-        this.simpleOkHttpClient = simpleOkHttpClient;
+    public void setGlaciHttpClient(GlaciHttpClient glaciHttpClient) {
+        this.glaciHttpClient = glaciHttpClient;
     }
 
     /**
      * 示例1:
-     * 在管理平台设置新参数时, 调用SimpleOkHttpClient的set系列方法调整客户端的配置
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * 在管理平台设置新参数时, 调用GlaciHttpClient的set系列方法调整客户端的配置
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     public void setHosts(......) {
-        if (simpleOkHttpClient != null) {
-            simpleOkHttpClient.setHosts(......);
+        if (glaciHttpClient != null) {
+            glaciHttpClient.setHosts(......);
         }
     }
     
     /**
      * 示例2:
      * 可以在afterPropertiesSet方法中, 给客户端添加代理/SSL连接工厂等高级配置
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        simpleOkHttpClient
+        glaciHttpClient
                 .setProxy(......)
                 .setSSLSocketFactory(......);
     }
@@ -116,7 +116,7 @@ public class MyHttpTransport implements InitializingBean {
     <apollo:config/>
 
     <!-- 使用${...}应用apollo参数 -->
-    <bean id="simpleOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient">
+    <bean id="glaciHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient">
         <property name="hosts" value="${http.client.hosts}"/>
         ......
     </bean>

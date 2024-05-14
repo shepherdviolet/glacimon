@@ -19,14 +19,14 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot;
 
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * <p>HttpClients配置: 自动配置SimpleOkHttpClient</p>
+ * <p>HttpClients配置: 自动配置GlaciHttpClient</p>
  * <p>配置前缀: glacispring.httpclients</p>
  */
 public interface HttpClients {
@@ -37,9 +37,9 @@ public interface HttpClients {
     /**
      * 获取Http请求客户端
      * @param tag tag(标识)
-     * @return SimpleOkHttpClient, 若不存在则返回空
+     * @return GlaciHttpClient, 若不存在则返回空
      */
-    SimpleOkHttpClient get(String tag);
+     <T extends GlaciHttpClient> T get(String tag);
 
     /**
      * @return 返回集合中的客户端数量

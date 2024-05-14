@@ -8,8 +8,8 @@
 
 # 配置客户端
 
-* 若HttpClient在Spring中注册为Bean, 服务停止时会自动销毁客户端, 否则需要手动调用SimpleOkHttpClient.close()方法销毁实例.
-* 若HttpClient在Spring中注册为Bean, 主动探测器会在Spring启动后自动开始. 否则需要手动调用SimpleOkHttpClient.start()方法开始主动探测.
+* 若HttpClient在Spring中注册为Bean, 服务停止时会自动销毁客户端, 否则需要手动调用GlaciHttpClient.close()方法销毁实例.
+* 若HttpClient在Spring中注册为Bean, 主动探测器会在Spring启动后自动开始. 否则需要手动调用GlaciHttpClient.start()方法开始主动探测.
 * 默认采用TELNET方式探测后端, 可以改为HttpGet方式
 
 ```text
@@ -20,11 +20,11 @@ public class MyConfiguration {
     private String hosts;
     
     /**
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     @Bean
-    public SimpleOkHttpClient simpleOkHttpClient() {
-        return (SimpleOkHttpClient) new SimpleOkHttpClient()
+    public GlaciHttpClient glaciHttpClient() {
+        return new GlaciHttpClient()
                 .setHosts(hosts)//配置后端列表
                 .setInitiativeInspectInterval(5000L)//健康主动探测间隔为5000ms
                 .setPassiveBlockDuration(30000L)//健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近
@@ -74,33 +74,33 @@ httpClient.setDataConverter(new GsonDataConverter())//设置数据转换器
 @Component
 public class MyHttpTransport implements InitializingBean {
 
-    private SimpleOkHttpClient simpleOkHttpClient;
+    private GlaciHttpClient glaciHttpClient;
     
     /**
-     * 使用构造注入, 保证simpleOkHttpClient优先注入, 使用时不会为null
+     * 使用构造注入, 保证glaciHttpClient优先注入, 使用时不会为null
      */
     @Autowired
-    public HttpClientConfigChangeListener(SimpleOkHttpClient simpleOkHttpClient) {
-        this.simpleOkHttpClient = simpleOkHttpClient;
+    public HttpClientConfigChangeListener(GlaciHttpClient glaciHttpClient) {
+        this.glaciHttpClient = glaciHttpClient;
     }
 
     /**
      * 示例1:
-     * 在管理平台设置新参数时, 调用SimpleOkHttpClient的set系列方法调整客户端的配置
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * 在管理平台设置新参数时, 调用GlaciHttpClient的set系列方法调整客户端的配置
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     public void setHosts(......) {
-        simpleOkHttpClient.setHosts(......);
+        glaciHttpClient.setHosts(......);
     }
     
     /**
      * 示例2:
      * 可以在afterPropertiesSet方法中, 给客户端添加代理/SSL连接工厂等高级配置
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        simpleOkHttpClient
+        glaciHttpClient
                 .setProxy(......)
                 .setSSLSocketFactory(......);
     }
@@ -125,25 +125,25 @@ public class MyHttpTransport implements InitializingBean {
 @Component
 public class HttpClientConfigChangeListener {
 
-    private SimpleOkHttpClient simpleOkHttpClient;
+    private GlaciHttpClient glaciHttpClient;
     
     /**
-     * 使用构造注入, 保证在setter操作时simpleOkHttpClient已经注入
+     * 使用构造注入, 保证在setter操作时glaciHttpClient已经注入
      */
     @Autowired
-    public HttpClientConfigChangeListener(SimpleOkHttpClient simpleOkHttpClient) {
-        this.simpleOkHttpClient = simpleOkHttpClient;
+    public HttpClientConfigChangeListener(GlaciHttpClient glaciHttpClient) {
+        this.glaciHttpClient = glaciHttpClient;
     }
 
     /**
      * 动态调整hosts配置
-     * SimpleOkHttpClient所有的配置均可以在运行时调整, 所有Set方法均为线程安全, 
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * GlaciHttpClient所有的配置均可以在运行时调整, 所有Set方法均为线程安全, 
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     @Value("${http.client.hosts:}")
     public void setHosts(String hosts) {
         if (!CheckUtils.isEmptyOrBlank(hosts)) {
-            simpleOkHttpClient.setHosts(hosts);
+            glaciHttpClient.setHosts(hosts);
         }
     }
 
@@ -159,28 +159,28 @@ public class ApolloConfigChangeService {
     @ApolloConfig
     private Config apolloConfig;
 
-    private SimpleOkHttpClient simpleOkHttpClient;
+    private GlaciHttpClient glaciHttpClient;
     
     /**
-     * 使用构造注入, 保证在setter操作时simpleOkHttpClient已经注入
+     * 使用构造注入, 保证在setter操作时glaciHttpClient已经注入
      */
     @Autowired
-    public ApolloConfigChangeService(SimpleOkHttpClient simpleOkHttpClient) {
-        this.simpleOkHttpClient = simpleOkHttpClient;
+    public ApolloConfigChangeService(GlaciHttpClient glaciHttpClient) {
+        this.glaciHttpClient = glaciHttpClient;
     }
 
     /**
      * 动态调整配置
-     * SimpleOkHttpClient所有的配置均可以在运行时调整, 所有Set方法均为线程安全, 
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * GlaciHttpClient所有的配置均可以在运行时调整, 所有Set方法均为线程安全, 
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     @ApolloConfigChangeListener
     private void onHttpClientChanged(ConfigChangeEvent configChangeEvent){
         if (configChangeEvent.isChanged("http.client.hosts")){
-            simpleOkHttpClient.setHosts(apolloConfig.getProperty("http.client.hosts", ""));
+            glaciHttpClient.setHosts(apolloConfig.getProperty("http.client.hosts", ""));
         }
         if (configChangeEvent.isChanged("http.client.verboseLog")){
-            simpleOkHttpClient.setVerboseLog(apolloConfig.getBooleanProperty("http.client.verboseLog", false));
+            glaciHttpClient.setVerboseLog(apolloConfig.getBooleanProperty("http.client.verboseLog", false));
         }
     }
 

@@ -26,11 +26,17 @@ import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.TimerContext;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimer;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimerFactory;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.ssl.*;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.HttpGetLoadBalanceInspector;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
 import javax.net.ssl.HostnameVerifier;
 import java.io.Closeable;
@@ -43,10 +49,7 @@ import java.lang.reflect.Type;
 import java.net.*;
 import java.security.Key;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -58,7 +61,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <pre>{@code
  *
- *      SimpleOkHttpClient client = new SimpleOkHttpClient()
+ *      GlaciHttpClient client = new GlaciHttpClient()
  *              .setHosts("http://127.0.0.1:8081,http://127.0.0.1:8082")
  *              .setInitiativeInspectInterval(5000L)
  *              .setMaxThreads(256)
@@ -74,7 +77,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <pre>{@code
  *
- *  <bean id="simpleOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient">
+ *  <bean id="glaciHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient">
  *      <property name="hosts" value="http://127.0.0.1:8081,http://127.0.0.1:8082"/>
  *      <property name="initiativeInspectInterval" value="5000"/>
  *      <property name="maxThreads" value="256"/>
@@ -90,7 +93,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author shepherdviolet
  */
-public class MultiHostOkHttpClient {
+public class GlaciHttpClient implements Closeable, InitializingBean, DisposableBean {
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 日志相关常量
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //普通日志:全开
     public static final int LOG_CONFIG_ALL = 0xFFFFFFFF;
@@ -122,17 +131,30 @@ public class MultiHostOkHttpClient {
 
     private static final String LOG_PREFIX = "HttpClient | ";
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 默认值
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private static final long PASSIVE_BLOCK_DURATION = 30000L;
     private static final String MEDIA_TYPE = "application/json;charset=utf-8";
     private static final String ENCODE = "utf-8";
-    private static final String TXTIMER_GROUP_SEND = "MultiHostOkHttpClient-Send-";
-    private static final String TXTIMER_GROUP_CONNECT = "MultiHostOkHttpClient-Connect-";
+    private static final String TXTIMER_GROUP_SEND = "GlaciHttpClient-Send-";
+    private static final String TXTIMER_GROUP_CONNECT = "GlaciHttpClient-Connect-";
 
-    private static final Logger logger = LoggerFactory.getLogger(MultiHostOkHttpClient.class);
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 成员变量
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static final Logger logger = LoggerFactory.getLogger(GlaciHttpClient.class);
     private static final AtomicInteger requestCounter = new AtomicInteger(0);
 
     private volatile OkHttpClient okHttpClient;
-    private LoadBalancedHostManager hostManager;
+    private final LoadBalancedHostManager hostManager;
+    private final LoadBalancedInspectManager inspectManager;
 
     private Settings settings = new Settings();
     private volatile boolean refreshSettings = false;
@@ -143,8 +165,63 @@ public class MultiHostOkHttpClient {
     private NoRefTxTimer txTimer;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 请求 ///////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 构造函数
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public GlaciHttpClient() {
+        hostManager = new LoadBalancedHostManager();
+        inspectManager = new LoadBalancedInspectManager(false).setHostManager(hostManager);
+    }
+
+    public GlaciHttpClient(LoadBalancedHostManager hostManager, LoadBalancedInspectManager inspectManager) {
+        this.hostManager = hostManager;
+        this.inspectManager = inspectManager;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 生命周期管理
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        start();
+    }
+
+    /**
+     * <p>手动开始主动探测器</p>
+     * <p>若GlaciHttpClient在Spring中注册为Bean, 则无需调用此方法, 主动探测器会在Spring启动后自动开始.</p>
+     * <p>若GlaciHttpClient没有被注册为Bean(直接new出来的), 则需要调用此方法开始主动探测器. </p>
+     */
+    public void start() {
+        inspectManager.start();
+    }
+
+    @Override
+    public void close() {
+        CloseableUtils.closeQuiet(inspectManager);
+    }
+
+    /**
+     * <p>手动销毁主动探测器</p>
+     * <p>若GlaciHttpClient在Spring中注册为Bean, 则无需调用此方法, 主动探测器会在Spring停止时自动销毁.</p>
+     * <p>若GlaciHttpClient没有被注册为Bean(直接new出来的), 则需要调用此方法销毁主动探测器. </p>
+     */
+    @Override
+    public void destroy() {
+        close();
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 创建请求
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     /**
      * <p>创建POST请求, 请求创建过程非线程安全, 请勿多线程操作同一个请求</p>
@@ -180,7 +257,7 @@ public class MultiHostOkHttpClient {
     public static class Request {
 
         //status
-        private WeakReference<MultiHostOkHttpClient> clientReference;
+        private WeakReference<GlaciHttpClient> clientReference;
         private boolean isSend = false;
         private int requestId;
 
@@ -204,7 +281,7 @@ public class MultiHostOkHttpClient {
         private DataConverter dataConverter;
         private Stub stub = new Stub();
 
-        private Request(MultiHostOkHttpClient client, String urlSuffix, boolean isPost, int requestId) {
+        private Request(GlaciHttpClient client, String urlSuffix, boolean isPost, int requestId) {
             this.clientReference = new WeakReference<>(client);
             this.urlSuffix = urlSuffix;
             this.isPost = isPost;
@@ -325,7 +402,7 @@ public class MultiHostOkHttpClient {
         /**
          * <p>[配置]设置被动检测到网络故障时阻断后端的时间, 客户端配置和此处配置的均生效(此处配置优先)</p>
          *
-         * <p>当请求服务端时, 发生特定的异常或返回特定的响应码(MultiHostOkHttpClient.needBlock方法决定), 客户端会将该
+         * <p>当请求服务端时, 发生特定的异常或返回特定的响应码(GlaciHttpClient.needBlock方法决定), 客户端会将该
          * 后端服务器的IP/PORT标记为暂不可用状态, 而阻断时长是不可用的时长</p>
          *
          * @param passiveBlockDuration 阻断时长ms
@@ -413,9 +490,9 @@ public class MultiHostOkHttpClient {
          * @throws HttpRejectException   Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
          */
         public <T> T sendForBean(Class<T> type) throws NoHostException, RequestBuildException, HttpRejectException, IOException {
-            MultiHostOkHttpClient client = getClient();
+            GlaciHttpClient client = getClient();
             if (client == null) {
-                throw new RequestBuildException("Missing MultiHostOkHttpClient instance, has been destroyed (cleaned by gc)");
+                throw new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)");
             }
             NoRefTxTimer txTimer = client.txTimer;
             if (txTimer != null) {
@@ -438,9 +515,9 @@ public class MultiHostOkHttpClient {
          * @throws HttpRejectException   Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
          */
         public byte[] sendForBytes() throws NoHostException, RequestBuildException, HttpRejectException, IOException {
-            MultiHostOkHttpClient client = getClient();
+            GlaciHttpClient client = getClient();
             if (client == null) {
-                throw new RequestBuildException("Missing MultiHostOkHttpClient instance, has been destroyed (cleaned by gc)");
+                throw new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)");
             }
             NoRefTxTimer txTimer = client.txTimer;
             if (txTimer != null) {
@@ -463,9 +540,9 @@ public class MultiHostOkHttpClient {
          * @throws HttpRejectException   Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
          */
         public InputStream sendForInputStream() throws NoHostException, RequestBuildException, HttpRejectException, IOException {
-            MultiHostOkHttpClient client = getClient();
+            GlaciHttpClient client = getClient();
             if (client == null) {
-                throw new RequestBuildException("Missing MultiHostOkHttpClient instance, has been destroyed (cleaned by gc)");
+                throw new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)");
             }
             NoRefTxTimer txTimer = client.txTimer;
             if (txTimer != null) {
@@ -488,9 +565,9 @@ public class MultiHostOkHttpClient {
          * @throws HttpRejectException   Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
          */
         public ResponsePackage send() throws NoHostException, RequestBuildException, IOException, HttpRejectException {
-            MultiHostOkHttpClient client = getClient();
+            GlaciHttpClient client = getClient();
             if (client == null) {
-                throw new RequestBuildException("Missing MultiHostOkHttpClient instance, has been destroyed (cleaned by gc)");
+                throw new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)");
             }
             NoRefTxTimer txTimer = client.txTimer;
             if (txTimer != null) {
@@ -540,19 +617,19 @@ public class MultiHostOkHttpClient {
          * @param callback 回调函数{@link BytesCallback}/{@link InputStreamCallback}/{@link ResponsePackageCallback}
          */
         public Stub enqueue(ResponsePackageCallback callback) {
-            MultiHostOkHttpClient client = getClient();
+            GlaciHttpClient client = getClient();
             if (client == null) {
-                callback.onErrorBeforeSend(new RequestBuildException("Missing MultiHostOkHttpClient instance, has been destroyed (cleaned by gc)"));
+                callback.onErrorBeforeSend(new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)"));
                 return stub;
             }
             client.requestEnqueue(this, callback);
             return stub;
         }
 
-        private MultiHostOkHttpClient getClient(){
-            MultiHostOkHttpClient client = clientReference.get();
+        private GlaciHttpClient getClient(){
+            GlaciHttpClient client = clientReference.get();
             if (client == null) {
-                logger.error("Missing MultiHostOkHttpClient instance, has been destroyed (cleaned by gc), data:" + this);
+                logger.error("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc), data:" + this);
             }
             return client;
         }
@@ -576,9 +653,20 @@ public class MultiHostOkHttpClient {
         }
     }
 
+    /**
+     * 持有该对象可以发起请求取消操作(异步)
+     */
+    public static class Stub {
+
+        private int connectTimeout = -1;
+        private int writeTimeout = -1;
+        private int readTimeout = -1;
+
+    }
+
     private ResponsePackage requestSend(Request request) throws NoHostException, RequestBuildException, HttpRejectException, IOException {
         if (request.isSend) {
-            throw new IllegalStateException("MultiHostOkHttpClient.Request can only send once!");
+            throw new IllegalStateException("GlaciHttpClient.Request can only send once!");
         }
         request.isSend = true;
 
@@ -591,7 +679,7 @@ public class MultiHostOkHttpClient {
 
     private void requestEnqueue(Request request, ResponsePackageCallback callback) {
         if (request.isSend) {
-            throw new IllegalStateException("MultiHostOkHttpClient.Request can only send once!");
+            throw new IllegalStateException("GlaciHttpClient.Request can only send once!");
         }
         request.isSend = true;
 
@@ -602,9 +690,13 @@ public class MultiHostOkHttpClient {
         }
     }
 
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Sync ///////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 同步请求逻辑
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private <T> T responseToBean(ResponsePackage responsePackage, Class<T> type, Request request) throws NoHostException, RequestBuildException, IOException, HttpRejectException {
         DataConverter dataConverter = request.dataConverter != null ? request.dataConverter : settings.dataConverter;
@@ -752,9 +844,13 @@ public class MultiHostOkHttpClient {
         }
     }
 
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Async //////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 异步请求逻辑
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private void asyncPost(Request request, ResponsePackageCallback callback) {
 
@@ -879,9 +975,13 @@ public class MultiHostOkHttpClient {
         }
     }
 
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 私有逻辑 //////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 公共请求逻辑
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private LoadBalancedHostManager.Host fetchHost() throws NoHostException {
         LoadBalancedHostManager.Host host = hostManager.nextHost();
@@ -922,118 +1022,6 @@ public class MultiHostOkHttpClient {
         }
         return okHttpClient;
     }
-
-    private void printPostInputsLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_INPUTS)) {
-            return;
-        }
-
-        String bodyLog;
-        if (request.body != null) {
-            bodyLog = ", body(hex):" + ByteUtils.bytesToHex(request.body);
-        } else if (request.formBody != null) {
-            bodyLog = ", formBody:" + request.formBody;
-        } else if (request.beanBody != null) {
-            bodyLog = ", beanBody:" + request.beanBody;
-        } else if (request.customBody != null) {
-            bodyLog = ", customBody:" + request.customBody;
-        } else {
-            bodyLog = ", body: null";
-        }
-        logger.debug(genLogPrefix(settings.tag, request) + "POST: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams + bodyLog);
-    }
-
-    private void printPostStringBodyLog(Request request, byte[] parsedData) {
-        if (settings.verboseLog) {
-            if (!logger.isInfoEnabled()) {
-                return;
-            }
-        } else {
-            if (!logger.isDebugEnabled()) {
-                return;
-            }
-        }
-
-        if (!CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_STRING_BODY)){
-            return;
-        }
-
-        if (request.body != null) {
-            try {
-                logger.info(genLogPrefix(settings.tag, request) + "POST: string-body:" + new String(request.body, settings.encode));
-            } catch (Exception e) {
-                logger.warn(genLogPrefix(settings.tag, request) + "Error while printing string body", e);
-            }
-        } else if (request.formBody != null) {
-            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body(form):" + request.formBody);
-        } else if (request.beanBody != null && parsedData != null) {
-            try {
-                logger.info(genLogPrefix(settings.tag, request) + "POST: string-body(bean):" + new String(parsedData, settings.encode));
-            } catch (Exception e) {
-                logger.warn(genLogPrefix(settings.tag, request) + "Error while printing string body", e);
-            }
-        } else if (request.customBody != null) {
-            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body: multipart data can not be print");
-        } else {
-            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body: null");
-        }
-    }
-
-    private void printGetInputsLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_INPUTS)) {
-            return;
-        }
-        logger.debug(genLogPrefix(settings.tag, request) + "GET: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams);
-    }
-
-    private void printUrlLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_RAW_URL)) {
-            return;
-        }
-
-        StringBuilder stringBuilder = new StringBuilder("raw-url:" + host.getUrl() + request.urlSuffix);
-        if (request.urlParams != null && request.urlParams.size() > 0) {
-            stringBuilder.append("?");
-            int i = 0;
-            for (Map.Entry<String, Object> entry : request.urlParams.entrySet()) {
-                if (i++ > 0) {
-                    stringBuilder.append("&");
-                }
-                stringBuilder.append(entry.getKey());
-                stringBuilder.append("=");
-                stringBuilder.append(entry.getValue());
-            }
-
-        }
-        logger.debug(genLogPrefix(settings.tag, request) + stringBuilder.toString());
-    }
-
-    private void printResponseCodeLog(Request request, Response response) {
-        if (settings.verboseLog) {
-            if (!logger.isInfoEnabled()) {
-                return;
-            }
-        } else {
-            if (!logger.isDebugEnabled()) {
-                return;
-            }
-        }
-        if (!CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_RESPONSE_CODE)) {
-            return;
-        }
-        logger.info(genLogPrefix(settings.tag, request) + "Response: code:" + response.code() + ", message:" + response.message());
-    }
-
-    private String genLogPrefix(String tag, Request request){
-        if (request.requestId == Integer.MAX_VALUE) {
-            return tag;
-        }
-        return tag + request.requestId + " ";
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 可复写逻辑 //////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * 初始化OkHttpClient实例(复写本方法实现自定义的逻辑)
@@ -1274,84 +1262,149 @@ public class MultiHostOkHttpClient {
         return response.isSuccessful();
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 日志打印
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    private void printPostInputsLog(Request request, LoadBalancedHostManager.Host host) {
+        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_INPUTS)) {
+            return;
+        }
+
+        String bodyLog;
+        if (request.body != null) {
+            bodyLog = ", body(hex):" + ByteUtils.bytesToHex(request.body);
+        } else if (request.formBody != null) {
+            bodyLog = ", formBody:" + request.formBody;
+        } else if (request.beanBody != null) {
+            bodyLog = ", beanBody:" + request.beanBody;
+        } else if (request.customBody != null) {
+            bodyLog = ", customBody:" + request.customBody;
+        } else {
+            bodyLog = ", body: null";
+        }
+        logger.debug(genLogPrefix(settings.tag, request) + "POST: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams + bodyLog);
+    }
+
+    private void printPostStringBodyLog(Request request, byte[] parsedData) {
+        if (settings.verboseLog) {
+            if (!logger.isInfoEnabled()) {
+                return;
+            }
+        } else {
+            if (!logger.isDebugEnabled()) {
+                return;
+            }
+        }
+
+        if (!CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_STRING_BODY)){
+            return;
+        }
+
+        if (request.body != null) {
+            try {
+                logger.info(genLogPrefix(settings.tag, request) + "POST: string-body:" + new String(request.body, settings.encode));
+            } catch (Exception e) {
+                logger.warn(genLogPrefix(settings.tag, request) + "Error while printing string body", e);
+            }
+        } else if (request.formBody != null) {
+            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body(form):" + request.formBody);
+        } else if (request.beanBody != null && parsedData != null) {
+            try {
+                logger.info(genLogPrefix(settings.tag, request) + "POST: string-body(bean):" + new String(parsedData, settings.encode));
+            } catch (Exception e) {
+                logger.warn(genLogPrefix(settings.tag, request) + "Error while printing string body", e);
+            }
+        } else if (request.customBody != null) {
+            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body: multipart data can not be print");
+        } else {
+            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body: null");
+        }
+    }
+
+    private void printGetInputsLog(Request request, LoadBalancedHostManager.Host host) {
+        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_INPUTS)) {
+            return;
+        }
+        logger.debug(genLogPrefix(settings.tag, request) + "GET: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams);
+    }
+
+    private void printUrlLog(Request request, LoadBalancedHostManager.Host host) {
+        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_RAW_URL)) {
+            return;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder("raw-url:" + host.getUrl() + request.urlSuffix);
+        if (request.urlParams != null && request.urlParams.size() > 0) {
+            stringBuilder.append("?");
+            int i = 0;
+            for (Map.Entry<String, Object> entry : request.urlParams.entrySet()) {
+                if (i++ > 0) {
+                    stringBuilder.append("&");
+                }
+                stringBuilder.append(entry.getKey());
+                stringBuilder.append("=");
+                stringBuilder.append(entry.getValue());
+            }
+
+        }
+        logger.debug(genLogPrefix(settings.tag, request) + stringBuilder.toString());
+    }
+
+    private void printResponseCodeLog(Request request, Response response) {
+        if (settings.verboseLog) {
+            if (!logger.isInfoEnabled()) {
+                return;
+            }
+        } else {
+            if (!logger.isDebugEnabled()) {
+                return;
+            }
+        }
+        if (!CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_RESPONSE_CODE)) {
+            return;
+        }
+        logger.info(genLogPrefix(settings.tag, request) + "Response: code:" + response.code() + ", message:" + response.message());
+    }
+
+    private String genLogPrefix(String tag, Request request){
+        if (request.requestId == Integer.MAX_VALUE) {
+            return tag;
+        }
+        return tag + request.requestId + " ";
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 其他逻辑
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     public String getTag(){
         return settings.rawTag;
+    }
+
+    /**
+     * 文本方式输出当前远端列表和状态
+     * @param prefix 文本前缀
+     * @return 远端列表和状态
+     */
+    public String printHostsStatus(String prefix){
+        return hostManager.printHostsStatus(prefix);
     }
 
     @Override
     public String toString() {
         return (hostManager != null ? hostManager.printHostsStatus("Hosts [") + " ] " : "") +
-                "Settings [ " + settings + " ]";
+                "Settings [ " + settings + " ]" + (inspectManager != null ? " Inspect [ " + inspectManager + " ]" : "");
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 配置 //////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * 客户端配置
-     */
-    public static class Settings {
-
-        private long passiveBlockDuration = PASSIVE_BLOCK_DURATION;
-        private String mediaType = MEDIA_TYPE;
-        private String encode = ENCODE;
-        private Map<String, String> headers;
-        private boolean verboseLog = false;
-        private int verboseLogConfig = VERBOSE_LOG_CONFIG_DEFAULT;
-        private int logConfig = LOG_CONFIG_DEFAULT;
-        private int recoveryCoefficient = 10;
-
-        private int maxIdleConnections = 16;
-        private int maxThreads = 256;
-        private int maxThreadsPerHost = 256;
-        private long connectTimeout = 3000L;
-        private long writeTimeout = 10000L;
-        private long readTimeout = 10000L;
-        private long maxReadLength = 10L * 1024L * 1024L;
-        private CookieJar cookieJar;
-        private Proxy proxy;
-        private Dns dns;
-        private SslConfigSupplier sslConfigSupplier;
-        private HostnameVerifier hostnameVerifier;
-        private DataConverter dataConverter;
-        private String tag = LOG_PREFIX;
-        private String rawTag = "";
-        private Set<Integer> httpCodeNeedBlock = new HashSet<>(8);
-        private Set<Class<? extends Throwable>> throwableNeedBlock = new HashSet<>(8);
-
-        private boolean requestTraceEnabled = false;
-
-        private Settings(){
-        }
-
-        @Override
-        public String toString() {
-            return "passiveBlockDuration=" + passiveBlockDuration +
-                    ", recoveryCoefficient=" + recoveryCoefficient +
-                    ", maxIdleConnections=" + maxIdleConnections +
-                    ", maxThreads=" + maxThreads +
-                    ", maxThreadsPerHost=" + maxThreadsPerHost +
-                    ", connectTimeout=" + connectTimeout +
-                    ", writeTimeout=" + writeTimeout +
-                    ", readTimeout=" + readTimeout +
-                    ", maxReadLength=" + maxReadLength +
-                    ", headers=" + headers +
-                    ", mediaType='" + mediaType + '\'' +
-                    ", encode='" + encode + '\'' +
-                    ", verboseLog=" + verboseLog +
-                    ", verboseLogConfig=" + verboseLogConfig +
-                    ", logConfig=" + logConfig +
-                    ", cookieJar=" + cookieJar +
-                    ", proxy=" + proxy +
-                    ", dns=" + dns +
-                    ", sslConfigSupplier=" + sslConfigSupplier +
-                    ", hostnameVerifier=" + hostnameVerifier +
-                    ", dataConverter=" + dataConverter +
-                    ", httpCodeNeedBlock=" + httpCodeNeedBlock +
-                    ", throwableNeedBlock=" + throwableNeedBlock;
-        }
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 响应实例 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1588,10 +1641,10 @@ public class MultiHostOkHttpClient {
             if (dataConverter == null) {
                 throw new ResponseConvertException("No DataConverter set, you must set dataConverter before enqueue a beanBody");
             }
-            //当前类的父类(BeanCallback实现类的父类), 即MultiHostOkHttpClient$BeanCallback
+            //当前类的父类(BeanCallback实现类的父类), 即GlaciHttpClient$BeanCallback
             Type superType = getClass().getGenericSuperclass();
             if (!(superType instanceof ParameterizedType)) {
-                //MultiHostOkHttpClient$BeanCallback有泛型, 因此这里的superType必然是ParameterizedType实例
+                //GlaciHttpClient$BeanCallback有泛型, 因此这里的superType必然是ParameterizedType实例
                 //P.S.泛型类的实现类getGenericSuperclass返回ParameterizedType实例
                 //P.S.非泛型类的实现类getGenericSuperclass返回Class实例
                 throw new IllegalStateException("FATAL: superType is not an instance of ParameterizedType!");
@@ -1620,40 +1673,191 @@ public class MultiHostOkHttpClient {
 
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 客户端配置
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     /**
-     * 持有该对象可以发起请求取消操作(异步)
+     * 客户端配置
      */
-    public static class Stub {
+    public static class Settings {
 
-        private int connectTimeout = -1;
-        private int writeTimeout = -1;
-        private int readTimeout = -1;
+        private long passiveBlockDuration = PASSIVE_BLOCK_DURATION;
+        private String mediaType = MEDIA_TYPE;
+        private String encode = ENCODE;
+        private Map<String, String> headers;
+        private boolean verboseLog = false;
+        private int verboseLogConfig = VERBOSE_LOG_CONFIG_DEFAULT;
+        private int logConfig = LOG_CONFIG_DEFAULT;
+        private int recoveryCoefficient = 10;
 
+        private int maxIdleConnections = 16;
+        private int maxThreads = 256;
+        private int maxThreadsPerHost = 256;
+        private long connectTimeout = 3000L;
+        private long writeTimeout = 10000L;
+        private long readTimeout = 10000L;
+        private long maxReadLength = 10L * 1024L * 1024L;
+        private CookieJar cookieJar;
+        private Proxy proxy;
+        private Dns dns;
+        private SslConfigSupplier sslConfigSupplier;
+        private HostnameVerifier hostnameVerifier;
+        private DataConverter dataConverter;
+        private String tag = LOG_PREFIX;
+        private String rawTag = "";
+        private Set<Integer> httpCodeNeedBlock = new HashSet<>(8);
+        private Set<Class<? extends Throwable>> throwableNeedBlock = new HashSet<>(8);
+
+        private boolean requestTraceEnabled = false;
+
+        private Settings(){
+        }
+
+        @Override
+        public String toString() {
+            return "passiveBlockDuration=" + passiveBlockDuration +
+                    ", recoveryCoefficient=" + recoveryCoefficient +
+                    ", maxIdleConnections=" + maxIdleConnections +
+                    ", maxThreads=" + maxThreads +
+                    ", maxThreadsPerHost=" + maxThreadsPerHost +
+                    ", connectTimeout=" + connectTimeout +
+                    ", writeTimeout=" + writeTimeout +
+                    ", readTimeout=" + readTimeout +
+                    ", maxReadLength=" + maxReadLength +
+                    ", headers=" + headers +
+                    ", mediaType='" + mediaType + '\'' +
+                    ", encode='" + encode + '\'' +
+                    ", verboseLog=" + verboseLog +
+                    ", verboseLogConfig=" + verboseLogConfig +
+                    ", logConfig=" + logConfig +
+                    ", cookieJar=" + cookieJar +
+                    ", proxy=" + proxy +
+                    ", dns=" + dns +
+                    ", sslConfigSupplier=" + sslConfigSupplier +
+                    ", hostnameVerifier=" + hostnameVerifier +
+                    ", dataConverter=" + dataConverter +
+                    ", httpCodeNeedBlock=" + httpCodeNeedBlock +
+                    ", throwableNeedBlock=" + throwableNeedBlock;
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 客户端设置 ///////////////////////////////////////////////////////////////////////////////////////////////////
+    // hostManager配置
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * 设置远端管理器(必须)
-     * @param hostManager 远端管理器
+     * [线程安全/异步生效/可运行时修改]
+     * 设置/刷新远端列表, 该方法可以反复调用设置新的后端(但不是同步生效)
+     *
+     * @param hosts 远端列表, 格式:"http://127.0.0.1:8081/,http://127.0.0.1:8082/"
      */
-    public MultiHostOkHttpClient setHostManager(LoadBalancedHostManager hostManager) {
-        this.hostManager = hostManager;
+    public GlaciHttpClient setHosts(String hosts) {
+        hostManager.setHosts(hosts);
+        return this;
+    }
+
+    /**
+     * [线程安全/异步生效/可运行时修改]
+     * 设置/刷新远端列表, 该方法可以反复调用设置新的后端(但不是同步生效)
+     *
+     * @param hosts 远端列表
+     */
+    public GlaciHttpClient setHostArray(String[] hosts) {
+        hostManager.setHostArray(hosts);
+        return this;
+    }
+
+    /**
+     * [线程安全/异步生效/可运行时修改]
+     * 设置/刷新远端列表, 该方法可以反复调用设置新的后端(但不是同步生效)
+     *
+     * @param hosts 远端列表
+     */
+    public GlaciHttpClient setHostList(List<String> hosts) {
+        hostManager.setHostList(hosts);
         return this;
     }
 
     /**
      * [可运行时修改]
+     * 如果设置为false(默认), 当所有远端都被阻断时, nextHost方法返回一个后端.
+     * 如果设置为true, 当所有远端都被阻断时, nextHost方法返回null.
+     */
+    public GlaciHttpClient setReturnNullIfAllBlocked(boolean returnNullIfAllBlocked) {
+        hostManager.setReturnNullIfAllBlocked(returnNullIfAllBlocked);
+        return this;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // inspectManager配置
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * [线程安全/异步生效/可运行时修改]
+     * 设置主动探测间隔 (主动探测器)
+     * @param initiativeInspectInterval 检测间隔ms, > 0 , 建议 > 5000
+     */
+    public GlaciHttpClient setInitiativeInspectInterval(long initiativeInspectInterval) {
+        inspectManager.setInspectInterval(initiativeInspectInterval);
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 将主动探测器从TELNET型修改为HTTP-GET型
+     * @param urlSuffix 探测页面URL(例如:http://127.0.0.1:8080/health, 则在此处设置/health), 设置为+telnet+则使用默认的TELNET型
+     */
+    public GlaciHttpClient setHttpGetInspector(String urlSuffix) {
+        if ("+telnet+".equals(urlSuffix)) {
+            inspectManager.setInspector(new TelnetLoadBalanceInspector());
+        } else {
+            inspectManager.setInspector(new HttpGetLoadBalanceInspector(urlSuffix, inspectManager.getInspectTimeout()));
+        }
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 设置自定义的主动探测器, 这个方法与setHttpGetInspector方法只能选择一个设置
+     * @param inspector 自定义主动探测器, 默认为TELNET方式
+     */
+    public GlaciHttpClient setInspector(LoadBalanceInspector inspector) {
+        if (inspector == null) {
+            inspector = new TelnetLoadBalanceInspector();
+        }
+        inspectManager.setInspector(inspector);
+        return this;
+    }
+
+    /**
+     * [线程安全/异步生效/可运行时修改]
+     * true: 主动探测器打印更多的日志, 默认false
+     * @param verboseLog true: 主动探测器打印更多的日志, 默认false
+     */
+    public GlaciHttpClient setInspectorVerboseLog(boolean verboseLog) {
+        inspectManager.setVerboseLog(verboseLog);
+        return this;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // client配置
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * [可运行时修改]
      * <p>[配置]设置被动检测到网络故障时阻断后端的时间</p>
      *
-     * <p>当请求服务端时, 发生特定的异常或返回特定的响应码(MultiHostOkHttpClient.needBlock方法决定), 客户端会将该
+     * <p>当请求服务端时, 发生特定的异常或返回特定的响应码(GlaciHttpClient.needBlock方法决定), 客户端会将该
      * 后端服务器的IP/PORT标记为暂不可用状态, 阻断时长就是不可用的时长, 建议比主动探测器的探测间隔大.</p>
      *
      * @param passiveBlockDuration 阻断时长ms
      */
-    public MultiHostOkHttpClient setPassiveBlockDuration(long passiveBlockDuration) {
+    public GlaciHttpClient setPassiveBlockDuration(long passiveBlockDuration) {
         if (passiveBlockDuration < 0) {
             passiveBlockDuration = 0;
         }
@@ -1666,7 +1870,7 @@ public class MultiHostOkHttpClient {
      * 设置MediaType
      * @param mediaType 设置MediaType
      */
-    public MultiHostOkHttpClient setMediaType(String mediaType) {
+    public GlaciHttpClient setMediaType(String mediaType) {
         settings.mediaType = mediaType;
         return this;
     }
@@ -1676,7 +1880,7 @@ public class MultiHostOkHttpClient {
      * 设置编码
      * @param encode 编码
      */
-    public MultiHostOkHttpClient setEncode(String encode) {
+    public GlaciHttpClient setEncode(String encode) {
         settings.encode = encode;
         return this;
     }
@@ -1686,7 +1890,7 @@ public class MultiHostOkHttpClient {
      * 设置HTTP请求头参数
      * @param headers 请求头参数
      */
-    public MultiHostOkHttpClient setHeaders(Map<String, String> headers) {
+    public GlaciHttpClient setHeaders(Map<String, String> headers) {
         settings.headers = headers;
         return this;
     }
@@ -1697,7 +1901,7 @@ public class MultiHostOkHttpClient {
      * 示例: User-Agent=GlacispringHttpClient,Referer=http://github.com
      * @param headersString 请求头参数
      */
-    public MultiHostOkHttpClient setHeadersString(String headersString) {
+    public GlaciHttpClient setHeadersString(String headersString) {
         if (CheckUtils.isEmptyOrBlank(headersString)) {
             return setHeaders(null);
         }
@@ -1714,7 +1918,7 @@ public class MultiHostOkHttpClient {
      * 设置阻断后的恢复期系数, 修复期时长 = blockDuration * recoveryCoefficient, 设置1则无恢复期
      * @param recoveryCoefficient 阻断后的恢复期系数, >= 1
      */
-    public MultiHostOkHttpClient setRecoveryCoefficient(int recoveryCoefficient) {
+    public GlaciHttpClient setRecoveryCoefficient(int recoveryCoefficient) {
         if (recoveryCoefficient < 1) {
             recoveryCoefficient = 1;
         }
@@ -1727,7 +1931,7 @@ public class MultiHostOkHttpClient {
      * 最大闲置连接数. 客户端会保持与服务端的连接, 保持数量由此设置决定, 直到闲置超过5分钟. 默认16
      * @param maxIdleConnections 最大闲置连接数, 默认16
      */
-    public MultiHostOkHttpClient setMaxIdleConnections(int maxIdleConnections) {
+    public GlaciHttpClient setMaxIdleConnections(int maxIdleConnections) {
         if (maxIdleConnections < 0) {
             maxIdleConnections = 0;
         }
@@ -1745,7 +1949,7 @@ public class MultiHostOkHttpClient {
      * 最大请求线程数(仅异步请求时有效)
      * @param maxThreads 最大请求线程数, 默认256
      */
-    public MultiHostOkHttpClient setMaxThreads(int maxThreads) {
+    public GlaciHttpClient setMaxThreads(int maxThreads) {
         if (maxThreads < 1) {
             maxThreads = 1;
         }
@@ -1763,7 +1967,7 @@ public class MultiHostOkHttpClient {
      * 对应每个后端的最大请求线程数(仅异步请求时有效)
      * @param maxThreadsPerHost 对应每个后端的最大请求线程数, 默认256
      */
-    public MultiHostOkHttpClient setMaxThreadsPerHost(int maxThreadsPerHost) {
+    public GlaciHttpClient setMaxThreadsPerHost(int maxThreadsPerHost) {
         if (maxThreadsPerHost < 1) {
             maxThreadsPerHost = 1;
         }
@@ -1781,7 +1985,7 @@ public class MultiHostOkHttpClient {
      * 设置连接超时ms
      * @param connectTimeout 连接超时ms
      */
-    public MultiHostOkHttpClient setConnectTimeout(long connectTimeout) {
+    public GlaciHttpClient setConnectTimeout(long connectTimeout) {
         if (connectTimeout < 0) {
             connectTimeout = 0;
         }
@@ -1799,7 +2003,7 @@ public class MultiHostOkHttpClient {
      * 设置写数据超时ms
      * @param writeTimeout 写数据超时ms
      */
-    public MultiHostOkHttpClient setWriteTimeout(long writeTimeout) {
+    public GlaciHttpClient setWriteTimeout(long writeTimeout) {
         if (writeTimeout < 0) {
             writeTimeout = 0;
         }
@@ -1817,7 +2021,7 @@ public class MultiHostOkHttpClient {
      * 设置读数据超时ms
      * @param readTimeout 读数据超时ms
      */
-    public MultiHostOkHttpClient setReadTimeout(long readTimeout) {
+    public GlaciHttpClient setReadTimeout(long readTimeout) {
         if (readTimeout < 0) {
             readTimeout = 0;
         }
@@ -1835,7 +2039,7 @@ public class MultiHostOkHttpClient {
      * 设置最大读取数据长度(默认:10M)
      * @param maxReadLength 设置最大读取数据长度, 单位bytes
      */
-    public MultiHostOkHttpClient setMaxReadLength(long maxReadLength){
+    public GlaciHttpClient setMaxReadLength(long maxReadLength){
         if (maxReadLength < 1024) {
             maxReadLength = 1024;
         }
@@ -1848,7 +2052,7 @@ public class MultiHostOkHttpClient {
      * CookieJar
      * @param cookieJar CookieJar
      */
-    public MultiHostOkHttpClient setCookieJar(CookieJar cookieJar) {
+    public GlaciHttpClient setCookieJar(CookieJar cookieJar) {
         try {
             settingsSpinLock.lock();
             settings.cookieJar = cookieJar;
@@ -1866,7 +2070,7 @@ public class MultiHostOkHttpClient {
      * @throws NumberFormatException  if the string does not contain a parsable integer.
      * @throws SecurityException if a security manager is present and permission to resolve the host name is denied.
      */
-    public MultiHostOkHttpClient setProxy(String proxy) {
+    public GlaciHttpClient setProxy(String proxy) {
         Proxy proxyObj = null;
         if (proxy == null){
             throw new IllegalArgumentException("Invalid proxy string \"" + proxy + "\", correct \"X.X.X.X:XXX\", example \"127.0.0.1:8080\"");
@@ -1896,7 +2100,7 @@ public class MultiHostOkHttpClient {
      * Dns
      * @param dns Dns
      */
-    public MultiHostOkHttpClient setDns(Dns dns) {
+    public GlaciHttpClient setDns(Dns dns) {
         try {
             settingsSpinLock.lock();
             settings.dns = dns;
@@ -1921,7 +2125,7 @@ public class MultiHostOkHttpClient {
      *
      * @param sslConfigSupplier sslConfigSupplier, 例如: SslSocketFactorySupplier / KeyAndTrustManagerSupplier / CertAndTrustedIssuerSupplier
      */
-    public MultiHostOkHttpClient setSslConfigSupplier(SslConfigSupplier sslConfigSupplier) {
+    public GlaciHttpClient setSslConfigSupplier(SslConfigSupplier sslConfigSupplier) {
         try {
             settingsSpinLock.lock();
             settings.sslConfigSupplier = sslConfigSupplier;
@@ -1943,7 +2147,7 @@ public class MultiHostOkHttpClient {
      * @param customIssuerEncoded 添加服务端的根证书为受信任的证书, X509 Base64 编码的证书. 如果设置为"UNSAFE-TRUST-ALL-ISSUERS",
      *                            则不校验服务端证书链, 信任一切服务端证书, 不安全!!!
      */
-    public MultiHostOkHttpClient setCustomServerIssuerEncoded(String customIssuerEncoded) {
+    public GlaciHttpClient setCustomServerIssuerEncoded(String customIssuerEncoded) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -1967,7 +2171,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customIssuersEncoded 添加服务端的根证书为受信任的证书, X509 Base64 编码的证书
      */
-    public MultiHostOkHttpClient setCustomServerIssuersEncoded(String[] customIssuersEncoded) {
+    public GlaciHttpClient setCustomServerIssuersEncoded(String[] customIssuersEncoded) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -1991,7 +2195,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customIssuer 添加服务端的根证书为受信任的证书
      */
-    public MultiHostOkHttpClient setCustomServerIssuer(X509Certificate customIssuer) {
+    public GlaciHttpClient setCustomServerIssuer(X509Certificate customIssuer) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -2015,7 +2219,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customIssuers 添加服务端的根证书为受信任的证书
      */
-    public MultiHostOkHttpClient setCustomServerIssuers(X509Certificate[] customIssuers) {
+    public GlaciHttpClient setCustomServerIssuers(X509Certificate[] customIssuers) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -2038,7 +2242,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customClientCertEncoded 客户端证书, X509 Base64 编码的证书
      */
-    public MultiHostOkHttpClient setCustomClientCertEncoded(String customClientCertEncoded) {
+    public GlaciHttpClient setCustomClientCertEncoded(String customClientCertEncoded) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -2061,7 +2265,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customClientCertsEncoded 客户端证书链, X509 Base64 编码的证书
      */
-    public MultiHostOkHttpClient setCustomClientCertsEncoded(String[] customClientCertsEncoded) {
+    public GlaciHttpClient setCustomClientCertsEncoded(String[] customClientCertsEncoded) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -2084,7 +2288,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customClientCert 客户端证书
      */
-    public MultiHostOkHttpClient setCustomClientCert(X509Certificate customClientCert) {
+    public GlaciHttpClient setCustomClientCert(X509Certificate customClientCert) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -2107,7 +2311,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customClientCerts 客户端证书链
      */
-    public MultiHostOkHttpClient setCustomClientCerts(X509Certificate[] customClientCerts) {
+    public GlaciHttpClient setCustomClientCerts(X509Certificate[] customClientCerts) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -2130,7 +2334,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customClientCertKeyEncoded 客户端证书私钥, 目前仅支持RSA私钥, PKCS8 BASE64
      */
-    public MultiHostOkHttpClient setCustomClientCertKeyEncoded(String customClientCertKeyEncoded) {
+    public GlaciHttpClient setCustomClientCertKeyEncoded(String customClientCertKeyEncoded) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -2153,7 +2357,7 @@ public class MultiHostOkHttpClient {
      *
      * @param customClientCertKey 客户端证书私钥, 目前仅支持RSA私钥
      */
-    public MultiHostOkHttpClient setCustomClientCertKey(Key customClientCertKey) {
+    public GlaciHttpClient setCustomClientCertKey(Key customClientCertKey) {
         try {
             settingsSpinLock.lock();
             if (settings.sslConfigSupplier == null || !(settings.sslConfigSupplier instanceof CertAndTrustedIssuerSupplier)) {
@@ -2170,15 +2374,15 @@ public class MultiHostOkHttpClient {
      * <p>[可运行时修改]</p>
      * <p>设置自定义的服务端域名验证逻辑</p>
      * <p></p>
-     * <p>1.如果你通过一个代理访问服务端, 且访问代理的域名, 请调用{@link MultiHostOkHttpClient#setVerifyServerCnByCustomHostname}
-     * 设置服务端域名, 程序会改用指定的域名去匹配服务端证书的CN. 也可以调用{@link MultiHostOkHttpClient#setVerifyServerDnByCustomDn}
+     * <p>1.如果你通过一个代理访问服务端, 且访问代理的域名, 请调用{@link GlaciHttpClient#setVerifyServerCnByCustomHostname}
+     * 设置服务端域名, 程序会改用指定的域名去匹配服务端证书的CN. 也可以调用{@link GlaciHttpClient#setVerifyServerDnByCustomDn}
      * 匹配证书的全部DN信息. </p>
      *
      * <p>注意: 这个方式设置SSL会覆盖setVerifyServer...系列设置的参数</p>
      *
      * @param hostnameVerifier hostnameVerifier
      */
-    public MultiHostOkHttpClient setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+    public GlaciHttpClient setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         try {
             settingsSpinLock.lock();
             settings.hostnameVerifier = hostnameVerifier;
@@ -2201,7 +2405,7 @@ public class MultiHostOkHttpClient {
      * @param customHostname 指定服务端域名, 示例: www.baidu.com. 如果设置为"UNSAFE-TRUST-ALL-CN"则不校验CN, 所有合法证书都通过, 不安全!!!.
      *                       如果设置为null或""则取消设置.
      */
-    public MultiHostOkHttpClient setVerifyServerCnByCustomHostname(String customHostname) {
+    public GlaciHttpClient setVerifyServerCnByCustomHostname(String customHostname) {
         if (CheckUtils.isEmptyOrBlank(customHostname)) {
             setHostnameVerifier(null);
             return this;
@@ -2221,7 +2425,7 @@ public class MultiHostOkHttpClient {
      * @param customDn 指定服务端证书DN DN示例: CN=baidu.com,O=Beijing Baidu Netcom Science Technology Co.\, Ltd,OU=service operation department,L=beijing,ST=beijing,C=CN.
      *                 如果设置为"UNSAFE-TRUST-ALL-DN"则不校验DN, 所有合法证书都通过, 不安全!!!, 如果设置为null或""则取消设置.
      */
-    public MultiHostOkHttpClient setVerifyServerDnByCustomDn(String customDn) {
+    public GlaciHttpClient setVerifyServerDnByCustomDn(String customDn) {
         if (CheckUtils.isEmptyOrBlank(customDn)) {
             setHostnameVerifier(null);
             return this;
@@ -2234,7 +2438,7 @@ public class MultiHostOkHttpClient {
      * [可运行时修改]
      * <p>[配置]数据转换器, 用于将beanBody设置的JavaBean转换为byte[], 和将返回报文byte[]转换为JavaBean</p>
      */
-    public MultiHostOkHttpClient setDataConverter(DataConverter dataConverter) {
+    public GlaciHttpClient setDataConverter(DataConverter dataConverter) {
         settings.dataConverter = dataConverter;
         return this;
     }
@@ -2244,7 +2448,7 @@ public class MultiHostOkHttpClient {
      * 当HTTP返回码为指定返回码时, 阻断后端
      * @param codes 指定需要阻断的返回码, 例如:403,404
      */
-    public MultiHostOkHttpClient setHttpCodeNeedBlock(String codes) {
+    public GlaciHttpClient setHttpCodeNeedBlock(String codes) {
         if (CheckUtils.isEmptyOrBlank(codes)) {
             settings.httpCodeNeedBlock = new HashSet<>(8);
             return this;
@@ -2267,7 +2471,7 @@ public class MultiHostOkHttpClient {
      * 当异常为指定类型时, 阻断后端
      * @param throwableTypes 指定需要阻断的异常类型, 例如:com.package.BarException,com.package.FooException
      */
-    public MultiHostOkHttpClient setThrowableNeedBlock(Set<Class<? extends Throwable>> throwableTypes) {
+    public GlaciHttpClient setThrowableNeedBlock(Set<Class<? extends Throwable>> throwableTypes) {
         if (throwableTypes == null) {
             settings.throwableNeedBlock = new HashSet<>(8);
             return this;
@@ -2282,7 +2486,7 @@ public class MultiHostOkHttpClient {
      * @param throwableTypes 指定需要阻断的异常类型, 例如:com.package.BarException,com.package.FooException
      */
     @SuppressWarnings("unchecked")
-    public MultiHostOkHttpClient setThrowableNeedBlock(String throwableTypes) {
+    public GlaciHttpClient setThrowableNeedBlock(String throwableTypes) {
         if (CheckUtils.isEmptyOrBlank(throwableTypes)) {
             settings.throwableNeedBlock = new HashSet<>(8);
             return this;
@@ -2304,7 +2508,7 @@ public class MultiHostOkHttpClient {
      * [可运行时修改]
      * 启用/禁用TxTimer统计请求耗时(暂时只支持同步方式), 默认禁用
      */
-    public MultiHostOkHttpClient setTxTimerEnabled(boolean enabled){
+    public GlaciHttpClient setTxTimerEnabled(boolean enabled){
         if (enabled && txTimer == null) {
             txTimer = NoRefTxTimerFactory.newInstance();
         } else if (!enabled){
@@ -2314,21 +2518,11 @@ public class MultiHostOkHttpClient {
     }
 
     /**
-     * 设置客户端的标识
-     * @param tag 标识
-     */
-    public MultiHostOkHttpClient setTag(String tag) {
-        settings.tag = tag != null ? LOG_PREFIX + tag + "> " : LOG_PREFIX;
-        settings.rawTag = tag;
-        return this;
-    }
-
-    /**
      * [可运行时修改]
      * true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
      * @param verboseLog true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
      */
-    public MultiHostOkHttpClient setVerboseLog(boolean verboseLog) {
+    public GlaciHttpClient setVerboseLog(boolean verboseLog) {
         settings.verboseLog = verboseLog;
         return this;
     }
@@ -2345,7 +2539,7 @@ public class MultiHostOkHttpClient {
      *
      * @param verboseLogConfig 详细配置
      */
-    public MultiHostOkHttpClient setVerboseLogConfig(int verboseLogConfig) {
+    public GlaciHttpClient setVerboseLogConfig(int verboseLogConfig) {
         settings.verboseLogConfig = verboseLogConfig;
         return this;
     }
@@ -2360,7 +2554,7 @@ public class MultiHostOkHttpClient {
      *
      * @param logConfig 详细配置
      */
-    public MultiHostOkHttpClient setLogConfig(int logConfig) {
+    public GlaciHttpClient setLogConfig(int logConfig) {
         settings.logConfig = logConfig;
         return this;
     }
@@ -2371,10 +2565,30 @@ public class MultiHostOkHttpClient {
      *
      * @param requestTraceEnabled true: 开启简易的请求日志追踪(请求日志追加4位数追踪号), 默认false
      */
-    public MultiHostOkHttpClient setRequestTraceEnabled(boolean requestTraceEnabled) {
+    public GlaciHttpClient setRequestTraceEnabled(boolean requestTraceEnabled) {
         settings.requestTraceEnabled = requestTraceEnabled;
         return this;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 混合配置
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 设置客户端的标识
+     * @param tag 标识
+     */
+    public GlaciHttpClient setTag(String tag) {
+        settings.tag = tag != null ? LOG_PREFIX + tag + "> " : LOG_PREFIX;
+        settings.rawTag = tag;
+        hostManager.setTag(tag);
+        inspectManager.setTag(tag);
+        return this;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 配置锁
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private class SettingsSpinLock {
 

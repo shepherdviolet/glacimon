@@ -30,35 +30,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 支持均衡负载的OkHttpClient测试案例
+ * 支持均衡负载的GlaciHttpClient测试案例
  */
-public class MultiHostOkHttpClientTest {
+public class GlaciHttpClientTest {
 
-    private static Logger logger = LoggerFactory.getLogger(MultiHostOkHttpClientTest.class);
+    private static Logger logger = LoggerFactory.getLogger(GlaciHttpClientTest.class);
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws NoHostException, RequestBuildException, HttpRejectException, IOException {
 
-        LoadBalancedHostManager hostManager = new LoadBalancedHostManager()
+        final GlaciHttpClient client = new GlaciHttpClient()
                 .setHostArray(new String[]{
-                        "http://127.0.0.1:8080",
-                        "http://127.0.0.1:8081"
-                });
-
-        LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager()
-                .setHostManager(hostManager)
-                .setInspectInterval(5000L)
+                        "http://127.0.0.1:8000",
+                        "http://127.0.0.1:8000"
+                })
+                .setInitiativeInspectInterval(5000L)
                 .setInspector(new TelnetLoadBalanceInspector())
-                .setVerboseLog(true);
-
-        final MultiHostOkHttpClient client = new MultiHostOkHttpClient()
-                .setHostManager(hostManager)
+                .setInspectorVerboseLog(true)
                 .setPassiveBlockDuration(3000L)
                 .setConnectTimeout(3000L)
                 .setWriteTimeout(10000L)
                 .setReadTimeout(10000L)
                 .setDataConverter(new GsonDataConverter())
-                .setVerboseLogConfig(MultiHostOkHttpClient.VERBOSE_LOG_CONFIG_ALL)
+                .setVerboseLogConfig(GlaciHttpClient.VERBOSE_LOG_CONFIG_ALL)
                 .setVerboseLog(true);
 
         // sync
@@ -81,7 +75,7 @@ public class MultiHostOkHttpClientTest {
             System.out.println(stringBuilder.toString());
         }
 
-        try (MultiHostOkHttpClient.ResponsePackage responsePackage = client.get("/")
+        try (GlaciHttpClient.ResponsePackage responsePackage = client.get("/")
                 .send()) {
             System.out.println(responsePackage.body().string());
         }
@@ -106,7 +100,7 @@ public class MultiHostOkHttpClientTest {
             System.out.println(stringBuilder.toString());
         }
 
-        try (MultiHostOkHttpClient.ResponsePackage responsePackage = client.post("/basic/post/json")
+        try (GlaciHttpClient.ResponsePackage responsePackage = client.post("/basic/post/json")
                 .urlParam("traceId", "000000001")
                 .body("hello json 3".getBytes())
                 .send()) {
@@ -131,7 +125,7 @@ public class MultiHostOkHttpClientTest {
 
         client.post("/basic/post/json")
                 .formBody(form)
-                .enqueue(new MultiHostOkHttpClient.BeanCallback<Map>() {
+                .enqueue(new GlaciHttpClient.BeanCallback<Map>() {
                     @Override
                     public void onSucceed(Map bean) throws Exception {
                         System.out.println(bean);
@@ -164,7 +158,7 @@ public class MultiHostOkHttpClientTest {
 
         client.post("/basic/post/json")
                 .beanBody(form)
-                .enqueue(new MultiHostOkHttpClient.BeanCallback<Map<String, Object>>() {
+                .enqueue(new GlaciHttpClient.BeanCallback<Map<String, Object>>() {
                     @Override
                     public void onSucceed(Map<String, Object> bean) throws Exception {
                         System.out.println(bean);
@@ -184,7 +178,7 @@ public class MultiHostOkHttpClientTest {
         client.get("/basic/get/json")
                 .urlParam("name", "wang wang")
                 .urlParam("key", "321")
-                .enqueue(new MultiHostOkHttpClient.BytesCallback() {
+                .enqueue(new GlaciHttpClient.BytesCallback() {
                     @Override
                     public void onSucceed(byte[] body) {
                         System.out.println(new String(body));
@@ -202,7 +196,7 @@ public class MultiHostOkHttpClientTest {
         client.get("/basic/get/json")
                 .urlParam("name", "wang wang")
                 .urlParam("key", "654")
-                .enqueue(new MultiHostOkHttpClient.InputStreamCallback() {
+                .enqueue(new GlaciHttpClient.InputStreamCallback() {
                     @Override
                     public void onSucceed(InputStream inputStream) throws Exception {
                         int len;
@@ -226,9 +220,9 @@ public class MultiHostOkHttpClientTest {
         client.get("/basic/get/json")
                 .urlParam("name", "wang wang")
                 .urlParam("key", "987")
-                .enqueue(new MultiHostOkHttpClient.ResponsePackageCallback() {
+                .enqueue(new GlaciHttpClient.ResponsePackageCallback() {
                     @Override
-                    public void onSucceed(MultiHostOkHttpClient.ResponsePackage responsePackage) throws Exception {
+                    public void onSucceed(GlaciHttpClient.ResponsePackage responsePackage) throws Exception {
                         System.out.println(responsePackage.body().string());
                     }
                     @Override
@@ -244,7 +238,7 @@ public class MultiHostOkHttpClientTest {
         client.post("/basic/post/json")
                 .urlParam("traceId", "000000001")
                 .body("hello json 4".getBytes())
-                .enqueue(new MultiHostOkHttpClient.BytesCallback() {
+                .enqueue(new GlaciHttpClient.BytesCallback() {
                     @Override
                     public void onSucceed(byte[] body) {
                         System.out.println(new String(body));
@@ -262,7 +256,7 @@ public class MultiHostOkHttpClientTest {
         client.post("/basic/post/json")
                 .urlParam("traceId", "000000001")
                 .body("hello json 5".getBytes())
-                .enqueue(new MultiHostOkHttpClient.InputStreamCallback() {
+                .enqueue(new GlaciHttpClient.InputStreamCallback() {
                     @Override
                     public void onSucceed(InputStream inputStream) throws Exception {
                         int len;
@@ -286,9 +280,9 @@ public class MultiHostOkHttpClientTest {
         client.post("/basic/post/json")
                 .urlParam("traceId", "000000001")
                 .body("hello json 6".getBytes())
-                .enqueue(new MultiHostOkHttpClient.ResponsePackageCallback() {
+                .enqueue(new GlaciHttpClient.ResponsePackageCallback() {
                     @Override
-                    public void onSucceed(MultiHostOkHttpClient.ResponsePackage responsePackage) throws Exception {
+                    public void onSucceed(GlaciHttpClient.ResponsePackage responsePackage) throws Exception {
                         System.out.println(responsePackage.body().string());
                     }
                     @Override

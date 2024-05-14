@@ -101,7 +101,7 @@ glacispring:
       max-read-length: 10485760
       # 当后端HTTP返回码为400或500时阻断后端
       http-code-need-block: 400,500
-      # 当异常为指定类型时, 阻断后端 (这里配的两个异常仅作为演示, 无需设置它们, 因为它们已经包含在默认清单里了, 见源码MultiHostOkHttpClient#needBlock)
+      # 当异常为指定类型时, 阻断后端 (这里配的两个异常仅作为演示, 无需设置它们, 因为它们已经包含在默认清单里了, 见源码GlaciHttpClient#needBlock)
       throwable-need-block: java.net.SocketException,java.net.SocketTimeoutException
       # true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
       verbose-log: false
@@ -165,7 +165,7 @@ glacispring:
 * 获得所有客户端(包括运行时动态添加的)
 
 ```text
-    private SimpleOkHttpClient client1;
+    private GlaciHttpClient client1;
     
     /**
      * 使用构造注入, 保证在操作时HttpClients已经注入
@@ -182,10 +182,10 @@ glacispring:
 
 ```text
     @HttpClient("client1")
-    private SimpleOkHttpClient client1;
+    private GlaciHttpClient client1;
     
     @HttpClient("client2")
-    public void setClient2(SimpleOkHttpClient client2) {
+    public void setClient2(GlaciHttpClient client2) {
         // ......
     }
 ```
@@ -210,10 +210,10 @@ glacispring:
 @Component
 public class MyHttpTransport implements InitializingBean {
 
-    private SimpleOkHttpClient client1;
+    private GlaciHttpClient client1;
     
     /**
-     * 使用构造注入, 保证simpleOkHttpClient优先注入, 使用时不会为null
+     * 使用构造注入, 保证glaciHttpClient优先注入, 使用时不会为null
      */
     @Autowired
     public HttpClientConfigChangeListener(HttpClients httpClients) {
@@ -222,8 +222,8 @@ public class MyHttpTransport implements InitializingBean {
 
     /**
      * 示例1:
-     * 在管理平台设置新参数时, 调用SimpleOkHttpClient的set系列方法调整客户端的配置
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * 在管理平台设置新参数时, 调用GlaciHttpClient的set系列方法调整客户端的配置
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     public void setHosts(......) {
         client1.setHosts(......);
@@ -232,7 +232,7 @@ public class MyHttpTransport implements InitializingBean {
     /**
      * 示例2:
      * 可以在afterPropertiesSet方法中, 给客户端添加代理/SSL连接工厂等高级配置
-     * 更多配置请看SimpleOkHttpClient和MultiHostOkHttpClient类的方法注释
+     * 更多配置请看GlaciHttpClient类的方法注释
      */
     @Override
     public void afterPropertiesSet() throws Exception {

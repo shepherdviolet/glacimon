@@ -24,6 +24,7 @@ import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtil
 import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.DataConverter;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.HttpClients;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * 维护SpringBoot自动配置的SimpleOkHttpClient实例
+ * 维护SpringBoot自动配置的GlaciHttpClient实例
  *
  * @author shepherdviolet
  */
@@ -96,8 +97,8 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
      * @param key 客户端名称
      */
     @Override
-    public SimpleOkHttpClient get(String key) {
-        SimpleOkHttpClient client = clients.get(key);
+    public GlaciHttpClient get(String key) {
+        GlaciHttpClient client = clients.get(key);
         if (client == null && logger.isWarnEnabled() && noticeLogEnabled) {
             logger.warn("HttpClients | No HttpClient named " + key + ", return null");
         }
@@ -245,6 +246,10 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setCustomClientCertKeyEncoded(settings.getCustomClientCertKeyEncoded());
     }
 
+    /**
+     * 兼容老版本, 保留SimpleOkHttpClient
+     */
+    @SuppressWarnings("deprecation")
     private static final class HttpClient extends SimpleOkHttpClient {
 
         // 是否被更新的标记

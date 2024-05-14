@@ -154,7 +154,7 @@ client.setSslConfigSupplier(new SslSocketFactorySupplier()
 * 示例1
 
 ```text
-simpleOkHttpClient.setHostnameVerifier(new SimpleHostnameVerifier() {
+glaciHttpClient.setHostnameVerifier(new SimpleHostnameVerifier() {
     @Override
     protected boolean isHostnameMatch(String hostname, String cn) {
         //证书的域名必须是指定值
@@ -166,7 +166,7 @@ simpleOkHttpClient.setHostnameVerifier(new SimpleHostnameVerifier() {
 * 示例2
 
 ```text
-simpleOkHttpClient.setHostnameVerifier(new HostnameVerifier() {
+glaciHttpClient.setHostnameVerifier(new HostnameVerifier() {
     public boolean verify(String hostname, SSLSession session) {
         try {
             //服务端证书链
@@ -196,7 +196,7 @@ public class HttpClientConfiguration {
 
     @Autowired
     public void configureHttpClients(HttpClients httpClients){
-        SimpleOkHttpClient client1 = httpClients.get("client1");
+        GlaciHttpClient client1 = httpClients.get("client1");
         //给客户端设置自定义的X509TrustManager
         client1.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(trustManager));
         //给客户端设置自定义的SSLSocketFactory, 建议sslSocketFactory和trustManager一起设置, 如果只设置sslSocketFactory的话, OKHTTP会用反射的方式清理证书链.
@@ -214,42 +214,42 @@ public class HttpClientConfiguration {
 
 ```text
     @Autowired
-    @Qualifier("simpleOkHttpClient")
-    public void configureHttpClients(SimpleOkHttpClient simpleOkHttpClient){
+    @Qualifier("glaciHttpClient")
+    public void configureHttpClients(GlaciHttpClient glaciHttpClient){
         //给客户端设置自定义的X509TrustManager
-        simpleOkHttpClient.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(trustManager));
+        glaciHttpClient.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(trustManager));
         //给客户端设置自定义的SSLSocketFactory, 建议sslSocketFactory和trustManager一起设置, 如果只设置sslSocketFactory的话, OKHTTP会用反射的方式清理证书链.
-        simpleOkHttpClient.setSslConfigSupplier(new SslSocketFactorySupplier()
+        glaciHttpClient.setSslConfigSupplier(new SslSocketFactorySupplier()
                 .setSslSocketFactory(sslSocketFactory)
                 .setTrustManager(x509TrustManager));
         //自定义域名验证逻辑
-        simpleOkHttpClient.setHostnameVerifier(hostnameVerifier);
+        glaciHttpClient.setHostnameVerifier(hostnameVerifier);
     }
 ```
 
 ## Spring XML手动配置的客户端
 
-* 编写一个Bean, 注入客户端(SimpleOkHttpClient), 实现InitializingBean接口, 在afterPropertiesSet方法中操作客户端
+* 编写一个Bean, 注入客户端GlaciHttpClient, 实现InitializingBean接口, 在afterPropertiesSet方法中操作客户端
 
 ```text
 public class HttpClientSslConfigurer implements InitializingBean {
     
-    private SimpleOkHttpClient simpleOkHttpClient;
+    private GlaciHttpClient glaciHttpClient;
 
-    public void setSimpleOkHttpClient(SimpleOkHttpClient simpleOkHttpClient) {
-        this.simpleOkHttpClient = simpleOkHttpClient;
+    public void setGlaciHttpClient(GlaciHttpClient glaciHttpClient) {
+        this.glaciHttpClient = glaciHttpClient;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         //给客户端设置自定义的X509TrustManager
-        simpleOkHttpClient.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(trustManager));
+        glaciHttpClient.setSslConfigSupplier(new KeyAndTrustManagerSupplier().setTrustManager(trustManager));
         //给客户端设置自定义的SSLSocketFactory, 建议sslSocketFactory和trustManager一起设置, 如果只设置sslSocketFactory的话, OKHTTP会用反射的方式清理证书链.
-        simpleOkHttpClient.setSslConfigSupplier(new SslSocketFactorySupplier()
+        glaciHttpClient.setSslConfigSupplier(new SslSocketFactorySupplier()
                 .setSslSocketFactory(sslSocketFactory)
                 .setTrustManager(x509TrustManager));
         //自定义域名验证逻辑
-        simpleOkHttpClient.setHostnameVerifier(hostnameVerifier);
+        glaciHttpClient.setHostnameVerifier(hostnameVerifier);
     }
 
 }

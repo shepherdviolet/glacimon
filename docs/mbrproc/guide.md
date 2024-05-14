@@ -98,10 +98,10 @@ public class HttpClientMemberProcessor implements MemberProcessor<HttpClient> {
 
     @Override
     public void visitField(Object bean, String beanName, Field field, HttpClient annotation, ApplicationContext applicationContext) {
-        if (!SimpleOkHttpClient.class.isAssignableFrom(field.getType())) {
+        if (!GlaciHttpClient.class.isAssignableFrom(field.getType())) {
             // (此处省略代码) 类型不匹配, 报错
         }
-        SimpleOkHttpClient client = getHttpClient(applicationContext, annotation, bean);
+        GlaciHttpClient client = getHttpClient(applicationContext, annotation, bean);
         if (client != null) {
             // 注入
             ReflectionUtils.makeAccessible(field);
@@ -115,10 +115,10 @@ public class HttpClientMemberProcessor implements MemberProcessor<HttpClient> {
         if (parameterTypes.length != 1) {
             // (此处省略代码) 方法入参超过一个, 报错
         }
-        if (!SimpleOkHttpClient.class.isAssignableFrom(parameterTypes[0])) {
+        if (!GlaciHttpClient.class.isAssignableFrom(parameterTypes[0])) {
             // (此处省略代码) 入参类型不匹配, 报错
         }
-        SimpleOkHttpClient client = getHttpClient(applicationContext, annotation, bean);
+        GlaciHttpClient client = getHttpClient(applicationContext, annotation, bean);
         if (client != null) {
             // 注入
             ReflectionUtils.makeAccessible(method);
@@ -126,7 +126,7 @@ public class HttpClientMemberProcessor implements MemberProcessor<HttpClient> {
         }
     }
 
-    private SimpleOkHttpClient getHttpClient(ApplicationContext applicationContext, HttpClient annotation, Object bean) {
+    private GlaciHttpClient getHttpClient(ApplicationContext applicationContext, HttpClient annotation, Object bean) {
         // (此处省略代码) 从Spring上下文中获取HTTP客户端实例
     }
 

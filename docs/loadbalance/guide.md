@@ -23,8 +23,8 @@
 * 每个HttpClient实例对应一个后端集群, 多个后端集群应创建多个HttpClient实例. 
 
 ```text
-    SimpleOkHttpClient clientFoo;
-    SimpleOkHttpClient clientBar;
+    GlaciHttpClient clientFoo;
+    GlaciHttpClient clientBar;
     
     public byte[] sendToFoo(byte[] request) {
         return client.post("/path/path")
@@ -42,7 +42,7 @@
 * `严禁用一个HttpClient请求不同的后端集群, 这会导致请求被发往错误的后端!!!`
 
 ```text
-    SimpleOkHttpClient client;
+    GlaciHttpClient client;
 
     /**
      * 严禁用一个HttpClient请求不同的后端集群. 
@@ -94,5 +94,5 @@
 * ----推荐日志级别: `INFO`
 * ----需要打印请求报文和响应码的, 可以将`verboseLog`调为true (配合`INFO`级别)
 * ----需要更详细的内容, 可以将级别调为`DEBUG`
-* ----SimpleOkHttpClient(MultiHostOkHttpClient)还支持日志微调, 详见源码中的verboseLogConfig配置
+* ----GlaciHttpClient还支持日志微调, 详见源码中的verboseLogConfig配置
 * ----`建议`将主动探测日志`com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager`输出到单独文件中 (设为`DEBUG`级别可以持续观察后端状态)

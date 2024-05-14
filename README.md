@@ -213,7 +213,7 @@
 
 #### Http client components
 
-* [SimpleOkHttpClient (MultiHostOkHttpClient) : HTTP client supporting load-balancing / backend health-checking / circuit-breaking](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/guide.md)
+* [GlaciHttpClient : HTTP client supporting load-balancing / backend health-checking / circuit-breaking](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/guide.md)
 
 <br>
 

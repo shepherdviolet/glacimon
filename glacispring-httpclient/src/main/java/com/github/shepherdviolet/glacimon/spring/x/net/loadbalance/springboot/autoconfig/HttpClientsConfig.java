@@ -35,7 +35,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.Ht
 import java.util.Map;
 
 /**
- * <p>HttpClients配置: 自动配置SimpleOkHttpClient</p>
+ * <p>HttpClients配置: 自动配置GlaciHttpClient</p>
  * <p>配置前缀: glacispring.httpclients</p>
  *
  * @author shepherdviolet
@@ -50,7 +50,7 @@ public class HttpClientsConfig {
      * <p>我们可以用如下方式获得所有客户端(包括运行时动态添加的):</p>
      *
      * <pre>
-     *     private SimpleOkHttpClient client;
+     *     private GlaciHttpClient client;
      *     <code>@Autowired</code>
      *     public Constructor(HttpClients httpClients) {
      *         this.client = httpClients.get("tagname");
@@ -75,7 +75,7 @@ public class HttpClientsConfig {
     }
 
     /**
-     * 数据转换器(JavaBean -> JSON byte[])
+     * 数据转换器(JavaBean -> byte[])
      */
     @Bean(HttpClients.DATA_CONVERTER_NAME)
     @ConditionalOnClass(name = "com.google.gson.Gson")

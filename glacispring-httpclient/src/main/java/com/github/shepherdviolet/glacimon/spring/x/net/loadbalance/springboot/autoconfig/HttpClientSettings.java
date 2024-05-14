@@ -78,7 +78,7 @@ public class HttpClientSettings {
      * [可运行时修改]
      * <p>设置被动检测到网络故障时阻断后端的时间, 单位ms</p>
      *
-     * <p>当请求服务端时, 发生特定的异常或返回特定的响应码(MultiHostOkHttpClient.needBlock方法决定), 客户端会将该
+     * <p>当请求服务端时, 发生特定的异常或返回特定的响应码(GlaciHttpClient.needBlock方法决定), 客户端会将该
      * 后端服务器的IP/PORT标记为暂不可用状态, 阻断时长就是不可用的时长, 建议比主动探测器的探测间隔大.</p>
      */
     private long passiveBlockDuration = 30000L;
@@ -183,21 +183,21 @@ public class HttpClientSettings {
 
     /**
      * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient设置服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>给GlaciHttpClient设置服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
      * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
      * <p></p>
      * <p>1.该参数优先级高于customServerIssuersEncoded, 同时设置该参数生效</p>
-     * <p>2.设置这个参数会覆盖MultiHostOkHttpClient#setSslConfigSupplier</p>
+     * <p>2.设置这个参数会覆盖GlaciHttpClient#setSslConfigSupplier</p>
      */
     private String customServerIssuerEncoded;
 
     /**
      * <p>[可运行时修改]</p>
-     * <p>给MultiHostOkHttpClient设置服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
+     * <p>给GlaciHttpClient设置服务端证书的受信颁发者, 用于验证自签名的服务器.</p>
      * <p>如果我们访问的服务端的证书是自己签发的, 根证书不合法, 可以用这个方法, 添加服务端的根证书为受信任的颁发者.</p>
      * <p></p>
      * <p>1.该参数优先级低于customServerIssuerEncoded, 同时设置该参数无效</p>
-     * <p>2.设置这个参数会覆盖MultiHostOkHttpClient#setSslConfigSupplier</p>
+     * <p>2.设置这个参数会覆盖GlaciHttpClient#setSslConfigSupplier</p>
      */
     private String[] customServerIssuersEncoded;
 
@@ -237,7 +237,7 @@ public class HttpClientSettings {
      * <p>默认情况下, HTTP客户端会验证访问的域名和服务端证书的CN是否匹配. 你可以利用这个方法强制验证证书DN, 即你只信任指定DN的证书. </p>
      * <p></p>
      * <p>1.该参数优先级高于verifyServerCnByCustomHostname, 同时设置该参数生效</p>
-     * <p>2.设置这个参数会覆盖MultiHostOkHttpClient#setHostnameVerifier</p>
+     * <p>2.设置这个参数会覆盖GlaciHttpClient#setHostnameVerifier</p>
      */
     public String verifyServerDnByCustomDn;
 
@@ -251,7 +251,7 @@ public class HttpClientSettings {
      * 服务端证书的CN. 除此之外, 你也可以利用这个方法强制验证证书CN, 即你只信任指定CN的证书. </p>
      * <p></p>
      * <p>1.该参数优先级低于verifyServerDnByCustomDn, 同时设置该参数无效</p>
-     * <p>2.设置这个参数会覆盖MultiHostOkHttpClient#setHostnameVerifier</p>
+     * <p>2.设置这个参数会覆盖GlaciHttpClient#setHostnameVerifier</p>
      */
     public String verifyServerCnByCustomHostname;
 

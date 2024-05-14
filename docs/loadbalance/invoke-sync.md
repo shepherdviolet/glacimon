@@ -17,8 +17,8 @@
 * 每个HttpClient实例对应一个后端集群, 多个后端集群应创建多个HttpClient实例.
 
 ```text
-    SimpleOkHttpClient clientFoo;
-    SimpleOkHttpClient clientBar;
+    GlaciHttpClient clientFoo;
+    GlaciHttpClient clientBar;
     
     public byte[] sendToFoo(byte[] request) {
         return client.post("/path/path")
@@ -36,7 +36,7 @@
 * `严禁用一个HttpClient请求不同的后端集群, 这会导致请求被发往错误的后端!!!`
 
 ```text
-    SimpleOkHttpClient client;
+    GlaciHttpClient client;
 
     /**
      * 严禁用一个HttpClient请求不同的后端集群. 
@@ -125,7 +125,7 @@
 * 注意:ResponsePackage需要手动关闭(close), 示例中是使用try-with-resource语法糖写法关闭的
 
  ```text
- try (MultiHostOkHttpClient.ResponsePackage responsePackage = client.post("/path/path")
+ try (GlaciHttpClient.ResponsePackage responsePackage = client.post("/path/path")
          .body("hello world".getBytes())
          //.formBody(formBody)//表单提交
          //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
@@ -257,7 +257,7 @@
 * 注意:ResponsePackage需要手动关闭(close), 示例中是使用try-with-resource语法糖写法关闭的
 
  ```text
- try (MultiHostOkHttpClient.ResponsePackage responsePackage = client.get("/path/path")
+ try (GlaciHttpClient.ResponsePackage responsePackage = client.get("/path/path")
          .urlParam("name", "000000001")
          .urlParam("key", "000000001")
          //.httpHeader("Accept", "application/json;charset=utf-8")

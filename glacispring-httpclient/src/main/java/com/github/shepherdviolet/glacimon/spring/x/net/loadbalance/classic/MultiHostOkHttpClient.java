@@ -52,25 +52,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * <p>支持均衡负载的OkHttpClient(简单的示例模板, 建议自行实现)</p>
+ * <p>GlaciHttpClient</p>
  *
  * <p>Java:</p>
  *
  * <pre>{@code
  *
- *      LoadBalancedHostManager hostManager = new LoadBalancedHostManager()
- *              .setHostArray(new String[]{
- *                  "http://127.0.0.1:8080",
- *                  "http://127.0.0.1:8081"
- *              });
- *
- *      LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager()
- *              .setHostManager(hostManager)
- *              .setInspectInterval(5000L)
- *              .setInspector(new TelnetLoadBalanceInspector());
- *
- *      MultiHostOkHttpClient client = new MultiHostOkHttpClient()
- *              .setHostManager(hostManager)
+ *      SimpleOkHttpClient client = new SimpleOkHttpClient()
+ *              .setHosts("http://127.0.0.1:8081,http://127.0.0.1:8082")
+ *              .setInitiativeInspectInterval(5000L)
  *              .setMaxThreads(256)
  *              .setMaxThreadsPerHost(256)
  *              .setPassiveBlockDuration(30000L)
@@ -80,22 +70,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * }</pre>
  *
- * <p>Spring MVC: 需要设置destroy-method="close"</p>
+ * <p>Spring MVC:</p>
  *
  * <pre>{@code
  *
- *  <bean id="loadBalancedHostManager" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager">
+ *  <bean id="simpleOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.SimpleOkHttpClient">
  *      <property name="hosts" value="http://127.0.0.1:8081,http://127.0.0.1:8082"/>
- *  </bean>
- *
- *  <bean id="loadBalancedInspector" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager"
- *      destroy-method="close">
- *      <property name="hostManager" ref="loadBalancedHostManager"/>
- *      <property name="inspectInterval" value="5000"/>
- *  </bean>
- *
- *  <bean id="multiHostOkHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.MultiHostOkHttpClient">
- *      <property name="hostManager" ref="loadBalancedHostManager"/>
+ *      <property name="initiativeInspectInterval" value="5000"/>
  *      <property name="maxThreads" value="256"/>
  *      <property name="maxThreadsPerHost" value="256"/>
  *      <property name="passiveBlockDuration" value="30000"/>
@@ -105,6 +86,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *  </bean>
  *
  * }</pre>
+ *
  *
  * @author shepherdviolet
  */

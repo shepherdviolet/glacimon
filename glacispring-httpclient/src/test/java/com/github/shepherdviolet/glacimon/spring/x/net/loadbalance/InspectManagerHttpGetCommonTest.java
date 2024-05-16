@@ -42,7 +42,6 @@ public class InspectManagerHttpGetCommonTest {
         HttpGetLoadBalanceInspector inspector = new HttpGetLoadBalanceInspector();
         inspector.setUrlSuffix("/get");
         inspector.setTimeout(1000);
-//        inspector.setVerboseLog(true);
 
         LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager();
         inspectManager.setHostManager(hostManager);

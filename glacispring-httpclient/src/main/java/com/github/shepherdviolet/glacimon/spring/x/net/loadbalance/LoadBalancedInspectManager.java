@@ -46,9 +46,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *              //探测间隔(阻断时长为该值的两倍, 探测超时为该值的1/2)
  *              .setInspectInterval(5000L)
  *              //设置探测器
- *              .setInspector(new TelnetLoadBalanceInspector())
- *              //允许输出调试日志
- *              .setVerboseLog(true);
+ *              .setInspector(new TelnetLoadBalanceInspector());
  * }</pre>
  *
  * <pre>{@code

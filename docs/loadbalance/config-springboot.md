@@ -23,7 +23,6 @@ glacispring:
       write-timeout: 10000
       read-timeout: 10000
       max-read-length: 10485760
-      verbose-log: true
     client2:
       # 方式二, 优先级低. 在properties中: glacispring.httpclients.client2.host-list[0]=http://127.0.0.1:8083
       host-list:
@@ -35,7 +34,6 @@ glacispring:
       write-timeout: 10000
       read-timeout: 10000
       max-read-length: 10485760
-      verbose-log: true
 ```
 
 * 以上文为例, 启用并配置了client1和client2两个HTTP请求客户端
@@ -46,7 +44,6 @@ glacispring:
 * 健康被动探测阻断时长(passiveBlockDuration)为30000ms
 * connectTimeout/writeTimeout/readTimeout分别为连接/写/读超时时间, 单位ms
 * maxReadLength数据最大读取长度, 单位字节
-* verbose-log为true: INFO级别可打印更多的日志(请求报文/响应码等)
 
 ### YML中所提供的全部配置说明
 
@@ -103,8 +100,6 @@ glacispring:
       http-code-need-block: 400,500
       # 当异常为指定类型时, 阻断后端 (这里配的两个异常仅作为演示, 无需设置它们, 因为它们已经包含在默认清单里了, 见源码GlaciHttpClient#needBlock)
       throwable-need-block: java.net.SocketException,java.net.SocketTimeoutException
-      # true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
-      verbose-log: false
       # true启用TxTimer对请求耗时的统计(目前只支持同步方式), 详见https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md
       tx-timer-enabled: false
       # true: 开启简易的请求日志追踪(请求日志追加4位数追踪号), 默认false

@@ -51,7 +51,7 @@ public class GlaciHttpClientTest {
                 .setWriteTimeout(10000L)
                 .setReadTimeout(10000L)
                 .setDataConverter(new GsonDataConverter())
-                .setVerboseLogConfig(GlaciHttpClient.VERBOSE_LOG_CONFIG_ALL);
+                .setLogConfig(GlaciHttpClient.LOG_CONFIG_ALL);
 
         // sync
 

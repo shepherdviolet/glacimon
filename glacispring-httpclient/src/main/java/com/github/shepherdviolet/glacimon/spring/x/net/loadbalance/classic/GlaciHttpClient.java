@@ -102,33 +102,30 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //普通日志:全开
-    public static final int LOG_CONFIG_ALL = 0xFFFFFFFF;
-    //普通日志:全关
-    public static final int LOG_CONFIG_NONE = 0x00000000;
-    //普通日志:实际请求的URL(不带参数)
-    public static final int LOG_CONFIG_REAL_URL = 0x00000001;
-    //普通日志:阻断日志
-    public static final int LOG_CONFIG_BLOCK = 0x00000010;
-    //普通日志:默认
-    public static final int LOG_CONFIG_DEFAULT = LOG_CONFIG_ALL;
 
-    //额外日志:全开
-    public static final int VERBOSE_LOG_CONFIG_ALL = 0xFFFFFFFF;
-    //额外日志:全关
-    public static final int VERBOSE_LOG_CONFIG_NONE = 0x00000000;
-    //额外日志:输入参数(默认关)
-    public static final int VERBOSE_LOG_CONFIG_REQUEST_INPUTS = 0x00000001;
-    //额外日志:请求报文体(最高可读性)
-    public static final int VERBOSE_LOG_CONFIG_REQUEST_STRING_BODY= 0x00000010;
-    //额外信息:请求URL(带参数, 且参数未转码)
-    public static final int VERBOSE_LOG_CONFIG_RAW_URL= 0x00000100;
-    //额外日志:响应码
-    public static final int VERBOSE_LOG_CONFIG_RESPONSE_CODE = 0x00001000;
-    //额外日志:默认
-    public static final int VERBOSE_LOG_CONFIG_DEFAULT = VERBOSE_LOG_CONFIG_REQUEST_STRING_BODY |
-                                                        VERBOSE_LOG_CONFIG_RAW_URL |
-                                                        VERBOSE_LOG_CONFIG_RESPONSE_CODE;
+    //日志:实际请求的URL(不带参数)
+    public static final int LOG_CONFIG_REAL_URL = 0x00000001;
+    //日志:阻断日志
+    public static final int LOG_CONFIG_BLOCK = 0x00000010;
+    //日志:请求报文体(最高可读性)
+    public static final int LOG_CONFIG_REQUEST_STRING_BODY = 0x00000100;
+    //日志:响应码
+    public static final int LOG_CONFIG_RESPONSE_CODE = 0x00001000;
+    //信息:请求URL(带参数, 且参数未转码)
+    public static final int LOG_CONFIG_RAW_URL = 0x00010000;
+    //日志:输入参数(默认关)
+    public static final int LOG_CONFIG_REQUEST_INPUTS = 0x00100000;
+
+    //日志:全开
+    public static final int LOG_CONFIG_ALL = 0xFFFFFFFF;
+    //日志:全关
+    public static final int LOG_CONFIG_NONE = 0x00000000;
+    //日志:默认
+    public static final int LOG_CONFIG_DEFAULT = LOG_CONFIG_REAL_URL |
+            LOG_CONFIG_BLOCK |
+            LOG_CONFIG_REQUEST_STRING_BODY |
+            LOG_CONFIG_RESPONSE_CODE |
+            LOG_CONFIG_RAW_URL;
 
     private static final String LOG_PREFIX = "HttpClient | ";
 
@@ -1272,7 +1269,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
 
     private void printPostInputsLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_INPUTS)) {
+        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
             return;
         }
 
@@ -1292,7 +1289,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printPostStringBodyLog(Request request, byte[] parsedData) {
-        if (!CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_STRING_BODY)){
+        if (!CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_STRING_BODY)){
             return;
         }
 
@@ -1318,14 +1315,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printGetInputsLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_INPUTS)) {
+        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
             return;
         }
         logger.debug(genLogPrefix(settings.tag, request) + "GET: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams);
     }
 
     private void printUrlLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_RAW_URL)) {
+        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RAW_URL)) {
             return;
         }
 
@@ -1347,7 +1344,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printResponseCodeLog(Request request, Response response) {
-        if (!CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_RESPONSE_CODE)) {
+        if (!CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RESPONSE_CODE)) {
             return;
         }
         logger.info(genLogPrefix(settings.tag, request) + "Response: code:" + response.code() + ", message:" + response.message());
@@ -1672,7 +1669,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         private String mediaType = MEDIA_TYPE;
         private String encode = ENCODE;
         private Map<String, String> headers;
-        private int verboseLogConfig = VERBOSE_LOG_CONFIG_DEFAULT;
         private int logConfig = LOG_CONFIG_DEFAULT;
         private int recoveryCoefficient = 10;
 
@@ -1713,7 +1709,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                     ", headers=" + headers +
                     ", mediaType='" + mediaType + '\'' +
                     ", encode='" + encode + '\'' +
-                    ", verboseLogConfig=" + verboseLogConfig +
                     ", logConfig=" + logConfig +
                     ", cookieJar=" + cookieJar +
                     ", proxy=" + proxy +
@@ -2491,28 +2486,15 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
     /**
      * [可运行时修改]
-     * 打印更多的日志, 细粒度配置, 默认全打印<br>
-     *
-     * VERBOSE_LOG_CONFIG_ALL:{@value VERBOSE_LOG_CONFIG_ALL}<br>
-     * VERBOSE_LOG_CONFIG_REQUEST_INPUTS:{@value VERBOSE_LOG_CONFIG_REQUEST_INPUTS}<br>
-     * VERBOSE_LOG_CONFIG_REQUEST_STRING_BODY:{@value VERBOSE_LOG_CONFIG_REQUEST_STRING_BODY}<br>
-     * VERBOSE_LOG_CONFIG_RAW_URL:{@value VERBOSE_LOG_CONFIG_RAW_URL}<br>
-     * VERBOSE_LOG_CONFIG_RESPONSE_CODE:{@value VERBOSE_LOG_CONFIG_RESPONSE_CODE}<br>
-     *
-     * @param verboseLogConfig 详细配置
-     */
-    public GlaciHttpClient setVerboseLogConfig(int verboseLogConfig) {
-        settings.verboseLogConfig = verboseLogConfig;
-        return this;
-    }
-
-    /**
-     * [可运行时修改]
-     * 日志打印细粒度配置, 默认全打印<br>
+     * 日志打印细粒度配置, 默认{@value LOG_CONFIG_DEFAULT}<br>
      *
      * LOG_CONFIG_ALL:{@value LOG_CONFIG_ALL}<br>
      * LOG_CONFIG_REAL_URL:{@value LOG_CONFIG_REAL_URL}<br>
      * LOG_CONFIG_BLOCK:{@value LOG_CONFIG_BLOCK}<br>
+     * LOG_CONFIG_REQUEST_STRING_BODY:{@value LOG_CONFIG_REQUEST_STRING_BODY}<br>
+     * LOG_CONFIG_RESPONSE_CODE:{@value LOG_CONFIG_RESPONSE_CODE}<br>
+     * LOG_CONFIG_RAW_URL:{@value LOG_CONFIG_RAW_URL}<br>
+     * LOG_CONFIG_REQUEST_INPUTS:{@value LOG_CONFIG_REQUEST_INPUTS}<br>
      *
      * @param logConfig 详细配置
      */

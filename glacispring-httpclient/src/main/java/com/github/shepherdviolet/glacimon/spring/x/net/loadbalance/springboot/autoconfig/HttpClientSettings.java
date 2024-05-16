@@ -64,7 +64,7 @@ public class HttpClientSettings {
     /**
      * [可运行时修改]
      * 将主动探测器从默认的TELNET型修改为HTTP-GET型
-     * urlSuffix 探测页面URL(例如:http://127.0.0.1:8080/health, 则在此处设置/health), 设置为+telnet+则使用默认的TELNET型
+     * urlSuffix 探测页面URL(例如:http://127.0.0.1:8080/health, 则在此处设置/health), 设置为+telnet+则使用默认的TELNET型, 设置+disable+禁用主动探测
      */
     private String httpGetInspectorUrlSuffix = "+telnet+";
 

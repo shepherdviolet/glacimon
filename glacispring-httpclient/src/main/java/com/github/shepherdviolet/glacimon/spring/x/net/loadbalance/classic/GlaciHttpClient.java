@@ -30,6 +30,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceIn
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.ssl.*;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.EmptyLoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.HttpGetLoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
 import okhttp3.*;
@@ -1810,10 +1811,12 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     /**
      * [可运行时修改]
      * 将主动探测器从TELNET型修改为HTTP-GET型
-     * @param urlSuffix 探测页面URL(例如:http://127.0.0.1:8080/health, 则在此处设置/health), 设置为+telnet+则使用默认的TELNET型
+     * @param urlSuffix 探测页面URL(例如:http://127.0.0.1:8080/health, 则在此处设置/health), 设置为'+telnet+'使用默认的TELNET型, 设置为'+disable+'禁用主动探测
      */
     public GlaciHttpClient setHttpGetInspector(String urlSuffix) {
-        if ("+telnet+".equals(urlSuffix)) {
+        if ("+disable+".equals(urlSuffix)) {
+            inspectManager.setInspector(new EmptyLoadBalanceInspector());
+        } else if ("+telnet+".equals(urlSuffix)) {
             inspectManager.setInspector(new TelnetLoadBalanceInspector());
         } else {
             inspectManager.setInspector(new HttpGetLoadBalanceInspector(urlSuffix, inspectManager.getInspectTimeout()));

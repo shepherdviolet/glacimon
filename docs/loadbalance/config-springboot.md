@@ -73,7 +73,7 @@ glacispring:
       initiative-inspect-interval: 5000
       # true: 当所有后端都被阻断时不发送请求(抛异常), false: 当所有后端都被阻断时随机发送请求
       return-null-if-all-blocked: false
-      # 启用HTTP Get方式进行主动健康探测, URL为http://127.0.0.1:8083/health和http://127.0.0.1:8084/health, (设置+telnet+改回TELNET方式)
+      # 启用HTTP Get方式进行主动健康探测, URL为http://127.0.0.1:8083/health和http://127.0.0.1:8084/health, (设置+telnet+改回TELNET方式, 设置+disable+禁用主动探测)
       http-get-inspector-url-suffix: /health
       # 健康被动探测阻断时长, 单位ms
       passive-block-duration: 30000

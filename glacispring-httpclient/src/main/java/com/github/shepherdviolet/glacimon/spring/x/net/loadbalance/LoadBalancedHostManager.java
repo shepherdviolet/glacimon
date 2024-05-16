@@ -237,6 +237,11 @@ public class LoadBalancedHostManager {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return printHostsStatus(null);
+    }
+
     /**
      * 获得当前远端列表和状态
      */
@@ -254,11 +259,6 @@ public class LoadBalancedHostManager {
             status.put(host.getUrl(), host.getState(currentTimeMillis));
         }
         return status;
-    }
-
-    @Override
-    public String toString() {
-        return printHostsStatus(null);
     }
 
     /**
@@ -290,6 +290,21 @@ public class LoadBalancedHostManager {
                     .append(")");
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * 如果有一个或一个以上的Host被阻断(包括恢复期), 则返回true
+     */
+    public boolean hasBlockedHost() {
+        Host[] hostArray = this.hostArray;
+        long currentTimeMillis = System.currentTimeMillis();
+        boolean hasBlockedHost = false;
+        for (Host host : hostArray) {
+            if (!HostState.OK.equals(host.getState(currentTimeMillis))) {
+                hasBlockedHost = true;
+            }
+        }
+        return hasBlockedHost;
     }
 
     Host[] getHostArray(){

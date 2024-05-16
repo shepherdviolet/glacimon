@@ -22,7 +22,7 @@
         <property name="readTimeout" value="10000"/><!-- 读超时时间, 单位ms -->
         <property name="maxReadLength" value="10485760"/><!-- 数据最大读取长度, 单位字节 -->
         <property name="dataConverter" ref="dataConverter"/><!-- 设置数据转换器, 详见'关于数据转换器`dataConverter`(可选)'章节 -->
-        <!--<property name="logConfig" value="0x00011111"/> 微调输出的日志内容(详见源码)-->
+        <!--<property name="logConfig" value="0x00011111"/> 微调输出的日志内容(详见源码GlaciHttpClient)-->
         <!--<property name="httpGetInspector" ref="/health"/> 启用HTTP Get方式进行主动健康探测, URL为http://127.0.0.1:8083/health和http://127.0.0.1:8084/health, (设置+telnet+改回TELNET方式, 设置+disable+禁用主动探测)-->
     </bean>
 ```

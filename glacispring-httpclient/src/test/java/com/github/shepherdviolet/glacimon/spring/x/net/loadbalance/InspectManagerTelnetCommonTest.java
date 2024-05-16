@@ -43,7 +43,6 @@ public class InspectManagerTelnetCommonTest {
         inspectManager.setHostManager(hostManager);
         inspectManager.setInspectInterval(5000L);
         inspectManager.setInspector(new TelnetLoadBalanceInspector());
-        inspectManager.setVerboseLog(true);
 
     }
 

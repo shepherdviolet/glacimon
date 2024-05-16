@@ -72,7 +72,6 @@ public class LoadBalancedInspectManager implements Closeable {
 
     private AtomicBoolean started = new AtomicBoolean(false);
     private AtomicBoolean closed = new AtomicBoolean(false);
-    private boolean verboseLog = false;
 
     private long inspectInterval = DEFAULT_INSPECT_INTERVAL;
     private long inspectTimeout = DEFAULT_INSPECT_INTERVAL / 2;
@@ -197,14 +196,6 @@ public class LoadBalancedInspectManager implements Closeable {
     }
 
     /**
-     * @param verboseLog true:打印更多的调试日志, 默认关闭
-     */
-    public LoadBalancedInspectManager setVerboseLog(boolean verboseLog) {
-        this.verboseLog = verboseLog;
-        return this;
-    }
-
-    /**
      * 设置客户端的标识
      * @param tag 标识
      */
@@ -218,8 +209,7 @@ public class LoadBalancedInspectManager implements Closeable {
         return "inspectors=" + inspectors +
                 ", inspectInterval=" + inspectInterval +
                 ", inspectTimeout=" + inspectTimeout +
-                ", blockDuration=" + blockDuration +
-                ", verboseLog=" + verboseLog;
+                ", blockDuration=" + blockDuration;
     }
 
     public long getInspectInterval() {
@@ -326,7 +316,7 @@ public class LoadBalancedInspectManager implements Closeable {
                      * 尽量处理掉所有异常, 如果抛出异常, 视为探测失败, 阻断远端
                      */
                     try {
-                        if (!inspector.inspect(host.getUrl(), inspectTimeout, verboseLog)) {
+                        if (!inspector.inspect(host.getUrl(), inspectTimeout)) {
                             block = true;
                             break;
                         }

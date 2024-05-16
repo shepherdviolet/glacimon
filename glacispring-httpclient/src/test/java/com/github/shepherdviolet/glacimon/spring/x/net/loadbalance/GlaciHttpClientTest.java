@@ -46,14 +46,12 @@ public class GlaciHttpClientTest {
                 })
                 .setInitiativeInspectInterval(5000L)
                 .setInspector(new TelnetLoadBalanceInspector())
-                .setInspectorVerboseLog(true)
                 .setPassiveBlockDuration(3000L)
                 .setConnectTimeout(3000L)
                 .setWriteTimeout(10000L)
                 .setReadTimeout(10000L)
                 .setDataConverter(new GsonDataConverter())
-                .setVerboseLogConfig(GlaciHttpClient.VERBOSE_LOG_CONFIG_ALL)
-                .setVerboseLog(true);
+                .setVerboseLogConfig(GlaciHttpClient.VERBOSE_LOG_CONFIG_ALL);
 
         // sync
 

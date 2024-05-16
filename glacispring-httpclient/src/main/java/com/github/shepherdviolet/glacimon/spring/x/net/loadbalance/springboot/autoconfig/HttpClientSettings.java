@@ -70,12 +70,6 @@ public class HttpClientSettings {
 
     /**
      * [可运行时修改]
-     * true: 主动探测器打印更多的日志, 默认false
-     */
-    private boolean inspectorVerboseLog = false;
-
-    /**
-     * [可运行时修改]
      * <p>设置被动检测到网络故障时阻断后端的时间, 单位ms</p>
      *
      * <p>当请求服务端时, 发生特定的异常或返回特定的响应码(GlaciHttpClient.needBlock方法决定), 客户端会将该
@@ -162,12 +156,6 @@ public class HttpClientSettings {
      * 指定需要阻断的异常类型, 例如:com.package.BarException,com.package.FooException
      */
     private String throwableNeedBlock;
-
-    /**
-     * [可运行时修改]
-     * true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
-     */
-    private boolean verboseLog = false;
 
     /**
      * [可运行时修改]
@@ -295,14 +283,6 @@ public class HttpClientSettings {
         this.httpGetInspectorUrlSuffix = httpGetInspectorUrlSuffix;
     }
 
-    public boolean isInspectorVerboseLog() {
-        return inspectorVerboseLog;
-    }
-
-    public void setInspectorVerboseLog(boolean inspectorVerboseLog) {
-        this.inspectorVerboseLog = inspectorVerboseLog;
-    }
-
     public long getPassiveBlockDuration() {
         return passiveBlockDuration;
     }
@@ -415,14 +395,6 @@ public class HttpClientSettings {
         this.throwableNeedBlock = throwableNeedBlock;
     }
 
-    public boolean isVerboseLog() {
-        return verboseLog;
-    }
-
-    public void setVerboseLog(boolean verboseLog) {
-        this.verboseLog = verboseLog;
-    }
-
     public boolean isTxTimerEnabled() {
         return txTimerEnabled;
     }
@@ -503,7 +475,6 @@ public class HttpClientSettings {
                 ", initiativeInspectInterval=" + initiativeInspectInterval +
                 ", returnNullIfAllBlocked=" + returnNullIfAllBlocked +
                 ", httpGetInspectorUrlSuffix='" + httpGetInspectorUrlSuffix + '\'' +
-                ", inspectorVerboseLog=" + inspectorVerboseLog +
                 ", passiveBlockDuration=" + passiveBlockDuration +
                 ", mediaType='" + mediaType + '\'' +
                 ", encode='" + encode + '\'' +
@@ -518,7 +489,6 @@ public class HttpClientSettings {
                 ", maxReadLength=" + maxReadLength +
                 ", httpCodeNeedBlock='" + httpCodeNeedBlock + '\'' +
                 ", throwableNeedBlock='" + throwableNeedBlock + '\'' +
-                ", verboseLog=" + verboseLog +
                 ", txTimerEnabled=" + txTimerEnabled +
                 ", requestTraceEnabled=" + requestTraceEnabled +
                 ", customServerIssuerEncoded='" + customServerIssuerEncoded + '\'' +

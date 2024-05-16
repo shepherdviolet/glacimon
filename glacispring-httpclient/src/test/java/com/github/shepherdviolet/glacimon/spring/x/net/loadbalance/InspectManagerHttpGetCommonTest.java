@@ -48,7 +48,6 @@ public class InspectManagerHttpGetCommonTest {
         inspectManager.setHostManager(hostManager);
         inspectManager.setInspectInterval(5000L);
         inspectManager.setInspector(inspector);
-        inspectManager.setVerboseLog(true);
 
     }
 

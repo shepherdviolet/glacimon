@@ -1292,16 +1292,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printPostStringBodyLog(Request request, byte[] parsedData) {
-        if (settings.verboseLog) {
-            if (!logger.isInfoEnabled()) {
-                return;
-            }
-        } else {
-            if (!logger.isDebugEnabled()) {
-                return;
-            }
-        }
-
         if (!CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_REQUEST_STRING_BODY)){
             return;
         }
@@ -1357,15 +1347,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printResponseCodeLog(Request request, Response response) {
-        if (settings.verboseLog) {
-            if (!logger.isInfoEnabled()) {
-                return;
-            }
-        } else {
-            if (!logger.isDebugEnabled()) {
-                return;
-            }
-        }
         if (!CheckUtils.isFlagMatch(settings.verboseLogConfig, VERBOSE_LOG_CONFIG_RESPONSE_CODE)) {
             return;
         }
@@ -1691,7 +1672,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         private String mediaType = MEDIA_TYPE;
         private String encode = ENCODE;
         private Map<String, String> headers;
-        private boolean verboseLog = false;
         private int verboseLogConfig = VERBOSE_LOG_CONFIG_DEFAULT;
         private int logConfig = LOG_CONFIG_DEFAULT;
         private int recoveryCoefficient = 10;
@@ -1733,7 +1713,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                     ", headers=" + headers +
                     ", mediaType='" + mediaType + '\'' +
                     ", encode='" + encode + '\'' +
-                    ", verboseLog=" + verboseLog +
                     ", verboseLogConfig=" + verboseLogConfig +
                     ", logConfig=" + logConfig +
                     ", cookieJar=" + cookieJar +
@@ -1834,16 +1813,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             inspector = new TelnetLoadBalanceInspector();
         }
         inspectManager.setInspector(inspector);
-        return this;
-    }
-
-    /**
-     * [线程安全/异步生效/可运行时修改]
-     * true: 主动探测器打印更多的日志, 默认false
-     * @param verboseLog true: 主动探测器打印更多的日志, 默认false
-     */
-    public GlaciHttpClient setInspectorVerboseLog(boolean verboseLog) {
-        inspectManager.setVerboseLog(verboseLog);
         return this;
     }
 
@@ -2517,16 +2486,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } else if (!enabled){
             txTimer = null;
         }
-        return this;
-    }
-
-    /**
-     * [可运行时修改]
-     * true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
-     * @param verboseLog true: INFO级别可打印更多的日志(请求报文/响应码等), 默认false
-     */
-    public GlaciHttpClient setVerboseLog(boolean verboseLog) {
-        settings.verboseLog = verboseLog;
         return this;
     }
 

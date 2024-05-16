@@ -220,7 +220,6 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setInitiativeInspectInterval(settings.getInitiativeInspectInterval())
                 .setReturnNullIfAllBlocked(settings.isReturnNullIfAllBlocked())
                 .setHttpGetInspector(settings.getHttpGetInspectorUrlSuffix())
-                .setInspectorVerboseLog(settings.isInspectorVerboseLog())
                 .setPassiveBlockDuration(settings.getPassiveBlockDuration())
                 .setMediaType(settings.getMediaType())
                 .setEncode(settings.getEncode())
@@ -236,7 +235,6 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setMaxReadLength(settings.getMaxReadLength())
                 .setHttpCodeNeedBlock(settings.getHttpCodeNeedBlock())
                 .setThrowableNeedBlock(settings.getThrowableNeedBlock())
-                .setVerboseLog(settings.isVerboseLog())
                 .setTxTimerEnabled(settings.isTxTimerEnabled())
                 .setRequestTraceEnabled(settings.isRequestTraceEnabled())
                 .setCustomServerIssuerEncoded(settings.getCustomServerIssuerEncoded())
@@ -448,14 +446,6 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
         });
 
         installUpdater(new SingleValueUpdater(
-                Arrays.asList("inspectorVerboseLog", "inspector-verbose-log")) {
-            @Override
-            public void applySetting(HttpClient client, String value) throws Exception {
-                client.setInspectorVerboseLog(Boolean.parseBoolean(value));
-            }
-        });
-
-        installUpdater(new SingleValueUpdater(
                 Arrays.asList("passiveBlockDuration", "passive-block-duration")) {
             @Override
             public void applySetting(HttpClient client, String value) throws Exception {
@@ -556,14 +546,6 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
             @Override
             public void applySetting(HttpClient client, String value) throws Exception {
                 client.setThrowableNeedBlock(value);
-            }
-        });
-
-        installUpdater(new SingleValueUpdater(
-                Arrays.asList("verboseLog", "verbose-log")) {
-            @Override
-            public void applySetting(HttpClient client, String value) throws Exception {
-                client.setVerboseLog(Boolean.parseBoolean(value));
             }
         });
 

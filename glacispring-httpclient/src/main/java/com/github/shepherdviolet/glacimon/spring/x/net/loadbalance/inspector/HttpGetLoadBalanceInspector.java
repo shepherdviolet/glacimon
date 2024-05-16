@@ -61,7 +61,7 @@ public class HttpGetLoadBalanceInspector implements FixedTimeoutLoadBalanceInspe
     }
 
     @Override
-    public boolean inspect(String url, long timeout, boolean verboseLog) {
+    public boolean inspect(String url, long timeout) {
         if (closed) {
             //被销毁的探测器始终返回探测成功
             return true;

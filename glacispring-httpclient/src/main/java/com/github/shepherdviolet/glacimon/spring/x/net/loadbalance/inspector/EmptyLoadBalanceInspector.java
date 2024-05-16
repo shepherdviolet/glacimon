@@ -29,7 +29,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceIn
 public class EmptyLoadBalanceInspector implements LoadBalanceInspector {
 
     @Override
-    public boolean inspect(String url, long timeout, boolean verboseLog) {
+    public boolean inspect(String url, long timeout) {
         // Do nothing
         return true;
     }

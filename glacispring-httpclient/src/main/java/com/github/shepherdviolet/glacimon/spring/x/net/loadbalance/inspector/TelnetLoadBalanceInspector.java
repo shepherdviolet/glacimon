@@ -38,7 +38,7 @@ public class TelnetLoadBalanceInspector implements LoadBalanceInspector {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public boolean inspect(String url, long timeout, boolean verboseLog) {
+    public boolean inspect(String url, long timeout) {
         try {
             //解析url
             URI uri = URI.create(url);

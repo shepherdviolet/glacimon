@@ -771,7 +771,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         }
 
         if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
-            logger.info(genLogPrefix(settings.tag, request) + "POST: real-url:" + okRequest.url().toString());
+            logger.info(genLogPrefix(settings.tag, request) + "POST: real-url:" + okRequest.url());
         }
 
         //请求
@@ -797,7 +797,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         }
 
         if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
-            logger.info(genLogPrefix(settings.tag, request) + "GET: real-url:" + okRequest.url().toString());
+            logger.info(genLogPrefix(settings.tag, request) + "GET: real-url:" + okRequest.url());
         }
 
         //请求
@@ -873,7 +873,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             }
 
             if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
-                logger.info(genLogPrefix(settings.tag, request) + "POST: real-url:" + okRequest.url().toString());
+                logger.info(genLogPrefix(settings.tag, request) + "POST: real-url:" + okRequest.url());
             }
 
             //请求
@@ -906,7 +906,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             }
 
             if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
-                logger.info(genLogPrefix(settings.tag, request) + "GET: real-url:" + okRequest.url().toString());
+                logger.info(genLogPrefix(settings.tag, request) + "GET: real-url:" + okRequest.url());
             }
 
             //请求
@@ -961,7 +961,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                         if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_BLOCK)) {
                             logger.info(genLogPrefix(settings.tag, request) + "Bad host " + host.getUrl() + ", block for " + passiveBlockDuration +
                                     " ms, recovery period (half-open) " + (passiveBlockDuration * settings.recoveryCoefficient) +
-                                    " ms. Passive block, recoveryCoefficient " + settings.recoveryCoefficient);                        }
+                                    " ms. Passive block, recoveryCoefficient " + settings.recoveryCoefficient);
+                        }
                     } else {
                         //反馈健康(反馈健康无需计算阻断时长)
                         host.feedback(true, 0);
@@ -1269,7 +1270,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
 
     private void printPostInputsLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
+        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
             return;
         }
 
@@ -1285,11 +1286,11 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } else {
             bodyLog = ", body: null";
         }
-        logger.debug(genLogPrefix(settings.tag, request) + "POST: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams + bodyLog);
+        logger.info(genLogPrefix(settings.tag, request) + "POST: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams + bodyLog);
     }
 
     private void printPostStringBodyLog(Request request, byte[] parsedData) {
-        if (!CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_STRING_BODY)){
+        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_STRING_BODY)){
             return;
         }
 
@@ -1315,14 +1316,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printGetInputsLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
+        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
             return;
         }
-        logger.debug(genLogPrefix(settings.tag, request) + "GET: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams);
+        logger.info(genLogPrefix(settings.tag, request) + "GET: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams);
     }
 
     private void printUrlLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isDebugEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RAW_URL)) {
+        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RAW_URL)) {
             return;
         }
 
@@ -1340,11 +1341,11 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             }
 
         }
-        logger.debug(genLogPrefix(settings.tag, request) + stringBuilder.toString());
+        logger.info(genLogPrefix(settings.tag, request) + stringBuilder);
     }
 
     private void printResponseCodeLog(Request request, Response response) {
-        if (!CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RESPONSE_CODE)) {
+        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RESPONSE_CODE)) {
             return;
         }
         logger.info(genLogPrefix(settings.tag, request) + "Response: code:" + response.code() + ", message:" + response.message());

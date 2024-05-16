@@ -241,7 +241,8 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setCustomServerIssuersEncoded(settings.getCustomServerIssuersEncoded())
                 .setCustomClientCertEncoded(settings.getCustomClientCertEncoded())
                 .setCustomClientCertsEncoded(settings.getCustomClientCertsEncoded())
-                .setCustomClientCertKeyEncoded(settings.getCustomClientCertKeyEncoded());
+                .setCustomClientCertKeyEncoded(settings.getCustomClientCertKeyEncoded())
+                .setLogConfig(settings.logConfig);
     }
 
     /**
@@ -627,6 +628,18 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
             @Override
             public void applyReset(HttpClient client) throws Exception {
                 client.setHostnameVerifier(null);
+            }
+        });
+
+        installUpdater(new SingleValueUpdater(
+                Arrays.asList("logConfig", "log-config")) {
+            @Override
+            public void applySetting(HttpClient client, String value) throws Exception {
+                if (value != null && value.length() == 10 && value.startsWith("0x")) {
+                    client.setLogConfig(Integer.parseInt(value.substring(2), 16));
+                } else {
+                    client.setLogConfig(Integer.parseInt(value));
+                }
             }
         });
 

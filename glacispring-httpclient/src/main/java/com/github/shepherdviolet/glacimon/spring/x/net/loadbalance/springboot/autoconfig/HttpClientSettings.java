@@ -243,6 +243,22 @@ public class HttpClientSettings {
      */
     public String verifyServerCnByCustomHostname;
 
+    /**
+     * [可运行时修改]
+     * 日志打印细粒度配置, 默认GlaciHttpClient.LOG_CONFIG_DEFAULT<br>
+     *
+     * LOG_CONFIG_ALL: GlaciHttpClient.LOG_CONFIG_ALL<br>
+     * LOG_CONFIG_REAL_URL: GlaciHttpClient.LOG_CONFIG_REAL_URL<br>
+     * LOG_CONFIG_BLOCK: GlaciHttpClient.LOG_CONFIG_BLOCK<br>
+     * LOG_CONFIG_REQUEST_STRING_BODY: GlaciHttpClient.LOG_CONFIG_REQUEST_STRING_BODY<br>
+     * LOG_CONFIG_RESPONSE_CODE: GlaciHttpClient.LOG_CONFIG_RESPONSE_CODE<br>
+     * LOG_CONFIG_RAW_URL: GlaciHttpClient.LOG_CONFIG_RAW_URL<br>
+     * LOG_CONFIG_REQUEST_INPUTS: GlaciHttpClient.LOG_CONFIG_REQUEST_INPUTS<br>
+     *
+     * @param logConfig 详细配置
+     */
+    public int logConfig;
+
     public String getHosts() {
         return hosts;
     }
@@ -467,6 +483,14 @@ public class HttpClientSettings {
         this.verifyServerCnByCustomHostname = verifyServerCnByCustomHostname;
     }
 
+    public int getLogConfig() {
+        return logConfig;
+    }
+
+    public void setLogConfig(int logConfig) {
+        this.logConfig = logConfig;
+    }
+
     @Override
     public String toString() {
         return "HttpClientSettings{" +
@@ -498,6 +522,7 @@ public class HttpClientSettings {
                 ", customClientCertKeyEncoded='" + customClientCertKeyEncoded + '\'' +
                 ", verifyServerDnByCustomDn='" + verifyServerDnByCustomDn + '\'' +
                 ", verifyServerCnByCustomHostname='" + verifyServerCnByCustomHostname + '\'' +
+                ", logConfig=" + logConfig +
                 '}';
     }
 }

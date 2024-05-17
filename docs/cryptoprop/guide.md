@@ -331,6 +331,48 @@ CryptoProp未监听Environment中PropertySources的增删事件, 对于后续增
 CryptoPropBeanFactoryPostProcessor#convertPropertySources处理一遍即可.
 ```
 
+## 支持哪些属性配置方式?
+
+* 启动参数
+
+```
+-Dspring.datasource.password=CIPHER(bhkSKmy/80y8kW91XRFoVQesS/UpT6Mq1zWxcuMUGNQ=)
+```
+
+* SpringBoot默认的yaml和properties文件
+
+```
+application.yaml
+application-<env>.yaml
+application.properties
+application-<env>.properties
+......
+```
+
+* 用注解加载的yaml和properties文件
+
+```
+@PropertySource({
+        "classpath:properties/general.properties",
+})
+@PropertySource(factory = OptionalYamlPropertySourceFactory.class, value = {
+        "classpath:properties/yaml.yml",
+})
+```
+
+* Apollo配置中心
+
+```
+注意, 请使用apollo-client 1.4.0及以上版本! 老版本实时修改属性会出现异常!
+```
+
+* `不支持`XML加载的properties文件
+
+```
+<!-- 不支持这样配置的properties文件 -->
+<context:property-placeholder location="classpath*:properties/byxml.properties" />
+```
+
 ## 支持哪些属性获取方式?
 
 * `@Value`中的`${...}`占位符 支持自动解密

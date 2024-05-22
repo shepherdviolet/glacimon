@@ -34,11 +34,13 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.Emp
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.HttpGetLoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
 import okhttp3.*;
+import okio.BufferedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.annotation.Nullable;
 import javax.net.ssl.HostnameVerifier;
 import java.io.Closeable;
 import java.io.IOException;
@@ -136,7 +138,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final long PASSIVE_BLOCK_DURATION = 30000L;
-    private static final String MEDIA_TYPE = "application/json;charset=utf-8";
+    private static final String MEDIA_TYPE_JSON = "application/json;charset=utf-8";
+    private static final String MEDIA_TYPE_FORM = "application/x-www-form-urlencoded";
     private static final String ENCODE = "utf-8";
     private static final String TXTIMER_GROUP_SEND = "GlaciHttpClient-Send-";
     private static final String TXTIMER_GROUP_CONNECT = "GlaciHttpClient-Connect-";
@@ -1127,7 +1130,9 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         if (request.body != null) {
             //bytes
             printPostStringBodyLog(request, null);
-            requestBody = RequestBody.create(MediaType.parse(request.mediaType != null ? request.mediaType : settings.mediaType), request.body);
+            requestBody = RequestBody.create(
+                    MediaType.parse(request.mediaType != null ? request.mediaType : (settings.mediaType != null ? settings.mediaType : MEDIA_TYPE_JSON)),
+                    request.body);
         } else if (request.formBody != null) {
             //form
             printPostStringBodyLog(request, null);
@@ -1140,7 +1145,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                     throw new RequestBuildException("Error while encode formBody to url format", e);
                 }
             }
-            requestBody = formBuilder.build();
+            requestBody = new RequestBodyWrapper(formBuilder.build(),
+                    MediaType.parse(request.mediaType != null ? request.mediaType : (settings.mediaType != null ? settings.mediaType : MEDIA_TYPE_FORM)));
         } else if (request.beanBody != null) {
             //bean
             DataConverter dataConverter = request.dataConverter != null ? request.dataConverter : settings.dataConverter;
@@ -1154,14 +1160,18 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                 throw new RequestConvertException("Error while convert bean to byte[]", e);
             }
             printPostStringBodyLog(request, requestBodyBytes);
-            requestBody = RequestBody.create(MediaType.parse(request.mediaType != null ? request.mediaType : settings.mediaType), requestBodyBytes);
+            requestBody = RequestBody.create(
+                    MediaType.parse(request.mediaType != null ? request.mediaType : (settings.mediaType != null ? settings.mediaType : MEDIA_TYPE_JSON)),
+                    requestBodyBytes);
         } else if (request.customBody != null) {
             //custom
             printPostStringBodyLog(request, null);
             requestBody = request.customBody;
         }else {
             //null
-            requestBody = RequestBody.create(MediaType.parse(request.mediaType != null ? request.mediaType : settings.mediaType), new byte[0]);
+            requestBody = RequestBody.create(
+                    MediaType.parse(request.mediaType != null ? request.mediaType : (settings.mediaType != null ? settings.mediaType : MEDIA_TYPE_JSON)),
+                    new byte[0]);
         }
 
         okhttp3.Request.Builder builder = new okhttp3.Request.Builder()
@@ -1387,7 +1397,56 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 响应实例 //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // RequestBody包装类 ///////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    // 让FormBody也支持ContentType设置
+    private static class RequestBodyWrapper extends RequestBody {
+
+        private final RequestBody provider;
+        private final MediaType mediaType;
+
+        public RequestBodyWrapper(RequestBody provider, MediaType mediaType) {
+            super();
+            this.provider = provider;
+            this.mediaType = mediaType;
+        }
+
+        @Override
+        public long contentLength() throws IOException {
+            return provider.contentLength();
+        }
+
+        @Override
+        public boolean isDuplex() {
+            return provider.isDuplex();
+        }
+
+        @Override
+        public boolean isOneShot() {
+            return provider.isOneShot();
+        }
+
+        @Nullable
+        @Override
+        public MediaType contentType() {
+            if (mediaType != null) {
+                return mediaType;
+            }
+            return provider.contentType();
+        }
+
+        @Override
+        public void writeTo(BufferedSink bufferedSink) throws IOException {
+            provider.writeTo(bufferedSink);
+        }
+
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 响应实例 ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -1667,7 +1726,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     public static class Settings {
 
         private long passiveBlockDuration = PASSIVE_BLOCK_DURATION;
-        private String mediaType = MEDIA_TYPE;
+        private String mediaType = null;
         private String encode = ENCODE;
         private Map<String, String> headers;
         private int logConfig = LOG_CONFIG_DEFAULT;

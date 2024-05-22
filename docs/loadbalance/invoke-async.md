@@ -77,7 +77,7 @@
          //.formBody(formBody)//表单提交
          //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .enqueue(new GlaciHttpClient.BytesCallback() {
              public void onSucceed(byte[] body) {
@@ -109,7 +109,7 @@
          //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
          //.autoClose(false)//默认为true
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .enqueue(new GlaciHttpClient.InputStreamCallback() {
              public void onSucceed(InputStream inputStream) throws Exception {
@@ -141,7 +141,7 @@
          //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
          //.autoClose(false)//默认为true
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .enqueue(new GlaciHttpClient.ResponsePackageCallback() {
              public void onSucceed(GlaciHttpClient.ResponsePackage responsePackage) throws Exception {
@@ -170,6 +170,9 @@ requestMap.put("name", "wang wang");
 requestMap.put("key", "963");
 client.post("/path/path")
         .beanBody(requestMap)
+        //.httpHeader("Accept", "application/json;charset=utf-8")
+        //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
+        //.encode("utf-8")
         .enqueue(new GlaciHttpClient.BeanCallback<Map<String, Object>>() {
             @Override
             public void onSucceed(Map<String, Object> bean) throws Exception {
@@ -200,7 +203,7 @@ client.post("/path/path")
          //.formBody(formBody)//表单提交
          //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .enqueue(new GlaciHttpClient.BeanCallback<ResponseBean>() {
              public void onSucceed(ResponseBean response) {
@@ -230,7 +233,7 @@ client.post("/path/path")
          .urlParam("name", "000000001")
          .urlParam("key", "000000001")
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .enqueue(new GlaciHttpClient.BytesCallback() {
              public void onSucceed(byte[] body) {
@@ -260,7 +263,7 @@ client.post("/path/path")
          .urlParam("key", "000000001")
          //.autoClose(false)//默认为true
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .enqueue(new GlaciHttpClient.InputStreamCallback() {
              public void onSucceed(InputStream inputStream) throws Exception {
@@ -290,7 +293,7 @@ client.post("/path/path")
          .urlParam("key", "000000001")
          //.autoClose(false)//默认为true
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .enqueue(new GlaciHttpClient.ResponsePackageCallback() {
              public void onSucceed(GlaciHttpClient.ResponsePackage responsePackage) throws Exception {
@@ -317,6 +320,9 @@ client.post("/path/path")
 client.get("/path/path")
         .urlParam("name", "000000001")
         .urlParam("key", "000000001")
+        //.httpHeader("Accept", "application/json;charset=utf-8")
+        //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
+        //.encode("utf-8")
         .enqueue(new GlaciHttpClient.BeanCallback<Map<String, Object>>() {
             @Override
             public void onSucceed(Map<String, Object> bean) throws Exception {
@@ -345,7 +351,7 @@ client.get("/path/path")
          .urlParam("name", "000000001")
          .urlParam("key", "000000001")
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .enqueue(new GlaciHttpClient.BeanCallback<ResponseBean>() {
              public void onSucceed(ResponseBean response) {

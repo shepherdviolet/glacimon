@@ -77,7 +77,7 @@
               //.formBody(formBody)//表单提交
               //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
               //.httpHeader("Accept", "application/json;charset=utf-8")
-              //.mediaType("application/json;charset=utf-8")
+              //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
               //.encode("utf-8")
               .sendForBytes();
   } catch (NoHostException e) {
@@ -102,7 +102,7 @@
          //.formBody(formBody)//表单提交
          //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .sendForInputStream()) {
 
@@ -130,7 +130,7 @@
          //.formBody(formBody)//表单提交
          //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .send()) {
 
@@ -159,6 +159,9 @@
         requestMap.put("key", "963");
         Map<String, Object> responseMap = client.post("/path/path")
                 .beanBody(requestMap)
+                //.httpHeader("Accept", "application/json;charset=utf-8")
+                //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
+                //.encode("utf-8")
                 .sendForBean(Map.class);
  } catch (NoHostException e) {
      //当hosts没有配置任何后端地址, 或配置returnNullIfAllBlocked=true时所有后端都处于异常状态, 则抛出该异常
@@ -184,7 +187,7 @@
               //.formBody(formBody)//表单提交
               //.beanBody(bean)//发送JavaBean, 需要配置dataConverter, 见配置文档
               //.httpHeader("Accept", "application/json;charset=utf-8")
-              //.mediaType("application/json;charset=utf-8")
+              //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
               //.encode("utf-8")
               .sendForBean(ResponseBean.class);
   } catch (NoHostException e) {
@@ -210,7 +213,7 @@
               .urlParam("name", "000000001")
               .urlParam("key", "000000001")
               //.httpHeader("Accept", "application/json;charset=utf-8")
-              //.mediaType("application/json;charset=utf-8")
+              //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
               //.encode("utf-8")
               .sendForBytes();
   } catch (NoHostException e) {
@@ -234,7 +237,7 @@
          .urlParam("name", "000000001")
          .urlParam("key", "000000001")
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .sendForInputStream()) {
 
@@ -261,7 +264,7 @@
          .urlParam("name", "000000001")
          .urlParam("key", "000000001")
          //.httpHeader("Accept", "application/json;charset=utf-8")
-         //.mediaType("application/json;charset=utf-8")
+         //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
          //.encode("utf-8")
          .send()) {
 
@@ -288,6 +291,9 @@
         Map<String, Object> responseMap = client.get("/path/path")
                 .urlParam("name", "000000001")
                 .urlParam("key", "000000001")
+                //.httpHeader("Accept", "application/json;charset=utf-8")
+                //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
+                //.encode("utf-8")
                 .sendForBean(Map.class);
  } catch (NoHostException e) {
      //当hosts没有配置任何后端地址, 或配置returnNullIfAllBlocked=true时所有后端都处于异常状态, 则抛出该异常
@@ -311,7 +317,7 @@
               .urlParam("name", "000000001")
               .urlParam("key", "000000001")
               //.httpHeader("Accept", "application/json;charset=utf-8")
-              //.mediaType("application/json;charset=utf-8")
+              //.mediaType("application/json;charset=utf-8") //不要用httpHeader方法设置Content-Type, 请用mediaType方法设置
               //.encode("utf-8")
               .sendForBean(ResponseBean.class);
   } catch (NoHostException e) {

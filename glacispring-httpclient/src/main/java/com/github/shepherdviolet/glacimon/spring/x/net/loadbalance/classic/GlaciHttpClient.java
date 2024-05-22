@@ -1130,9 +1130,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         if (request.body != null) {
             //bytes
             printPostStringBodyLog(request, null);
-            requestBody = RequestBody.create(
-                    MediaType.parse(request.mediaType != null ? request.mediaType : (settings.mediaType != null ? settings.mediaType : MEDIA_TYPE_JSON)),
-                    request.body);
+            requestBody = RequestBody.create(MediaType.parse(getMediaType(request, settings, MEDIA_TYPE_JSON)), request.body);
         } else if (request.formBody != null) {
             //form
             printPostStringBodyLog(request, null);
@@ -1145,8 +1143,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                     throw new RequestBuildException("Error while encode formBody to url format", e);
                 }
             }
-            requestBody = new RequestBodyWrapper(formBuilder.build(),
-                    MediaType.parse(request.mediaType != null ? request.mediaType : (settings.mediaType != null ? settings.mediaType : MEDIA_TYPE_FORM)));
+            requestBody = new RequestBodyWrapper(formBuilder.build(), MediaType.parse(getMediaType(request, settings, MEDIA_TYPE_FORM)));
         } else if (request.beanBody != null) {
             //bean
             DataConverter dataConverter = request.dataConverter != null ? request.dataConverter : settings.dataConverter;
@@ -1160,18 +1157,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                 throw new RequestConvertException("Error while convert bean to byte[]", e);
             }
             printPostStringBodyLog(request, requestBodyBytes);
-            requestBody = RequestBody.create(
-                    MediaType.parse(request.mediaType != null ? request.mediaType : (settings.mediaType != null ? settings.mediaType : MEDIA_TYPE_JSON)),
-                    requestBodyBytes);
+            requestBody = RequestBody.create(MediaType.parse(getMediaType(request, settings, MEDIA_TYPE_JSON)), requestBodyBytes);
         } else if (request.customBody != null) {
             //custom
             printPostStringBodyLog(request, null);
             requestBody = request.customBody;
         }else {
             //null
-            requestBody = RequestBody.create(
-                    MediaType.parse(request.mediaType != null ? request.mediaType : (settings.mediaType != null ? settings.mediaType : MEDIA_TYPE_JSON)),
-                    new byte[0]);
+            requestBody = RequestBody.create(MediaType.parse(getMediaType(request, settings, MEDIA_TYPE_JSON)), new byte[0]);
         }
 
         okhttp3.Request.Builder builder = new okhttp3.Request.Builder()
@@ -1269,6 +1262,28 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
      */
     protected boolean isSucceed(Response response) {
         return response.isSuccessful();
+    }
+
+    private String getMediaType(Request request, Settings settings, String defaultMediaType) {
+        if (request.mediaType != null) {
+            return request.mediaType;
+        }
+        if (request.headers != null) {
+            String contentType = request.headers.get("Content-Type");
+            if (contentType != null) {
+                return contentType;
+            }
+        }
+        if (settings.mediaType != null) {
+            return settings.mediaType;
+        }
+        if (settings.headers != null) {
+            String contentType = settings.headers.get("Content-Type");
+            if (contentType != null) {
+                return contentType;
+            }
+        }
+        return defaultMediaType;
     }
 
 

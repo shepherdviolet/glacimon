@@ -51,6 +51,8 @@ public class CryptoPropBeanFactoryPostProcessor implements BeanFactoryPostProces
     private ApplicationContext applicationContext;
     private Environment environment;
 
+    private CryptoPropEnv cryptoPropEnv;
+
     public CryptoPropBeanFactoryPostProcessor() {
         // 使用默认Decryptor
         this(new SimpleCryptoPropDecryptor());
@@ -82,7 +84,8 @@ public class CryptoPropBeanFactoryPostProcessor implements BeanFactoryPostProces
             throw new RuntimeException("CryptoProp | 'ICryptoPropertySourceConverter' is not configured in ApplicationContext");
         }
         Map<String, PropertySourcesPlaceholderConfigurer> configurers = applicationContext.getBeansOfType(PropertySourcesPlaceholderConfigurer.class, false, false);
-        propertySourceConverter.setEnv(new CryptoPropEnv(environment, configurers.values()));
+        cryptoPropEnv = new CryptoPropEnv(environment, configurers.values());
+        propertySourceConverter.setEnv(cryptoPropEnv);
     }
 
     /**
@@ -91,6 +94,9 @@ public class CryptoPropBeanFactoryPostProcessor implements BeanFactoryPostProces
     public void convertPropertySources() {
         if (propertySourceConverter == null) {
             throw new RuntimeException("CryptoProp | 'ICryptoPropertySourceConverter' is not configured in ApplicationContext");
+        }
+        if (cryptoPropEnv == null) {
+            throw new RuntimeException("CryptoProp | 'cryptoPropEnv' is null");
         }
 
         if (!(environment instanceof ConfigurableEnvironment)) {
@@ -102,6 +108,18 @@ public class CryptoPropBeanFactoryPostProcessor implements BeanFactoryPostProces
             throw new RuntimeException("CryptoProp | 'environment' in ApplicationContext " +
                     "is not an instance of ConfigurableEnvironment, the crypto properties decryption feature cannot work." +
                     ignoreExceptionPrompt());
+        }
+
+        /*
+         * 将本地属性加入Environment
+         * XML方式(<context:property-placeholder location="..." />)加载的配置文件, Spring不会把它们加入Environment,
+         * 为了让CryptoProp能够解密XML加载的配置文件, 我们默认会将它们加入Environment, 如果不需要, 可以设置本参数为false, 默认true
+         */
+        if (!"false".equals(cryptoPropEnv.getProperty(CryptoPropConstants.OPTION_ADD_LOCAL_TO_ENV)) &&
+                !cryptoPropEnv.getLocalProperties().isEmpty()) {
+            ((ConfigurableEnvironment) environment).getPropertySources().addLast(
+                    new PropertiesPropertySource(PropertySourcesPlaceholderConfigurer.LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME,
+                            cryptoPropEnv.getLocalProperties()));
         }
 
         // 将Environment中的PropertySources转换为支持解密的代理类

@@ -88,4 +88,8 @@ public class CryptoPropEnv {
         }
     }
 
+    public Properties getLocalProperties() {
+        return local;
+    }
+
 }

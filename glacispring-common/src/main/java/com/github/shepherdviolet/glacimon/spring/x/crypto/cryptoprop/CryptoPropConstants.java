@@ -42,6 +42,13 @@ public class CryptoPropConstants {
     public static final String OPTION_INTERCEPT_BY_PROXY = "glacispring.crypto-prop.intercept-by-proxy";
 
     /**
+     * 将本地属性加入Environment: 无法通过APOLLO配置中心运行时修改, 修改后必须重启应用
+     * XML方式(<context:property-placeholder location="..." />)加载的配置文件, Spring不会把它们加入Environment,
+     * 为了让CryptoProp能够解密XML加载的配置文件, 我们默认会将它们加入Environment, 如果不需要, 可以设置本参数为false, 默认true
+     */
+    public static final String OPTION_ADD_LOCAL_TO_ENV = "glacispring.crypto-prop.add-local-to-env";
+
+    /**
      * [临时应急] 忽略CryptoProp初始化错误, 仅打印日志, 解密功能不可用: 注意这个参数只能通过启动参数设置 (-Dglacispring.crypto-prop.ignore-exception=true)
      */
     public static final String OPTION_IGNORE_EXCEPTION = "glacispring.crypto-prop.ignore-exception";

@@ -58,7 +58,7 @@ public class DefaultTraceProvider implements TraceProvider {
      * 追踪号压缩(URL-Safe Base64编码, 并删除末尾==)
      */
     @PropertyInject(getVmOptionFirst = "glacijava.trace.trace-id-compressed")
-    private boolean traceIdCompressed = false;
+    private boolean traceIdCompressed = true;
 
     @Override
     public void start() {

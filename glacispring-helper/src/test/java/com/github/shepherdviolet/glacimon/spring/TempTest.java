@@ -21,6 +21,12 @@ package com.github.shepherdviolet.glacimon.spring;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 临时使用的测试案例
+ * Gradle9:每个module必须要有个Test,不然Gradle9可能会报错:https://docs.gradle.org/8.8/userguide/upgrading_version_8.html#test_task_fail_on_no_test_executed
+ *
+ * @author shepherdviolet
+ */
 public class TempTest {
 
     @Test

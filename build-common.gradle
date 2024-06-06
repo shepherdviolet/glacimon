@@ -9,8 +9,11 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
     apply plugin: 'java-library'
 //    apply plugin: 'java'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    java {
+        //Gradle9:放入java块:https://docs.gradle.org/8.8/userguide/upgrading_version_8.html#java_convention_deprecation
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
@@ -27,6 +30,9 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
                 "org.springframework.boot:spring-boot-starter-test:$version_spring_boot", // NOTICE: All subprojects configured with 'useJUnitPlatform()' must depend on Junit5! (Avoid error "Cannot create Launcher without at least one TestEngine")
                 "ch.qos.logback:logback-classic:$version_logback",
         ].forEach{ testImplementation it }
+
+        //Gradle9:Junit5必须显式依赖junit-platform-launcher:https://docs.gradle.org/8.8/userguide/upgrading_version_8.html#test_framework_implementation_dependencies
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
     // 可选: 测试案例随机并发跑(对大工程有益)
@@ -52,8 +58,11 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-s
     apply plugin: 'java-library'
 //    apply plugin: 'java'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    java {
+        //Gradle9:放入java块:https://docs.gradle.org/8.8/userguide/upgrading_version_8.html#java_convention_deprecation
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 
     // encoding
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
@@ -70,6 +79,9 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-s
                 "org.springframework.boot:spring-boot-starter-test:$version_spring_boot", // NOTICE: All subprojects configured with 'useJUnitPlatform()' must depend on Junit5! (Avoid error "Cannot create Launcher without at least one TestEngine")
                 "ch.qos.logback:logback-classic:$version_logback",
         ].forEach{ testImplementation it }
+
+        //Gradle9:Junit5必须显式依赖junit-platform-launcher:https://docs.gradle.org/8.8/userguide/upgrading_version_8.html#test_framework_implementation_dependencies
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
     // 可选: 测试案例随机并发跑(对大工程有益)

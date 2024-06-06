@@ -19,6 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig;
 
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient;
+
 import java.util.Arrays;
 
 /**
@@ -257,7 +259,7 @@ public class HttpClientSettings {
      *
      * @param logConfig 详细配置
      */
-    public int logConfig;
+    public int logConfig = GlaciHttpClient.LOG_CONFIG_DEFAULT;
 
     public String getHosts() {
         return hosts;

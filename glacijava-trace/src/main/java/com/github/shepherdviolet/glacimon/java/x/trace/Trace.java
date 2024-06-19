@@ -32,8 +32,6 @@ import java.util.concurrent.Callable;
  */
 public class Trace {
 
-    public static final String TRACE_ID_KEY = "_trace_id_";
-
     private static final TraceProvider PROVIDER = GlacimonSpi.loadSingleService(TraceProvider.class).get();
 
     /**
@@ -85,7 +83,7 @@ public class Trace {
      * 获取追踪接力信息
      */
     public static TraceBaton getBaton(){
-        return new TraceBaton(getTraceId(), getDataMap());
+        return new TraceBaton(PROVIDER.getTraceIdKey(), getTraceId(), getDataMap());
     }
 
     /**

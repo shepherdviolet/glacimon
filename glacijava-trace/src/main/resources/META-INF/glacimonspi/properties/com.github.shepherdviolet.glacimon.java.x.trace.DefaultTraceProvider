@@ -2,3 +2,4 @@
 # Trace
 @priority=-8
 traceIdCompressed=true
+traceIdKey=_trace_id_

@@ -63,6 +63,12 @@ public interface TraceProvider {
     Map<String, String> getTraceData();
 
     /**
+     * 追踪号Key, 存入接力信息时追踪号的Key值, 存入MDC时追踪号的Key值
+     */
+    @NewMethod(compatibleApproach = GetTraceIdKeyMethodCompat.class)
+    String getTraceIdKey();
+
+    /**
      * 兼容新增的start(String)方法
      */
     class StartMethodCompat implements CompatibleApproach {
@@ -71,6 +77,16 @@ public interface TraceProvider {
             //当调用start(String)时, 实际上会调用start()
             ((TraceProvider)serviceInstance).start();
             return null;
+        }
+    }
+
+    /**
+     * 兼容新增的getTraceIdKey()方法
+     */
+    class GetTraceIdKeyMethodCompat implements CompatibleApproach {
+        @Override
+        public Object onInvoke(Class<?> serviceInterface, Object serviceInstance, Method method, Object[] params) throws Throwable {
+            return "_trace_id_";
         }
     }
 

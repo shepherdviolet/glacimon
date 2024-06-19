@@ -38,4 +38,8 @@ class LocalTraceIdProvider extends TraceIdProvider {
         return this.traceId.get();
     }
 
+    @Override
+    void setTraceIdKey(String traceIdKey) {
+    }
+
 }

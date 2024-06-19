@@ -30,4 +30,6 @@ abstract class TraceIdProvider {
 
     abstract String get();
 
+    abstract void setTraceIdKey(String traceIdKey);
+
 }

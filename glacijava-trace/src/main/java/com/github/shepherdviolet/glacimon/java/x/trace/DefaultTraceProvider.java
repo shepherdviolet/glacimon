@@ -22,6 +22,7 @@ package com.github.shepherdviolet.glacimon.java.x.trace;
 import com.github.shepherdviolet.glacimon.java.spi.api.annotation.PropertyInject;
 import com.github.shepherdviolet.glacimon.java.misc.UuidUtils;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
+import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.InitializableImplementation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,16 +32,33 @@ import java.util.Map;
  *
  * <p>
  *     1.追踪号和其他追踪信息保存在ThreadLocal中. <br>
- *     2.如果应用依赖SLF4J, 追踪号还会存入MDC, KEY为{@value Trace#TRACE_ID_KEY}, 可以打印在日志中. <br>
+ *     2.如果应用依赖SLF4J, 追踪号还会存入MDC, KEY为"_trace_id_"(可通过SPI机制修改), 可以打印在日志中. <br>
  * </p>
  *
  * @author shepherdviolet
  */
-public class DefaultTraceProvider implements TraceProvider {
+public class DefaultTraceProvider implements TraceProvider, InitializableImplementation {
 
-    private static final TraceIdProvider TRACE_ID_PROVIDER;
+    private TraceIdProvider traceIdProvider;
+    private ThreadLocal<Map<String, String>> traceData = new ThreadLocal<>();
 
-    static {
+    /**
+     * 追踪号压缩(URL-Safe Base64编码, 并删除末尾==)
+     */
+    @PropertyInject(getVmOptionFirst = "glacijava.trace.trace-id-compressed")
+    private boolean traceIdCompressed = true;
+
+    /**
+     * 追踪号Key, 存入接力信息时追踪号的Key值, 存入MDC时追踪号的Key值
+     */
+    @PropertyInject(getVmOptionFirst = "glacijava.trace.trace-id-key")
+    private String traceIdKey = "_trace_id_";
+
+    /**
+     * Service instance creating complete
+     */
+    @Override
+    public void onServiceCreated() {
         TraceIdProvider traceIdProvider;
         try {
             //尝试用SLF4J存追踪号
@@ -49,16 +67,9 @@ public class DefaultTraceProvider implements TraceProvider {
         } catch (Exception e) {
             traceIdProvider = new LocalTraceIdProvider();
         }
-        TRACE_ID_PROVIDER = traceIdProvider;
+        traceIdProvider.setTraceIdKey(traceIdKey);
+        this.traceIdProvider = traceIdProvider;
     }
-
-    private ThreadLocal<Map<String, String>> traceData = new ThreadLocal<>();
-
-    /**
-     * 追踪号压缩(URL-Safe Base64编码, 并删除末尾==)
-     */
-    @PropertyInject(getVmOptionFirst = "glacijava.trace.trace-id-compressed")
-    private boolean traceIdCompressed = true;
 
     @Override
     public void start() {
@@ -77,7 +88,7 @@ public class DefaultTraceProvider implements TraceProvider {
             traceId = generateTraceID();
         }
         //put id into MDC
-        TRACE_ID_PROVIDER.set(traceId);
+        traceIdProvider.set(traceId);
         //put data into thread local
         traceData.set(data);
     }
@@ -91,7 +102,7 @@ public class DefaultTraceProvider implements TraceProvider {
 
     @Override
     public String getTraceId() {
-        return TRACE_ID_PROVIDER.get();
+        return traceIdProvider.get();
     }
 
     @Override
@@ -102,6 +113,14 @@ public class DefaultTraceProvider implements TraceProvider {
             traceData.set(data);
         }
         return data;
+    }
+
+    /**
+     * 追踪号Key, 存入接力信息时追踪号的Key值, 存入MDC时追踪号的Key值
+     */
+    @Override
+    public String getTraceIdKey() {
+        return traceIdKey;
     }
 
 }

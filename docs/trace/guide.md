@@ -79,7 +79,7 @@ threadPool.execute(Trace.traceable(()-> {
 
 * `追踪号`默认为较短的URL-Safe-Base64格式 (例如:PhZN4ttmR3O9_pQn3QXj-A, `RFC4648_URLSAFE编码, 并去掉了末尾的==`)
 * `追踪号`可以设置为无符号的UUID (例如:3e164de2db664773bdfe9427dd05e3f8)
-* 
+
 ```text
 // 方式一: (高优先级) 通过Java启动参数将追踪号设置为无符号的UUID
 -Dglacijava.trace.trace-id-compressed=false
@@ -89,6 +89,20 @@ threadPool.execute(Trace.traceable(()-> {
 2.编写内容:
 
 traceIdCompressed=false
+
+```
+
+* `追踪号`在MDC(和接力信息)中的Key值`_trace_id_`可以修改
+
+```text
+// 方式一: (高优先级) 通过Java启动参数修改追踪号Key值
+-Dglacijava.trace.trace-id-key=_traceId
+
+// 方式二: 通过GlacimonSpi SPI扩展点 的特性设置
+1.在Classpath下创建文件: META-INF/glacimonspi/properties/com.github.shepherdviolet.glacimon.java.x.trace.DefaultTraceProvider
+2.编写内容:
+
+traceIdKey=_traceId
 
 ```
 

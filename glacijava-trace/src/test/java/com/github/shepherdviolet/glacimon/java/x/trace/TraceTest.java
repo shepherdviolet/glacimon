@@ -21,6 +21,7 @@ package com.github.shepherdviolet.glacimon.java.x.trace;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 
 /**
  * 临时使用的测试案例
@@ -30,11 +31,16 @@ import org.junit.jupiter.api.Test;
 public class TraceTest {
 
     @Test
-    public void test(){
+    public void test() throws InvalidBatonException {
+        System.setProperty("glacijava.trace.trace-id-key", "_traceId");
         Trace.start();
         Trace.setData("hello", "hello");
-        Trace.handoff(Trace.getBaton());
+        TraceBaton baton = Trace.getBaton();
+        String batonStr = baton.toString();
+//        System.out.println(batonStr);
+        Trace.handoff(TraceBaton.fromString(batonStr));
         Assertions.assertEquals("hello", Trace.getData("hello"));
+        Assertions.assertEquals(Trace.getTraceId(), MDC.get("_traceId"));
     }
 
 }

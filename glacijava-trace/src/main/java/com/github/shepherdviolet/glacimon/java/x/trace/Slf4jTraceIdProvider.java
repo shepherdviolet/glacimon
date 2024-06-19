@@ -28,10 +28,16 @@ import org.slf4j.MDC;
  */
 class Slf4jTraceIdProvider extends LocalTraceIdProvider {
 
+    private String traceIdKey = "_trace_id_";
+
     @Override
     void set(String traceId) {
         super.set(traceId);
-        MDC.put(Trace.TRACE_ID_KEY, traceId);
+        MDC.put(traceIdKey, traceId);
     }
 
+    @Override
+    void setTraceIdKey(String traceIdKey) {
+        this.traceIdKey = traceIdKey;
+    }
 }

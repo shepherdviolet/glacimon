@@ -25,8 +25,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.shepherdviolet.glacimon.java.x.trace.Trace.TRACE_ID_KEY;
-
 /**
  * 追踪接力信息, 用于从一个线程携带到另一个线程, 或从一个进程携带到另一个进程
  *
@@ -35,11 +33,14 @@ import static com.github.shepherdviolet.glacimon.java.x.trace.Trace.TRACE_ID_KEY
 public class TraceBaton implements Serializable {
 
     private static final long serialVersionUID = 7281984723734878656L;
+    private static final String KEY_OF_TRACE_ID_KEY = "_trace_id_key_";
 
+    private String traceIdKey;
     private String traceId;
     private Map<String, String> traceData;
 
-    TraceBaton(String traceId, Map<String, String> traceData) {
+    TraceBaton(String traceIdKey, String traceId, Map<String, String> traceData) {
+        this.traceIdKey = traceIdKey;
         this.traceId = traceId;
         this.traceData = traceData;
     }
@@ -63,7 +64,8 @@ public class TraceBaton implements Serializable {
         } else {
             map = new HashMap<>(4);
         }
-        map.put(TRACE_ID_KEY, traceId);
+        map.put(KEY_OF_TRACE_ID_KEY, traceIdKey);
+        map.put(traceIdKey, traceId);
         return SimpleKeyValueEncoder.encode(map);
     }
 
@@ -80,8 +82,15 @@ public class TraceBaton implements Serializable {
         } catch (SimpleKeyValueEncoder.DecodeException e) {
             throw new InvalidBatonException("Error while parsing TraceBaton from string data, data:" + batonData, e);
         }
-        String traceId = map.remove(TRACE_ID_KEY);
-        return new TraceBaton(traceId, map);
+        String traceIdKey = map.remove(KEY_OF_TRACE_ID_KEY);
+        if (traceIdKey == null) {
+            throw new InvalidBatonException("Invalid TraceBaton data, '" + KEY_OF_TRACE_ID_KEY + "' is missing, data:" + batonData);
+        }
+        String traceId = map.remove(traceIdKey);
+        if (traceId == null) {
+            throw new InvalidBatonException("Invalid TraceBaton data, '" + traceIdKey + "' is missing, data:" + batonData);
+        }
+        return new TraceBaton(traceIdKey, traceId, map);
     }
 
 }

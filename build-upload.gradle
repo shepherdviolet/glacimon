@@ -29,7 +29,9 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
 
+    // 发布配置
     publishing {
+        // 构建信息
         publications {
             mavenJava(MavenPublication) {
                 groupId = project.group
@@ -62,6 +64,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
                 }
             }
         }
+        // 仓库信息
         repositories {
             // 配置: 此处可配置仓库地址
             maven {
@@ -94,6 +97,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
         }
     }
 
+    // 本地发布时跳过
     if (upload_target != 'local') {
 
         // 签名
@@ -108,6 +112,19 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
 // 库模块
 configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spring'] }) {
 
+    // JAVADOC配置
+    javadoc {
+        // 禁用JAVA8的JAVADOC检查, 解决javadoc不规范报错的问题
+        if (JavaVersion.current().isJava8Compatible()) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+        // JAVA9 启用H5文档
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
+    }
+
+    // 本地发布时跳过
     if (upload_target != 'local') {
 
         // 编译时产生源代码jar
@@ -122,20 +139,11 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
             archiveClassifier.set 'javadoc'
         }
 
-        javadoc {
-            // 禁用JAVA8的JAVADOC检查
-            if (JavaVersion.current().isJava8Compatible()) {
-                options.addStringOption('Xdoclint:none', '-quiet')
-            }
-            // JAVA9 启用H5文档
-            if (JavaVersion.current().isJava9Compatible()) {
-                options.addBooleanOption('html5', true)
-            }
-        }
-
     }
 
+    // 发布配置
     publishing {
+        // 构建信息
         publications {
             mavenJava(MavenPublication) {
                 // 添加Java
@@ -163,6 +171,7 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
 // BOM模块
 configure(subprojects.findAll { it.PROJECT_GROUP in ['public-bom'] }) {
 
+    // 发布配置
     publishing {
         publications {
             mavenJava(MavenPublication) {

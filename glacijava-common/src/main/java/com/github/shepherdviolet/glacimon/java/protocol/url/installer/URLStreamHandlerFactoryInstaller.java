@@ -65,7 +65,8 @@ public class URLStreamHandlerFactoryInstaller {
 
             // get required fields
             for (final Field current : fields) {
-                if (Modifier.isStatic(current.getModifiers()) && current.getType().equals(URLStreamHandlerFactory.class)) {
+                // JDK11 needs to determine whether the field is not final
+                if (Modifier.isStatic(current.getModifiers()) && !Modifier.isFinal(current.getModifiers()) && current.getType().equals(URLStreamHandlerFactory.class)) {
                     factoryField = current;
                     factoryField.setAccessible(true);
                 } else if (Modifier.isStatic(current.getModifiers()) && current.getType().equals(Hashtable.class)) {

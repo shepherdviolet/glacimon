@@ -164,7 +164,12 @@ public class AdvancedCertificateUtils extends CertificateUtils {
     }
 
     /**
-     * 证书链的方式验证证书是否有效.
+     * 证书链的方式验证证书是否有效. (CA和ROOT证书由issuerProvider提供)
+     *
+     * 更多示例见: RSACertTest
+     * 根证书 和 CA证书都由服务端限定, 客户端上送自己的证书
+     * AdvancedCertificateUtils.verifyCertificateByIssuers(cert, DateTimeUtils.stringToDate("2020-05-21", "yyyy-MM-dd"), new SimpleIssuerProvider(Arrays.asList(caCert, rootCert)));
+     *
      * @param certificate 待验证的证书. 注意, 不可以是根证书.
      * @param currentTime 当前时间(用于有效期验证), 可以简单地new Date()
      * @param issuerProvider 提供验证所需的证书颁发者. 例如: SimpleIssuerProvider / RootIssuerProvider
@@ -174,11 +179,16 @@ public class AdvancedCertificateUtils extends CertificateUtils {
     }
 
     /**
-     * 证书链的方式验证证书是否有效.
+     * 证书链的方式验证证书是否有效. (CA证书可由客户端提供, ROOT证书必须由issuerProvider提供)
+     *
+     * 更多示例见: RSACertTest
+     * 根证书由服务端限定, 客户端上送自己的证书和CA证书
+     * AdvancedCertificateUtils.verifyCertificateByIssuers(cert, DateTimeUtils.stringToDate("2020-05-21", "yyyy-MM-dd"), new RootIssuerProvider(Collections.singletonList(rootCert)), Collections.singletonList(caCert));
+     *
      * @param certificate 待验证的证书. 注意, 不可以是根证书.
      * @param currentTime 当前时间(用于有效期验证), 可以简单地new Date()
      * @param issuerProvider 提供验证所需的证书颁发者. 例如: SimpleIssuerProvider / RootIssuerProvider
-     * @param issuerProviderParameter 传给IssuerProvider的参数, 可选, 取决于IssuerProvider是否需要
+     * @param issuerProviderParameter 传给IssuerProvider的参数, 可选, 取决于IssuerProvider是否需要; RootIssuerProvider送客户端上送的CA证书
      */
     public static <ParameterType> void verifyCertificateByIssuers(X509Certificate certificate, Date currentTime, IssuerProvider<ParameterType> issuerProvider, ParameterType issuerProviderParameter) throws CertificateException {
         BaseBCCertificateUtils.verifyCertificateByIssuers(certificate, currentTime, issuerProvider, issuerProviderParameter);

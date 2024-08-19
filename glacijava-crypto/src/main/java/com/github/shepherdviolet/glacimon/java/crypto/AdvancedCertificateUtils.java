@@ -166,9 +166,11 @@ public class AdvancedCertificateUtils extends CertificateUtils {
     /**
      * 证书链的方式验证证书是否有效. (CA和ROOT证书由issuerProvider提供)
      *
-     * 更多示例见: RSACertTest
      * 根证书 和 CA证书都由服务端限定, 客户端上送自己的证书
      * AdvancedCertificateUtils.verifyCertificateByIssuers(cert, DateTimeUtils.stringToDate("2020-05-21", "yyyy-MM-dd"), new SimpleIssuerProvider(Arrays.asList(caCert, rootCert)));
+     * CA证书由服务端限定, 且服务端把CA证书当根证书用, 客户端上送自己的证书
+     * AdvancedCertificateUtils.verifyCertificateByIssuers(cert, DateTimeUtils.stringToDate("2020-05-21", "yyyy-MM-dd"), new SimpleIssuerProvider(Collections.singletonList(new IssuerProvider.ActAsRoot(caCert))));
+     * 更多示例见: RSACertTest
      *
      * @param certificate 待验证的证书. 注意, 不可以是根证书.
      * @param currentTime 当前时间(用于有效期验证), 可以简单地new Date()
@@ -181,9 +183,9 @@ public class AdvancedCertificateUtils extends CertificateUtils {
     /**
      * 证书链的方式验证证书是否有效. (CA证书可由客户端提供, ROOT证书必须由issuerProvider提供)
      *
-     * 更多示例见: RSACertTest
      * 根证书由服务端限定, 客户端上送自己的证书和CA证书
      * AdvancedCertificateUtils.verifyCertificateByIssuers(cert, DateTimeUtils.stringToDate("2020-05-21", "yyyy-MM-dd"), new RootIssuerProvider(Collections.singletonList(rootCert)), Collections.singletonList(caCert));
+     * 更多示例见: RSACertTest
      *
      * @param certificate 待验证的证书. 注意, 不可以是根证书.
      * @param currentTime 当前时间(用于有效期验证), 可以简单地new Date()

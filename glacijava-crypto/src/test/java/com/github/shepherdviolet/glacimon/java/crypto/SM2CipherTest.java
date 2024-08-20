@@ -105,11 +105,13 @@ public class SM2CipherTest {
 
         //私钥签名, 公钥验签, 签名格式为DER
         byte[] sign = SM2Cipher.sign(STRING.getBytes("UTF-8"), null, privateKeyParams, SM2Cipher.SIGN_ALGORITHM_SM2_SM3);
+//        System.out.println(ByteUtils.bytesToHex(sign));
         boolean result = SM2Cipher.verify(STRING.getBytes("UTF-8"), sign, null, publicKeyParams, SM2Cipher.SIGN_ALGORITHM_SM2_SM3);
         Assertions.assertTrue(result);
 
         //私钥签名, 公钥验签, 签名格式为原始的R+S(32bytes + 32bytes)
         sign = SM2Cipher.signToRS(new ByteArrayInputStream(STRING.getBytes("UTF-8")), null, privateKeyParams, SM2Cipher.SIGN_ALGORITHM_SM2_SM3);
+//        System.out.println(ByteUtils.bytesToHex(sign));
         result = SM2Cipher.verifyFromRS(new ByteArrayInputStream(STRING.getBytes("UTF-8")), sign, null, publicKeyParams, SM2Cipher.SIGN_ALGORITHM_SM2_SM3);
         Assertions.assertTrue(result);
 

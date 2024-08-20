@@ -365,7 +365,7 @@ public class BaseBCCipher {
         if (publicKeyParams == null) {
             throw new NullPointerException("publicKeyParams == null");
         }
-        sign = tryFixBadDerSignData(sign);
+        sign = NonStandardDataFixer.fixDerSign(sign);
         SM2Signer signer = new SM2Signer();
         CipherParameters cipherParameters;
         if (id != null) {
@@ -398,7 +398,7 @@ public class BaseBCCipher {
             throw new NullPointerException("publicKeyParams == null");
         }
         try {
-            sign = tryFixBadDerSignData(sign);
+            sign = NonStandardDataFixer.fixDerSign(sign);
             SM2Signer signer = new SM2Signer();
             CipherParameters cipherParameters;
             if (id != null) {
@@ -650,44 +650,6 @@ public class BaseBCCipher {
         encodableVector.add(new ASN1Integer(r));
         encodableVector.add(new ASN1Integer(s));
         return new DERSequence(encodableVector).getEncoded(ASN1Encoding.DER);
-    }
-
-    /**
-     * 尝试修复异常的DER编码的签名数据.
-     *
-     * 20230320发现某签名服务器签名出来的DER格式签名不标准, 当R值偏大时, r[0] >= 0x80, 使得整个大数字变成了负数, 而R和S值是不能
-     * 小于1的(见org.bouncycastle.crypto.signers.SM2Signer#verifySignature方法). 在标准的DER格式中, 遇到这种情况, 应该在前面
-     * 增加一个字节0x00, 以保证数值为正整数. 顺带一提, RS格式的签名数据, 不会在前面追加0x00, 因为它要严格保证32+32字节.
-     *
-     * @param der DER编码的签名数据
-     * @return 修复后的DER编码的签名数据
-     */
-    public static byte[] tryFixBadDerSignData(byte[] der) {
-        if (der == null) {
-            return null;
-        }
-        // 只针对DER长度为70bytes的情况, 减少不必要的开销. 因为不标准的DER格式签名, RS值都只有32字节, 整个DER长度为70字节.
-        if (der.length != 70) {
-            return der;
-        }
-        try {
-            ASN1Sequence asn1Sequence = DERSequence.getInstance(der);
-            byte[] r = ((ASN1Integer) asn1Sequence.getObjectAt(0)).getValue().toByteArray();
-            byte[] s = ((ASN1Integer) asn1Sequence.getObjectAt(1)).getValue().toByteArray();
-            // 检查RS值是否为负数
-            if (r[0] >= 0 && s[0] >= 0) {
-                return der;
-            }
-            // 如果为负数, 则在前面追加0x00, 只需要在创建BigInteger时指定为正数就行
-            BigInteger rInteger = new BigInteger(1, r);
-            BigInteger sInteger = new BigInteger(1, s);
-            ASN1EncodableVector encodableVector = new ASN1EncodableVector();
-            encodableVector.add(new ASN1Integer(rInteger));
-            encodableVector.add(new ASN1Integer(sInteger));
-            return new DERSequence(encodableVector).getEncoded(ASN1Encoding.DER);
-        } catch (Exception e) {
-            return der;
-        }
     }
 
 }

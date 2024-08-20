@@ -21,6 +21,7 @@ package com.github.shepherdviolet.glacimon.java.crypto;
 
 import com.github.shepherdviolet.glacimon.java.crypto.base.BaseBCCipher;
 import com.github.shepherdviolet.glacimon.java.crypto.base.CommonCryptoException;
+import com.github.shepherdviolet.glacimon.java.crypto.base.NonStandardDataFixer;
 import com.github.shepherdviolet.glacimon.java.crypto.base.SM2DefaultCurve;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -268,17 +269,25 @@ public class SM2Cipher {
     }
 
     /**
-     * 尝试修复异常的DER编码的签名数据.
+     * 修复非标准的DER编码的签名数据.
      *
      * 20230320发现某签名服务器签名出来的DER格式签名不标准, 当R值偏大时, r[0] >= 0x80, 使得整个大数字变成了负数, 而R和S值是不能
      * 小于1的(见org.bouncycastle.crypto.signers.SM2Signer#verifySignature方法). 在标准的DER格式中, 遇到这种情况, 应该在前面
      * 增加一个字节0x00, 以保证数值为正整数. 顺带一提, RS格式的签名数据, 不会在前面追加0x00, 因为它要严格保证32+32字节.
      *
      * @param der DER编码的签名数据
-     * @return 修复后的DER编码的签名数据
+     * @return 修复后的DER编码的签名数据, 修复失败返回原值
      */
+    public static byte[] fixDerSign(byte[] der) {
+        return NonStandardDataFixer.fixDerSign(der);
+    }
+
+    /**
+     * @deprecated Use SM2Cipher#fixDerSign
+     */
+    @Deprecated
     public static byte[] tryFixBadDerSignData(byte[] der) {
-        return BaseBCCipher.tryFixBadDerSignData(der);
+        return NonStandardDataFixer.fixDerSign(der);
     }
 
 }

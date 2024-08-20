@@ -19,13 +19,15 @@
 
 package com.github.shepherdviolet.glacimon.java.crypto;
 
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import com.github.shepherdviolet.glacimon.java.crypto.base.*;
-import org.bouncycastle.asn1.x509.*;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.asn1.x509.X509CertificateStructure;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.operator.OperatorCreationException;
-import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -534,6 +536,49 @@ public class AdvancedCertificateUtils extends CertificateUtils {
     @SuppressWarnings("deprecation")
     public static X509CertificateStructure parseX509ToStructure(InputStream inputStream) throws IOException {
         return BaseBCCertificateUtils.parseX509ToStructure(inputStream);
+    }
+
+
+    /**
+     * (尝试)修复非标准的X509证书中的签名数据.
+     *
+     * 20240820:
+     * 发现某RA签发出来的SM2证书本身签名格式不标准(CA私钥对用户证书签名), 截取证书末尾的签名数据(ASN.1), 如下所示:
+     * 30 45 02 21 008265......27 02 20 0039e7......43
+     * 30表示type=SEQUENCE, 45表示SEQUENCE长度69 (0x45首位为0, 本身即为长度, 若首位为1, 表示长度区域的长度)
+     * 02表示type=INTEGER, 21表示INTEGER长度为33, 008265......27为INTEGER的值
+     * 02表示type=INTEGER, 20表示INTEGER长度为32, 0039e7......43为INTEGER的值
+     * 问题出在0039e7......43, ASN.1标准要求正整数首位为1时, 前面补零(0x00, 防止变成负数),
+     * 而0039e7......43的39首位不为1, 不应该补零, 但是这个RA签发的证书却补零了, 所以BouncyCastle解析签名数据失败, 导致证书验签失败.
+     *
+     * ASN.1格式参考可参考: https://blog.csdn.net/new9232/article/details/139205158
+     *
+     * @param certX509 X509格式的证书数据(需要修复其中的签名数据)
+     * @return 尝试修复后的X509证书数据, 修复失败返回原证书
+     */
+    public static byte[] fixCertSign(byte[] certX509) {
+        return NonStandardDataFixer.fixCertSign(certX509);
+    }
+
+    /**
+     * (尝试)修复非标准的X509证书中的签名数据.
+     *
+     * 20240820:
+     * 发现某RA签发出来的SM2证书本身签名格式不标准(CA私钥对用户证书签名), 截取证书末尾的签名数据(ASN.1), 如下所示:
+     * 30 45 02 21 008265......27 02 20 0039e7......43
+     * 30表示type=SEQUENCE, 45表示SEQUENCE长度69 (0x45首位为0, 本身即为长度, 若首位为1, 表示长度区域的长度)
+     * 02表示type=INTEGER, 21表示INTEGER长度为33, 008265......27为INTEGER的值
+     * 02表示type=INTEGER, 20表示INTEGER长度为32, 0039e7......43为INTEGER的值
+     * 问题出在0039e7......43, ASN.1标准要求正整数首位为1时, 前面补零(0x00, 防止变成负数),
+     * 而0039e7......43的39首位不为1, 不应该补零, 但是这个RA签发的证书却补零了, 所以BouncyCastle解析签名数据失败, 导致证书验签失败.
+     *
+     * ASN.1格式参考可参考: https://blog.csdn.net/new9232/article/details/139205158
+     *
+     * @param cert X509证书(需要修复其中的签名数据)
+     * @return 尝试修复后的证书, 修复失败返回原证书
+     */
+    public static X509Certificate fixCertSign(X509Certificate cert) {
+        return NonStandardDataFixer.fixCertSign(cert);
     }
 
 }

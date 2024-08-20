@@ -137,6 +137,9 @@ public class BaseBCCertificateUtils {
      */
     public static void verifyCertificate(X509Certificate certificate, PublicKey issuerPublicKey, Date currentTime)
             throws NoSuchProviderException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        if (CryptoConstants.SIGN_AUTO_FIX) {
+            certificate = NonStandardDataFixer.fixCertSign(certificate);
+        }
         certificate.verify(issuerPublicKey, BouncyCastleProviderUtils.getProviderName());
         certificate.checkValidity(currentTime);
     }
@@ -149,6 +152,9 @@ public class BaseBCCertificateUtils {
      */
     public static void verifyCertificate(X509Certificate certificate, ECPublicKeyParameters issuerPublicKeyParams, Date currentTime)
             throws NoSuchProviderException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        if (CryptoConstants.SIGN_AUTO_FIX) {
+            certificate = NonStandardDataFixer.fixCertSign(certificate);
+        }
         certificate.verify(BaseBCAsymKeyGenerator.ecPublicKeyParamsToEcPublicKey(issuerPublicKeyParams, "EC"),
                 BouncyCastleProviderUtils.getProviderName());
         certificate.checkValidity(currentTime);

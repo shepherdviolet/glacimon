@@ -21,14 +21,25 @@ package com.github.shepherdviolet.glacimon.java.crypto.base;
 
 class CryptoConstants {
 
-    static final int BUFFER_SIZE;
     static final int ANDROID_API11 = 11;
 
+    static int BUFFER_SIZE;
+    static boolean SIGN_AUTO_FIX;
+
     static {
+        reload();
+    }
+
+    static void reload() {
         try {
             BUFFER_SIZE = Integer.parseInt(System.getProperty("glacijava.crypto.buffersize", "4096"));
         } catch (Exception e) {
             throw new RuntimeException("Invalid vm arg -Dglacijava.crypto.buffersize, not an integer", e);
+        }
+        try {
+            SIGN_AUTO_FIX = Boolean.parseBoolean(System.getProperty("glacijava.crypto.signautofix", "true"));
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid vm arg -Dglacijava.crypto.signautofix, not a boolean", e);
         }
     }
 

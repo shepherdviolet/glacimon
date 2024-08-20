@@ -365,7 +365,9 @@ public class BaseBCCipher {
         if (publicKeyParams == null) {
             throw new NullPointerException("publicKeyParams == null");
         }
-        sign = NonStandardDataFixer.fixDerSign(sign);
+        if (CryptoConstants.SIGN_AUTO_FIX) {
+            sign = NonStandardDataFixer.fixDerSign(sign);
+        }
         SM2Signer signer = new SM2Signer();
         CipherParameters cipherParameters;
         if (id != null) {
@@ -398,7 +400,9 @@ public class BaseBCCipher {
             throw new NullPointerException("publicKeyParams == null");
         }
         try {
-            sign = NonStandardDataFixer.fixDerSign(sign);
+            if (CryptoConstants.SIGN_AUTO_FIX) {
+                sign = NonStandardDataFixer.fixDerSign(sign);
+            }
             SM2Signer signer = new SM2Signer();
             CipherParameters cipherParameters;
             if (id != null) {

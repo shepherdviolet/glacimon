@@ -19,12 +19,27 @@
 
 package com.github.shepherdviolet.glacimon.java.math;
 
+import java.math.BigInteger;
+
 /**
  * 数学工具
  *
  * @author shepherdviolet
  */
 public class MathUtils {
+
+    /**
+     * 牛顿迭代法计算平方根
+     */
+    public static BigInteger sqrt(BigInteger n) {
+        BigInteger x0 = n.shiftRight(1);
+        BigInteger x1 = x0.add(n.divide(x0)).shiftRight(1);
+        while (x1.compareTo(x0) < 0) {
+            x0 = x1;
+            x1 = x0.add(n.divide(x0)).shiftRight(1);
+        }
+        return x0;
+    }
 
     /* ********************************************************************
      * trigonometric

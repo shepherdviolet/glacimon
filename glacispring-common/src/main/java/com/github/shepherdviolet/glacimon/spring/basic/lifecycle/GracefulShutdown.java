@@ -141,9 +141,10 @@ public abstract class GracefulShutdown implements SmartLifecycle, ApplicationCon
      * <p>2.检查并等待在途请求处理完成.</p>
      */
     public void onShutdownPhase() {
+        // 超时时间包括stopAcceptingRequests
+        long startTime = System.currentTimeMillis();
         try {
             stopAcceptingRequests();
-            long startTime = System.currentTimeMillis();
             while (System.currentTimeMillis() - startTime < timeout) {
                 if (isAllRequestsCompleted()) {
                     logger.info("All requests completed, graceful shutdown");

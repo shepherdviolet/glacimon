@@ -1175,12 +1175,18 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         Map<String, String> headers = settings.headers;
         if (headers != null){
             for (Map.Entry<String, String> entry : headers.entrySet()){
+                if (entry.getKey() == null || entry.getValue() == null) {
+                    continue;
+                }
                 builder.addHeader(entry.getKey(), entry.getValue());
             }
         }
 
         if (request.headers != null){
             for (Map.Entry<String, String> entry : request.headers.entrySet()){
+                if (entry.getKey() == null || entry.getValue() == null) {
+                    continue;
+                }
                 builder.addHeader(entry.getKey(), entry.getValue());
             }
         }
@@ -1228,12 +1234,18 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         Map<String, String> headers = settings.headers;
         if (headers != null){
             for (Map.Entry<String, String> entry : headers.entrySet()){
+                if (entry.getKey() == null || entry.getValue() == null) {
+                    continue;
+                }
                 builder.addHeader(entry.getKey(), entry.getValue());
             }
         }
 
         if (request.headers != null){
             for (Map.Entry<String, String> entry : request.headers.entrySet()){
+                if (entry.getKey() == null || entry.getValue() == null) {
+                    continue;
+                }
                 builder.addHeader(entry.getKey(), entry.getValue());
             }
         }

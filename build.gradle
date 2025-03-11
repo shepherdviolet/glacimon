@@ -29,11 +29,11 @@ buildscript {
 
     // 构建脚本用的依赖仓库
     repositories {
-        maven { url repository_localRepositoryPath } // 本地仓库, 可选
-        maven { url 'https://plugins.gradle.org/m2/' } // Gradle插件库, 可选
+        maven { url = repository_localRepositoryPath } // 本地仓库, 可选
+        maven { url = 'https://plugins.gradle.org/m2/' } // Gradle插件库, 可选
         mavenCentral() // https://repo1.maven.org/maven2/
-        //maven { url 'https://jitpack.io' }
-        //maven { url 'http://repo.spring.io/plugins-release/'; allowInsecureProtocol true }
+        //maven { url = 'https://jitpack.io' }
+        //maven { url = 'http://repo.spring.io/plugins-release/'; allowInsecureProtocol true }
     }
 
     // 构建脚本用的依赖(插件)
@@ -48,14 +48,14 @@ buildscript {
 // 所有工程通用配置
 allprojects {
 
-    group project_group_id
-    version project_version
+    group = project_group_id
+    version = project_version
 
     // 工程的依赖仓库
     repositories {
-        maven { url repository_localRepositoryPath } // 本地仓库, 可选
+        maven { url = repository_localRepositoryPath } // 本地仓库, 可选
         mavenCentral() // https://repo1.maven.org/maven2/
-        //maven { url 'https://jitpack.io' }
+        //maven { url = 'https://jitpack.io' }
     }
 
     // 禁用Gradle6.0开始生成的module文件(类似于Maven的POM)

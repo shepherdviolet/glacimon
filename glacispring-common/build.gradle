@@ -7,7 +7,7 @@ dependencies {
 
     //required
     [
-            project(':glacijava-common') { group project_group_id; version project_version },
+            project(':glacijava-common') { group = project_group_id; version = project_version },
             "org.springframework:spring-context:$version_spring",
             "org.slf4j:slf4j-api:$version_slf4j",
 

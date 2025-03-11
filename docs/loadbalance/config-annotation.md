@@ -26,7 +26,7 @@ public class MyConfiguration {
     public GlaciHttpClient glaciHttpClient() {
         return new GlaciHttpClient()
                 .setHosts(hosts)//配置后端列表
-                .setInitiativeInspectInterval(5000L)//健康主动探测间隔为5000ms
+                .setInitiativeInspectInterval(5000L)//健康主动探测间隔为5000ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
                 .setPassiveBlockDuration(30000L)//健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近
                 .setConnectTimeout(3000L)//连接超时时间, 单位ms
                 .setWriteTimeout(10000L)//写超时时间, 单位ms

@@ -52,7 +52,7 @@ public class HttpClientSettings {
 
     /**
      * [可运行时修改]
-     * 设置主动探测间隔 (主动探测器)
+     * 设置主动探测间隔 (主动探测器); 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
      */
     private long initiativeInspectInterval = 5000L;
 

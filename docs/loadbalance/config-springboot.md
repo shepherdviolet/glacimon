@@ -66,7 +66,7 @@ glacispring:
       host-list:
         - http://127.0.0.1:8083
         - http://127.0.0.1:8084
-      # 健康主动探测间隔, 单位ms
+      # 健康主动探测间隔, 单位ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
       initiative-inspect-interval: 5000
       # true: 当所有后端都被阻断时不发送请求(抛异常), false: 当所有后端都被阻断时随机发送请求
       return-null-if-all-blocked: false

@@ -70,6 +70,7 @@ public class LoadBalancedInspectManager implements Closeable {
 
     private AtomicBoolean started = new AtomicBoolean(false);
     private AtomicBoolean closed = new AtomicBoolean(false);
+    private volatile boolean pause = false;
 
     private long inspectInterval = DEFAULT_INSPECT_INTERVAL;
     private long inspectTimeout = DEFAULT_INSPECT_INTERVAL / 2;
@@ -168,9 +169,22 @@ public class LoadBalancedInspectManager implements Closeable {
     /**
      * [可运行时修改]
      * 设置探测间隔
-     * @param inspectInterval 检测间隔ms, 必须 > 1000 , 建议 > 5000
+     * @param inspectInterval 探测间隔(ms), 最小1000, 建议5000及以上; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
      */
     public LoadBalancedInspectManager setInspectInterval(long inspectInterval) {
+        // <=0时暂停探测
+        if (inspectInterval <= 0) {
+            if (!pause) {
+                logger.info(tag + "Inspect: Inspection pause (inspectInterval is set to <= 0)");
+            }
+            pause = true;
+        } else {
+            if (pause) {
+                logger.info(tag + "Inspect: Inspection resume (inspectInterval is set to > 0)");
+            }
+            pause = false;
+        }
+        // 最小1000
         if (inspectInterval < 1000){
             inspectInterval = 1000;
         }
@@ -207,7 +221,8 @@ public class LoadBalancedInspectManager implements Closeable {
         return "inspectors=" + inspectors +
                 ", inspectInterval=" + inspectInterval +
                 ", inspectTimeout=" + inspectTimeout +
-                ", blockDuration=" + blockDuration;
+                ", blockDuration=" + blockDuration +
+                ", pause=" + pause;
     }
 
     public long getInspectInterval() {
@@ -252,6 +267,10 @@ public class LoadBalancedInspectManager implements Closeable {
                     try {
                         Thread.sleep(inspectInterval);
                     } catch (InterruptedException ignored) {
+                    }
+                    //暂停主动探测
+                    if (pause) {
+                        continue;
                     }
                     //持有当前的hostManager
                     hostManager = LoadBalancedInspectManager.this.hostManager;

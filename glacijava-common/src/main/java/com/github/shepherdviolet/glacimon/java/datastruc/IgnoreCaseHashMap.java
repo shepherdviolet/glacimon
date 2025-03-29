@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public class IgnoreCaseHashMap<K, V> extends HashMap<K, V> {
 
+    private static final long serialVersionUID = -4802227422917361191L;
+
     @Override
     @SuppressWarnings("unchecked")
     public V put(K key, V value) {

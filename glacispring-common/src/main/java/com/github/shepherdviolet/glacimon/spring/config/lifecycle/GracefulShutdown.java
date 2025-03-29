@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 S.Violet
+ * Copyright (C) 2022-2025 S.Violet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * Email: shepherdviolet@163.com
  */
 
-package com.github.shepherdviolet.glacimon.spring.basic.lifecycle;
+package com.github.shepherdviolet.glacimon.spring.config.lifecycle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

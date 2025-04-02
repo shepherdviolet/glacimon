@@ -113,7 +113,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     public static final int LOG_CONFIG_REQUEST_STRING_BODY = 0x00000100;
     //日志:响应码
     public static final int LOG_CONFIG_RESPONSE_CODE = 0x00001000;
-    //信息:请求URL(带参数, 且参数未转码)
+    //日志:请求URL(带参数, 且参数未转码)
     public static final int LOG_CONFIG_RAW_URL = 0x00010000;
     //日志:输入参数(默认关)
     public static final int LOG_CONFIG_REQUEST_INPUTS = 0x00100000;

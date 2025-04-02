@@ -99,7 +99,7 @@ public class BeanInfoUtils {
             if (propertyClass == null) {
                 propertyClass = Object.class;
             }
-            // Setter first
+            // Getter first
             if (readMethod != null) {
                 propertyType = readMethod.getGenericReturnType();
             } else {
@@ -230,14 +230,18 @@ public class BeanInfoUtils {
         }
 
         /**
-         * Read method, Nullable, But one of the two methods must not be null
+         * Read method, Nullable, But one of the two methods must not be null.
          */
         public Method getReadMethod() {
             return readMethod;
         }
 
         /**
-         * Write method, Nullable, But one of the two methods must not be null
+         * Write method, Nullable, But one of the two methods must not be null.
+         *
+         * The input parameter type of the write method must be consistent with the property type.
+         * Because if there is a setter method whose input parameter type is different from the property type,
+         * it is not considered a write method here.
          */
         public Method getWriteMethod() {
             return writeMethod;

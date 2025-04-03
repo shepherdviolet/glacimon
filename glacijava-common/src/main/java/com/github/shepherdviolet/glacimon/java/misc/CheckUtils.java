@@ -19,6 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.java.misc;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * 用于检查数据的工具
  * @author shepherdviolet
@@ -63,6 +66,46 @@ public class CheckUtils {
      */
     public static boolean notEmptyNotBlank(String input){
         return input != null && input.length() > 0 && input.trim().length() > 0;
+    }
+
+    /**
+     * 检查Collection/List为空<br/>
+     * null || isEmpty() <br/>
+     * @param input 检查数据
+     * @return true 空 false 非空
+     */
+    public static boolean isEmpty(Collection<?> input){
+        return input == null || input.isEmpty();
+    }
+
+    /**
+     * 检查Collection/List不为空<br/>
+     * !(null || isEmpty()) <br/>
+     * @param input 检查数据
+     * @return true 非空 false 空
+     */
+    public static boolean notEmpty(Collection<?> input){
+        return input != null && !input.isEmpty();
+    }
+
+    /**
+     * 检查Map为空<br/>
+     * null || isEmpty() <br/>
+     * @param input 检查数据
+     * @return true 空 false 非空
+     */
+    public static boolean isEmpty(Map<?, ?> input){
+        return input == null || input.isEmpty();
+    }
+
+    /**
+     * 检查Map不为空<br/>
+     * !(null || isEmpty()) <br/>
+     * @param input 检查数据
+     * @return true 非空 false 空
+     */
+    public static boolean notEmpty(Map<?, ?> input){
+        return input != null && !input.isEmpty();
     }
 
     /**

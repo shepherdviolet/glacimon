@@ -54,6 +54,7 @@ import java.security.Key;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -487,7 +488,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
          * @return 响应, 可能为null
          * @throws NoHostException       当前没有可发送的后端(网络请求发送前的异常, 准备阶段异常)
          * @throws RequestBuildException 请求初始化异常(通常是网络请求发送前的异常, 准备阶段异常)
-         * @throws IOException           网络通讯异常(通常是网络请求发送中的异常)
+         * @throws IOException           网络通讯异常(通常是网络请求发送中的异常), 包括SocketTimeoutException和ConnectException
          * @throws HttpRejectException   Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
          */
         public <T> T sendForBean(Class<T> type) throws NoHostException, RequestBuildException, HttpRejectException, IOException {
@@ -512,7 +513,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
          * @return 响应, 可能为null
          * @throws NoHostException       当前没有可发送的后端(网络请求发送前的异常, 准备阶段异常)
          * @throws RequestBuildException 请求初始化异常(通常是网络请求发送前的异常, 准备阶段异常)
-         * @throws IOException           网络通讯异常(通常是网络请求发送中的异常)
+         * @throws IOException           网络通讯异常(通常是网络请求发送中的异常), 包括SocketTimeoutException和ConnectException
          * @throws HttpRejectException   Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
          */
         public byte[] sendForBytes() throws NoHostException, RequestBuildException, HttpRejectException, IOException {
@@ -537,7 +538,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
          * @return 响应, 可能为null, InputStream用完后必须手动关闭!!!
          * @throws NoHostException       当前没有可发送的后端(网络请求发送前的异常, 准备阶段异常)
          * @throws RequestBuildException 请求初始化异常(通常是网络请求发送前的异常, 准备阶段异常)
-         * @throws IOException           网络通讯异常(通常是网络请求发送中的异常)
+         * @throws IOException           网络通讯异常(通常是网络请求发送中的异常), 包括SocketTimeoutException和ConnectException
          * @throws HttpRejectException   Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
          */
         public InputStream sendForInputStream() throws NoHostException, RequestBuildException, HttpRejectException, IOException {
@@ -562,7 +563,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
          * @return 响应, 可能为null, ResponsePackage用完后必须手动关闭!!!
          * @throws NoHostException       当前没有可发送的后端(网络请求发送前的异常, 准备阶段异常)
          * @throws RequestBuildException 请求初始化异常(通常是网络请求发送前的异常, 准备阶段异常)
-         * @throws IOException           网络通讯异常(通常是网络请求发送中的异常)
+         * @throws IOException           网络通讯异常(通常是网络请求发送中的异常), 包括SocketTimeoutException和ConnectException
          * @throws HttpRejectException   Http请求拒绝异常(网络请求发送后的异常, HTTP响应码不为2XX)
          */
         public ResponsePackage send() throws NoHostException, RequestBuildException, IOException, HttpRejectException {
@@ -1263,8 +1264,9 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         if (settings.throwableNeedBlock.contains(t.getClass())) {
             return true;
         }
-        return t instanceof SocketException ||
-                t instanceof SocketTimeoutException ||
+        return t instanceof SocketException || // 包含ConnectException
+                t instanceof SocketTimeoutException || // 超时
+                t instanceof TimeoutException || // 异步超时
                 t instanceof UnknownHostException ||
                 (t instanceof HttpRejectException && settings.httpCodeNeedBlock.contains(((HttpRejectException) t).getResponseCode()));
     }

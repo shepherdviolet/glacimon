@@ -62,7 +62,8 @@ key3=value3
 * 执行如下代码, 得到键值对
 
 ```text
-    Map<String, String> result = SimpleKeyValueEncoder.decode(encoded);
+    Map<String, String> result1 = SimpleKeyValueEncoder.decode(encoded);
+    List<KeyValue<String, String>> result2 = SimpleKeyValueEncoder.decodeToList(encoded);
 ```
 
 * 转义符

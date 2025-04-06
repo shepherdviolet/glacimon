@@ -19,12 +19,16 @@
 
 package com.github.shepherdviolet.glacimon.java.conversion;
 
+import com.github.shepherdviolet.glacimon.java.common.entity.KeyValue;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * <p>Encode Map<String, String> to String, Decode String to Map<String, String></p>
- * <p>Map<String, String>对转String, String转Map<String, String></p>
+ * <p>Encode Map<String, String> / List<KeyValue> to String, Decode String to Map<String, String> / List<KeyValue></p>
+ * <p>Map<String, String> / List<KeyValue>转String, String转Map<String, String> / List<KeyValue></p>
  *
  * <p>For simple configuration, or message payload</p>
  * <p>用于简单的配置, 或消息报文体</p>
@@ -128,6 +132,58 @@ public class SimpleKeyValueEncoder {
         return stringBuilder.toString();
     }
 
+    /**
+     * <p>Encode List<KeyValue<String, String> to String</p>
+     *
+     * <pre><code>
+     *     key1=value1,key2=value2,key3=value3
+     * </code></pre>
+     *
+     * @param keyValue List<KeyValue<String, String>
+     * @return Encoded string
+     */
+    public static String encode(List<KeyValue<String, String>> keyValue){
+        return encode(keyValue, false);
+    }
+
+    /**
+     * <p>Encode List<KeyValue<String, String> to String</p>
+     *
+     * <p>newLineSplit == false</p>
+     * <pre><code>
+     *     key1=value1,key2=value2,key3=value3
+     * </code></pre>
+     *
+     * <p>newLineSplit == true</p>
+     * <pre><code>
+     *     key1=value1
+     *     key2=value2
+     *     key3=value3
+     * </code></pre>
+     *
+     * @param keyValue List<KeyValue<String, String>
+     * @param newLineSplit true: Using \n to split key-value element, false: Using , to split key-value element
+     * @return Encoded string
+     */
+    public static String encode(List<KeyValue<String, String>> keyValue, boolean newLineSplit){
+        if (keyValue == null || keyValue.size() <= 0) {
+            return "";
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        int i = 0;
+        for (KeyValue<String, String> entry : keyValue) {
+            if (i++ > 0) {
+                stringBuilder.append(newLineSplit ? RAW_NEWLINE : RAW_SPLIT);
+            }
+            encodeAppend(stringBuilder, entry.getKey());
+            stringBuilder.append(RAW_EQUAL);
+            encodeAppend(stringBuilder, entry.getValue());
+        }
+
+        return stringBuilder.toString();
+    }
+
     private static void encodeAppend(StringBuilder stringBuilder, String str){
         if (str == null) {
             stringBuilder.append(FULL_ESCAPE_NULL);
@@ -192,8 +248,40 @@ public class SimpleKeyValueEncoder {
         if (encoded == null || encoded.length() <= 0) {
             return new LinkedHashMap<>(0);
         }
-
         Map<String, String> resultMap = new LinkedHashMap<>();
+        decode0(encoded, resultMap::put);
+        return resultMap;
+    }
+
+    /**
+     * <p>Decode String to List<KeyValue<String, String>></p>
+     *
+     * <p>Format 1</p>
+     * <pre><code>
+     *     key1=value1,key2=value2,key3=value3
+     * </code></pre>
+     *
+     * <p>Format 2</p>
+     * <pre><code>
+     *     key1=value1
+     *     key2=value2
+     *     key3=value3
+     * </code></pre>
+     *
+     * @param encoded encoded string
+     * @return List<KeyValue<String, String>>
+     * @throws DecodeException throw if encoded string invalid
+     */
+    public static List<KeyValue<String, String>> decodeToList(String encoded) throws DecodeException {
+        if (encoded == null || encoded.length() <= 0) {
+            return new ArrayList<>(0);
+        }
+        List<KeyValue<String, String>> resultList = new ArrayList<>();
+        decode0(encoded, (key, value) -> resultList.add(new KeyValue<>(key, value)));
+        return resultList;
+    }
+
+    private static void decode0(String encoded, KeyValues keyValues) throws DecodeException {
         char[] chars = encoded.toCharArray();
 
         Visitor visitor = new Visitor();
@@ -216,7 +304,7 @@ public class SimpleKeyValueEncoder {
             }
             if (escaping) {
                 //handle escape
-                visitor.onEscape(resultMap, chars, start, i, c);
+                visitor.onEscape(keyValues, chars, start, i, c);
                 start = i + 1;
                 //finish escape
                 escaping = false;
@@ -230,21 +318,25 @@ public class SimpleKeyValueEncoder {
                     c == RAW_NEWLINE ||
                     c == RAW_RETURN) {
                 //element finish
-                visitor.onElementFinish(resultMap, chars, start, i);
+                visitor.onElementFinish(keyValues, chars, start, i);
                 start = i + 1;
                 //mark is splitting, to skip duplicate split char
                 splitting = true;
             } else if (c == RAW_EQUAL) {
                 //find equal
-                visitor.onEqual(resultMap, chars, start, i);
+                visitor.onEqual(keyValues, chars, start, i);
                 start = i + 1;
             }
         }
 
         //finish all
-        visitor.onElementFinish(resultMap, chars, start, chars.length);
+        visitor.onElementFinish(keyValues, chars, start, chars.length);
+    }
 
-        return resultMap;
+    private interface KeyValues {
+        
+        void put(String key, String value);
+        
     }
 
     private static class Visitor {
@@ -265,7 +357,7 @@ public class SimpleKeyValueEncoder {
         /**
          * when we find a char after escape \
          */
-        private void onEscape(Map<String, String> map, char[] chars, int startIndex, int currentIndex, char c) throws DecodeException {
+        private void onEscape(KeyValues keyValues, char[] chars, int startIndex, int currentIndex, char c) throws DecodeException {
             //append previous chars (skip previous escape char \)
             appendPrevious(chars, startIndex, currentIndex - 1);
             //append escape char
@@ -319,7 +411,7 @@ public class SimpleKeyValueEncoder {
         /**
          * when we find equal =
          */
-        private void onEqual(Map<String, String> map, char[] chars, int startIndex, int currentIndex) throws DecodeException {
+        private void onEqual(KeyValues keyValues, char[] chars, int startIndex, int currentIndex) throws DecodeException {
             //check state
             if (!keyDecoding) {
                 throw new DecodeException("Invalid data, element has two '=', use escape char '\\=' instead, problem key:" + keyBuilder.toString() + ", data:" + new String(chars));
@@ -333,7 +425,7 @@ public class SimpleKeyValueEncoder {
         /**
          * when element finish
          */
-        private void onElementFinish(Map<String, String> map, char[] chars, int startIndex, int currentIndex) throws DecodeException {
+        private void onElementFinish(KeyValues keyValues, char[] chars, int startIndex, int currentIndex) throws DecodeException {
             //check state
             if (keyDecoding) {
                 throw new DecodeException("Invalid data, element has no value, problem key:" + keyBuilder.toString() + ", data:" + new String(chars));
@@ -344,7 +436,7 @@ public class SimpleKeyValueEncoder {
             String key = keyNull ? null : trim(keyBuilder.toString(), keyStart, keyEnd);
             String value = valueNull ? null : trim(valueBuilder.toString(), valueStart, valueEnd);
             //put map
-            map.put(key, value);
+            keyValues.put(key, value);
             //reset
             reset();
         }

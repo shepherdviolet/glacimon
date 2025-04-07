@@ -31,6 +31,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.DataC
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GsonDataConverter;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autowired.HttpClientMemberProcessor;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.HttpClients;
+import org.springframework.context.annotation.Primary;
 
 import java.util.Map;
 
@@ -57,6 +58,7 @@ public class HttpClientsConfig {
      *     };
      * </pre>
      */
+    @Primary
     @Bean(HttpClients.HTTP_CLIENTS_NAME)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public HttpClients httpClientsContainer(

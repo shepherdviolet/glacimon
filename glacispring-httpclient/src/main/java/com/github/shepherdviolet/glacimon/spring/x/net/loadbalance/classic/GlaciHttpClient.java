@@ -1358,7 +1358,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             return;
         }
 
-        StringBuilder stringBuilder = new StringBuilder("raw-url:" + host.getUrl() + request.urlSuffix);
+        StringBuilder stringBuilder = new StringBuilder("raw-url: " + host.getUrl() + request.urlSuffix);
         if (request.urlParams != null && request.urlParams.size() > 0) {
             stringBuilder.append("?");
             int i = 0;

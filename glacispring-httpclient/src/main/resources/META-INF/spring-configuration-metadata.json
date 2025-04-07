@@ -1,28 +1,21 @@
 {
-  "groups": [
-    {
-      "name": "glacispring.httpclient",
-      "type": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.GlacispringHttpClientProperties",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.GlacispringHttpClientProperties"
-    }
-  ],
   "properties": [
     {
       "name": "glacispring.httpclient.enabled",
       "type": "java.lang.Boolean",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.GlacispringHttpClientProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.HttpClientsConfig",
       "defaultValue": false
     },
     {
       "name": "glacispring.httpclient.apollo-support",
       "type": "java.lang.Boolean",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.GlacispringHttpClientProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.apollo.HttpClientsApolloConfig",
       "defaultValue": false
     },
     {
       "name": "glacispring.httpclient.apollo-namespace",
       "type": "java.lang.String",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.GlacispringHttpClientProperties",
+      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.apollo.HttpClientsApolloConfigWithNamespace",
       "defaultValue": "application"
     },
     {
@@ -30,7 +23,5 @@
       "type": "java.util.Map<java.lang.String, com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.HttpClientSettings>",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.autoconfig.HttpClientSettings"
     }
-  ],
-  "hints": [
   ]
 }

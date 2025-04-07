@@ -1,11 +1,4 @@
 {
-  "groups": [
-    {
-      "name": "glacispring.helper",
-      "type": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties"
-    }
-  ],
   "properties": [
     {
       "name": "glacispring.helper.ez-sentinel.rule-data",
@@ -23,13 +16,13 @@
       "name": "glacispring.helper.rocketmq.print-message-when-exception",
       "type": "java.lang.Boolean",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
-      "defaultValue": "true"
+      "defaultValue": true
     },
     {
       "name": "glacispring.helper.rocketmq.print-message-when-reconsume",
       "type": "java.lang.Boolean",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
-      "defaultValue": "true"
+      "defaultValue": true
     },
     {
       "name": "glacispring.helper.rocketmq.default-charset",
@@ -37,7 +30,5 @@
       "sourceType": "com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager.RmqConsumerManagerImpl",
       "defaultValue": "UTF-8"
     }
-  ],
-  "hints": [
   ]
 }

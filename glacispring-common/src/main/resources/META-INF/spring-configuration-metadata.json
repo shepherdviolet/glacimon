@@ -1,16 +1,4 @@
 {
-  "groups": [
-    {
-      "name": "glacispring.common",
-      "type": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.basic.autoconfig.GlacispringCommonProperties"
-    },
-    {
-      "name": "glacispring.crypto-prop",
-      "type": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
-      "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration"
-    }
-  ],
   "properties": [
     {
       "name": "glacispring.common.servlet-context-listener-enabled",
@@ -28,7 +16,7 @@
       "name": "glacispring.crypto-prop.ignore-exception",
       "type": "java.lang.Boolean",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
-      "defaultValue": "false"
+      "defaultValue": false
     },
     {
       "name": "glacispring.crypto-prop.skip-property-sources",
@@ -40,9 +28,7 @@
       "name": "glacispring.crypto-prop.intercept-by-proxy",
       "type": "java.lang.Boolean",
       "sourceType": "com.github.shepherdviolet.glacimon.spring.x.crypto.cryptoprop.CryptoPropConfiguration",
-      "defaultValue": "false"
+      "defaultValue": false
     }
-  ],
-  "hints": [
   ]
 }

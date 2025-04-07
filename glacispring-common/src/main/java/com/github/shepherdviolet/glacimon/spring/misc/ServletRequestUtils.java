@@ -20,6 +20,7 @@
 package com.github.shepherdviolet.glacimon.spring.misc;
 
 import com.github.shepherdviolet.glacimon.java.datastruc.IgnoreCaseHashMap;
+import com.github.shepherdviolet.glacimon.java.net.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
@@ -56,15 +57,17 @@ public class ServletRequestUtils {
      * get http headers
      * @param request HttpServletRequest
      */
-    public static Map<String, String> getHttpHeaders(HttpServletRequest request) {
+    public static HttpHeaders getHttpHeaders(HttpServletRequest request) {
         Enumeration<String> headerNames = request.getHeaderNames();
-        Map<String, String> headerMap = new IgnoreCaseHashMap<>();
+        HttpHeaders httpHeaders = new HttpHeaders();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
-            String headerValue = request.getHeader(headerName);
-            headerMap.put(headerName, headerValue);
+            Enumeration<String> values = request.getHeaders(headerName);
+            while (values != null && values.hasMoreElements()) {
+                httpHeaders.add(headerName, values.nextElement());
+            }
         }
-        return headerMap;
+        return httpHeaders;
     }
 
     /**

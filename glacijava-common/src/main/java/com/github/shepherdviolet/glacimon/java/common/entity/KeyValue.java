@@ -63,4 +63,8 @@ public class KeyValue <K, V> {
         return getValue();
     }
 
+    @Override
+    public String toString() {
+        return key + "=" + value;
+    }
 }

@@ -20,6 +20,7 @@
 package com.github.shepherdviolet.glacimon.java.net;
 
 import com.github.shepherdviolet.glacimon.java.common.entity.KeyValue;
+import com.github.shepherdviolet.glacimon.java.datastruc.IgnoreCaseHashMap;
 import com.github.shepherdviolet.glacimon.java.misc.StreamingBuilder;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class HttpHeaders {
         return headers;
     }
 
-    private final Map<String, List<String>> headers = new HashMap<>();
+    private final IgnoreCaseHashMap<String, List<String>> headers = new IgnoreCaseHashMap<>(IgnoreCaseHashMap.KeyStyle.CAMEL);
 
     /**
      * 添加请求头.

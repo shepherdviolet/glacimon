@@ -19,11 +19,13 @@
 
 package com.github.shepherdviolet.glacimon.java.conversion;
 
-import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
+import com.github.shepherdviolet.glacimon.java.common.entity.KeyValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SimpleKeyValueEncoderTest {
@@ -72,6 +74,29 @@ public class SimpleKeyValueEncoderTest {
 //        System.out.println(result);
 
         Assertions.assertEquals(map.toString(), result.toString());
+    }
+
+    @Test
+    public void test3() throws SimpleKeyValueEncoder.DecodeException {
+        List<KeyValue<String, String>> list = new ArrayList<>();
+        list.add(new KeyValue<>("key", "value"));
+        list.add(new KeyValue<>(null, "nullsvalue"));
+        list.add(new KeyValue<>("nullskey", null));
+        list.add(new KeyValue<>("escape\\key", "escape\\value"));
+        list.add(new KeyValue<>("split,key", "split,value"));
+        list.add(new KeyValue<>("eq=key=", "=eq=value"));
+        list.add(new KeyValue<>(" blank  key ", " blank  value "));
+        list.add(new KeyValue<>("\tblankkey\t", "\tblankvalue\t"));
+        list.add(new KeyValue<>("newline\n", "\nreturn"));
+
+//        System.out.println(map);
+        String encoded = SimpleKeyValueEncoder.encode(list, true);
+//        System.out.println(encoded);
+
+        List<KeyValue<String, String>> result = SimpleKeyValueEncoder.decodeToList(encoded);
+//        System.out.println(result);
+
+        Assertions.assertEquals(list.toString(), result.toString());
     }
 
 }

@@ -468,6 +468,9 @@ public class HttpHeaders {
         if (joinedValue == null) {
             return null;
         }
+        if (joinedValue.indexOf('|') < 0) {
+            return StreamingBuilder.arrayList().add(joinedValue).build();
+        }
         List<String> multiValue = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
         boolean isEscaped = false;

@@ -267,7 +267,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         //basic
         private String urlSuffix;
         private boolean isPost = false;
-        private Map<String, String> headers;
+        private HttpHeaders headers;
         private Map<String, Object> urlParams;
 
         //body
@@ -386,8 +386,17 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         /**
          * <p>[配置]HTTP请求头参数, 客户端配置和此处配置的均生效(此处配置优先)</p>
          */
-        public Request httpHeaders(Map<String, String> httpHeaders) {
+        public Request httpHeaders(HttpHeaders httpHeaders) {
             this.headers = httpHeaders;
+            return this;
+        }
+
+        /**
+         * <p>[配置]HTTP请求头参数, 客户端配置和此处配置的均生效(此处配置优先)</p>
+         * <p>注意Map方式设置, 同一个key只能有一个value, 如果需要多个值, 请用httpHeaders(HttpHeaders)或httpHeader(String, String)</p>
+         */
+        public Request httpHeaders(Map<String, String> httpHeaders) {
+            this.headers = HttpHeaders.ofSingleValueMap(httpHeaders);
             return this;
         }
 
@@ -396,9 +405,9 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
          */
         public Request httpHeader(String key, String value) {
             if (this.headers == null) {
-                this.headers = new HashMap<>(8);
+                this.headers = new HttpHeaders();
             }
-            this.headers.put(key, value);
+            this.headers.set(key, value);
             return this;
         }
 
@@ -1179,13 +1188,9 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             headers.traverse(builder::addHeader);
         }
 
-        if (request.headers != null){
-            for (Map.Entry<String, String> entry : request.headers.entrySet()){
-                if (entry.getKey() == null || entry.getValue() == null) {
-                    continue;
-                }
-                builder.addHeader(entry.getKey(), entry.getValue());
-            }
+        headers = request.headers;
+        if (headers != null){
+            headers.traverse(builder::addHeader);
         }
 
         return builder.build();
@@ -1233,13 +1238,9 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             headers.traverse(builder::addHeader);
         }
 
-        if (request.headers != null){
-            for (Map.Entry<String, String> entry : request.headers.entrySet()){
-                if (entry.getKey() == null || entry.getValue() == null) {
-                    continue;
-                }
-                builder.addHeader(entry.getKey(), entry.getValue());
-            }
+        headers = request.headers;
+        if (headers != null){
+            headers.traverse(builder::addHeader);
         }
 
         return builder.build();
@@ -1274,7 +1275,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             return request.mediaType;
         }
         if (request.headers != null) {
-            String contentType = request.headers.get("Content-Type");
+            String contentType = request.headers.getValue("Content-Type");
             if (contentType != null) {
                 return contentType;
             }
@@ -1479,6 +1480,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         private boolean isRedirect;
         private ResponseBody body;
         private Headers headers;
+        private HttpHeaders httpHeaders;
         private String requestId;
 
         private static ResponsePackage newInstance(Request request, Response response) {
@@ -1494,6 +1496,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             isRedirect = response.isRedirect();
             body = response.body();
             headers = response.headers();
+            httpHeaders = HttpHeaders.ofMultiValueMap(headers.toMultimap());
             requestId = request.requestId == Integer.MAX_VALUE ? "" : String.valueOf(request.requestId);
         }
 
@@ -1513,8 +1516,16 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             return body;
         }
 
+        /**
+         * @deprecated Use httpHeaders()
+         */
+        @Deprecated
         public Headers headers() {
             return headers;
+        }
+
+        public HttpHeaders httpHeaders() {
+            return httpHeaders;
         }
 
         public String requestId() {

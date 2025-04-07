@@ -30,16 +30,28 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
- * HTTP Headers.
- *
- * 注意HTTP请求头允许一个name对应多个value, 当使用'SingleValue'系列方法的时候, 只会储存/读取第一个value.
+ * <p>HTTP Headers.</p>
+ * <p>HTTP请求头允许一个name对应多个value. </p>
+ * <p>--------------------------------------------------------------------</p>
+ * <p>单值'SingleValue'系列方法:</p>
+ * <p>当使用'SingleValue'系列方法的时候, 每个name只会读取第一个value.</p>
+ * <p>--------------------------------------------------------------------</p>
+ * <p>连值'JoinedValue'系列方法:</p>
+ * <p>'JoinedValue'系列方法利用'|'分隔符在一个String中储存多个value, 实现了在单值 Map &lt;String, String&gt; 中储存多值.</p>
+ * <p>格式为:</p>
+ * <p>Key=Value|Key=Value</p>
+ * <p>转义符:</p>
+ * <p>\|  ->  |</p>
+ * <p>\\  ->  \</p>
  *
  * @author shepherdviolet
  */
 public class HttpHeaders {
 
     /**
-     * 根据单值Map创建
+     * 根据单值 Map &lt;String, String&gt; 创建
+     * <p>当使用'SingleValue'系列方法的时候, 每个name只会读取第一个value.</p>
+     *
      * @param singleValueMap 单值Map
      */
     public static HttpHeaders ofSingleValueMap(Map<String, String> singleValueMap) {
@@ -54,7 +66,7 @@ public class HttpHeaders {
     }
 
     /**
-     * 根据多值Map创建
+     * 根据多值 Map &lt;String, List&lt;String&gt&gt 创建
      * @param multiValueMap 多值Map
      */
     public static HttpHeaders ofMultiValueMap(Map<String, List<String>> multiValueMap) {
@@ -69,10 +81,10 @@ public class HttpHeaders {
     }
 
     /**
-     * 根据List创建
-     * @param list List
+     * 根据 List &lt;KeyValue&lt;String, String&gt&gt 创建
+     * @param list KeyValue List
      */
-    public static HttpHeaders ofList(List<KeyValue<String, String>> list) {
+    public static HttpHeaders ofKeyValueList(List<KeyValue<String, String>> list) {
         HttpHeaders headers = new HttpHeaders();
         if (list == null) {
             return headers;
@@ -83,7 +95,32 @@ public class HttpHeaders {
         return headers;
     }
 
+    /**
+     * [特殊] 根据连值 Map &lt;String, String&gt; 创建
+     * <p>与ofSingleValueMap不同的是, 这个方法支持读取连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
+     * <p>格式为:</p>
+     * <p>Key=Value|Key=Value</p>
+     * <p>转义符:</p>
+     * <p>\|  ->  |</p>
+     * <p>\\  ->  \</p>
+     *
+     * @param joinedValueMap 连值Map
+     */
+    public static HttpHeaders ofJoinedValueMap(Map<String, String> joinedValueMap) throws IllegalEscapeException {
+        HttpHeaders headers = new HttpHeaders();
+        if (joinedValueMap == null) {
+            return headers;
+        }
+        for (Map.Entry<String, String> entry : joinedValueMap.entrySet()) {
+            headers.add(entry.getKey(), joinedValueToMultiValue(entry.getValue()));
+        }
+        return headers;
+    }
+
+
+
     private final IgnoreCaseHashMap<String, List<String>> headers = new IgnoreCaseHashMap<>(IgnoreCaseHashMap.KeyStyle.CAMEL);
+
 
     /**
      * 添加请求头.
@@ -93,7 +130,7 @@ public class HttpHeaders {
      * 使用set方法设置请求头时, 指定name的原值被覆盖, 只存在新值.
      *
      * @param name name
-     * @param value 新值
+     * @param value 值
      */
     public void add(String name, String value) {
         if (name == null || value == null) {
@@ -110,7 +147,7 @@ public class HttpHeaders {
      * 使用set方法设置请求头时, 指定name的原值被覆盖, 只存在新值.
      *
      * @param name name
-     * @param values 新值
+     * @param values 值
      */
     public void add(String name, String... values) {
         if (name == null || values == null || values.length == 0) {
@@ -132,7 +169,7 @@ public class HttpHeaders {
      * 使用set方法设置请求头时, 指定name的原值被覆盖, 只存在新值.
      *
      * @param name name
-     * @param values 新值
+     * @param values 值
      */
     public void add(String name, List<String> values) {
         if (name == null || values == null || values.isEmpty()) {
@@ -147,14 +184,36 @@ public class HttpHeaders {
     }
 
     /**
-     * 设置请求头.
+     * 添加请求头, 支持连值(JoinedValue).
+     *
+     * 注意:
+     * 使用add方法添加请求头时, 指定name的原值保留, 新值与原值并存 (即使值相同).
+     * 使用set方法设置请求头时, 指定name的原值被覆盖, 只存在新值.
+     *
+     * <p>与add不同的是, 这个方法支持读取连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
+     * <p>格式为:</p>
+     * <p>Key=Value|Key=Value</p>
+     * <p>转义符:</p>
+     * <p>\|  ->  |</p>
+     * <p>\\  ->  \</p>
+     *
+     * @param name name
+     * @param joinedValue 连值
+     * @exception IllegalEscapeException 出现非法的转义符, 转义符只支持两个: \| 和 \\
+     */
+    public void addJoinedValue(String name, String joinedValue) throws IllegalEscapeException {
+        add(name, joinedValueToMultiValue(joinedValue));
+    }
+
+    /**
+     * 设置请求头. (覆盖)
      *
      * 注意:
      * 使用add方法添加请求头时, 指定name的原值保留, 新值与原值并存 (即使值相同).
      * 使用set方法设置请求头时, 指定name的原值被覆盖, 只存在新值.
      *
      * @param name name
-     * @param value 新值
+     * @param value 值
      */
     public void set(String name, String value) {
         if (name == null || value == null) {
@@ -164,14 +223,14 @@ public class HttpHeaders {
     }
 
     /**
-     * 设置请求头.
+     * 设置请求头. (覆盖)
      *
      * 注意:
      * 使用add方法添加请求头时, 指定name的原值保留, 新值与原值并存 (即使值相同).
      * 使用set方法设置请求头时, 指定name的原值被覆盖, 只存在新值.
      *
      * @param name name
-     * @param values 新值
+     * @param values 值
      */
     public void set(String name, String... values) {
         if (name == null || values == null || values.length == 0) {
@@ -187,14 +246,14 @@ public class HttpHeaders {
     }
 
     /**
-     * 设置请求头.
+     * 设置请求头. (覆盖)
      *
      * 注意:
      * 使用add方法添加请求头时, 指定name的原值保留, 新值与原值并存 (即使值相同).
      * 使用set方法设置请求头时, 指定name的原值被覆盖, 只存在新值.
      *
      * @param name name
-     * @param values 新值
+     * @param values 值
      */
     public void set(String name, List<String> values) {
         if (name == null || values == null || values.isEmpty()) {
@@ -207,6 +266,28 @@ public class HttpHeaders {
             }
         }
         headers.put(name, list);
+    }
+
+    /**
+     * 设置请求头 (覆盖), 支持连值(JoinedValue).
+     *
+     * 注意:
+     * 使用add方法添加请求头时, 指定name的原值保留, 新值与原值并存 (即使值相同).
+     * 使用set方法设置请求头时, 指定name的原值被覆盖, 只存在新值.
+     *
+     * <p>与set不同的是, 这个方法支持读取连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
+     * <p>格式为:</p>
+     * <p>Key=Value|Key=Value</p>
+     * <p>转义符:</p>
+     * <p>\|  ->  |</p>
+     * <p>\\  ->  \</p>
+     *
+     * @param name name
+     * @param joinedValue 连值
+     * @exception IllegalEscapeException 出现非法的转义符, 转义符只支持两个: \| 和 \\
+     */
+    public void setJoinedValue(String name, String joinedValue) throws IllegalEscapeException {
+        set(name, joinedValueToMultiValue(joinedValue));
     }
 
     /**
@@ -232,15 +313,15 @@ public class HttpHeaders {
      * @param name name
      * @return 可能为null
      */
-    public String getValue(String name) {
+    public String getSingleValue(String name) {
         if (name == null) {
             return null;
         }
-        List<String> list = headers.get(name);
-        if (list == null || list.isEmpty()) {
+        List<String> multiValue = headers.get(name);
+        if (multiValue == null || multiValue.isEmpty()) {
             return null;
         }
-        return list.get(0);
+        return multiValue.get(0);
     }
 
     /**
@@ -248,15 +329,36 @@ public class HttpHeaders {
      * @param name name
      * @return 不为null, 但元素数可能为0
      */
-    public List<String> getValues(String name) {
+    public List<String> getMultiValue(String name) {
+        if (name == null) {
+            return new ArrayList<>(0);
+        }
+        List<String> multiValue = headers.get(name);
+        if (multiValue == null) {
+            return new ArrayList<>(0);
+        }
+        return multiValue;
+    }
+
+    /**
+     * 获取指定name的连值, 返回连值(JoinedValue)
+     *
+     * <p>与getSingleValue和getMultiValue不同的是, 这个方法返回连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
+     * <p>格式为:</p>
+     * <p>Key=Value|Key=Value</p>
+     * <p>转义符:</p>
+     * <p>\|  ->  |</p>
+     * <p>\\  ->  \</p>
+     *
+     * @param name name
+     * @return 连值, 可能为null
+     */
+    public String getJoinedValue(String name) {
         if (name == null) {
             return null;
         }
-        List<String> list = headers.get(name);
-        if (list == null) {
-            return new ArrayList<>(0);
-        }
-        return list;
+        List<String> multiValue = headers.get(name);
+        return multiValueToJoinedValue(multiValue);
     }
 
     public List<String> getNames() {
@@ -268,7 +370,7 @@ public class HttpHeaders {
     }
 
     /**
-     * 转单值Map, 注意HTTP请求头允许一个name对应多个value, 本方法返回的Map只会读取第一个value.
+     * 转单值Map &lt;String, String&gt;, 注意HTTP请求头允许一个name对应多个value, 本方法返回的Map每个name只会有第一个value.
      */
     public Map<String, String> toSingleValueMap() {
         Map<String, String> result = new HashMap<>();
@@ -281,7 +383,7 @@ public class HttpHeaders {
     }
 
     /**
-     * 转多值Map, 注意HTTP请求头允许一个name对应多个value, 本方法返回的Map保留多个值
+     * 转多值Map &lt;String, List&lt;String&gt&gt, 注意HTTP请求头允许一个name对应多个value, 本方法返回的Map每个name保留多个value.
      */
     public Map<String, List<String>> toMultiValueMap() {
         Map<String, List<String>> result = new HashMap<>();
@@ -296,9 +398,9 @@ public class HttpHeaders {
     }
 
     /**
-     * 转List, 注意HTTP请求头允许一个name对应多个value, 本方法返回的List保留多个值
+     * 转键值对List &lt;KeyValue&lt;String, String&gt&gt, 注意HTTP请求头允许一个name对应多个value, 本方法返回的List每个name保留多个value.
      */
-    public List<KeyValue<String, String>> toList() {
+    public List<KeyValue<String, String>> toKeyValueList() {
         List<KeyValue<String, String>> result = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             if (entry.getValue() != null) {
@@ -307,6 +409,27 @@ public class HttpHeaders {
                         result.add(new KeyValue<>(entry.getKey(), value));
                     }
                 }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 转连值Map &lt;String, String&gt;, 注意HTTP请求头允许一个name对应多个value, 本方法返回的Map每个name保留多个value.
+     *
+     * <p>与toSingleValueMap和toMultiValueMap不同的是, 这个方法返回连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
+     * <p>格式为:</p>
+     * <p>Key=Value|Key=Value</p>
+     * <p>转义符:</p>
+     * <p>\|  ->  |</p>
+     * <p>\\  ->  \</p>
+     */
+    public Map<String, String> toJoinedValueMap() {
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            String joinedValue = multiValueToJoinedValue(entry.getValue());
+            if (joinedValue != null) {
+                result.put(entry.getKey(), joinedValue);
             }
         }
         return result;
@@ -337,6 +460,81 @@ public class HttpHeaders {
     @Override
     public String toString() {
         return headers.toString();
+    }
+
+    // private methods /////////////////////////////////////////////////////////////////////////////////////////
+
+    private static List<String> joinedValueToMultiValue(String joinedValue) throws IllegalEscapeException {
+        if (joinedValue == null) {
+            return null;
+        }
+        List<String> multiValue = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        boolean isEscaped = false;
+        for (char c : joinedValue.toCharArray()) {
+            if (isEscaped) {
+                if (c == '|' || c == '\\') {
+                    stringBuilder.append(c);
+                } else {
+                    throw new IllegalEscapeException("Illegal escape characters '\\" + c +
+                            "', HttpHeaders' JoinedValue only supports two escape characters '\\\\' and '\\|', joined value: " + joinedValue);
+                }
+                isEscaped = false;
+            } else if (c == '\\') {
+                isEscaped = true;
+            } else if (c == '|') {
+                multiValue.add(stringBuilder.toString());
+                stringBuilder.setLength(0);
+            } else {
+                stringBuilder.append(c);
+            }
+        }
+        if (isEscaped) {
+            throw new IllegalEscapeException("Illegal escape characters '\\' (at the end of the String), " +
+                    "HttpHeaders' JoinedValue only supports two escape characters '\\\\' and '\\|', joined value: " + joinedValue);
+        }
+        multiValue.add(stringBuilder.toString());
+        return multiValue;
+    }
+
+    private static String multiValueToJoinedValue(List<String> multiValue) {
+        if (multiValue == null) {
+            return null;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        int index = 0;
+        for (String value : multiValue) {
+            if (value == null) {
+                continue;
+            }
+            if (index++ > 0) {
+                stringBuilder.append("|");
+            }
+            for (char c : value.toCharArray()) {
+                if (c == '|' || c == '\\') {
+                    stringBuilder.append('\\');
+                }
+                stringBuilder.append(c);
+            }
+        }
+        if (index == 0) {
+            return null;
+        }
+        return stringBuilder.toString();
+    }
+
+    public static class IllegalEscapeException extends Exception {
+
+        private static final long serialVersionUID = -7273986532616199613L;
+
+        public IllegalEscapeException(String message) {
+            super(message);
+        }
+
+        public IllegalEscapeException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
     }
 
 }

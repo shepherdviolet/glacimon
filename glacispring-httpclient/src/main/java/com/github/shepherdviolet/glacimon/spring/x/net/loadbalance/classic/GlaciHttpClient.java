@@ -1275,7 +1275,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             return request.mediaType;
         }
         if (request.headers != null) {
-            String contentType = request.headers.getValue("Content-Type");
+            String contentType = request.headers.getSingleValue("Content-Type");
             if (contentType != null) {
                 return contentType;
             }
@@ -1284,7 +1284,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             return settings.mediaType;
         }
         if (settings.headers != null) {
-            String contentType = settings.headers.getValue("Content-Type");
+            String contentType = settings.headers.getSingleValue("Content-Type");
             if (contentType != null) {
                 return contentType;
             }
@@ -1975,7 +1975,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             return setHeaders((HttpHeaders) null);
         }
         try {
-            return setHeaders(HttpHeaders.ofList(SimpleKeyValueEncoder.decodeToList(headersString)));
+            return setHeaders(HttpHeaders.ofKeyValueList(SimpleKeyValueEncoder.decodeToList(headersString)));
         } catch (SimpleKeyValueEncoder.DecodeException e) {
             throw new IllegalArgumentException("Error while parsing headers '" + headersString +
                     "' to List, illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", e);

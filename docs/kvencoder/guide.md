@@ -15,6 +15,12 @@
         map.put("key2", "value2");
         map.put("key3", "value3");
         String encoded = SimpleKeyValueEncoder.encode(map);
+
+        List<KeyValue<String, String>> list = new ArrayList<>();
+        list.put("key1", "value1");
+        list.put("key2", "value2");
+        list.put("key3", "value3");
+        String encoded = SimpleKeyValueEncoder.encode(list);
 ```
 
 * 得到如下字符串
@@ -33,6 +39,12 @@ key1=value1,key2=value2,key3=value3
         map.put("key2", "value2");
         map.put("key3", "value3");
         String encoded = SimpleKeyValueEncoder.encode(map, true);
+        
+        List<KeyValue<String, String>> list = new ArrayList<>();
+        list.put("key1", "value1");
+        list.put("key2", "value2");
+        list.put("key3", "value3");
+        String encoded = SimpleKeyValueEncoder.encode(list, true);
 ```
 
 * 得到如下字符串

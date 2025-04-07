@@ -418,7 +418,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 Arrays.asList("headers")) {
             @Override
             public void applySetting(HttpClient client, String value) throws Exception {
-                client.setHeaders(SimpleKeyValueEncoder.decode(value));
+                client.setHeadersString(value);
             }
         });
 

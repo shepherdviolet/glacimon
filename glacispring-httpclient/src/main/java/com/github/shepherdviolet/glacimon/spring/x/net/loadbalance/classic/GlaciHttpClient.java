@@ -23,6 +23,7 @@ import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
+import com.github.shepherdviolet.glacimon.java.net.HttpHeaders;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.TimerContext;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimer;
 import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimerFactory;
@@ -1173,14 +1174,9 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                 .post(requestBody)
                 .tag(request.stub);
 
-        Map<String, String> headers = settings.headers;
+        HttpHeaders headers = settings.headers;
         if (headers != null){
-            for (Map.Entry<String, String> entry : headers.entrySet()){
-                if (entry.getKey() == null || entry.getValue() == null) {
-                    continue;
-                }
-                builder.addHeader(entry.getKey(), entry.getValue());
-            }
+            headers.traverse(builder::addHeader);
         }
 
         if (request.headers != null){
@@ -1232,14 +1228,9 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                 .get()
                 .tag(request.stub);
 
-        Map<String, String> headers = settings.headers;
+        HttpHeaders headers = settings.headers;
         if (headers != null){
-            for (Map.Entry<String, String> entry : headers.entrySet()){
-                if (entry.getKey() == null || entry.getValue() == null) {
-                    continue;
-                }
-                builder.addHeader(entry.getKey(), entry.getValue());
-            }
+            headers.traverse(builder::addHeader);
         }
 
         if (request.headers != null){
@@ -1292,7 +1283,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             return settings.mediaType;
         }
         if (settings.headers != null) {
-            String contentType = settings.headers.get("Content-Type");
+            String contentType = settings.headers.getValue("Content-Type");
             if (contentType != null) {
                 return contentType;
             }
@@ -1757,7 +1748,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         private long passiveBlockDuration = PASSIVE_BLOCK_DURATION;
         private String mediaType = null;
         private String encode = ENCODE;
-        private Map<String, String> headers;
+        private HttpHeaders headers;
         private int logConfig = LOG_CONFIG_DEFAULT;
         private int recoveryCoefficient = 10;
 
@@ -1943,29 +1934,40 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
     /**
      * [可运行时修改]
-     * 设置HTTP请求头参数
+     * 设置HTTP请求头参数, 这个方法会覆盖原值
      * @param headers 请求头参数
      */
-    public GlaciHttpClient setHeaders(Map<String, String> headers) {
+    public GlaciHttpClient setHeaders(HttpHeaders headers) {
         settings.headers = headers;
         return this;
     }
 
     /**
      * [可运行时修改]
-     * 设置HTTP请求头参数, 格式: key1=value1,key2=value2,key3=value3
+     * 设置HTTP请求头参数, 这个方法会覆盖原值.
+     * 注意Map方式设置, 同一个key只能有一个value, 如果需要多个值, 请用setHeaders(HttpHeaders)或setHeadersString(String)
+     * @param headers 请求头参数
+     */
+    public GlaciHttpClient setHeaders(Map<String, String> headers) {
+        settings.headers = HttpHeaders.ofSingleValueMap(headers);
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 设置HTTP请求头参数, 这个方法会覆盖原值. 格式: key1=value1,key2=value2,key3=value3
      * 示例: User-Agent=GlacispringHttpClient,Referer=http://github.com
      * @param headersString 请求头参数
      */
     public GlaciHttpClient setHeadersString(String headersString) {
         if (CheckUtils.isEmptyOrBlank(headersString)) {
-            return setHeaders(null);
+            return setHeaders((HttpHeaders) null);
         }
         try {
-            return setHeaders(SimpleKeyValueEncoder.decode(headersString));
+            return setHeaders(HttpHeaders.ofList(SimpleKeyValueEncoder.decodeToList(headersString)));
         } catch (SimpleKeyValueEncoder.DecodeException e) {
             throw new IllegalArgumentException("Error while parsing headers '" + headersString +
-                    "' to Map, illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", e);
+                    "' to List, illegal key-value format, see github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md", e);
         }
     }
 

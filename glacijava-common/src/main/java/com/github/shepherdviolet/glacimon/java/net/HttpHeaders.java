@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * HTTP Headers.
@@ -309,6 +310,33 @@ public class HttpHeaders {
             }
         }
         return result;
+    }
+
+    /**
+     * 遍历所有的请求头.
+     *
+     * 示例:
+     * okhttp3.Request.Builder builder = new okhttp3.Request.Builder()
+     * httpHeaders.traverse(builder::addHeader);
+     */
+    public void traverse(BiConsumer<String, String> consumer) {
+        if (consumer == null) {
+            return;
+        }
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            if (entry.getKey() != null && entry.getValue() != null) {
+                for (String value : entry.getValue()) {
+                    if (value != null) {
+                        consumer.accept(entry.getKey(), value);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return headers.toString();
     }
 
 }

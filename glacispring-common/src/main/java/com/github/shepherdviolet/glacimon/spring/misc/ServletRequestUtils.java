@@ -19,7 +19,6 @@
 
 package com.github.shepherdviolet.glacimon.spring.misc;
 
-import com.github.shepherdviolet.glacimon.java.datastruc.IgnoreCaseHashMap;
 import com.github.shepherdviolet.glacimon.java.net.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;

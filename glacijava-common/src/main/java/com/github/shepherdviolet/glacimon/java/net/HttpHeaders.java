@@ -106,7 +106,7 @@ public class HttpHeaders {
      *
      * @param joinedValueMap 连值Map
      */
-    public static HttpHeaders ofJoinedValueMap(Map<String, String> joinedValueMap) throws IllegalEscapeException {
+    public static HttpHeaders ofJoinedValueMap(Map<String, String> joinedValueMap) {
         HttpHeaders headers = new HttpHeaders();
         if (joinedValueMap == null) {
             return headers;
@@ -199,9 +199,8 @@ public class HttpHeaders {
      *
      * @param name name
      * @param joinedValue 连值
-     * @exception IllegalEscapeException 出现非法的转义符, 转义符只支持两个: \| 和 \\
      */
-    public void addJoinedValue(String name, String joinedValue) throws IllegalEscapeException {
+    public void addJoinedValue(String name, String joinedValue) {
         add(name, joinedValueToMultiValue(joinedValue));
     }
 
@@ -284,9 +283,8 @@ public class HttpHeaders {
      *
      * @param name name
      * @param joinedValue 连值
-     * @exception IllegalEscapeException 出现非法的转义符, 转义符只支持两个: \| 和 \\
      */
-    public void setJoinedValue(String name, String joinedValue) throws IllegalEscapeException {
+    public void setJoinedValue(String name, String joinedValue) {
         set(name, joinedValueToMultiValue(joinedValue));
     }
 
@@ -464,7 +462,7 @@ public class HttpHeaders {
 
     // private methods /////////////////////////////////////////////////////////////////////////////////////////
 
-    private static List<String> joinedValueToMultiValue(String joinedValue) throws IllegalEscapeException {
+    private static List<String> joinedValueToMultiValue(String joinedValue) {
         if (joinedValue == null) {
             return null;
         }
@@ -479,8 +477,7 @@ public class HttpHeaders {
                 if (c == '|' || c == '\\') {
                     stringBuilder.append(c);
                 } else {
-                    throw new IllegalEscapeException("Illegal escape characters '\\" + c +
-                            "', HttpHeaders' JoinedValue only supports two escape characters '\\\\' and '\\|', joined value: " + joinedValue);
+                    stringBuilder.append('\\').append(c);
                 }
                 isEscaped = false;
             } else if (c == '\\') {
@@ -493,8 +490,7 @@ public class HttpHeaders {
             }
         }
         if (isEscaped) {
-            throw new IllegalEscapeException("Illegal escape characters '\\' (at the end of the String), " +
-                    "HttpHeaders' JoinedValue only supports two escape characters '\\\\' and '\\|', joined value: " + joinedValue);
+            stringBuilder.append('\\');
         }
         multiValue.add(stringBuilder.toString());
         return multiValue;
@@ -524,20 +520,6 @@ public class HttpHeaders {
             return null;
         }
         return stringBuilder.toString();
-    }
-
-    public static class IllegalEscapeException extends Exception {
-
-        private static final long serialVersionUID = -7273986532616199613L;
-
-        public IllegalEscapeException(String message) {
-            super(message);
-        }
-
-        public IllegalEscapeException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
     }
 
 }

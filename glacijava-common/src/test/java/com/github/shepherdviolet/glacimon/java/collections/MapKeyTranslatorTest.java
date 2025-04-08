@@ -44,7 +44,7 @@ public class MapKeyTranslatorTest {
         toMap = MapKeyTranslator.keyMappings(
                 "Username", "name",
                 "Age", "age"
-        ).translate(fromMap, MapKeyTranslator.NullStrategy.KEEP_NULL, LinkedHashMap::new);;
+        ).translate(fromMap, MapKeyTranslator.NullStrategy.SKIP_NULL, LinkedHashMap::new);;
 
         Assertions.assertEquals("{Username=John}", toMap.toString());
     }

@@ -41,8 +41,6 @@
 #### [Misc utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/misc)
 
 * Check / Time / Closeable / Properties ... utils
-* [LambdaBuilder : Create Map/Set/Object/List with Lambda Expression](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/misc/LambdaBuilder.java)
-* [StreamingBuilder : Create Map/Set/Object/List in stream style](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/misc/LambdaBuilder.java)
 
 #### [Crypto basic utils](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
 
@@ -52,6 +50,11 @@
 
 * String / Base64 / Bytes / Hash / Primitive ... utils
 * [SimpleKeyValueEncoder : Convert between simple Key-Value and String](https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md)
+* 
+#### [Collections utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections)
+
+* [LambdaBuilder : Create Map/Set/Object/List with Lambda Expression](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections/LambdaBuilder.java)
+* [StreamingBuilder : Create Map/Set/Object/List in stream style](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections/LambdaBuilder.java)
 
 #### [Data structure](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc)
 

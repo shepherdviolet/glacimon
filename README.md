@@ -46,22 +46,15 @@
 
 * RSA / ECDSA / AES / DES / SHA / MD5 / PEM / P12 ... utils
 
-#### [Conversion utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/conversion)
-
-* String / Base64 / Bytes / Hash / Primitive ... utils
-* [SimpleKeyValueEncoder : Convert between simple Key-Value and String](https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md)
-* 
 #### [Collections utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections)
 
 * [LambdaBuilder : Create Map/Set/Object/List with Lambda Expression](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections/LambdaBuilder.java)
 * [StreamingBuilder : Create Map/Set/Object/List in stream style](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections/LambdaBuilder.java)
 
-#### [Data structure](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc)
+#### [Conversion utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/conversion)
 
-* Array / Collection ... utils
-* Cache / Pool ...
-* IgnoreCaseHashMap ...
-* [Bitmap / Bloom filter](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc/bitmap)
+* String / Base64 / Bytes / Hash / Primitive ... utils
+* [SimpleKeyValueEncoder : Convert between simple Key-Value and String](https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md)
 
 #### [Concurrent utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/concurrent)
 
@@ -70,14 +63,21 @@
 
 #### [Reflect utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect)
 
-* [BeanInfoUtils : Get property information of Java Bean](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/BeanInfoUtils.java)
 * [GenericClassUtils : Get actual types of generic class](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/GenericClassUtils.java)
 * [MethodCaller : Get caller information of a method](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/MethodCaller.java)
 * [ClassPrinter : Print all information for a class / object](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/ClassPrinter.java)
-
+* [BeanInfoUtils : Get property information of Java Bean](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/BeanInfoUtils.java)
+* 
 #### [IO utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/io)
 
 * [HttpHeaders : HTTP header tools](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/io/HttpHeaders.java)
+
+#### [Data structure](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc)
+
+* Array / Collection ... utils
+* Cache / Pool ...
+* IgnoreCaseHashMap ...
+* [Bitmap / Bloom filter](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc/bitmap)
 
 #### [Network utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/net)
 

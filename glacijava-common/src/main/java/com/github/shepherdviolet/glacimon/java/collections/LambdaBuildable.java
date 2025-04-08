@@ -19,7 +19,11 @@
 
 package com.github.shepherdviolet.glacimon.java.collections;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -33,12 +37,12 @@ public interface LambdaBuildable {
     /**
      * 创建HashMap
      *
-     * <pre>
-     *         Map<String, Object> map = buildHashMap(i -> {
-     *             i.put("a", "b");
-     *             i.put("c", "d");
+     * <pre><code>
+     *         Map<String, Object> map = LambdaBuilder.hashMap(m -> {
+     *             m.put("a", "b");
+     *             m.put("c", "d");
      *         });
-     * </pre>
+     * </code></pre>
      *
      * @since 1.8
      */
@@ -49,12 +53,12 @@ public interface LambdaBuildable {
     /**
      * 创建LinkedHashMap
      *
-     * <pre>
-     *         Map<String, Object> map = buildLinkedHashMap(i -> {
-     *             i.put("a", "b");
-     *             i.put("c", "d");
+     * <pre><code>
+     *         Map<String, Object> map = LambdaBuilder.linkedHashMap(m -> {
+     *             m.put("a", "b");
+     *             m.put("c", "d");
      *         });
-     * </pre>
+     * </code></pre>
      *
      * @since 1.8
      */
@@ -65,12 +69,12 @@ public interface LambdaBuildable {
     /**
      * 创建HashSet
      *
-     * <pre>
-     *         Set<String> set = buildHashSet(i -> {
-     *             i.add("a");
-     *             i.add("c");
+     * <pre><code>
+     *         Set<String> set = LambdaBuilder.hashSet(s -> {
+     *             s.add("a");
+     *             s.add("c");
      *         });
-     * </pre>
+     * </code></pre>
      *
      * @since 1.8
      */
@@ -79,16 +83,34 @@ public interface LambdaBuildable {
     }
 
     /**
+     * 根据源Collection创建HashSet, 实现元素转换
+     *
+     * <pre><code>
+     *         Set<Map<String, Object>> destList = LambdaBuilder.linkedList(srcList, HashMap::new, (src, dest) -> {
+     *             dest.put("aaa", src.get("AAA"));
+     *             dest.put("bbb", src.get("BBB"));
+     *         });
+     * </code></pre>
+     *
+     * @since 1.8
+     */
+    default <SrcType, DestType> Set<DestType> hashSet(Collection<SrcType> srcCollection,
+                                                            Supplier<DestType> destElementSupplier,
+                                                            BiConsumer<SrcType, DestType> destElementAssembler) {
+        return LambdaBuilder.hashSet(srcCollection, destElementSupplier, destElementAssembler);
+    }
+
+    /**
      * 创建Object
      *
-     * <pre>
-     *         Bean bean = buildObject(() -> {
+     * <pre><code>
+     *         Bean bean = LambdaBuilder.object(() -> {
      *             Bean obj = new Bean();
      *             obj.setName("123");
      *             obj.setId("456");
      *             return obj;
      *         });
-     * </pre>
+     * </code></pre>
      *
      * @since 1.8
      */
@@ -99,19 +121,19 @@ public interface LambdaBuildable {
     /**
      * 创建ArrayList, 一般情况下用Arrays.asList
      *
-     * <pre>
+     * <pre><code>
      *     Arrays.asList(
      *          item1,
      *          item2
      *     );
-     * </pre>
+     * </code></pre>
      *
-     * <pre>
-     *         List<String> list = buildArrayList(i -> {
-     *            i.add("a");
-     *            i.add("b");
+     * <pre><code>
+     *         List<String> list = LambdaBuilder.arrayList(l -> {
+     *            l.add("a");
+     *            l.add("b");
      *         });
-     * </pre>
+     * </code></pre>
      *
      * @since 1.8
      */
@@ -120,19 +142,55 @@ public interface LambdaBuildable {
     }
 
     /**
+     * 根据源Collection创建ArrayList, 实现元素转换
+     *
+     * <pre><code>
+     *         List<Map<String, Object>> destList = LambdaBuilder.arrayList(srcList, HashMap::new, (src, dest) -> {
+     *             dest.put("aaa", src.get("AAA"));
+     *             dest.put("bbb", src.get("BBB"));
+     *         });
+     * </code></pre>
+     *
+     * @since 1.8
+     */
+    default <SrcType, DestType> List<DestType> arrayList(Collection<SrcType> srcCollection,
+                                                               Supplier<DestType> destElementSupplier,
+                                                               BiConsumer<SrcType, DestType> destElementAssembler) {
+        return LambdaBuilder.arrayList(srcCollection, destElementSupplier, destElementAssembler);
+    }
+
+    /**
      * 创建LinkedList, 一般情况下用Arrays.asList
      *
-     * <pre>
-     *         List<String> list = buildLinkedList(i -> {
-     *            i.add("a");
-     *            i.add("b");
+     * <pre><code>
+     *         List<String> list = LambdaBuilder.linkedList(l -> {
+     *            l.add("a");
+     *            l.add("b");
      *         });
-     * </pre>
+     * </code></pre>
      *
      * @since 1.8
      */
     default <T> List<T> buildLinkedList(Consumer<List<T>> supplier) {
         return LambdaBuilder.linkedList(supplier);
+    }
+
+    /**
+     * 根据源Collection创建LinkedList, 实现元素转换
+     *
+     * <pre><code>
+     *         List<Map<String, Object>> destList = LambdaBuilder.linkedList(srcList, HashMap::new, (src, dest) -> {
+     *             dest.put("aaa", src.get("AAA"));
+     *             dest.put("bbb", src.get("BBB"));
+     *         });
+     * </code></pre>
+     *
+     * @since 1.8
+     */
+    default <SrcType, DestType> List<DestType> linkedList(Collection<SrcType> srcCollection,
+                                                                Supplier<DestType> destElementSupplier,
+                                                                BiConsumer<SrcType, DestType> destElementAssembler) {
+        return LambdaBuilder.linkedList(srcCollection, destElementSupplier, destElementAssembler);
     }
 
 }

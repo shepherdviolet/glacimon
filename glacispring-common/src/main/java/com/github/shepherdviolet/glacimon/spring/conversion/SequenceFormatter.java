@@ -20,7 +20,7 @@
 package com.github.shepherdviolet.glacimon.spring.conversion;
 
 import org.springframework.util.PropertyPlaceholderHelper;
-import com.github.shepherdviolet.glacimon.java.misc.LambdaBuilder;
+import com.github.shepherdviolet.glacimon.java.collections.LambdaBuilder;
 import com.github.shepherdviolet.glacimon.java.conversion.StringUtils;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 

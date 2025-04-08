@@ -25,7 +25,7 @@ import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtil
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.shepherdviolet.glacimon.java.helper.logback.LogbackHelper;
-import com.github.shepherdviolet.glacimon.java.misc.LambdaBuilder;
+import com.github.shepherdviolet.glacimon.java.collections.LambdaBuilder;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

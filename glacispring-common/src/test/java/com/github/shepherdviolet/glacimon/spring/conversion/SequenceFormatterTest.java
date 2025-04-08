@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.spring.conversion;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.github.shepherdviolet.glacimon.java.misc.LambdaBuilder;
+import com.github.shepherdviolet.glacimon.java.collections.LambdaBuilder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

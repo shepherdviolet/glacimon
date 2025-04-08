@@ -19,10 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.spring.conversion;
 
-import com.github.shepherdviolet.glacimon.spring.conversion.StringPlaceHolderUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.github.shepherdviolet.glacimon.java.misc.LambdaBuildable;
+import com.github.shepherdviolet.glacimon.java.collections.LambdaBuildable;
 
 public class StringPlaceHolderUtilsTest implements LambdaBuildable {
 

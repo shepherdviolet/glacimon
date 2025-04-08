@@ -20,8 +20,8 @@
 package com.github.shepherdviolet.glacimon.java.net;
 
 import com.github.shepherdviolet.glacimon.java.common.entity.KeyValue;
-import com.github.shepherdviolet.glacimon.java.datastruc.IgnoreCaseHashMap;
-import com.github.shepherdviolet.glacimon.java.misc.StreamingBuilder;
+import com.github.shepherdviolet.glacimon.java.collections.IgnoreCaseHashMap;
+import com.github.shepherdviolet.glacimon.java.collections.StreamingBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

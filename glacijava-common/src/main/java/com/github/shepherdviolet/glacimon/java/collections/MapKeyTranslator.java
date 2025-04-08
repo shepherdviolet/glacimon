@@ -35,18 +35,21 @@ import java.util.function.Supplier;
  *
  *         // from 'name' to 'Username'   Equivalent to toMap.put("Username", fromMap.get("name"))
  *         // from 'age' to 'Age'         Equivalent to toMap.put("Age", fromMap.get("age"))
- *         Map<String, Object> toMap = MapKeyTranslator.keyMappings(
+ *         Map<String, Object> toMap = MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
  *                 "Username", "name",
  *                 "Age", "age"
- *         ).translate(fromMap, MapKeyTranslator.NullStrategy.KEEP_NULL);;
+ *         ).translate(fromMap);
  *
  *         // toMap: {Username=John, Age=null}
  * }
  * </pre>
  */
+// 注意, 此处Map使用raw类型是为了兼容性, 若使用泛型不管是<K, V>还是<String, Object>还是<?, ?>均无法满足所有情况
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class MapKeyTranslator {
 
     private final List<KeyMapping> keyMappingList;
+    private final NullStrategy nullStrategy;
 
     /**
      * 根据传入的键映射规则创建一个 MapKeyTranslator 实例。
@@ -62,10 +65,10 @@ public class MapKeyTranslator {
      *
      *         // from 'name' to 'Username'   Equivalent to toMap.put("Username", fromMap.get("name"))
      *         // from 'age' to 'Age'         Equivalent to toMap.put("Age", fromMap.get("age"))
-     *         Map<String, Object> toMap = MapKeyTranslator.keyMappings(
+     *         Map<String, Object> toMap = MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
      *                 "Username", "name",
      *                 "Age", "age"
-     *         ).translate(fromMap, MapKeyTranslator.NullStrategy.KEEP_NULL);;
+     *         ).translate(fromMap);
      *
      *         // toMap: {Username=John, Age=null}
      * }
@@ -74,7 +77,7 @@ public class MapKeyTranslator {
      * @param keyMappings 键映射规则，格式为 toKey1, fromKey1, toKey2, fromKey2, ...
      * @return 一个新的 MapKeyTranslator 实例
      */
-    public static MapKeyTranslator keyMappings(String... keyMappings) {
+    public static MapKeyTranslator keyMappings(NullStrategy nullStrategy, String... keyMappings) {
         List<KeyMapping> keyMappingList = new ArrayList<>(keyMappings.length);
         String toKey = null;
         int index = 0;
@@ -88,11 +91,48 @@ public class MapKeyTranslator {
         if (++index % 2 == 0) {
             keyMappingList.add(new KeyMappingWithoutFrom(toKey));
         }
-        return new MapKeyTranslator(keyMappingList);
+        return new MapKeyTranslator(keyMappingList, nullStrategy);
     }
 
-    private MapKeyTranslator(List<KeyMapping> keyMappingList) {
+    private MapKeyTranslator(List<KeyMapping> keyMappingList, NullStrategy nullStrategy) {
+        if (keyMappingList == null) {
+            keyMappingList = Collections.emptyList();
+        }
+        if (nullStrategy == null) {
+            nullStrategy = NullStrategy.KEEP_NULL;
+        }
         this.keyMappingList = keyMappingList;
+        this.nullStrategy = nullStrategy;
+    }
+
+    /**
+     * 根据键映射规则将源 Map 中的键值对转换到目标 Map 中，并根据指定的空值处理策略处理空值。
+     * 可以通过 Supplier 自定义目标 Map 的创建方式。
+     *
+     * <p>使用示例：
+     * <pre>
+     * {@code
+     *         Map<String, Object> fromMap = new HashMap<>();
+     *         fromMap.put("name", "John");
+     *         fromMap.put("age", null);
+     *
+     *         Map<String, Object> toMap = new HashMap<>();
+     *
+     *         // from 'name' to 'Username'   Equivalent to toMap.put("Username", fromMap.get("name"))
+     *         // from 'age' to 'Age'         Equivalent to toMap.put("Age", fromMap.get("age"))
+     *         MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
+     *                 "Username", "name",
+     *                 "Age", "age"
+     *         ).translate(fromMap, toMap);
+     *
+     *         // toMap: {Username=John, Age=null}
+     * }
+     * </pre>
+     *
+     * @param fromMap         源 Map，包含要转换的键值对
+     */
+    public void translate(Map fromMap, Map toMap) {
+        translate(fromMap, () -> toMap);
     }
 
     /**
@@ -108,22 +148,20 @@ public class MapKeyTranslator {
      *
      *         // from 'name' to 'Username'   Equivalent to toMap.put("Username", fromMap.get("name"))
      *         // from 'age' to 'Age'         Equivalent to toMap.put("Age", fromMap.get("age"))
-     *         Map<String, Object> toMap = MapKeyTranslator.keyMappings(
+     *         Map<String, Object> toMap = MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
      *                 "Username", "name",
      *                 "Age", "age"
-     *         ).translate(fromMap, MapKeyTranslator.NullStrategy.KEEP_NULL);;
+     *         ).translate(fromMap);
      *
      *         // toMap: {Username=John, Age=null}
      * }
      * </pre>
      *
-     * @param <V>             源 Map 和目标 Map 中值的类型
      * @param fromMap         源 Map，包含要转换的键值对
-     * @param nullStrategy    空值处理策略，指定当从源 Map 中获取的值为 null 时的处理方式
      * @return 转换后的目标 Map (HashMap)
      */
-    public <V> Map<String, V> translate(Map<String, V> fromMap, NullStrategy nullStrategy) {
-        return translate(fromMap, nullStrategy, null);
+    public <K, V> Map<K, V> translate(Map fromMap) {
+        return translate(fromMap, (Supplier<Map>) null);
     }
 
     /**
@@ -139,26 +177,23 @@ public class MapKeyTranslator {
      *
      *         // from 'name' to 'Username'   Equivalent to toMap.put("Username", fromMap.get("name"))
      *         // from 'age' to 'Age'         Equivalent to toMap.put("Age", fromMap.get("age"))
-     *         Map<String, Object> toMap = MapKeyTranslator.keyMappings(
+     *         Map<String, Object> toMap = MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
      *                 "Username", "name",
      *                 "Age", "age"
-     *         ).translate(fromMap, MapKeyTranslator.NullStrategy.KEEP_NULL, LinkedHashMap::new);;
+     *         ).translate(fromMap, LinkedHashMap::new);
      *
      *         // toMap: {Username=John, Age=null}
      * }
      * </pre>
      *
-     * @param <V>             源 Map 和目标 Map 中值的类型
      * @param fromMap         源 Map，包含要转换的键值对
-     * @param nullStrategy    空值处理策略，指定当从源 Map 中获取的值为 null 时的处理方式
      * @param toMapSupplier   目标 Map 的 Supplier，用于自定义目标 Map 的创建方式。如果为 null，则默认使用 HashMap
      * @return 转换后的目标 Map
      */
-    @SuppressWarnings("unchecked")
-    public <V> Map<String, V> translate(Map<String, V> fromMap, NullStrategy nullStrategy, Supplier<Map<String, Object>> toMapSupplier) {
-        Map<String, V> toMap = null;
+    public <K, V> Map<K, V> translate(Map fromMap, Supplier<Map> toMapSupplier) {
+        Map toMap = null;
         if (toMapSupplier != null) {
-            toMap = (Map<String, V>) toMapSupplier.get();
+            toMap = toMapSupplier.get();
         }
         if (toMap == null) {
             toMap = new HashMap<>();
@@ -166,11 +201,8 @@ public class MapKeyTranslator {
         if (fromMap == null) {
             return toMap;
         }
-        if (nullStrategy == null) {
-            nullStrategy = NullStrategy.KEEP_NULL;
-        }
         for (KeyMapping keyMapping : keyMappingList) {
-            V value;
+            Object value;
             if (keyMapping instanceof KeyMappingWithoutFrom) {
                 value = null;
             } else {
@@ -198,19 +230,19 @@ public class MapKeyTranslator {
      */
     private static class KeyMapping {
 
-        private String toKey;
-        private String fromKey;
+        private final Object toKey;
+        private final Object fromKey;
 
-        public KeyMapping(String toKey, String fromKey) {
+        public KeyMapping(Object toKey, Object fromKey) {
             this.toKey = toKey;
             this.fromKey = fromKey;
         }
 
-        public String toKey() {
+        public Object toKey() {
             return toKey;
         }
 
-        public String fromKey() {
+        public Object fromKey() {
             return fromKey;
         }
     }

@@ -34,17 +34,19 @@ public class MapKeyTranslatorTest {
         fromMap.put("name", "John");
         fromMap.put("age", null);
 
-        Map<String, Object> toMap = MapKeyTranslator.keyMappings(
-                "Username", "name", // from 'name' to 'Username'
-                "Age", "age" // from 'age' to 'Age'
-        ).translate(fromMap, MapKeyTranslator.NullStrategy.KEEP_NULL, LinkedHashMap::new);;
+        // from 'name' to 'Username'   Equivalent to toMap.put("Username", fromMap.get("name"))
+        // from 'age' to 'Age'         Equivalent to toMap.put("Age", fromMap.get("age"))
+        Map<String, Object> toMap = MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
+                "Username", "name",
+                "Age", "age"
+        ).translate(fromMap, LinkedHashMap::new);
 
         Assertions.assertEquals("{Username=John, Age=null}", toMap.toString());
 
-        toMap = MapKeyTranslator.keyMappings(
+        toMap = MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.SKIP_NULL,
                 "Username", "name",
                 "Age", "age"
-        ).translate(fromMap, MapKeyTranslator.NullStrategy.SKIP_NULL, LinkedHashMap::new);;
+        ).translate(fromMap, LinkedHashMap::new);
 
         Assertions.assertEquals("{Username=John}", toMap.toString());
     }

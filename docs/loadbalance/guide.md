@@ -1,4 +1,4 @@
-# GlaciHttpClient使用手册
+# GlaciHttpClient (glacispring-httpclient) 使用手册
 
 * [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-httpclient/src/main/java/com/github/shepherdviolet/glacimon/spring/x/net/loadbalance)
 * 支持客户端负载均衡, 可配置多个后端地址, 平均分配流量 (Round-Robin)

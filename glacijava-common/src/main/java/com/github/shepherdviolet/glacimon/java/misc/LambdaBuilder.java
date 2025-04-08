@@ -34,20 +34,20 @@ public class LambdaBuilder {
      * 创建HashMap
      *
      * <pre>
-     *         Map<String, Object> map = LambdaBuilder.hashMap(i -> {
-     *             i.put("a", "b");
-     *             i.put("c", "d");
+     *         Map<String, Object> map = LambdaBuilder.hashMap(m -> {
+     *             m.put("a", "b");
+     *             m.put("c", "d");
      *         });
      * </pre>
      *
      * @since 1.8
      */
-    public static <K, V> Map<K, V> hashMap(Consumer<Map<K, V>> supplier) {
+    public static <K, V> Map<K, V> hashMap(Consumer<Map<K, V>> assembler) {
         Map<K, V> map = new HashMap<>(16);
-        if (supplier == null) {
+        if (assembler == null) {
             return map;
         }
-        supplier.accept(map);
+        assembler.accept(map);
         return map;
     }
 
@@ -55,20 +55,20 @@ public class LambdaBuilder {
      * 创建LinkedHashMap
      *
      * <pre>
-     *         Map<String, Object> map = LambdaBuilder.linkedHashMap(i -> {
-     *             i.put("a", "b");
-     *             i.put("c", "d");
+     *         Map<String, Object> map = LambdaBuilder.linkedHashMap(m -> {
+     *             m.put("a", "b");
+     *             m.put("c", "d");
      *         });
      * </pre>
      *
      * @since 1.8
      */
-    public static <K, V> Map<K, V> linkedHashMap(Consumer<Map<K, V>> supplier) {
+    public static <K, V> Map<K, V> linkedHashMap(Consumer<Map<K, V>> assembler) {
         Map<K, V> map = new LinkedHashMap<>(16);
-        if (supplier == null) {
+        if (assembler == null) {
             return map;
         }
-        supplier.accept(map);
+        assembler.accept(map);
         return map;
     }
 
@@ -76,20 +76,20 @@ public class LambdaBuilder {
      * 创建HashSet
      *
      * <pre>
-     *         Set<String> set = LambdaBuilder.hashSet(i -> {
-     *             i.add("a");
-     *             i.add("c");
+     *         Set<String> set = LambdaBuilder.hashSet(s -> {
+     *             s.add("a");
+     *             s.add("c");
      *         });
      * </pre>
      *
      * @since 1.8
      */
-    public static <T> Set<T> hashSet(Consumer<Set<T>> supplier) {
+    public static <T> Set<T> hashSet(Consumer<Set<T>> assembler) {
         Set<T> set = new HashSet<>(16);
-        if (supplier == null) {
+        if (assembler == null) {
             return set;
         }
-        supplier.accept(set);
+        assembler.accept(set);
         return set;
     }
 
@@ -107,8 +107,8 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <T> T object(Supplier<T> supplier) {
-        return supplier.get();
+    public static <T> T object(Supplier<T> assembler) {
+        return assembler.get();
     }
 
     /**
@@ -122,20 +122,20 @@ public class LambdaBuilder {
      * </pre>
      *
      * <pre>
-     *         List<String> list = LambdaBuilder.arrayList(i -> {
-     *            i.add("a");
-     *            i.add("b");
+     *         List<String> list = LambdaBuilder.arrayList(l -> {
+     *            l.add("a");
+     *            l.add("b");
      *         });
      * </pre>
      *
      * @since 1.8
      */
-    public static <T> List<T> arrayList(Consumer<List<T>> supplier) {
+    public static <T> List<T> arrayList(Consumer<List<T>> assembler) {
         List<T> list = new ArrayList<>();
-        if (supplier == null) {
+        if (assembler == null) {
             return list;
         }
-        supplier.accept(list);
+        assembler.accept(list);
         return list;
     }
 
@@ -143,20 +143,20 @@ public class LambdaBuilder {
      * 创建LinkedList, 一般情况下用Arrays.asList
      *
      * <pre>
-     *         List<String> list = LambdaBuilder.linkedList(i -> {
-     *            i.add("a");
-     *            i.add("b");
+     *         List<String> list = LambdaBuilder.linkedList(l -> {
+     *            l.add("a");
+     *            l.add("b");
      *         });
      * </pre>
      *
      * @since 1.8
      */
-    public static <T> List<T> linkedList(Consumer<List<T>> supplier) {
+    public static <T> List<T> linkedList(Consumer<List<T>> assembler) {
         List<T> list = new LinkedList<>();
-        if (supplier == null) {
+        if (assembler == null) {
             return list;
         }
-        supplier.accept(list);
+        assembler.accept(list);
         return list;
     }
 }

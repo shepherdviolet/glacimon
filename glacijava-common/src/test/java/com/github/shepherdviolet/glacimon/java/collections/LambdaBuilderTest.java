@@ -22,10 +22,7 @@ package com.github.shepherdviolet.glacimon.java.collections;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LambdaBuilderTest implements LambdaBuildable {
 
@@ -137,7 +134,7 @@ public class LambdaBuilderTest implements LambdaBuildable {
     @Test
     public void test3() {
 
-        // order为源数据
+        // sourceDataOrders为源数据
         List<Map<String, Object>> sourceDataOrders = buildArrayList(lll -> {
             lll.add(buildHashMap(mmmm -> {
                 mmmm.put("category", "Fish");
@@ -160,15 +157,28 @@ public class LambdaBuilderTest implements LambdaBuildable {
             }));
             m.put("Body", buildHashMap(mm -> {
                 mm.put("Username", "test@test.com");
-                mm.put("Orders", <>buildArrayList(sourceDataOrders, HashMap::new, (src, dest) -> {
-                    dest.put("Name", "Fish");
-                    dest.put("Quantity", "6");
-                    dest.put("UnitPrise", "68.8");
+                mm.put("Orders", buildArrayList(sourceDataOrders, HashMap::new, (src, dest) -> {
+                    // 方法一: 手动赋值
+                    // 第一个入参src是源集合的元素, 第二个入参dest是目标集合的元素, 此处要实现从src取值, 赋值到dest中
+//                    dest.put("Name", src.get("category"));
+//                    dest.put("Quantity", src.get("num"));
+//                    dest.put("UnitPrise", src.get("univalent"));
+
+                    // 方法二: 也可以配合MapKeyTranslator工具进行键映射
+                    // from 'category' to 'Name'            Equivalent to toMap.put("Name", fromMap.get("category"))
+                    // from 'num' to 'Quantity'             Equivalent to toMap.put("Quantity", fromMap.get("num"))
+                    // from 'univalent' to 'UnitPrise'      Equivalent to toMap.put("UnitPrise", fromMap.get("univalent"))
+                    MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
+                            "Name", "category",
+                            "Quantity", "num",
+                            "UnitPrise", "univalent"
+                    ).translate(src, dest);
                 }));
             }));
         });
 
-        Assertions.assertEquals("", map.toString());
+        Assertions.assertEquals("{Header={Service=Foo, Time=20250408, Sequence=202504080000357652}, Body={Orders=[{UnitPrise=68.8, Quantity=6, Name=Fish}, {UnitPrise=28.9, Quantity=3, Name=Milk}], Username=test@test.com}}",
+                map.toString());
 
     }
 

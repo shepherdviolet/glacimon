@@ -54,22 +54,18 @@ public class LambdaBuilderTest implements LambdaBuildable {
      *  {
      *    "Header": {
      *      "Service": "Foo",
-     *      "Version": "1.0.0",
      *      "Time": "20250408",
      *      "Sequence": "202504080000357652"
      *    },
      *    "Body": {
      *      "Username": "test@test.com",
-     *      "Password": "nDwkR+v1SUod6dkd9n4jxw==",
      *      "Orders": [
      *        {
-     *          "Id": "0001",
      *          "Name": "Fish",
      *          "Quantity": "6",
      *          "UnitPrise": "68.8"
      *        },
      *        {
-     *          "Id": "0002",
      *          "Name": "Milk",
      *          "Quantity": "3",
      *          "UnitPrise": "28.9"
@@ -85,22 +81,18 @@ public class LambdaBuilderTest implements LambdaBuildable {
         Map<String, Object> map = buildHashMap(m -> {
             m.put("Header", buildHashMap(mm -> {
                 mm.put("Service", "Foo");
-                mm.put("Version", "1.0.0");
                 mm.put("Time", "20250408");
                 mm.put("Sequence", "202504080000357652");
             }));
             m.put("Body", buildHashMap(mm -> {
                 mm.put("Username", "test@test.com");
-                mm.put("Password", "nDwkR+v1SUod6dkd9n4jxw==");
                 mm.put("Orders", buildArrayList(lll -> {
                     lll.add(buildHashMap(mmmm -> {
-                        mmmm.put("Id", "0001");
                         mmmm.put("Name", "Fish");
                         mmmm.put("Quantity", "6");
                         mmmm.put("UnitPrise", "68.8");
                     }));
                     lll.add(buildHashMap(mmmm -> {
-                        mmmm.put("Id", "0002");
                         mmmm.put("Name", "Milk");
                         mmmm.put("Quantity", "3");
                         mmmm.put("UnitPrise", "28.9");
@@ -113,25 +105,21 @@ public class LambdaBuilderTest implements LambdaBuildable {
 
         Map<String, Object> header = new HashMap<>();
         header.put("Service", "Foo");
-        header.put("Version", "1.0.0");
         header.put("Time", "20250408");
         header.put("Sequence", "202504080000357652");
 
         Map<String, Object> body = new HashMap<>();
         body.put("Username", "test@test.com");
-        body.put("Password", "nDwkR+v1SUod6dkd9n4jxw==");
 
         List<Map<String, Object>> orders = new ArrayList<>();
 
         Map<String, Object> order1 = new HashMap<>();
-        order1.put("Id", "0001");
         order1.put("Name", "Fish");
         order1.put("Quantity", "6");
         order1.put("UnitPrise", "68.8");
         orders.add(order1);
 
         Map<String, Object> order2 = new HashMap<>();
-        order2.put("Id", "0002");
         order2.put("Name", "Milk");
         order2.put("Quantity", "3");
         order2.put("UnitPrise", "28.9");
@@ -143,6 +131,44 @@ public class LambdaBuilderTest implements LambdaBuildable {
         root.put("Body", body);
 
         Assertions.assertEquals(root.toString(), map.toString());
+
+    }
+
+    @Test
+    public void test3() {
+
+        // order为源数据
+        List<Map<String, Object>> sourceDataOrders = buildArrayList(lll -> {
+            lll.add(buildHashMap(mmmm -> {
+                mmmm.put("category", "Fish");
+                mmmm.put("num", "6");
+                mmmm.put("univalent", "68.8");
+            }));
+            lll.add(buildHashMap(mmmm -> {
+                mmmm.put("category", "Milk");
+                mmmm.put("num", "3");
+                mmmm.put("univalent", "28.9");
+            }));
+        });
+
+        // P.S. Lambda表达式的入参根据层级命名为m(第一层) mm(第二层) mmm(第三层), 可读性好, 不容易弄错
+        Map<String, Object> map = buildHashMap(m -> {
+            m.put("Header", buildHashMap(mm -> {
+                mm.put("Service", "Foo");
+                mm.put("Time", "20250408");
+                mm.put("Sequence", "202504080000357652");
+            }));
+            m.put("Body", buildHashMap(mm -> {
+                mm.put("Username", "test@test.com");
+                mm.put("Orders", <>buildArrayList(sourceDataOrders, HashMap::new, (src, dest) -> {
+                    dest.put("Name", "Fish");
+                    dest.put("Quantity", "6");
+                    dest.put("UnitPrise", "68.8");
+                }));
+            }));
+        });
+
+        Assertions.assertEquals("", map.toString());
 
     }
 

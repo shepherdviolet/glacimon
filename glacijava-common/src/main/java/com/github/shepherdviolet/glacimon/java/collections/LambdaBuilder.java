@@ -184,9 +184,9 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <SrcType, DestType> List<DestType> arrayList(Collection<SrcType> srcCollection,
-                                                             Supplier<DestType> destElementSupplier,
-                                                             BiConsumer<SrcType, DestType> destElementAssembler) {
+    public static <SrcElementType, DestElementType> List<DestElementType> arrayList(Collection<SrcElementType> srcCollection,
+                                                                                    Supplier<DestElementType> destElementSupplier,
+                                                                                    BiConsumer<SrcElementType, DestElementType> destElementAssembler) {
         if (destElementSupplier == null) {
             throw new IllegalArgumentException("destElementSupplier must not be null");
         }
@@ -197,7 +197,7 @@ public class LambdaBuilder {
             return new ArrayList<>();
         }
         return srcCollection.stream().map(src -> {
-            DestType dest = destElementSupplier.get();
+            DestElementType dest = destElementSupplier.get();
             destElementAssembler.accept(src, dest);
             return dest;
         }).collect(Collectors.toCollection(ArrayList::new));
@@ -236,9 +236,9 @@ public class LambdaBuilder {
      *
      * @since 1.8
      */
-    public static <SrcType, DestType> List<DestType> linkedList(Collection<SrcType> srcCollection,
-                                                               Supplier<DestType> destElementSupplier,
-                                                               BiConsumer<SrcType, DestType> destElementAssembler) {
+    public static <SrcElementType, DestElementType> List<DestElementType> linkedList(Collection<SrcElementType> srcCollection,
+                                                                                     Supplier<DestElementType> destElementSupplier,
+                                                                                     BiConsumer<SrcElementType, DestElementType> destElementAssembler) {
         if (destElementSupplier == null) {
             throw new IllegalArgumentException("destElementSupplier must not be null");
         }
@@ -249,7 +249,7 @@ public class LambdaBuilder {
             return new LinkedList<>();
         }
         return srcCollection.stream().map(src -> {
-            DestType dest = destElementSupplier.get();
+            DestElementType dest = destElementSupplier.get();
             destElementAssembler.accept(src, dest);
             return dest;
         }).collect(Collectors.toCollection(LinkedList::new));

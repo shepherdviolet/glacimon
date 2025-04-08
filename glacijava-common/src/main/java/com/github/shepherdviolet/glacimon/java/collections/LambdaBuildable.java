@@ -153,7 +153,7 @@ public interface LambdaBuildable {
      *
      * @since 1.8
      */
-    default <SrcElementType, DestElementType> List<DestElementType> arrayList(Collection<SrcElementType> srcCollection,
+    default <SrcElementType, DestElementType> List<DestElementType> buildArrayList(Collection<SrcElementType> srcCollection,
                                                                               Supplier<DestElementType> destElementSupplier,
                                                                               BiConsumer<SrcElementType, DestElementType> destElementAssembler) {
         return LambdaBuilder.arrayList(srcCollection, destElementSupplier, destElementAssembler);
@@ -187,7 +187,7 @@ public interface LambdaBuildable {
      *
      * @since 1.8
      */
-    default <SrcElementType, DestElementType> List<DestElementType> linkedList(Collection<SrcElementType> srcCollection,
+    default <SrcElementType, DestElementType> List<DestElementType> buildLinkedList(Collection<SrcElementType> srcCollection,
                                                                                Supplier<DestElementType> destElementSupplier,
                                                                                BiConsumer<SrcElementType, DestElementType> destElementAssembler) {
         return LambdaBuilder.linkedList(srcCollection, destElementSupplier, destElementAssembler);

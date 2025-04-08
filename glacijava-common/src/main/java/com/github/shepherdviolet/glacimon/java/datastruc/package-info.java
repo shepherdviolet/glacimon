@@ -1,9 +1,6 @@
 
 /**
- * data structures (array / collection / map / queue / pool / cache ...)
- *
- * 1. entities
- * 2. utils
+ * data structures 'entities' (array / collection / map / queue / pool / cache ...)
  *
  * @author shepherdviolet
  */

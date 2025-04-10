@@ -110,7 +110,7 @@ public class Test implements LambdaBuildable {
 
 * 虽然使用LambdaBuildable并没有减少代码量, 但代码阅读起来有层级, 可读性高
 
-* 另外, 如果示例中的List 'Orders' 数据源于另一个Map, 可以简化为:
+* 另外, 如果示例中的列表'Orders'数据源自一个List, 可以简化书写:
 
 ```
 public class Test implements LambdaBuildable {
@@ -127,22 +127,26 @@ public class Test implements LambdaBuildable {
             }));
             m.put("Body", buildHashMap(mm -> {
                 mm.put("Username", "test@test.com");
+                
+                // [观察此处]
+                // 这里使用buildArrayList(srcCollection, destElementSupplier, destElementAssembler)方法实现'源Collection转List/Set'
                 mm.put("Orders", buildArrayList(sourceDataOrders, HashMap::new, (src, dest) -> {
                 
-                    // [观察此处] 这里会遍历源集合sourceDataOrders, 把每一个元素都转换成目标集合的元素, 不用一个一个add了
+                    // [观察此处]
+                    // 这里会遍历源集合sourceDataOrders, 把每一个元素都转换成目标集合的元素, 不用一个一个往List add元素了
                     
                     // 方法一: 手动赋值
                     // 第一个入参src是源集合的元素, 第二个入参dest是目标集合的元素, 此处要实现从src取值, 赋值到dest中
-//                    dest.put("Name", src.get("category"));
-//                    dest.put("Quantity", src.get("num"));
-//                    dest.put("UnitPrise", src.get("univalent"));
+                    dest.put("Name", src.get("category"));
+                    dest.put("Quantity", src.get("num"));
+                    dest.put("UnitPrise", src.get("univalent"));
 
                     // 方法二: 也可以配合MapKeyTranslator工具进行键映射
-                    MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
-                            "Name", "category",
-                            "Quantity", "num",
-                            "UnitPrise", "univalent"
-                    ).translate(src, dest);
+//                    MapKeyTranslator.keyMappings(MapKeyTranslator.NullStrategy.KEEP_NULL,
+//                            "Name", "category",
+//                            "Quantity", "num",
+//                            "UnitPrise", "univalent"
+//                    ).translate(src, dest);
                     
                 }));
             }));

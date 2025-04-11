@@ -46,8 +46,8 @@ public interface LambdaBuildable {
      *
      * @since 1.8
      */
-    default <K, V> Map<K, V> buildHashMap(Consumer<Map<K, V>> supplier) {
-        return LambdaBuilder.hashMap(supplier);
+    default <K, V> Map<K, V> buildHashMap(Consumer<Map<K, V>> assembler) {
+        return LambdaBuilder.hashMap(assembler);
     }
 
     /**
@@ -62,8 +62,8 @@ public interface LambdaBuildable {
      *
      * @since 1.8
      */
-    default <K, V> Map<K, V> buildLinkedHashMap(Consumer<Map<K, V>> supplier) {
-        return LambdaBuilder.linkedHashMap(supplier);
+    default <K, V> Map<K, V> buildLinkedHashMap(Consumer<Map<K, V>> assembler) {
+        return LambdaBuilder.linkedHashMap(assembler);
     }
 
     /**
@@ -78,8 +78,8 @@ public interface LambdaBuildable {
      *
      * @since 1.8
      */
-    default <T> Set<T> buildHashSet(Consumer<Set<T>> supplier) {
-        return LambdaBuilder.hashSet(supplier);
+    default <T> Set<T> buildHashSet(Consumer<Set<T>> assembler) {
+        return LambdaBuilder.hashSet(assembler);
     }
 
     /**
@@ -114,8 +114,8 @@ public interface LambdaBuildable {
      *
      * @since 1.8
      */
-    default <T> T buildObject(Supplier<T> supplier) {
-        return LambdaBuilder.object(supplier);
+    default <T> T buildObject(Supplier<T> assembler) {
+        return LambdaBuilder.object(assembler);
     }
 
     /**
@@ -137,8 +137,8 @@ public interface LambdaBuildable {
      *
      * @since 1.8
      */
-    default <T> List<T> buildArrayList(Consumer<List<T>> supplier) {
-        return LambdaBuilder.arrayList(supplier);
+    default <T> List<T> buildArrayList(Consumer<List<T>> assembler) {
+        return LambdaBuilder.arrayList(assembler);
     }
 
     /**
@@ -171,8 +171,8 @@ public interface LambdaBuildable {
      *
      * @since 1.8
      */
-    default <T> List<T> buildLinkedList(Consumer<List<T>> supplier) {
-        return LambdaBuilder.linkedList(supplier);
+    default <T> List<T> buildLinkedList(Consumer<List<T>> assembler) {
+        return LambdaBuilder.linkedList(assembler);
     }
 
     /**

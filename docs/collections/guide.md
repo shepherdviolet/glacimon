@@ -12,6 +12,9 @@
 
 * [LambdaBuilder/LambdaBuildable使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/lambda-builder.md)
 
+> `HuTool/Guava`也提供了类似能力, 但层级多的时候容易漏写build()方法 (会赋值一个"奇怪"的对象到Map里),
+> 为了写build()方法, 括号也容易看不清. 各有优缺点, 详细对比见[LambdaBuilder/LambdaBuildable使用文档末尾的'与同类工具对比'](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/lambda-builder.md).
+
 * 假如要组装如下结构的Map
 
 ```

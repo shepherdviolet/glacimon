@@ -19,6 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.collections;
 
+import java.util.*;
+
 /**
  * <p>[非线程安全|NOT THREAD SAFE] 流式创建Map/Set/Object/List</p>
  *
@@ -31,7 +33,7 @@ public interface StreamingBuildable {
      * @param <K> key type
      * @param <V> value type
      */
-    default <K, V> StreamingBuilder.MapKeySetter<K, V> buildHashMap() {
+    default <K, V> StreamingBuilder.MapBuilder<K, V> buildHashMap() {
         return StreamingBuilder.hashMap();
     }
 
@@ -40,7 +42,7 @@ public interface StreamingBuildable {
      * @param <K> key type
      * @param <V> value type
      */
-    default <K, V> StreamingBuilder.MapKeySetter<K, V> buildLinkedHashMap() {
+    default <K, V> StreamingBuilder.MapBuilder<K, V> buildLinkedHashMap() {
         return StreamingBuilder.linkedHashMap();
     }
 
@@ -48,7 +50,7 @@ public interface StreamingBuildable {
      * 流式创建一个ArrayList
      * @param <E> element type
      */
-    default <E> StreamingBuilder.ListElementAdder<E> buildArrayList() {
+    default <E> StreamingBuilder.ListBuilder<E> buildArrayList() {
         return StreamingBuilder.arrayList();
     }
 
@@ -56,7 +58,7 @@ public interface StreamingBuildable {
      * 流式创建一个LinkedList
      * @param <E> element type
      */
-    default <E> StreamingBuilder.ListElementAdder<E> buildLinkedList() {
+    default <E> StreamingBuilder.ListBuilder<E> buildLinkedList() {
         return StreamingBuilder.linkedList();
     }
 
@@ -64,8 +66,32 @@ public interface StreamingBuildable {
      * 流式创建一个Set
      * @param <E> element type
      */
-    default <E> StreamingBuilder.SetElementAdder<E> buildHashSet() {
+    default <E> StreamingBuilder.SetBuilder<E> buildHashSet() {
         return StreamingBuilder.hashSet();
+    }
+
+    /**
+     * 直接创建一个ArrayList
+     * @param <E> element type
+     */
+    default <E> List<E> arrayListOf(E... elements) {
+        return StreamingBuilder.arrayListOf(elements);
+    }
+
+    /**
+     * 直接创建一个LinkedList
+     * @param <E> element type
+     */
+    default <E> List<E> linkedListOf(E... elements) {
+        return StreamingBuilder.linkedListOf(elements);
+    }
+
+    /**
+     * 直接创建一个Set
+     * @param <E> element type
+     */
+    default <E> Set<E> hashSetOf(E... elements) {
+        return StreamingBuilder.hashSetOf(elements);
     }
 
 }

@@ -1,5 +1,11 @@
 # `高可读性`的集合创建工具 LambdaBuilder/LambdaBuildable
 
+> `HuTool/Guava`也提供了高可读性的集合创建能力, 但层级多的时候容易漏写build()方法 (会赋值一个"奇怪"的对象到Map里), 
+> 为了写build()方法, 有时候括号也容易看不清. 但是`LambdaBuilder/LambdaBuildable`的Lambda表达式入参也容易搞错, 
+> 总之各有优缺点, 详细对比见本文档末尾`与同类工具对比`.
+
+### LambdaBuilder与LambdaBuildable
+
 * **LambdaBuilder**: LambdaBuilder是一个工具类, 提供hashMap/arrayList等集合创建的静态方法
 * **LambdaBuildable**: LambdaBuildable是一个接口类, 提供了buildHashMap/buildArrayList等default方法, 实现此接口的类可以直接调用方法, 省掉了`LambdaBuilder.`的书写.
 
@@ -144,6 +150,46 @@ public class Test implements LambdaBuildable {
     }
 }
 ```
+
+<br>
+
+# 与同类工具对比
+
+* HuTool, Guava, 以及本库的StreamingBuilder也提供了高可读性的集合创建能力
+* 以HuTool和StreamingBuilder为例
+
+```
+Map<String, Object> map = MapUtil.builder()
+    .put("Header", MapUtil.builder()
+        .put("Service", "Foo")
+        .put("Time", "20250408")
+        .build()
+    )
+    .put("Body", MapUtil.builder()
+        .put("Username", "test@test.com")
+        .build()
+    ).build();
+```
+
+```
+Map<String, Object> map = StreamingBuilder.hashMap()
+    .put("Header", StreamingBuilder.hashMap()
+        .put("Service", "Foo")
+        .put("Time", "20250408")
+        .build()
+    )
+    .put("Body", StreamingBuilder.hashMap()
+        .put("Username", "test@test.com")
+        .build()
+    ).build();
+```
+
+* 这些工具都是链式书写, Map创建后都要调用build()方法
+
+| | LambdaBuilder/LambdaBuildable | HuTool/Guava/StreamingBuilder | 
+| --- |-------------------------------|-------------------------------|
+| 优点 | 可读性高<br>Lambda中可以书写其他代码       | 可读性高<br>部分工具提供了统计功能           |
+| 缺点 | Lambda表达式中的入参可能会搞错 | build()方法容易漏掉, 会赋值一个奇怪的对象进Map |
 
 <br>
 

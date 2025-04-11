@@ -119,14 +119,18 @@ public interface LambdaBuildable {
     }
 
     /**
-     * 创建ArrayList, 一般情况下用Arrays.asList
+     * 创建ArrayList.
+     *
+     * 一般情况下用StreamingBuilder.arrayListOf比较方便.
      *
      * <pre><code>
-     *     Arrays.asList(
+     *     StreamingBuilder.arrayListOf(
      *          item1,
      *          item2
      *     );
      * </code></pre>
+     *
+     * 非要用LambdaBuilder也行.
      *
      * <pre><code>
      *         List<String> list = LambdaBuilder.arrayList(l -> {
@@ -160,7 +164,18 @@ public interface LambdaBuildable {
     }
 
     /**
-     * 创建LinkedList, 一般情况下用Arrays.asList
+     * 创建LinkedList.
+     *
+     * 一般情况下用StreamingBuilder.arrayListOf比较方便.
+     *
+     * <pre><code>
+     *     StreamingBuilder.linkedListOf(
+     *          item1,
+     *          item2
+     *     );
+     * </code></pre>
+     *
+     * 非要用LambdaBuilder也行.
      *
      * <pre><code>
      *         List<String> list = LambdaBuilder.linkedList(l -> {

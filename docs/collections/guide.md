@@ -2,18 +2,20 @@
 
 # 目录
 
-* [LambdaBuilder/LambdaBuildable使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/lambda-builder.md)
-* [ElementVisitor使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/element-visitor.md)
-* [KeyMapTranslator使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/map-key-translator.md)
+* [LambdaBuilder/LambdaBuildable使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/lambda-builder.md)
+* [ElementVisitor使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/element-visitor.md)
+* [KeyMapTranslator使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/map-key-translator.md)
 
 # 简介
 
 ## `高可读性`的集合创建工具 LambdaBuilder/LambdaBuildable
 
-* [LambdaBuilder/LambdaBuildable使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/lambda-builder.md)
+* [LambdaBuilder/LambdaBuildable使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/lambda-builder.md)
+* 同类工具对比:
 
-> `HuTool/Guava`也提供了类似能力, 但层级多的时候容易漏写build()方法 (会赋值一个"奇怪"的对象到Map里),
-> 为了写build()方法, 括号也容易看不清. 各有优缺点, 详细对比见[LambdaBuilder/LambdaBuildable使用文档末尾的'与同类工具对比'](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/lambda-builder.md).
+> `HuTool/Guava`也提供了类似能力, 但层级多的时候容易漏写build()方法 (会赋值一个"奇怪"的对象到Map里), 为了写build()方法, 
+> 括号也容易看不清. `LambdaBuilder/LambdaBuildable`使用Lambda风格创建集合, 各有优缺点, 详细对比见: 
+> [LambdaBuilder/LambdaBuildable使用文档末尾的'与同类工具对比'](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/lambda-builder.md).
 
 * 假如要组装如下结构的Map
 
@@ -171,7 +173,13 @@ public class Test implements LambdaBuildable {
 
 ## `极简`的跨层级集合元素访问工具 ElementVisitor
 
-* [ElementVisitor使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/element-visitor.md)
+* [ElementVisitor使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/element-visitor.md)
+* 同类工具对比:
+
+> [Jayway JsonPath](https://github.com/json-path/JsonPath)是一个广泛使用的 JSONPath 实现，它允许你用类似 $.Body.Orders[*].Name 
+> 的语法直接从 JSON 或 Map 数据结构中获取数据, 功能强大(筛选/统计等), 但表达式由String编写存在一点学习成本, 如果你熟悉Jayway JsonPath, 
+> 请忽略`ElementVisitor`. `ElementVisitor`功能简单, 通过链式书写, 有多少功能靠IDE提示一目了然, 适合简单的场景, 还提供了元素替换, 路径
+> 创建能力.
 
 * ......(未完待续)......
 
@@ -180,7 +188,7 @@ public class Test implements LambdaBuildable {
 
 ## Map键映射工具 KeyMapTranslator
 
-* [KeyMapTranslator使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/interfaceinst/map-key-translator.md)
+* [KeyMapTranslator使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/map-key-translator.md)
 
 * 在业务逻辑开发过程中, 经常会遇到一个Map向另一个Map赋值的情况, 两边的key不相同, 如下所示:
 

@@ -32,26 +32,24 @@ public class StreamingBuilderTest implements StreamingBuildable {
     public void test() {
 
         Map<String, Object> map = StreamingBuilder.hashMap()
-                .key("key1").value("hello1")
-                .key("key2").value("hello2")
-                .key("key3").value(
-                        StreamingBuilder.hashMap()
-                                .key("k1").value("v1")
-                                .key("k2").value("v2")
-                                .build()
+                .put("key1", "hello1")
+                .put("key2", "hello2")
+                .put("key3", StreamingBuilder.hashMap()
+                        .put("k1", "v1")
+                        .put("k2", "v2")
+                        .build()
                 )
                 .build();
 
         Assertions.assertEquals("{key1=hello1, key2=hello2, key3={k1=v1, k2=v2}}", String.valueOf(map));
 
         map = buildLinkedHashMap()
-                .key("key33").value("hello11")
-                .key("key22").value("hello22")
-                .key("key11").value(
-                        buildLinkedHashMap()
-                                .key("k22").value("v11")
-                                .key("k11").value("v22")
-                                .build()
+                .put("key33", "hello11")
+                .put("key22", "hello22")
+                .put("key11", buildLinkedHashMap()
+                        .put("k22", "v11")
+                        .put("k11", "v22")
+                        .build()
                 )
                 .build();
 
@@ -65,6 +63,10 @@ public class StreamingBuilderTest implements StreamingBuildable {
 
         Assertions.assertEquals("[l1, l2, l3]", String.valueOf(list));
 
+        list = buildArrayListOf("l1", "l2", "l3");
+
+        Assertions.assertEquals("[l1, l2, l3]", String.valueOf(list));
+
         list = buildLinkedList()
                 .add("l3")
                 .add("l2")
@@ -73,10 +75,18 @@ public class StreamingBuilderTest implements StreamingBuildable {
 
         Assertions.assertEquals("[l3, l2, l1]", String.valueOf(list));
 
+        list = buildLinkedListOf("l3", "l2", "l1");
+
+        Assertions.assertEquals("[l3, l2, l1]", String.valueOf(list));
+
         Set<String> set = buildHashSet()
                 .add("s1")
                 .add("s2")
                 .build();
+
+        Assertions.assertEquals("[s1, s2]", String.valueOf(set));
+
+        set = buildHashSetOf("s1", "s2");
 
         Assertions.assertEquals("[s1, s2]", String.valueOf(set));
 

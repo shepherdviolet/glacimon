@@ -74,7 +74,7 @@ public interface StreamingBuildable {
      * 直接创建一个ArrayList
      * @param <E> element type
      */
-    default <E> List<E> arrayListOf(E... elements) {
+    default <E> List<E> buildArrayListOf(E... elements) {
         return StreamingBuilder.arrayListOf(elements);
     }
 
@@ -82,7 +82,7 @@ public interface StreamingBuildable {
      * 直接创建一个LinkedList
      * @param <E> element type
      */
-    default <E> List<E> linkedListOf(E... elements) {
+    default <E> List<E> buildLinkedListOf(E... elements) {
         return StreamingBuilder.linkedListOf(elements);
     }
 
@@ -90,7 +90,7 @@ public interface StreamingBuildable {
      * 直接创建一个Set
      * @param <E> element type
      */
-    default <E> Set<E> hashSetOf(E... elements) {
+    default <E> Set<E> buildHashSetOf(E... elements) {
         return StreamingBuilder.hashSetOf(elements);
     }
 

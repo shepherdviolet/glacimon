@@ -2,9 +2,9 @@
 
 # 目录
 
-* [LambdaBuilder/LambdaBuildable使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/lambda-builder.md)
-* [ElementVisitor使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/element-visitor.md)
-* [KeyMapTranslator使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/map-key-translator.md)
+* [`高可读性`的集合创建工具 LambdaBuilder/LambdaBuildable 使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/lambda-builder.md)
+* [`便捷安全`的跨层级集合元素访问工具ElementVisitor 使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/element-visitor.md)
+* [Map键映射工具 KeyMapTranslator 使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/map-key-translator.md)
 
 # 简介
 
@@ -171,7 +171,7 @@ public class Test implements LambdaBuildable {
 <Br>
 <Br>
 
-## `极简`的跨层级集合元素访问工具 ElementVisitor
+## `便捷安全`的跨层级集合元素访问工具 ElementVisitor
 
 * [ElementVisitor使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/element-visitor.md)
 * 同类工具对比:

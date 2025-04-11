@@ -1,4 +1,4 @@
-# `极简`的跨层级集合元素访问工具 ElementVisitor
+# `便捷安全`的跨层级集合元素访问工具 ElementVisitor
 
 
 

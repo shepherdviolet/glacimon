@@ -44,6 +44,10 @@ public final class ElementVisitor {
         return new ElementVisitor(root);
     }
 
+
+    // Public ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     private static final Object DELETE_FLAG = new Object();
 
     private final Object root;
@@ -75,6 +79,10 @@ public final class ElementVisitor {
         this.exceptionHandler = exceptionHandler;
         return this;
     }
+
+
+    // Private //////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private void _addPath(String key) {
         paths.add(new Path(ParentType.MAP, key));
@@ -315,7 +323,9 @@ public final class ElementVisitor {
         return result;
     }
 
-    // Visitors ////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Visitors /////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     public class BasicVisitor {
 
@@ -545,7 +555,9 @@ public final class ElementVisitor {
 
     }
 
+
     // Path ////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private static class Path {
 
@@ -634,21 +646,26 @@ public final class ElementVisitor {
          */
         ELEMENT_REPLACER_IS_NULL(ErrorCategory.PROGRAMMING_ERROR),
 
+        /**
+         * 未定义的错误
+         */
+        UNDEFINED_ERROR(ErrorCategory.PROGRAMMING_ERROR),
+
         ;
 
-        private final ErrorCategory category;
+        private final ErrorCategory errorCategory;
 
         ErrorCode(ErrorCategory errorCategory) {
-            this.category = errorCategory;
+            this.errorCategory = errorCategory;
         }
 
         @Override
         public String toString() {
-            return category.toString() + '/' +super.toString();
+            return errorCategory.toString() + '/' + super.toString();
         }
 
-        public ErrorCategory getCategory() {
-            return category;
+        public ErrorCategory getErrorCategory() {
+            return errorCategory;
         }
 
     }
@@ -673,11 +690,15 @@ public final class ElementVisitor {
         }
 
         public ErrorCode getErrorCode() {
-            return errorCode;
+            return errorCode != null ? errorCode : ErrorCode.UNDEFINED_ERROR;
         }
 
         public void setErrorCode(ErrorCode errorCode) {
             this.errorCode = errorCode;
+        }
+
+        public ErrorCategory getErrorCategory() {
+            return getErrorCode().getErrorCategory();
         }
 
         public String getPathErrorOccurred() {

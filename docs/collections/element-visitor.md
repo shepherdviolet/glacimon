@@ -89,22 +89,9 @@
         EXPECTED_ELEMENT_TYPE_MISMATCH(ErrorCategory.DATA_INVALID),
 
         /**
-         * [createIfAbsent] 创建路径中间的元素(parent_element)失败 (创建LinkedHashMap/ArrayList)
-         */
-        CREATE_PARENT_ELEMENT_FAILED(ErrorCategory.PROGRAMMING_ERROR),
-        /**
          * [createIfAbsent] 创建你想获取的元素(expected_element)失败 (由createIfAbsent方法传入的表达式创建)
          */
         CREATE_EXPECTED_ELEMENT_FAILED(ErrorCategory.PROGRAMMING_ERROR),
-
-        /**
-         * [forEach#consumeAs...] forEach#consumeAs...方法传入的Consumer表达式为空
-         */
-        ELEMENT_CONSUMER_IS_NULL(ErrorCategory.PROGRAMMING_ERROR),
-        /**
-         * [forEach#replaceAs...] forEach#replaceAs...方法传入的Function表达式为空
-         */
-        ELEMENT_REPLACER_IS_NULL(ErrorCategory.PROGRAMMING_ERROR),
 
         /**
          * 未定义的错误
@@ -119,6 +106,9 @@
 
 ### 替换为自定义异常抛出
 
+* 注意: ExceptionHandler无法接收到被压制(忽略)的异常
+* 注意: 默认的ExceptionHandler直接抛出异常
+* 注意: 设置自定义ExceptionHandler以后, 异常是否抛出由你的ExceptionHandler决定
 
 
 ### 仅打印错误日志

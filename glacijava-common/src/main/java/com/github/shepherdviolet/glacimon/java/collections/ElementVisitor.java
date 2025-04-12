@@ -36,10 +36,18 @@ import java.util.function.Supplier;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public final class ElementVisitor {
 
+    /**
+     * 开始访问指定Map
+     * @param root 根元素
+     */
     public static ElementVisitor of(Map root) {
         return new ElementVisitor(root);
     }
 
+    /**
+     * 开始访问指定Collection
+     * @param root 根元素
+     */
     public static ElementVisitor of(Collection root) {
         return new ElementVisitor(root);
     }
@@ -48,11 +56,11 @@ public final class ElementVisitor {
     // Public ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    private static final Object DELETE_FLAG = new Object();
-
     private final Object root;
     private final List<Path> paths = new ArrayList<>();
-    private Consumer<ElementVisitException> exceptionHandler;
+    private Set<ErrorCategory> suppressedErrorCategories = Collections.emptySet();
+    private Set<ErrorCode> suppressedErrorCodes = Collections.emptySet();
+    private Consumer<ElementVisitException> exceptionHandler = e -> {throw e;};
     private Supplier<Object> supplyIfElementAbsent;
 
     private final BasicVisitor basicVisitor = new BasicVisitor();
@@ -65,17 +73,81 @@ public final class ElementVisitor {
         this.root = root;
     }
 
+    /**
+     * 路径配置, 访问Map的子元素
+     * @param key key
+     */
     public OnewayPathPlanner child(String key) {
         _addPath(key);
         return onewayPathPlanner;
     }
 
+    /**
+     * 路径配置, 访问Collection的子元素 (遍历)
+     */
     public MultiwayPathPlanner children() {
         _addPath();
         return multiwayPathPlanner;
     }
 
-    public ElementVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) {
+    /**
+     * 压制(忽略)指定的错误类别.
+     * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常. 
+     * 重复调用此方法设置会覆盖原来设置的ErrorCategory. 
+     * @param errorCategory 需要忽略的错误类别, 可配置多个
+     */
+    public ElementVisitor suppressErrorCategories(ErrorCategory... errorCategory) {
+        // 注意, 会覆盖原配置
+        this.suppressedErrorCategories = new HashSet<>(Arrays.asList(errorCategory));
+        return this;
+    }
+
+    /**
+     * 压制(忽略)指定的错误码.
+     * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常. 
+     * 重复调用此方法设置会覆盖原来设置的ErrorCode.
+     * @param errorCodes 需要忽略的错误码, 可配置多个
+     */
+    public ElementVisitor suppressErrorCodes(ErrorCode... errorCodes) {
+        // 注意, 会覆盖原配置
+        this.suppressedErrorCodes = new HashSet<>(Arrays.asList(errorCodes));
+        return this;
+    }
+
+    /**
+     * <p>设置异常处理器, 默认为: e -> {throw e;} 即一律抛出异常.</p>
+     * <p>注意, 如果exceptionHandler中不抛出异常, get/remove/forEach方法就不会抛出异常了, 返回的元素可能为null或空集合.</p>
+     * <p>注意, 使用suppressErrorCategories和suppressErrorCodes压制(忽略)的异常将不会被exceptionHandler接收.</p>
+     * <p>示范一: 只打印日志, 不抛出异常 (返回的元素可能为null或空集合)</p>
+     * <pre>
+     * e -> {
+     *      logger.error("Error occurred when visiting element", e);
+     * }
+     * </pre>
+     * <p>示范二: 数据缺失类的错误只打印日志, 不抛出异常(返回的元素可能为null或空集合); 其他错误抛出异常</p>
+     * <pre>
+     * e -> {
+     *      switch (e.getErrorCategory()) {
+     *          case DATA_MISSING:
+     *              logger.error("Error occurred when visiting element", e);
+     *              break;
+     *          default:
+     *              throw e;
+     *      }
+     * }
+     * </pre>
+     * <p>示范三: 封装成其他异常抛出</p>
+     * <pre>
+     * e -> {
+     *      throw new ServiceException("Error occurred when visiting element", e);
+     * }
+     * </pre>
+     *
+     * @param exceptionHandler 异常处理器, 默认为: e -> {throw e;}
+     * @throws IllegalArgumentException exceptionHandler为空
+     */
+    public ElementVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
+        _checkExceptionHandler(exceptionHandler);
         this.exceptionHandler = exceptionHandler;
         return this;
     }
@@ -94,25 +166,23 @@ public final class ElementVisitor {
 
     private void _checkElementConsumer(Consumer elementConsumer) {
         if (elementConsumer == null) {
-            throw _buildArgumentException(ErrorCode.ELEMENT_CONSUMER_IS_NULL, "elementConsumer cannot be null");
+            throw new IllegalArgumentException("elementConsumer cannot be null");
         }
     }
 
     private void _checkElementReplacer(Function elementReplacer) {
         if (elementReplacer == null) {
-            throw _buildArgumentException(ErrorCode.ELEMENT_REPLACER_IS_NULL, "elementReplacer cannot be null");
+            throw new IllegalArgumentException("elementReplacer cannot be null");
         }
     }
 
-    private ElementVisitException _buildArgumentException(ErrorCode errorCode, String message) {
-        ElementVisitException exception = new ElementVisitException(errorCode.toString() + ": " + message);
-        exception.setErrorCode(errorCode);
-        exception.setPathErrorOccurred("");
-        exception.setPathYouExpected("");
-        return exception;
+    private void _checkExceptionHandler(Consumer<ElementVisitException> exceptionHandler) {
+        if (exceptionHandler == null) {
+            throw new IllegalArgumentException("exceptionHandler cannot be null");
+        }
     }
 
-    private ElementVisitException _buildVisitException(ErrorCode errorCode, Throwable cause, int level, int collectionIndex, String message, String annotation) {
+    private ElementVisitException _buildVisitException(ErrorCode errorCode, Throwable cause, int level, int collectionIndex, String messagePrefix, String messageSuffix) {
         StringBuilder pathYouExpectedBuilder = new StringBuilder("root");
         StringBuilder pathErrorOccurredBuilder = new StringBuilder("root");
         // paths cannot be empty
@@ -135,14 +205,12 @@ public final class ElementVisitor {
 
         StringBuilder msgBuilder = new StringBuilder(errorCode.toString())
                 .append(": ")
-                .append(message)
-                .append(" [Occurred at: ")
+                .append(messagePrefix)
                 .append(pathErrorOccurredBuilder)
-                .append(" <- ")
-                .append(annotation != null ? annotation : "")
-                .append("] [Expected element (path): ")
+                .append(messageSuffix != null ? messageSuffix : "")
+                .append(". (The element you expect: ")
                 .append(pathYouExpectedBuilder)
-                .append("]");
+                .append(")");
 
         ElementVisitException exception = new ElementVisitException(msgBuilder.toString(), cause);
         exception.setErrorCode(errorCode);
@@ -152,136 +220,213 @@ public final class ElementVisitor {
     }
 
     private void _handleVisitException(ErrorCode errorCode, Throwable cause, int level, int collectionIndex, String message, String annotation) {
-        ElementVisitException exception = _buildVisitException(errorCode, cause, level, collectionIndex, message, annotation);
-        if (exceptionHandler != null) {
-            exceptionHandler.accept(exception);
-        } else {
-            throw exception;
+        if (suppressedErrorCategories.contains(errorCode.getErrorCategory()) || suppressedErrorCodes.contains(errorCode)) {
+            // suppress error
+            return;
         }
+        ElementVisitException exception = _buildVisitException(errorCode, cause, level, collectionIndex, message, annotation);
+        exceptionHandler.accept(exception);
     }
 
-    private Object _tryCreateExpectedElementIfAbsent(Object element) {
+    private Object _tryCreateExpectedElementIfAbsent(Object element, Map parent, String key) {
         if (element != null) {
             return element;
         }
         if (supplyIfElementAbsent != null) {
             element = supplyIfElementAbsent.get();
             if (element == null) {
-                throw new RuntimeException("The expected element returned by Supplier 'supplyIfElementAbsent' is empty, " +
-                        "the Supplier is set by method 'createIfAbsent'");
+                throw new RuntimeException("The 'Supplier' returns null.");
             }
+            parent.put(key, element);
         }
         return element;
     }
 
-    private Object _tryCreateParentElementIfAbsent(Object element, Path nextPath) {
+    private Object _tryCreateParentElementIfAbsent(Object element, Map parent, String key) {
         if (element != null) {
             return element;
         }
         // Determine whether to create the parent element based on whether 'supplyIfElementAbsent' exists.
         if (supplyIfElementAbsent != null) {
-            if (nextPath.parentType == ParentType.MAP) {
-                element = new LinkedHashMap<>();
-            } else {
-                element = new ArrayList<>();
-            }
+            // Automatic element creation only supports Map (Oneway visit)
+            element = new LinkedHashMap<>();
+            parent.put(key, element);
         }
         return element;
     }
 
-    private void _visit(Class expectedElementType, Function elementHandler) {
+    private void _visitRoot(Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode) {
         if (root == null) {
-            _handleVisitException(ErrorCode.MISSING_ROOT_ELEMENT, null, -1, -1, "Missing root element", "It's Null");
+            _handleVisitException(ErrorCode.MISSING_ROOT_ELEMENT, null, -1, -1, "The '", "' element is null");
             return;
         }
         if (CheckUtils.isEmpty(paths)) {
             // Imposable! The reason is that if the ElementVisitor does not call the child or children method, it cannot "retrieve" elements—and without retrieving elements, it is impossible to reach this part of the code.
             throw new IllegalStateException("paths is empty");
         }
-        _visit(root, 0, expectedElementType, elementHandler);
+        _visitNonRoot(root, 0, expectedElementType, elementHandler, replaceMode, deleteMode);
     }
 
-    /**
-     *
-     * @param parentElement nonnull
-     * @param level >= 0
-     * @param expectedElementType nullable
-     * @param elementHandler nonnull
-     */
-    private void _visit(Object parentElement, int level, Class expectedElementType, Function elementHandler) {
-        List<Object> elements = new ArrayList<>();
-        Path path = paths.get(level);
-
-        if (path.parentType == ParentType.MAP) {
-            if (!(parentElement instanceof Map)) {
-                _handleVisitException(ErrorCode.PARENT_ELEMENT_TYPE_MISMATCH, null, level - 1, -1,
-                        "Failed to resolve parent element: expected type 'java.util.Map', found '" +
-                                parentElement.getClass().getName() + "'", "Not Map");
-                return;
-            }
-            elements.add(((Map) parentElement).get(path.key));
+    private void _visitNonRoot(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode) {
+        if (paths.get(level).parentType == ParentType.MAP) {
+            _visitNonRoot_map(parentElement, level, expectedElementType, elementHandler, replaceMode, deleteMode);
         } else {
-            if (!(parentElement instanceof Collection)) {
-                _handleVisitException(ErrorCode.PARENT_ELEMENT_TYPE_MISMATCH, null, level - 1, -1,
-                        "Failed to resolve parent element, expected a Collection(List/Set...) but found '" +
-                                parentElement.getClass().getName(), "Not Collection");
-                return;
-            }
-            elements.addAll(((Collection) parentElement));
+            _visitNonRoot_collection(parentElement, level, expectedElementType, elementHandler, replaceMode, deleteMode);
+        }
+    }
+
+    private void _visitNonRoot_map(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode) {
+        Path path = paths.get(level);
+        if (!(parentElement instanceof Map)) {
+            _handleVisitException(ErrorCode.PARENT_ELEMENT_TYPE_MISMATCH, null, level - 1, -1,
+                    "Parent element '", "' is not an instance of Map (it's " + parentElement.getClass().getName() +
+                    "), unable to get child '" + path.key + "' from it");
+            return;
         }
 
-        for (int i = 0; i < elements.size() ; i++) {
-            Object element = elements.get(i);
+        Object element = ((Map) parentElement).get(path.key);
 
-            if (level >= paths.size() - 1) {
+        if (level >= paths.size() - 1) {
+            // expected element
 
-                // expected element
-                try {
-                    element = _tryCreateExpectedElementIfAbsent(element);
-                } catch (Throwable t) {
-                    _handleVisitException(ErrorCode.CREATE_EXPECTED_ELEMENT_FAILED, t, level, i,
-                            "Failed to create expected element, an exception occurred when invoking Supplier " +
-                                    "'supplyIfElementAbsent' which is set by method 'createIfAbsent'", "Create Failed");
-                    continue;
+            try {
+                element = _tryCreateExpectedElementIfAbsent(element, (Map) parentElement, path.key);
+            } catch (Throwable t) {
+                _handleVisitException(ErrorCode.CREATE_EXPECTED_ELEMENT_FAILED, t, level, -1,
+                        "Failed to create expected element '",
+                        "' from 'Supplier'. The 'Supplier' was set via the createIfAbsent(Supplier) method");
+                return;
+            }
+            if (element == null) {
+                _handleVisitException(ErrorCode.MISSING_EXPECTED_ELEMENT, null, level, -1,
+                        "Expected element '", "' does not exist");
+                return;
+            }
+            if (expectedElementType != null) {
+                if (!expectedElementType.isAssignableFrom(element.getClass())) {
+                    _handleVisitException(ErrorCode.EXPECTED_ELEMENT_TYPE_MISMATCH, null, level, -1,
+                            "Expected element '", "' does not match the type you expected '" +
+                                    expectedElementType.getName() + "', it's " + element.getClass().getName());
+                    return;
                 }
-                if (element == null) {
-                    _handleVisitException(ErrorCode.MISSING_EXPECTED_ELEMENT, null, level, i,
-                            "Missing expected element", "It's Null");
-                    continue;
-                }
-                if (expectedElementType != null) {
+            }
+
+            // handle
+            Object returnedElement = elementHandler.apply(element);
+
+            // delete/remove
+            if (deleteMode) {
+                ((Map) parentElement).remove(path.key);
+                return;
+            }
+            // replace
+            if (replaceMode) {
+                ((Map) parentElement).put(path.key, returnedElement);
+                return;
+            }
+
+        } else {
+            // parent element
+
+            element = _tryCreateParentElementIfAbsent(element, (Map) parentElement, path.key);
+            if (element == null) {
+                _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, level, -1,
+                        "Parent element '", "' does not exist, can not get child or children from it");
+                return;
+            }
+
+            // visit next path
+            _visitNonRoot(element, level + 1, expectedElementType, elementHandler, replaceMode, deleteMode);
+
+        }
+    }
+
+    private void _visitNonRoot_collection(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode) {
+        Path path = paths.get(level);
+        if (!(parentElement instanceof Collection)) {
+            _handleVisitException(ErrorCode.PARENT_ELEMENT_TYPE_MISMATCH, null, level - 1, -1,
+                    "Parent element '", "' is not an instance of Collection (it's " + parentElement.getClass().getName() +
+                            "), unable to get children from it");
+            return;
+        }
+
+        Collection<Object> elements = (Collection) parentElement;
+
+        if (level >= paths.size() - 1) {
+            // expected element
+
+            if (elements.isEmpty()) {
+                _handleVisitException(ErrorCode.MISSING_EXPECTED_ELEMENT, null, level, -1,
+                        "Expected element '", "' does not exist");
+                return;
+            }
+
+            List<Object> replacedElements = null;
+
+            int i = -1;
+            for (Object element : elements) {
+                i++;
+
+                if (expectedElementType != null && element != null) {
                     if (!expectedElementType.isAssignableFrom(element.getClass())) {
                         _handleVisitException(ErrorCode.EXPECTED_ELEMENT_TYPE_MISMATCH, null, level, i,
-                                "Failed to resolve parent element: expected type '" + expectedElementType.getName() +
-                                        "', found '" + element.getClass().getName(), "Not " + expectedElementType.getSimpleName());
+                                "Expected element '", "' does not match the type you expected '" +
+                                        expectedElementType.getName() + "', it's " + element.getClass());
                         continue;
                     }
                 }
 
+                // handle
                 Object returnedElement = elementHandler.apply(element);
+
                 // delete/remove
-                if (returnedElement == DELETE_FLAG) {
-                    ((Map) parentElement).remove(path.key);
+                if (deleteMode) {
                     continue;
                 }
                 // replace
-                if (returnedElement != element) {
-                    ((Map) parentElement).put(path.key, returnedElement);
+                if (replaceMode) {
+                    if (replacedElements == null) {
+                        replacedElements = new ArrayList(elements.size());
+                    }
+                    replacedElements.add(returnedElement);
                     continue;
                 }
+            }
 
-            } else {
+            // delete mode
+            if (deleteMode) {
+                ((Collection) parentElement).clear();
+                return;
+            }
 
-                // parent element
-                element = _tryCreateParentElementIfAbsent(element, paths.get(level + 1));
+            // replace mode
+            if (replacedElements != null) {
+                ((Collection) parentElement).clear();
+                ((Collection) parentElement).addAll(replacedElements);
+                return;
+            }
+
+        } else {
+            // parent element
+
+            if (elements.isEmpty()) {
+                _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, level, -1,
+                        "Parent element '", "' does not exist, can not get child or children from it");
+                return;
+            }
+
+            int i = -1;
+            for (Object element : elements) {
+                i++;
+
                 if (element == null) {
                     _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, level, i,
-                            "Missing parent element", "It's Null");
+                            "Parent element '", "' is null, can not get child or children from it");
                     continue;
                 }
 
                 // visit next path
-                _visit(element, level + 1, expectedElementType, elementHandler);
+                _visitNonRoot(element, level + 1, expectedElementType, elementHandler, replaceMode, deleteMode);
 
             }
 
@@ -290,36 +435,36 @@ public final class ElementVisitor {
 
     private void _forEach_consumeAs(Class expectedElementType, Consumer elementConsumer) {
         _checkElementConsumer(elementConsumer);
-        _visit(expectedElementType, e -> {
+        _visitRoot(expectedElementType, e -> {
             elementConsumer.accept(e);
             return e;
-        });
+        }, false, false);
     }
 
     private void _forEach_replaceAs(Class expectedElementType, Function elementReplacer) {
         _checkElementReplacer(elementReplacer);
-        _visit(expectedElementType, elementReplacer);
+        _visitRoot(expectedElementType, elementReplacer, true, false);
     }
 
     private void _forEach_delete() {
-        _visit(null, e -> DELETE_FLAG);
+        _visitRoot(null, e -> e, false, true);
     }
 
     private Collection _getAllAs(Class expectedElementType) {
         ArrayList result = new ArrayList();
-        _visit(expectedElementType, e -> {
+        _visitRoot(expectedElementType, e -> {
             result.add(e);
             return e;
-        });
+        }, false, false);
         return result;
     }
 
     private Collection _removeAllAs(Class expectedElementType) {
         ArrayList result = new ArrayList();
-        _visit(expectedElementType, e -> {
+        _visitRoot(expectedElementType, e -> {
             result.add(e);
-            return DELETE_FLAG;
-        });
+            return e;
+        }, false, true);
         return result;
     }
 
@@ -334,49 +479,163 @@ public final class ElementVisitor {
         private BasicVisitor() {
         }
 
-        public BasicVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) {
+         /**
+          * 压制(忽略)指定的错误类别.
+          * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常. 
+          * 重复调用此方法设置会覆盖原来设置的ErrorCategory. 
+          * @param errorCategory 需要忽略的错误类别, 可配置多个
+          */
+        public BasicVisitor suppressErrorCategories(ErrorCategory... errorCategory) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCategories = new HashSet<>(Arrays.asList(errorCategory));
+            return this;
+        }
+
+        /**
+         * 压制(忽略)指定的错误码.
+         * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常.
+         * 重复调用此方法设置会覆盖原来设置的ErrorCode.
+         * @param errorCodes 需要忽略的错误码, 可配置多个
+         */
+        public BasicVisitor suppressErrorCodes(ErrorCode... errorCodes) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCodes = new HashSet<>(Arrays.asList(errorCodes));
+            return this;
+        }
+
+        /**
+         * <p>设置异常处理器, 默认为: e -> {throw e;} 即一律抛出异常.</p>
+         * <p>注意, 如果exceptionHandler中不抛出异常, get/remove/forEach方法就不会抛出异常了, 返回的元素可能为null或空集合.</p>
+         * <p>注意, 使用suppressErrorCategories和suppressErrorCodes压制(忽略)的异常将不会被exceptionHandler接收.</p>
+         * <p>示范一: 只打印日志, 不抛出异常 (返回的元素可能为null或空集合)</p>
+         * <pre>
+         * e -> {
+         *      logger.error("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         * <p>示范二: 数据缺失类的错误只打印日志, 不抛出异常(返回的元素可能为null或空集合); 其他错误抛出异常</p>
+         * <pre>
+         * e -> {
+         *      switch (e.getErrorCategory()) {
+         *          case DATA_MISSING:
+         *              logger.error("Error occurred when visiting element", e);
+         *              break;
+         *          default:
+         *              throw e;
+         *      }
+         * }
+         * </pre>
+         * <p>示范三: 封装成其他异常抛出</p>
+         * <pre>
+         * e -> {
+         *      throw new ServiceException("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         *
+         * @param exceptionHandler 异常处理器, 默认为: e -> {throw e;}
+         * @throws IllegalArgumentException exceptionHandler为空
+         */
+        public BasicVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
+            _checkExceptionHandler(exceptionHandler);
             ElementVisitor.this.exceptionHandler = exceptionHandler;
             return basicVisitor;
         }
 
+        /**
+         * 遍历所有你想获取的元素, 使用Lambda表达式处理它们
+         */
         public ForEachVisitor forEach() {
             return forEachVisitor;
         }
 
         public class ForEachVisitor {
 
-            public <K, V> void consumeAsMap(Consumer<Map<K, V>> elementConsumer) throws ElementVisitException {
+            /**
+             * 遍历所有你想获取的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 元素视为Map处理
+             * @param elementConsumer 处理每一个你想获取的元素
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * @throws IllegalArgumentException elementConsumer为空
+             */
+            public <K, V> void consumeAsMap(Consumer<Map<K, V>> elementConsumer) throws ElementVisitException, IllegalArgumentException {
                 _forEach_consumeAs(Map.class, elementConsumer);
             }
 
-            public <E> void consumeAsList(Consumer<List<E>> elementConsumer) throws ElementVisitException {
+            /**
+             * 遍历所有你想获取的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 元素视为List处理
+             * @param elementConsumer 处理每一个你想获取的元素
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * @throws IllegalArgumentException elementConsumer为空
+             */
+            public <E> void consumeAsList(Consumer<List<E>> elementConsumer) throws ElementVisitException, IllegalArgumentException {
                 _forEach_consumeAs(List.class, elementConsumer);
             }
 
-            public <E> void consumeAsSet(Consumer<Set<E>> elementConsumer) throws ElementVisitException {
+            /**
+             * 遍历所有你想获取的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 元素视为Set处理
+             * @param elementConsumer 处理每一个你想获取的元素
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * @throws IllegalArgumentException elementConsumer为空
+             */
+            public <E> void consumeAsSet(Consumer<Set<E>> elementConsumer) throws ElementVisitException, IllegalArgumentException {
                 _forEach_consumeAs(Set.class, elementConsumer);
             }
 
-            public <E> void consumeAs(Class<E> expectedElementType, Consumer<E> elementConsumer) throws ElementVisitException {
+            /**
+             * 遍历所有你想获取的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 元素视为expectedElementType指定的类型处理
+             * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用consumeAsMap/consumeAsList/consumeAsSet
+             * @param elementConsumer 处理每一个你想获取的元素
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * @throws IllegalArgumentException elementConsumer为空
+             */
+            public <E> void consumeAs(Class<E> expectedElementType, Consumer<E> elementConsumer) throws ElementVisitException, IllegalArgumentException {
                 _forEach_consumeAs(expectedElementType, elementConsumer);
             }
 
-            public <K, V> void replaceAsMap(Function<Map<K, V>, Object> elementReplacer) throws ElementVisitException {
+            /**
+             * 转换所有你想获取的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 元素视为Map处理(指定入参类型, 出参类型任意)
+             * @param elementReplacer 接收每一个你想获取的元素并返回转换后的对象
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * @throws IllegalArgumentException elementReplacer为空
+             */
+            public <K, V> void replaceAsMap(Function<Map<K, V>, Object> elementReplacer) throws ElementVisitException, IllegalArgumentException {
                 _forEach_replaceAs(Map.class, elementReplacer);
             }
 
-            public <E> void replaceAsList(Function<List<E>, Object> elementReplacer) throws ElementVisitException {
+            /**
+             * 转换所有你想获取的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 元素视为List处理(指定入参类型, 出参类型任意)
+             * @param elementReplacer 接收每一个你想获取的元素并返回转换后的对象
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * @throws IllegalArgumentException elementReplacer为空
+             */
+            public <E> void replaceAsList(Function<List<E>, Object> elementReplacer) throws ElementVisitException, IllegalArgumentException {
                 _forEach_replaceAs(List.class, elementReplacer);
             }
 
-            public <E> void replaceAsSet(Function<Set<E>, Object> elementReplacer) throws ElementVisitException {
+            /**
+             * 转换所有你想获取的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 元素视为Set处理(指定入参类型, 出参类型任意)
+             * @param elementReplacer 接收每一个你想获取的元素并返回转换后的对象
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * @throws IllegalArgumentException elementReplacer为空
+             */
+            public <E> void replaceAsSet(Function<Set<E>, Object> elementReplacer) throws ElementVisitException, IllegalArgumentException {
                 _forEach_replaceAs(Set.class, elementReplacer);
             }
 
-            public <E> void replaceAs(Class<E> expectedElementType, Function<E, Object> elementReplacer) throws ElementVisitException {
+            /**
+             * 转换所有你想获取的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 元素视为expectedElementType指定的类型处理(指定入参类型, 出参类型任意)
+             * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用replaceAsMap/replaceAsList/replaceAsSet
+             * @param elementReplacer 接收每一个你想获取的元素并返回转换后的对象
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * @throws IllegalArgumentException elementReplacer为空
+             */
+            public <E> void replaceAs(Class<E> expectedElementType, Function<E, Object> elementReplacer) throws ElementVisitException, IllegalArgumentException {
                 _forEach_replaceAs(expectedElementType, elementReplacer);
             }
 
+            /**
+             * 删除所有你想获得的元素
+             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             */
             public void delete() throws ElementVisitException {
                 _forEach_delete();
             }
@@ -390,16 +649,84 @@ public final class ElementVisitor {
         private OnewayVisitor() {
         }
 
-        public OnewayVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) {
+         /**
+          * 压制(忽略)指定的错误类别.
+          * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常. 
+          * 重复调用此方法设置会覆盖原来设置的ErrorCategory. 
+          * @param errorCategory 需要忽略的错误类别, 可配置多个
+          */
+        public OnewayVisitor suppressErrorCategories(ErrorCategory... errorCategory) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCategories = new HashSet<>(Arrays.asList(errorCategory));
+            return this;
+        }
+
+        /**
+         * 压制(忽略)指定的错误码.
+         * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常.
+         * 重复调用此方法设置会覆盖原来设置的ErrorCode.
+         * @param errorCodes 需要忽略的错误码, 可配置多个
+         */
+        public OnewayVisitor suppressErrorCodes(ErrorCode... errorCodes) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCodes = new HashSet<>(Arrays.asList(errorCodes));
+            return this;
+        }
+
+        /**
+         * <p>设置异常处理器, 默认为: e -> {throw e;} 即一律抛出异常.</p>
+         * <p>注意, 如果exceptionHandler中不抛出异常, get/remove/forEach方法就不会抛出异常了, 返回的元素可能为null或空集合.</p>
+         * <p>注意, 使用suppressErrorCategories和suppressErrorCodes压制(忽略)的异常将不会被exceptionHandler接收.</p>
+         * <p>示范一: 只打印日志, 不抛出异常 (返回的元素可能为null或空集合)</p>
+         * <pre>
+         * e -> {
+         *      logger.error("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         * <p>示范二: 数据缺失类的错误只打印日志, 不抛出异常(返回的元素可能为null或空集合); 其他错误抛出异常</p>
+         * <pre>
+         * e -> {
+         *      switch (e.getErrorCategory()) {
+         *          case DATA_MISSING:
+         *              logger.error("Error occurred when visiting element", e);
+         *              break;
+         *          default:
+         *              throw e;
+         *      }
+         * }
+         * </pre>
+         * <p>示范三: 封装成其他异常抛出</p>
+         * <pre>
+         * e -> {
+         *      throw new ServiceException("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         *
+         * @param exceptionHandler 异常处理器, 默认为: e -> {throw e;}
+         * @throws IllegalArgumentException exceptionHandler为空
+         */
+        public OnewayVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
+            _checkExceptionHandler(exceptionHandler);
             ElementVisitor.this.exceptionHandler = exceptionHandler;
             return onewayVisitor;
         }
 
+        /**
+         * [只支持Map嵌套Map的集合, 若访问路径中存在Collection则不支持]
+         * 若访问路径中的中间元素不存在, 则自动创建中间元素(LinkedHashMap).
+         * 若你想要获取的元素不存在, 则调用本方法入参'supplyIfElementAbsent'创建.
+         * @param supplyIfElementAbsent 用于创建你想获取的元素实例 (如果不存在)
+         */
         public OnewayVisitor createIfAbsent(Supplier<Object> supplyIfElementAbsent) {
             ElementVisitor.this.supplyIfElementAbsent = supplyIfElementAbsent;
             return onewayVisitor;
         }
 
+        /**
+         * 获取你想获取的元素(一个), 需要Map类型
+         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <K, V> Map<K, V> getAsMap() throws ElementVisitException {
             Collection<Map<K, V>> elements = _getAllAs(Map.class);
             for (Map<K, V> element : elements) {
@@ -408,13 +735,24 @@ public final class ElementVisitor {
             return null;
         }
 
+        /**
+         * 获取你想获取的元素(一个), 需要List类型
+         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> List<E> getAsList() throws ElementVisitException {
             Collection<List<E>> elements = _getAllAs(List.class);
             for (List<E> element : elements) {
                 return element;
             }
-            return null;        }
+            return null;
+        }
 
+        /**
+         * 获取你想获取的元素(一个), 需要Set类型
+         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> Set<E> getAsSet() throws ElementVisitException {
             Collection<Set<E>> elements = _getAllAs(Set.class);
             for (Set<E> element : elements) {
@@ -423,6 +761,12 @@ public final class ElementVisitor {
             return null;
         }
 
+        /**
+         * 获取你想获取的元素(一个), 需要expectedElementType指定的类型
+         * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用getAsMap/getAsList/getAsSet
+         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> E getAs(Class<E> expectedElementType) throws ElementVisitException {
             Collection<E> elements = _getAllAs(expectedElementType);
             for (E element : elements) {
@@ -431,6 +775,11 @@ public final class ElementVisitor {
             return null;
         }
 
+        /**
+         * 移除你想获取的元素(一个), 需要Map类型
+         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <K, V> Map<K, V> removeAsMap() throws ElementVisitException {
             Collection<Map<K, V>> elements = _removeAllAs(Map.class);
             for (Map<K, V> element : elements) {
@@ -439,6 +788,11 @@ public final class ElementVisitor {
             return null;
         }
 
+        /**
+         * 移除你想获取的元素(一个), 需要List类型
+         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> List<E> removeAsList() throws ElementVisitException {
             Collection<List<E>> elements = _removeAllAs(List.class);
             for (List<E> element : elements) {
@@ -447,6 +801,11 @@ public final class ElementVisitor {
             return null;
         }
 
+        /**
+         * 移除你想获取的元素(一个), 需要Set类型
+         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> Set<E> removeAsSet() throws ElementVisitException {
             Collection<Set<E>> elements = _removeAllAs(Set.class);
             for (Set<E> element : elements) {
@@ -455,6 +814,12 @@ public final class ElementVisitor {
             return null;
         }
 
+        /**
+         * 移除你想获取的元素(一个), 需要expectedElementType指定的类型
+         * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用removeAsMap/removeAsList/removeAsSet
+         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> E removeAs(Class<E> expectedElementType) throws ElementVisitException {
             Collection<E> elements = _removeAllAs(expectedElementType);
             for (E element : elements) {
@@ -470,17 +835,81 @@ public final class ElementVisitor {
         private OnewayPathPlanner() {
         }
 
+        /**
+         * 路径配置, 访问Map的子元素
+         * @param key key
+         */
         public OnewayPathPlanner child(String key) {
             _addPath(key);
             return onewayPathPlanner;
         }
 
+        /**
+         * 路径配置, 访问Collection的子元素 (遍历)
+         */
         public MultiwayPathPlanner children() {
             _addPath();
             return multiwayPathPlanner;
         }
 
-        public OnewayPathPlanner exceptionHandler(Consumer<ElementVisitException> exceptionHandler) {
+         /**
+          * 压制(忽略)指定的错误类别.
+          * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常. 
+          * 重复调用此方法设置会覆盖原来设置的ErrorCategory. 
+          * @param errorCategory 需要忽略的错误类别, 可配置多个
+          */
+        public OnewayPathPlanner suppressErrorCategories(ErrorCategory... errorCategory) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCategories = new HashSet<>(Arrays.asList(errorCategory));
+            return this;
+        }
+
+        /**
+         * 压制(忽略)指定的错误码.
+         * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常.
+         * 重复调用此方法设置会覆盖原来设置的ErrorCode.
+         * @param errorCodes 需要忽略的错误码, 可配置多个
+         */
+        public OnewayPathPlanner suppressErrorCodes(ErrorCode... errorCodes) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCodes = new HashSet<>(Arrays.asList(errorCodes));
+            return this;
+        }
+
+        /**
+         * <p>设置异常处理器, 默认为: e -> {throw e;} 即一律抛出异常.</p>
+         * <p>注意, 如果exceptionHandler中不抛出异常, get/remove/forEach方法就不会抛出异常了, 返回的元素可能为null或空集合.</p>
+         * <p>注意, 使用suppressErrorCategories和suppressErrorCodes压制(忽略)的异常将不会被exceptionHandler接收.</p>
+         * <p>示范一: 只打印日志, 不抛出异常 (返回的元素可能为null或空集合)</p>
+         * <pre>
+         * e -> {
+         *      logger.error("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         * <p>示范二: 数据缺失类的错误只打印日志, 不抛出异常(返回的元素可能为null或空集合); 其他错误抛出异常</p>
+         * <pre>
+         * e -> {
+         *      switch (e.getErrorCategory()) {
+         *          case DATA_MISSING:
+         *              logger.error("Error occurred when visiting element", e);
+         *              break;
+         *          default:
+         *              throw e;
+         *      }
+         * }
+         * </pre>
+         * <p>示范三: 封装成其他异常抛出</p>
+         * <pre>
+         * e -> {
+         *      throw new ServiceException("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         *
+         * @param exceptionHandler 异常处理器, 默认为: e -> {throw e;}
+         * @throws IllegalArgumentException exceptionHandler为空
+         */
+        public OnewayPathPlanner exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
+            _checkExceptionHandler(exceptionHandler);
             ElementVisitor.this.exceptionHandler = exceptionHandler;
             return onewayPathPlanner;
         }
@@ -492,39 +921,138 @@ public final class ElementVisitor {
         private MultiwayVisitor() {
         }
 
-        public MultiwayVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) {
+         /**
+          * 压制(忽略)指定的错误类别.
+          * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常. 
+          * 重复调用此方法设置会覆盖原来设置的ErrorCategory. 
+          * @param errorCategory 需要忽略的错误类别, 可配置多个
+          */
+        public MultiwayVisitor suppressErrorCategories(ErrorCategory... errorCategory) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCategories = new HashSet<>(Arrays.asList(errorCategory));
+            return this;
+        }
+
+        /**
+         * 压制(忽略)指定的错误码.
+         * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常.
+         * 重复调用此方法设置会覆盖原来设置的ErrorCode.
+         * @param errorCodes 需要忽略的错误码, 可配置多个
+         */
+        public MultiwayVisitor suppressErrorCodes(ErrorCode... errorCodes) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCodes = new HashSet<>(Arrays.asList(errorCodes));
+            return this;
+        }
+
+        /**
+         * <p>设置异常处理器, 默认为: e -> {throw e;} 即一律抛出异常.</p>
+         * <p>注意, 如果exceptionHandler中不抛出异常, get/remove/forEach方法就不会抛出异常了, 返回的元素可能为null或空集合.</p>
+         * <p>注意, 使用suppressErrorCategories和suppressErrorCodes压制(忽略)的异常将不会被exceptionHandler接收.</p>
+         * <p>示范一: 只打印日志, 不抛出异常 (返回的元素可能为null或空集合)</p>
+         * <pre>
+         * e -> {
+         *      logger.error("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         * <p>示范二: 数据缺失类的错误只打印日志, 不抛出异常(返回的元素可能为null或空集合); 其他错误抛出异常</p>
+         * <pre>
+         * e -> {
+         *      switch (e.getErrorCategory()) {
+         *          case DATA_MISSING:
+         *              logger.error("Error occurred when visiting element", e);
+         *              break;
+         *          default:
+         *              throw e;
+         *      }
+         * }
+         * </pre>
+         * <p>示范三: 封装成其他异常抛出</p>
+         * <pre>
+         * e -> {
+         *      throw new ServiceException("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         *
+         * @param exceptionHandler 异常处理器, 默认为: e -> {throw e;}
+         * @throws IllegalArgumentException exceptionHandler为空
+         */
+        public MultiwayVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
+            _checkExceptionHandler(exceptionHandler);
             ElementVisitor.this.exceptionHandler = exceptionHandler;
             return multiwayVisitor;
         }
 
+        /**
+         * 获取你想获取的元素(多个, Collection集合), 需要Map类型
+         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <K, V> Collection<Map<K, V>> getAllAsMap() throws ElementVisitException {
             return _getAllAs(Map.class);
         }
 
+        /**
+         * 获取你想获取的元素(多个, Collection集合), 需要List类型
+         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> Collection<List<E>> getAllAsList() throws ElementVisitException {
             return _getAllAs(List.class);
         }
 
+        /**
+         * 获取你想获取的元素(多个, Collection集合), 需要Set类型
+         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> Collection<Set<E>> getAllAsSet() throws ElementVisitException {
             return _getAllAs(Set.class);
         }
 
+        /**
+         * 获取你想获取的元素(多个, Collection集合), 需要expectedElementType指定的类型
+         * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用getAllAsMap/getAllAsList/getAllAsSet
+         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> Collection<E> getAllAs(Class<E> expectedElementType) throws ElementVisitException {
             return _getAllAs(expectedElementType);
         }
 
+        /**
+         * 移除你想获取的元素(多个, Collection集合), 需要Map类型
+         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <K, V> Collection<Map<K, V>> removeAllAsMap() throws ElementVisitException {
             return _removeAllAs(Map.class);
         }
 
+        /**
+         * 移除你想获取的元素(多个, Collection集合), 需要List类型
+         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> Collection<List<E>> removeAllAsList() throws ElementVisitException {
             return _removeAllAs(List.class);
         }
 
+        /**
+         * 移除你想获取的元素(多个, Collection集合), 需要Set类型
+         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> Collection<Set<E>> removeAllAsSet() throws ElementVisitException {
             return _removeAllAs(Set.class);
         }
 
+        /**
+         * 移除你想获取的元素(多个, Collection集合), 需要expectedElementType指定的类型
+         * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用removeAllAsMap/removeAllAsList/removeAllAsSet
+         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+         */
         public <E> Collection<E> removeAllAs(Class<E> expectedElementType) throws ElementVisitException {
             return _removeAllAs(expectedElementType);
         }
@@ -536,6 +1064,10 @@ public final class ElementVisitor {
         private MultiwayPathPlanner() {
         }
 
+        /**
+         * 路径配置, 访问Map的子元素
+         * @param key key
+         */
         public MultiwayPathPlanner child(String key) {
             // 注意: 这里返回multiwayPathPlanner不是写错了
             // 访问路径中只要出现过children(), 后续就一直是multiwayPathPlanner了
@@ -543,12 +1075,72 @@ public final class ElementVisitor {
             return multiwayPathPlanner;
         }
 
+        /**
+         * 路径配置, 访问Collection的子元素 (遍历)
+         */
         public MultiwayPathPlanner children() {
             _addPath();
             return multiwayPathPlanner;
         }
 
-        public MultiwayPathPlanner exceptionHandler(Consumer<ElementVisitException> exceptionHandler) {
+         /**
+          * 压制(忽略)指定的错误类别.
+          * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常. 
+          * 重复调用此方法设置会覆盖原来设置的ErrorCategory. 
+          * @param errorCategory 需要忽略的错误类别, 可配置多个
+          */
+        public MultiwayPathPlanner suppressErrorCategories(ErrorCategory... errorCategory) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCategories = new HashSet<>(Arrays.asList(errorCategory));
+            return this;
+        }
+
+        /**
+         * 压制(忽略)指定的错误码.
+         * 注意, ExceptionHandler将无法接收到被压制(忽略)的异常.
+         * 重复调用此方法设置会覆盖原来设置的ErrorCode.
+         * @param errorCodes 需要忽略的错误码, 可配置多个
+         */
+        public MultiwayPathPlanner suppressErrorCodes(ErrorCode... errorCodes) {
+            // 注意, 会覆盖原配置
+            ElementVisitor.this.suppressedErrorCodes = new HashSet<>(Arrays.asList(errorCodes));
+            return this;
+        }
+
+        /**
+         * <p>设置异常处理器, 默认为: e -> {throw e;} 即一律抛出异常.</p>
+         * <p>注意, 如果exceptionHandler中不抛出异常, get/remove/forEach方法就不会抛出异常了, 返回的元素可能为null或空集合.</p>
+         * <p>注意, 使用suppressErrorCategories和suppressErrorCodes压制(忽略)的异常将不会被exceptionHandler接收.</p>
+         * <p>示范一: 只打印日志, 不抛出异常 (返回的元素可能为null或空集合)</p>
+         * <pre>
+         * e -> {
+         *      logger.error("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         * <p>示范二: 数据缺失类的错误只打印日志, 不抛出异常(返回的元素可能为null或空集合); 其他错误抛出异常</p>
+         * <pre>
+         * e -> {
+         *      switch (e.getErrorCategory()) {
+         *          case DATA_MISSING:
+         *              logger.error("Error occurred when visiting element", e);
+         *              break;
+         *          default:
+         *              throw e;
+         *      }
+         * }
+         * </pre>
+         * <p>示范三: 封装成其他异常抛出</p>
+         * <pre>
+         * e -> {
+         *      throw new ServiceException("Error occurred when visiting element", e);
+         * }
+         * </pre>
+         *
+         * @param exceptionHandler 异常处理器, 默认为: e -> {throw e;}
+         * @throws IllegalArgumentException exceptionHandler为空
+         */
+        public MultiwayPathPlanner exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
+            _checkExceptionHandler(exceptionHandler);
             ElementVisitor.this.exceptionHandler = exceptionHandler;
             return multiwayPathPlanner;
         }
@@ -556,7 +1148,7 @@ public final class ElementVisitor {
     }
 
 
-    // Path ////////////////////////////////////////////////////////////////////////////////////////////
+    // private class ////////////////////////////////////////////////////////////////////////////////////////////
 
 
     private static class Path {
@@ -578,8 +1170,13 @@ public final class ElementVisitor {
 
     }
 
+
     // Error ////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    /**
+     * 错误类别
+     */
     public enum ErrorCategory {
 
         /**
@@ -604,6 +1201,9 @@ public final class ElementVisitor {
 
     }
 
+    /**
+     * 错误码
+     */
     public enum ErrorCode {
 
         /**
@@ -629,22 +1229,9 @@ public final class ElementVisitor {
         EXPECTED_ELEMENT_TYPE_MISMATCH(ErrorCategory.DATA_INVALID),
 
         /**
-         * [createIfAbsent] 创建路径中间的元素(parent_element)失败 (创建LinkedHashMap/ArrayList)
-         */
-        CREATE_PARENT_ELEMENT_FAILED(ErrorCategory.PROGRAMMING_ERROR),
-        /**
          * [createIfAbsent] 创建你想获取的元素(expected_element)失败 (由createIfAbsent方法传入的表达式创建)
          */
         CREATE_EXPECTED_ELEMENT_FAILED(ErrorCategory.PROGRAMMING_ERROR),
-
-        /**
-         * [forEach#consumeAs...] forEach#consumeAs...方法传入的Consumer表达式为空
-         */
-        ELEMENT_CONSUMER_IS_NULL(ErrorCategory.PROGRAMMING_ERROR),
-        /**
-         * [forEach#replaceAs...] forEach#replaceAs...方法传入的Function表达式为空
-         */
-        ELEMENT_REPLACER_IS_NULL(ErrorCategory.PROGRAMMING_ERROR),
 
         /**
          * 未定义的错误
@@ -670,6 +1257,9 @@ public final class ElementVisitor {
 
     }
 
+    /**
+     * 元素访问异常. 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 就不会抛出ElementVisitException了
+     */
     public static class ElementVisitException extends RuntimeException {
 
         private static final long serialVersionUID = -9064567333501718644L;

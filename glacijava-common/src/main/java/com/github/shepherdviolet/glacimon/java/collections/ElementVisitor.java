@@ -133,7 +133,7 @@ public final class ElementVisitor {
             }
         }
 
-        StringBuilder msgBuilder = new StringBuilder(errorCode.name())
+        StringBuilder msgBuilder = new StringBuilder(errorCode.toString())
                 .append(": ")
                 .append(message)
                 .append(" [Occurred at: ")

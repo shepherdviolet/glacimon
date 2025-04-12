@@ -19,47 +19,164 @@
 
 package com.github.shepherdviolet.glacimon.java.collections;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
 
     @Test
     public void test() {
 
-        Map<String, Object> map = buildHashMap(m -> {
+        String service = ElementVisitor.of(createRootMap())
+                .child("Header")
+                .child("Service")
+                .getAs(String.class);
+        Assertions.assertEquals("Foo", service);
+
+        Map<String, Object> header = ElementVisitor.of(createRootMap())
+                .child("Header")
+                .getAsMap();
+        Assertions.assertEquals("{Service=Foo}", header.toString());
+
+        Collection<String> names = new ArrayList<>();
+        ElementVisitor.of(createRootMap())
+                .child("Body")
+                .child("Customers")
+                .children()
+                .child("Orders")
+                .children()
+                .child("OrderName")
+                .forEach()
+                .consumeAs(String.class, names::add);
+        Assertions.assertEquals("[Fish, Milk, Mince, Lemonade]", names.toString());
+
+        names = ElementVisitor.of(createRootMap())
+                .child("Body")
+                .child("Customers")
+                .children()
+                .child("Orders")
+                .children()
+                .child("OrderName")
+                .getAllAs(String.class);
+        Assertions.assertEquals("[Fish, Milk, Mince, Lemonade]", names.toString());
+
+        Collection<Map<String, Object>> ordersChildren = new ArrayList<>();
+        ElementVisitor.of(createRootMap())
+                .child("Body")
+                .child("Customers")
+                .children()
+                .child("Orders")
+                .children()
+                .forEach()
+                .consumeAsMap(ordersChildren::add);
+        Assertions.assertEquals("[{OrderName=Fish, Quantity=6}, {OrderName=Milk, Quantity=3}, {OrderName=Mince, Quantity=1}, {OrderName=Lemonade, Quantity=12}]", ordersChildren.toString());
+
+        ordersChildren = ElementVisitor.of(createRootMap())
+                .child("Body")
+                .child("Customers")
+                .children()
+                .child("Orders")
+                .children()
+                .getAllAsMap();
+        Assertions.assertEquals("[{OrderName=Fish, Quantity=6}, {OrderName=Milk, Quantity=3}, {OrderName=Mince, Quantity=1}, {OrderName=Lemonade, Quantity=12}]", ordersChildren.toString());
+
+        Collection<List<Object>> orders = new ArrayList<>();
+        ElementVisitor.of(createRootMap())
+                .child("Body")
+                .child("Customers")
+                .children()
+                .child("Orders")
+                .forEach()
+                .consumeAsList(orders::add);
+        Assertions.assertEquals("[[{OrderName=Fish, Quantity=6}, {OrderName=Milk, Quantity=3}], [{OrderName=Mince, Quantity=1}, {OrderName=Lemonade, Quantity=12}]]", orders.toString());
+
+        orders = ElementVisitor.of(createRootMap())
+                .child("Body")
+                .child("Customers")
+                .children()
+                .child("Orders")
+                .getAllAsList();
+        Assertions.assertEquals("[[{OrderName=Fish, Quantity=6}, {OrderName=Milk, Quantity=3}], [{OrderName=Mince, Quantity=1}, {OrderName=Lemonade, Quantity=12}]]", orders.toString());
+
+    }
+
+    /**
+     * {
+     * "Header": {
+     * "Service": "Foo"
+     * },
+     * "Body": {
+     * "Address": "P.O. Box 456, 789 Elmwood Plaza, Village Heights, Region Delta, Continentia 12-345",
+     * "Customers": [
+     * {
+     * "CustomerName": "Tom",
+     * "Orders": [
+     * {
+     * "OrderName": "Fish",
+     * "Quantity": "6"
+     * },
+     * {
+     * "OrderName": "Milk",
+     * "Quantity": "3"
+     * }
+     * ]
+     * },
+     * {
+     * "CustomerName": "Jerry",
+     * "Orders": [
+     * {
+     * "OrderName": "Mince",
+     * "Quantity": "1"
+     * },
+     * {
+     * Order"Name": "Lemonade",
+     * "Quantity": "12"
+     * }
+     * ]
+     * }
+     * ]
+     * }
+     * }
+     */
+    private Map<String, Object> createRootMap() {
+        return buildHashMap(m -> {
             m.put("Header", buildHashMap(mm -> {
                 mm.put("Service", "Foo");
-                mm.put("Time", "20250408");
-                mm.put("Sequence", "202504080000357652");
             }));
             m.put("Body", buildHashMap(mm -> {
-                mm.put("Username", "test@test.com");
-                mm.put("Orders", buildArrayList(lll -> {
+                mm.put("Address", "P.O. Box 456, 789 Elmwood Plaza, Village Heights, Region Delta, Continentia 12-345");
+                mm.put("Customers", buildArrayList(lll -> {
                     lll.add(buildHashMap(mmmm -> {
-                        mmmm.put("Name", "Fish");
-                        mmmm.put("Quantity", "6");
-                        mmmm.put("UnitPrise", "68.8");
+                        mmmm.put("CustomerName", "Tom");
+                        mmmm.put("Orders", buildArrayList(lllll -> {
+                            lllll.add(buildHashMap(mmmmmm -> {
+                                mmmmmm.put("OrderName", "Fish");
+                                mmmmmm.put("Quantity", "6");
+                            }));
+                            lllll.add(buildHashMap(mmmmmm -> {
+                                mmmmmm.put("OrderName", "Milk");
+                                mmmmmm.put("Quantity", "3");
+                            }));
+                        }));
                     }));
                     lll.add(buildHashMap(mmmm -> {
-                        mmmm.put("Name", "Milk");
-                        mmmm.put("Quantity", "3");
-                        mmmm.put("UnitPrise", "28.9");
+                        mmmm.put("CustomerName", "Jerry");
+                        mmmm.put("Orders", buildArrayList(lllll -> {
+                            lllll.add(buildHashMap(mmmmmm -> {
+                                mmmmmm.put("OrderName", "Mince");
+                                mmmmmm.put("Quantity", "1");
+                            }));
+                            lllll.add(buildHashMap(mmmmmm -> {
+                                mmmmmm.put("OrderName", "Lemonade");
+                                mmmmmm.put("Quantity", "12");
+                            }));
+                        }));
                     }));
                 }));
             }));
         });
-
-
-        visitElement(map).child("Body").child("Orders").children().child("Name")
-                .forEach().consumeAs(String.class, System.out::println);
-
-        Collection<String> names = visitElement(map).child("Body").child("Orders").children().child("Name")
-                .getAllAs(String.class);
-        System.out.println(names);
-
     }
 
 }

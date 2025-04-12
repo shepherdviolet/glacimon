@@ -171,12 +171,12 @@ public class Test implements LambdaBuildable {
 <Br>
 <Br>
 
-## `便捷安全`的跨层级集合元素访问工具 ElementVisitor
+## 跨层级集合元素访问工具 ElementVisitor
 
 * [ElementVisitor使用文档](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/element-visitor.md)
 * 同类工具对比:
 
-> [Jayway JsonPath](https://github.com/json-path/JsonPath)是一个广泛使用的 JSONPath 实现，它允许你用类似 $.Body.Orders[*].Name 
+> [Jayway JsonPath](https://github.com/json-path/JsonPath)也提供了类似的能力, 它是一个广泛使用的 JSONPath 实现，它允许你用类似 $.Body.Orders[*].Name 
 > 的语法直接从 JSON 或 Map 数据结构中获取数据, 功能强大(筛选/统计等), 但表达式由String编写存在一点学习成本, 如果你熟悉Jayway JsonPath, 
 > 请忽略`ElementVisitor`. `ElementVisitor`功能简单, 通过链式书写, 有多少功能靠IDE提示一目了然, 适合简单的场景, 还提供了元素替换, 路径
 > 创建能力.

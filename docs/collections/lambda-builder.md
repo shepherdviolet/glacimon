@@ -151,6 +151,47 @@ public class Test implements LambdaBuildable {
 }
 ```
 
+### 如何避免引用到错误的Lambda表达式入参?
+
+* 入参命名建议
+
+```
+        Map<String, Object> map = LambdaBuilder.HashMap(m -> {
+            // 第一层Lambda表达式入参用m
+            m.put("Header", LambdaBuilder.HashMap(mm -> {
+                // 第一层Lambda表达式入参用mm
+                mm.put("Service", "Foo");
+                mm.put("Time", "20250408");
+                mm.put("Sequence", "202504080000357652");
+            }));
+            m.put("Body", LambdaBuilder.HashMap(mm -> {
+                // 第一层Lambda表达式入参用mm
+                mm.put("Username", "test@test.com");
+                mm.put("Orders", LambdaBuilder.ArrayList(lll -> {
+                    // 第一层Lambda表达式入参用lll
+                    lll.add(LambdaBuilder.HashMap(mmmm -> {
+                        // 第一层Lambda表达式入参用mmmm
+                        mmmm.put("Name", "Fish");
+                        mmmm.put("Quantity", "6");
+                        mmmm.put("UnitPrise", "68.8");
+                    }));
+                    lll.add(LambdaBuilder.HashMap(mmmm -> {
+                        // 第一层Lambda表达式入参用mmmm
+                        mmmm.put("Name", "Milk");
+                        mmmm.put("Quantity", "3");
+                        mmmm.put("UnitPrise", "28.9");
+                    }));
+                }));
+            }));
+        });
+```
+
+* 关注IDE`语法高亮`
+
+> IDE通常有语法高亮显示, 当前方法内的变量, 与外层方法的变量/类变量颜色不同, 注意区分
+
+![](lambda-builder-ide-highlight.png)
+
 <br>
 
 # 与同类工具对比
@@ -189,7 +230,7 @@ Map<String, Object> map = StreamingBuilder.hashMap()
 | | LambdaBuilder/LambdaBuildable | HuTool/Guava/StreamingBuilder | 
 | --- |-------------------------------|-------------------------------|
 | 优点 | 可读性高<br>Lambda中可以书写其他代码       | 可读性高<br>部分工具提供了统计功能           |
-| 缺点 | Lambda表达式中的入参可能会搞错 | build()方法容易漏掉, 会赋值一个奇怪的对象进Map |
+| 缺点 | Lambda表达式中的入参可能会引用错           | build()方法容易漏掉, 会赋值一个奇怪的对象进Map |
 
 <br>
 

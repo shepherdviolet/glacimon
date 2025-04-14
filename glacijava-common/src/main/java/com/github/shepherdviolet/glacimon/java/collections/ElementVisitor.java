@@ -450,7 +450,7 @@ public final class ElementVisitor {
         _visitRoot(null, e -> e, false, true);
     }
 
-    private Collection _getAllAs(Class expectedElementType) {
+    private List _getAllAs(Class expectedElementType) {
         ArrayList result = new ArrayList();
         _visitRoot(expectedElementType, e -> {
             result.add(e);
@@ -459,7 +459,7 @@ public final class ElementVisitor {
         return result;
     }
 
-    private Collection _removeAllAs(Class expectedElementType) {
+    private List _removeAllAs(Class expectedElementType) {
         ArrayList result = new ArrayList();
         _visitRoot(expectedElementType, e -> {
             result.add(e);
@@ -542,7 +542,7 @@ public final class ElementVisitor {
         }
 
         /**
-         * 遍历所有你想获取的元素, 使用Lambda表达式处理它们
+         * 遍历所有你想访问的元素, 使用Lambda表达式处理它们
          */
         public ForEachVisitor forEach() {
             return forEachVisitor;
@@ -551,8 +551,8 @@ public final class ElementVisitor {
         public class ForEachVisitor {
 
             /**
-             * 遍历所有你想获取的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 元素视为Map处理
-             * @param elementConsumer 处理每一个你想获取的元素
+             * 遍历所有你想访问的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 接收元素类型为Map
+             * @param elementConsumer 处理每一个你想访问的元素
              * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
              * @throws IllegalArgumentException elementConsumer为空
              */
@@ -561,8 +561,8 @@ public final class ElementVisitor {
             }
 
             /**
-             * 遍历所有你想获取的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 元素视为List处理
-             * @param elementConsumer 处理每一个你想获取的元素
+             * 遍历所有你想访问的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 接收元素类型为List
+             * @param elementConsumer 处理每一个你想访问的元素
              * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
              * @throws IllegalArgumentException elementConsumer为空
              */
@@ -571,8 +571,8 @@ public final class ElementVisitor {
             }
 
             /**
-             * 遍历所有你想获取的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 元素视为Set处理
-             * @param elementConsumer 处理每一个你想获取的元素
+             * 遍历所有你想访问的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 接收元素类型为Set
+             * @param elementConsumer 处理每一个你想访问的元素
              * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
              * @throws IllegalArgumentException elementConsumer为空
              */
@@ -581,9 +581,9 @@ public final class ElementVisitor {
             }
 
             /**
-             * 遍历所有你想获取的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 元素视为expectedElementType指定的类型处理
-             * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用consumeAsMap/consumeAsList/consumeAsSet
-             * @param elementConsumer 处理每一个你想获取的元素
+             * 遍历所有你想访问的元素, 使用Lambda表达式(或Consumer)接收并处理它们, 接收元素类型由expectedElementType指定
+             * @param expectedElementType 你想访问的元素的类型, 如果是Map/List/Set, 请用consumeAsMap/consumeAsList/consumeAsSet
+             * @param elementConsumer 处理每一个你想访问的元素
              * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
              * @throws IllegalArgumentException elementConsumer为空
              */
@@ -592,8 +592,8 @@ public final class ElementVisitor {
             }
 
             /**
-             * 转换所有你想获取的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 元素视为Map处理(指定入参类型, 出参类型任意)
-             * @param elementReplacer 接收每一个你想获取的元素并返回转换后的对象
+             * 转换所有你想访问的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 接收元素类型为Map(入参类型Map, 出参类型任意)
+             * @param elementReplacer 接收每一个你想访问的元素并返回转换后的对象
              * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
              * @throws IllegalArgumentException elementReplacer为空
              */
@@ -602,8 +602,8 @@ public final class ElementVisitor {
             }
 
             /**
-             * 转换所有你想获取的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 元素视为List处理(指定入参类型, 出参类型任意)
-             * @param elementReplacer 接收每一个你想获取的元素并返回转换后的对象
+             * 转换所有你想访问的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 接收元素类型为List(入参类型List, 出参类型任意)
+             * @param elementReplacer 接收每一个你想访问的元素并返回转换后的对象
              * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
              * @throws IllegalArgumentException elementReplacer为空
              */
@@ -612,8 +612,8 @@ public final class ElementVisitor {
             }
 
             /**
-             * 转换所有你想获取的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 元素视为Set处理(指定入参类型, 出参类型任意)
-             * @param elementReplacer 接收每一个你想获取的元素并返回转换后的对象
+             * 转换所有你想访问的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 接收元素类型为Set(入参类型Set, 出参类型任意)
+             * @param elementReplacer 接收每一个你想访问的元素并返回转换后的对象
              * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
              * @throws IllegalArgumentException elementReplacer为空
              */
@@ -622,9 +622,9 @@ public final class ElementVisitor {
             }
 
             /**
-             * 转换所有你想获取的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 元素视为expectedElementType指定的类型处理(指定入参类型, 出参类型任意)
-             * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用replaceAsMap/replaceAsList/replaceAsSet
-             * @param elementReplacer 接收每一个你想获取的元素并返回转换后的对象
+             * 转换所有你想访问的元素, 使用Lambda表达式(或Function)接收并返回转换后的对象, 接收元素类型由expectedElementType指定(入参类型expectedElementType, 出参类型任意)
+             * @param expectedElementType 你想访问的元素的类型, 如果是Map/List/Set, 请用replaceAsMap/replaceAsList/replaceAsSet
+             * @param elementReplacer 接收每一个你想访问的元素并返回转换后的对象
              * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
              * @throws IllegalArgumentException elementReplacer为空
              */
@@ -715,7 +715,7 @@ public final class ElementVisitor {
          * [只支持Map嵌套Map的集合, 若访问路径中存在Collection则不支持]
          * 若访问路径中的中间元素不存在, 则自动创建中间元素(LinkedHashMap).
          * 若你想要获取的元素不存在, 则调用本方法入参'supplyIfElementAbsent'创建.
-         * @param supplyIfElementAbsent 用于创建你想获取的元素实例 (如果不存在)
+         * @param supplyIfElementAbsent 用于创建你想访问的元素实例 (如果不存在)
          */
         public OnewayVisitor createIfAbsent(Supplier<Object> supplyIfElementAbsent) {
             ElementVisitor.this.supplyIfElementAbsent = supplyIfElementAbsent;
@@ -723,8 +723,8 @@ public final class ElementVisitor {
         }
 
         /**
-         * 获取你想获取的元素(一个), 需要Map类型
-         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * 获取你想访问的元素(一个), 元素类型为Map
+         * @return 你想访问的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
         public <K, V> Map<K, V> getAsMap() throws ElementVisitException {
@@ -736,8 +736,8 @@ public final class ElementVisitor {
         }
 
         /**
-         * 获取你想获取的元素(一个), 需要List类型
-         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * 获取你想访问的元素(一个), 元素类型为List
+         * @return 你想访问的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
         public <E> List<E> getAsList() throws ElementVisitException {
@@ -749,8 +749,8 @@ public final class ElementVisitor {
         }
 
         /**
-         * 获取你想获取的元素(一个), 需要Set类型
-         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * 获取你想访问的元素(一个), 元素类型为Set
+         * @return 你想访问的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
         public <E> Set<E> getAsSet() throws ElementVisitException {
@@ -762,9 +762,9 @@ public final class ElementVisitor {
         }
 
         /**
-         * 获取你想获取的元素(一个), 需要expectedElementType指定的类型
-         * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用getAsMap/getAsList/getAsSet
-         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * 获取你想访问的元素(一个), 元素类型由expectedElementType指定
+         * @param expectedElementType 你想访问的元素的类型, 如果是Map/List/Set, 请用getAsMap/getAsList/getAsSet
+         * @return 你想访问的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
         public <E> E getAs(Class<E> expectedElementType) throws ElementVisitException {
@@ -776,8 +776,8 @@ public final class ElementVisitor {
         }
 
         /**
-         * 移除你想获取的元素(一个), 需要Map类型
-         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * 移除你想访问的元素(一个), 元素类型为Map
+         * @return 你想访问的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
         public <K, V> Map<K, V> removeAsMap() throws ElementVisitException {
@@ -789,8 +789,8 @@ public final class ElementVisitor {
         }
 
         /**
-         * 移除你想获取的元素(一个), 需要List类型
-         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * 移除你想访问的元素(一个), 元素类型为List
+         * @return 你想访问的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
         public <E> List<E> removeAsList() throws ElementVisitException {
@@ -802,8 +802,8 @@ public final class ElementVisitor {
         }
 
         /**
-         * 移除你想获取的元素(一个), 需要Set类型
-         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * 移除你想访问的元素(一个), 元素类型为Set
+         * @return 你想访问的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
         public <E> Set<E> removeAsSet() throws ElementVisitException {
@@ -815,9 +815,9 @@ public final class ElementVisitor {
         }
 
         /**
-         * 移除你想获取的元素(一个), 需要expectedElementType指定的类型
-         * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用removeAsMap/removeAsList/removeAsSet
-         * @return 你想获取的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
+         * 移除你想访问的元素(一个), 元素类型由expectedElementType指定
+         * @param expectedElementType 你想访问的元素的类型, 如果是Map/List/Set, 请用removeAsMap/removeAsList/removeAsSet
+         * @return 你想访问的元素(一个), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回null;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
         public <E> E removeAs(Class<E> expectedElementType) throws ElementVisitException {
@@ -984,76 +984,92 @@ public final class ElementVisitor {
         }
 
         /**
-         * 获取你想获取的元素(多个, Collection集合), 需要Map类型
-         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * <pre><code>
+         * 获取你想访问的元素(多个,List<Map>), 单个元素的类型为Map
+         * </code></pre>
+         * @return 你想访问的元素(多个,List), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空List;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
-        public <K, V> Collection<Map<K, V>> getAllAsMap() throws ElementVisitException {
+        public <K, V> List<Map<K, V>> getAllAsMap() throws ElementVisitException {
             return _getAllAs(Map.class);
         }
 
         /**
-         * 获取你想获取的元素(多个, Collection集合), 需要List类型
-         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * <pre><code>
+         * 获取你想访问的元素(多个,List<List>), 单个元素的类型为List
+         * </code></pre>
+         * @return 你想访问的元素(多个,List), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空List;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
-        public <E> Collection<List<E>> getAllAsList() throws ElementVisitException {
+        public <E> List<List<E>> getAllAsList() throws ElementVisitException {
             return _getAllAs(List.class);
         }
 
         /**
-         * 获取你想获取的元素(多个, Collection集合), 需要Set类型
-         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * <pre><code>
+         * 获取你想访问的元素(多个,List<Set>), 单个元素的类型为Set
+         * </code></pre>
+         * @return 你想访问的元素(多个,List), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空List;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
-        public <E> Collection<Set<E>> getAllAsSet() throws ElementVisitException {
+        public <E> List<Set<E>> getAllAsSet() throws ElementVisitException {
             return _getAllAs(Set.class);
         }
 
         /**
-         * 获取你想获取的元素(多个, Collection集合), 需要expectedElementType指定的类型
-         * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用getAllAsMap/getAllAsList/getAllAsSet
-         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * <pre><code>
+         * 获取你想访问的元素(多个,List<E>), 单个元素的类型由expectedElementType指定
+         * </code></pre>
+         * @param expectedElementType 你想访问的元素的类型, 如果是Map/List/Set, 请用getAllAsMap/getAllAsList/getAllAsSet
+         * @return 你想访问的元素(多个,List), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空List;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
-        public <E> Collection<E> getAllAs(Class<E> expectedElementType) throws ElementVisitException {
+        public <E> List<E> getAllAs(Class<E> expectedElementType) throws ElementVisitException {
             return _getAllAs(expectedElementType);
         }
 
         /**
-         * 移除你想获取的元素(多个, Collection集合), 需要Map类型
-         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * <pre><code>
+         * 移除你想访问的元素(多个,List<Map>), 单个元素的类型为Map
+         * </code></pre>
+         * @return 你想访问的元素(多个,List), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空List;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
-        public <K, V> Collection<Map<K, V>> removeAllAsMap() throws ElementVisitException {
+        public <K, V> List<Map<K, V>> removeAllAsMap() throws ElementVisitException {
             return _removeAllAs(Map.class);
         }
 
         /**
-         * 移除你想获取的元素(多个, Collection集合), 需要List类型
-         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * <pre><code>
+         * 移除你想访问的元素(多个,List<List>), 单个元素的类型为List
+         * </code></pre>
+         * @return 你想访问的元素(多个,List), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空List;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
-        public <E> Collection<List<E>> removeAllAsList() throws ElementVisitException {
+        public <E> List<List<E>> removeAllAsList() throws ElementVisitException {
             return _removeAllAs(List.class);
         }
 
         /**
-         * 移除你想获取的元素(多个, Collection集合), 需要Set类型
-         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * <pre><code>
+         * 移除你想访问的元素(多个,List<Set>), 单个元素的类型为Set
+         * </code></pre>
+         * @return 你想访问的元素(多个,List), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空List;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
-        public <E> Collection<Set<E>> removeAllAsSet() throws ElementVisitException {
+        public <E> List<Set<E>> removeAllAsSet() throws ElementVisitException {
             return _removeAllAs(Set.class);
         }
 
         /**
-         * 移除你想获取的元素(多个, Collection集合), 需要expectedElementType指定的类型
-         * @param expectedElementType 你想获取的元素的类型, 如果是Map/List/Set, 请用removeAllAsMap/removeAllAsList/removeAllAsSet
-         * @return 你想获取的元素(多个, Collection集合), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空Collection;
+         * <pre><code>
+         * 移除你想访问的元素(多个,List<E>), 单个元素的类型由expectedElementType指定
+         * </code></pre>
+         * @param expectedElementType 你想访问的元素的类型, 如果是Map/List/Set, 请用removeAllAsMap/removeAllAsList/removeAllAsSet
+         * @return 你想访问的元素(多个,List), 默认不为空; 但如果你压制(忽略)了指定异常, 或者自定义ExceptionHandler中未抛出异常, 则可能返回空List;
          * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
          */
-        public <E> Collection<E> removeAllAs(Class<E> expectedElementType) throws ElementVisitException {
+        public <E> List<E> removeAllAs(Class<E> expectedElementType) throws ElementVisitException {
             return _removeAllAs(expectedElementType);
         }
 
@@ -1187,7 +1203,7 @@ public final class ElementVisitor {
         /**
          * 数据无效:
          * 路径中间的元素(parent_element)不是所需的Map或Collection类型.
-         * 你想获取的元素(expected_element)不是指定的类型(你需要的类型).
+         * 你想访问的元素(expected_element)不是指定的类型(你需要的类型).
          */
         DATA_INVALID,
 
@@ -1215,7 +1231,7 @@ public final class ElementVisitor {
          */
         MISSING_PARENT_ELEMENT(ErrorCategory.DATA_MISSING),
         /**
-         * 你想获取的元素(expected_element)为空
+         * 你想访问的元素(expected_element)为空
          */
         MISSING_EXPECTED_ELEMENT(ErrorCategory.DATA_MISSING),
 
@@ -1224,12 +1240,12 @@ public final class ElementVisitor {
          */
         PARENT_ELEMENT_TYPE_MISMATCH(ErrorCategory.DATA_INVALID),
         /**
-         * 你想获取的元素(expected_element)不是指定的类型(你需要的类型).
+         * 你想访问的元素(expected_element)不是指定的类型(你需要的类型).
          */
         EXPECTED_ELEMENT_TYPE_MISMATCH(ErrorCategory.DATA_INVALID),
 
         /**
-         * [createIfAbsent] 创建你想获取的元素(expected_element)失败 (由createIfAbsent方法传入的表达式创建)
+         * [createIfAbsent] 创建你想访问的元素(expected_element)失败 (由createIfAbsent方法传入的表达式创建)
          */
         CREATE_EXPECTED_ELEMENT_FAILED(ErrorCategory.PROGRAMMING_ERROR),
 

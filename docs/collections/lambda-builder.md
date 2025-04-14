@@ -11,6 +11,8 @@
 
 > 文中LambdaBuilder只示范一次, 其他示例均使用LambdaBuildable. 这两种方式本质上一样, 只是一个像工具类一样调用LambdaBuilder静态方法, 一个直接调用接口的方法(不用写LambdaBuilder.).
 
+<br>
+
 ### 假如要组装如下结构的Map
 
 ```
@@ -37,6 +39,8 @@
   }
 }
 ```
+
+<br>
 
 ### 使用LambdaBuilder组装
 
@@ -69,6 +73,8 @@ public class Test {
     }
 }
 ```
+
+<br>
 
 ### 使用LambdaBuildable组装
 
@@ -104,7 +110,9 @@ public class Test implements LambdaBuildable {
 }
 ```
 
-### 源Collection转List/Set
+<br>
+
+### 从源Collection转List/Set
 
 * 如果示例中的列表'Orders'数据源自一个List, 可以简化书写:
 
@@ -151,6 +159,20 @@ public class Test implements LambdaBuildable {
 }
 ```
 
+<br>
+
+### 在方法入参中创建Map
+
+* 在一些特殊场合下, LambdaBuilder/LambdaBuildable可以让你直接在某个方法入参中创建一个简单的map, 免去了new一个的麻烦
+
+```
+    bean.setMap(buildHashMap(m -> {
+        m.put("name", "value");
+    }));
+```
+
+<br>
+
 ### 如何避免引用到错误的Lambda表达式入参?
 
 * 入参命名建议
@@ -186,7 +208,7 @@ public class Test implements LambdaBuildable {
         });
 ```
 
-* 关注IDE`语法高亮`
+* 注意IDE`语法高亮`
 
 > IDE通常有语法高亮显示, 当前方法内的变量, 与外层方法的变量/类变量颜色不同, 注意区分
 

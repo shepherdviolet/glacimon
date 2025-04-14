@@ -1,7 +1,5 @@
 # Map键映射工具 KeyMapTranslator
 
-### Map键映射
-
 * 传入源Map和目的Map
 
 ```

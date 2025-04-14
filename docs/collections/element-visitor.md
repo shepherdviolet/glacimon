@@ -1,8 +1,8 @@
 # 跨层级集合元素访问工具 ElementVisitor
 
-## 基本用法
+# ElementVisitor有什么用?
 
-* 数据(Map)
+* 源数据 (支持Map/List/Set/Collection)
 
 ```
 {
@@ -42,24 +42,82 @@
 }
 ```
 
+* 获取Service
+
+```
+
+```
+
 * 获取所有的OrderName
 
 ```
 
 ```
 
-### 名词解释
+# 名词解释
 
 * **path**: 访问路径: 描述`你想获取的元素`与`根元素`之间的关系
 * * 对应示例代码: `.of(root).child("Body").child("Orders").children().child("Name")`
 * * 等效于JsonPath表达式: `$.Body.Orders[*].Name`
 * **root_element**: 根元素: `ElementVisitor.of(...)`或`ElementVisitable.visitElement(...)`方法的入参
 * **parent_element**: 路径中间的元素: 
-* **expected_element**: 你想获取的元素: 
+* **expected_element**: 你想获取的元素:
 
 <br>
+<br>
 
-## 异常处理
+# 访问元素
+
+## 取值并移除
+
+
+
+<br>
+<br>
+
+## 获取元素
+
+
+
+<br>
+<br>
+
+## 移除元素
+
+
+
+<br>
+<br>
+
+## 遍历:消费元素
+
+
+
+<br>
+<br>
+
+## 遍历:替换元素
+
+
+
+<br>
+<br>
+
+## 遍历:删除元素
+
+
+
+<br>
+<br>
+
+## 自动创建
+
+
+
+<br>
+<br>
+
+# 异常处理
 
 | 异常类别(ErrorCategory) | 异常码(ErrorCode) | 发生原因                                                            |
 | --- | --- |-----------------------------------------------------------------|
@@ -99,36 +157,37 @@
         UNDEFINED_ERROR(ErrorCategory.PROGRAMMING_ERROR),
 
 
-### 压制(忽略)异常
+## 压制(忽略)异常
 
 * 注意: ExceptionHandler将无法接收到被压制(忽略)的异常
 
+<br>
 
-### 替换为自定义异常抛出
+## 替换为其他异常抛出
 
 * 注意: ExceptionHandler无法接收到被压制(忽略)的异常
 * 注意: 默认的ExceptionHandler直接抛出异常
 * 注意: 设置自定义ExceptionHandler以后, 异常是否抛出由你的ExceptionHandler决定
 
+<br>
 
-### 仅打印错误日志
-
-
-
-### 打印错误日志并抛出异常
-
-
-
-### 开发框架抽象类中预设异常处理规则
+## 仅打印错误日志
 
 
 
 <br>
 
-## 自动创建路径
+## 打印错误日志并抛出异常
 
 
 
+<br>
+
+## 开发框架抽象类中预设异常处理规则
+
+
+
+<br>
 <br>
 
 # 同类工具对比:
@@ -138,6 +197,7 @@
 > 请忽略`ElementVisitor`. `ElementVisitor`功能简单, 通过链式书写, 有多少功能靠IDE提示一目了然, 适合简单的场景, 还提供了元素替换, 路径
 > 创建能力.
 
+<br>
 <br>
 
 # 依赖
@@ -161,3 +221,5 @@ dependencies {
         <version>?</version>
     </dependency>
 ```
+
+

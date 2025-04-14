@@ -182,10 +182,10 @@ public final class ElementVisitor {
         }
     }
 
-    private ElementVisitException _buildVisitException(ErrorCode errorCode, Throwable cause, int level, int collectionIndex, String messagePrefix, String messageSuffix) {
+    private ElementVisitException _buildVisitException(ErrorCode errorCode, Throwable cause, 
+                                                       int level, int collectionIndex, String messagePrefix, String messageSuffix, String indicateMessage) {
         StringBuilder pathYouExpectedBuilder = new StringBuilder("root");
         StringBuilder pathErrorOccurredBuilder = new StringBuilder("root");
-        // paths cannot be empty
         if (CheckUtils.notEmpty(paths)) {
             for (int i = 0 ; i < paths.size() ; i++) {
                 Path p = paths.get(i);
@@ -203,28 +203,78 @@ public final class ElementVisitor {
             }
         }
 
-        StringBuilder msgBuilder = new StringBuilder(errorCode.toString())
+        List<String> prettyErrorIndicatorPrefix = new ArrayList<>();
+        List<String> prettyErrorIndicatorSuffix = new ArrayList<>();
+        if (CheckUtils.notEmpty(paths)) {
+            for (int i = 0 ; i < paths.size() ; i++) {
+                Path p = paths.get(i);
+                if (p.parentType == ParentType.MAP) {
+                    prettyErrorIndicatorPrefix.add("{");
+                    if (i == level + 1) {
+                        prettyErrorIndicatorPrefix.add("    <-- " + indicateMessage);
+                    }
+                    prettyErrorIndicatorPrefix.add("\n");
+                    prettyErrorIndicatorSuffix.add("}");
+                    for (int blanks = 1; blanks <= i + 1; blanks++) {
+                        prettyErrorIndicatorPrefix.add("  ");
+                        if (blanks > 1) {
+                            prettyErrorIndicatorSuffix.add("  ");
+                        }
+                    }
+                    prettyErrorIndicatorSuffix.add("\n");
+                    prettyErrorIndicatorPrefix.add(p.key + ": ");
+                } else {
+                    prettyErrorIndicatorPrefix.add("[");
+                    if (i == level + 1) {
+                        prettyErrorIndicatorPrefix.add("    <-- " + indicateMessage);
+                    }
+                    prettyErrorIndicatorPrefix.add("\n");
+                    prettyErrorIndicatorSuffix.add("]");
+                    for (int blanks = 1; blanks <= i + 1; blanks++) {
+                        prettyErrorIndicatorPrefix.add("  ");
+                        if (blanks > 1) {
+                            prettyErrorIndicatorSuffix.add("  ");
+                        }
+                    }
+                    prettyErrorIndicatorSuffix.add("\n");
+                }
+            }
+        }
+        prettyErrorIndicatorPrefix.add("<Expected>");
+        if (level == paths.size() - 1) {
+            prettyErrorIndicatorPrefix.add("    <-- " + indicateMessage);
+        }
+        StringBuilder prettyErrorIndicatorBuilder = new StringBuilder();
+        for (String prefix : prettyErrorIndicatorPrefix) {
+            prettyErrorIndicatorBuilder.append(prefix);
+        }
+        for (int i = prettyErrorIndicatorSuffix.size() - 1; i >= 0; i--) {
+            prettyErrorIndicatorBuilder.append(prettyErrorIndicatorSuffix.get(i));
+        }
+
+        StringBuilder errorMessageBuildler = new StringBuilder(errorCode.toString())
                 .append(": ")
-                .append(messagePrefix)
+                .append(messagePrefix != null ? messagePrefix : "")
                 .append(pathErrorOccurredBuilder)
                 .append(messageSuffix != null ? messageSuffix : "")
-                .append(". (The element you expect: ")
-                .append(pathYouExpectedBuilder)
-                .append(")");
+                .append('\n')
+                .append(prettyErrorIndicatorBuilder);
 
-        ElementVisitException exception = new ElementVisitException(msgBuilder.toString(), cause);
+        ElementVisitException exception = new ElementVisitException(errorMessageBuildler.toString(), cause);
         exception.setErrorCode(errorCode);
         exception.setPathErrorOccurred(pathErrorOccurredBuilder.toString());
         exception.setPathYouExpected(pathYouExpectedBuilder.toString());
+        exception.setPrettyErrorIndicator(prettyErrorIndicatorBuilder.toString());
         return exception;
     }
 
-    private void _handleVisitException(ErrorCode errorCode, Throwable cause, int level, int collectionIndex, String message, String annotation) {
-        if (suppressedErrorCategories.contains(errorCode.getErrorCategory()) || suppressedErrorCodes.contains(errorCode)) {
+    private void _handleVisitException(ErrorCode errorCode, Throwable cause, boolean suppressAll, 
+                                       int level, int collectionIndex, String messagePrefix, String messageSuffix, String indicateMessage) {
+        if (suppressAll || suppressedErrorCategories.contains(errorCode.getErrorCategory()) || suppressedErrorCodes.contains(errorCode)) {
             // suppress error
             return;
         }
-        ElementVisitException exception = _buildVisitException(errorCode, cause, level, collectionIndex, message, annotation);
+        ElementVisitException exception = _buildVisitException(errorCode, cause, level, collectionIndex, messagePrefix, messageSuffix, indicateMessage);
         exceptionHandler.accept(exception);
     }
 
@@ -255,32 +305,38 @@ public final class ElementVisitor {
         return element;
     }
 
-    private void _visitRoot(Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode) {
+    private void _visitRoot(Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode, boolean suppressAll) {
         if (root == null) {
-            _handleVisitException(ErrorCode.MISSING_ROOT_ELEMENT, null, -1, -1, "The '", "' element is null");
+            _handleVisitException(ErrorCode.MISSING_ROOT_ELEMENT, null, suppressAll, -1, -1, "The '", "' element is null", "Null");
             return;
         }
         if (CheckUtils.isEmpty(paths)) {
             // Imposable! The reason is that if the ElementVisitor does not call the child or children method, it cannot "retrieve" elements—and without retrieving elements, it is impossible to reach this part of the code.
             throw new IllegalStateException("paths is empty");
         }
-        _visitNonRoot(root, 0, expectedElementType, elementHandler, replaceMode, deleteMode);
+        _visitNonRoot(root, 0, expectedElementType, elementHandler, replaceMode, deleteMode, suppressAll);
     }
 
-    private void _visitNonRoot(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode) {
+    private void _visitNonRoot(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode, boolean suppressAll) {
         if (paths.get(level).parentType == ParentType.MAP) {
-            _visitNonRoot_map(parentElement, level, expectedElementType, elementHandler, replaceMode, deleteMode);
+            _visitNonRoot_map(parentElement, level, expectedElementType, elementHandler, replaceMode, deleteMode, suppressAll);
         } else {
-            _visitNonRoot_collection(parentElement, level, expectedElementType, elementHandler, replaceMode, deleteMode);
+            _visitNonRoot_collection(parentElement, level, expectedElementType, elementHandler, replaceMode, deleteMode, suppressAll);
         }
     }
 
-    private void _visitNonRoot_map(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode) {
+    private void _visitNonRoot_map(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode, boolean suppressAll) {
         Path path = paths.get(level);
         if (!(parentElement instanceof Map)) {
-            _handleVisitException(ErrorCode.PARENT_ELEMENT_TYPE_MISMATCH, null, level - 1, -1,
-                    "Parent element '", "' is not an instance of Map (it's " + parentElement.getClass().getName() +
-                    "), unable to get child '" + path.key + "' from it");
+            if (level == 0) {
+                _handleVisitException(ErrorCode.ROOT_ELEMENT_TYPE_MISMATCH, null, suppressAll, level - 1, -1,
+                        "Root element '", "' is not an instance of Map (it's " + parentElement.getClass().getName() +
+                                "), unable to get child '" + path.key + "' from it", "Not Map");
+            } else {
+                _handleVisitException(ErrorCode.PARENT_ELEMENT_TYPE_MISMATCH, null, suppressAll, level - 1, -1,
+                        "Parent element '", "' is not an instance of Map (it's " + parentElement.getClass().getName() +
+                                "), unable to get child '" + path.key + "' from it", "Not Map");
+            }
             return;
         }
 
@@ -292,21 +348,21 @@ public final class ElementVisitor {
             try {
                 element = _tryCreateExpectedElementIfAbsent(element, (Map) parentElement, path.key);
             } catch (Throwable t) {
-                _handleVisitException(ErrorCode.CREATE_EXPECTED_ELEMENT_FAILED, t, level, -1,
+                _handleVisitException(ErrorCode.CREATE_EXPECTED_ELEMENT_FAILED, t, suppressAll, level, -1,
                         "Failed to create expected element '",
-                        "' from 'Supplier'. The 'Supplier' was set via the createIfAbsent(Supplier) method");
+                        "' from 'Supplier'. The 'Supplier' was set via the createIfAbsent(Supplier) method", "Create Failed");
                 return;
             }
             if (element == null) {
-                _handleVisitException(ErrorCode.MISSING_EXPECTED_ELEMENT, null, level, -1,
-                        "Expected element '", "' does not exist");
+                _handleVisitException(ErrorCode.MISSING_EXPECTED_ELEMENT, null, suppressAll, level, -1,
+                        "Expected element '", "' does not exist", "Not Exist");
                 return;
             }
             if (expectedElementType != null) {
                 if (!expectedElementType.isAssignableFrom(element.getClass())) {
-                    _handleVisitException(ErrorCode.EXPECTED_ELEMENT_TYPE_MISMATCH, null, level, -1,
+                    _handleVisitException(ErrorCode.EXPECTED_ELEMENT_TYPE_MISMATCH, null, suppressAll, level, -1,
                             "Expected element '", "' does not match the type you expected '" +
-                                    expectedElementType.getName() + "', it's " + element.getClass().getName());
+                                    expectedElementType.getName() + "', it's " + element.getClass().getName(), "Not " + expectedElementType.getSimpleName());
                     return;
                 }
             }
@@ -330,23 +386,29 @@ public final class ElementVisitor {
 
             element = _tryCreateParentElementIfAbsent(element, (Map) parentElement, path.key);
             if (element == null) {
-                _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, level, -1,
-                        "Parent element '", "' does not exist, can not get child or children from it");
+                _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, suppressAll, level, -1,
+                        "Parent element '", "' does not exist, can not get child or children from it", "Not Exist");
                 return;
             }
 
             // visit next path
-            _visitNonRoot(element, level + 1, expectedElementType, elementHandler, replaceMode, deleteMode);
+            _visitNonRoot(element, level + 1, expectedElementType, elementHandler, replaceMode, deleteMode, suppressAll);
 
         }
     }
 
-    private void _visitNonRoot_collection(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode) {
+    private void _visitNonRoot_collection(Object parentElement, int level, Class expectedElementType, Function elementHandler, boolean replaceMode, boolean deleteMode, boolean suppressAll) {
         Path path = paths.get(level);
         if (!(parentElement instanceof Collection)) {
-            _handleVisitException(ErrorCode.PARENT_ELEMENT_TYPE_MISMATCH, null, level - 1, -1,
-                    "Parent element '", "' is not an instance of Collection (it's " + parentElement.getClass().getName() +
-                            "), unable to get children from it");
+            if (level == 0) {
+                _handleVisitException(ErrorCode.ROOT_ELEMENT_TYPE_MISMATCH, null, suppressAll, level - 1, -1,
+                        "Root element '", "' is not an instance of Collection (it's " + parentElement.getClass().getName() +
+                                "), unable to get children from it", "Not Collection");
+            } else {
+                _handleVisitException(ErrorCode.PARENT_ELEMENT_TYPE_MISMATCH, null, suppressAll, level - 1, -1,
+                        "Parent element '", "' is not an instance of Collection (it's " + parentElement.getClass().getName() +
+                                "), unable to get children from it", "Not Collection");
+            }
             return;
         }
 
@@ -356,8 +418,8 @@ public final class ElementVisitor {
             // expected element
 
             if (elements.isEmpty()) {
-                _handleVisitException(ErrorCode.MISSING_EXPECTED_ELEMENT, null, level, -1,
-                        "Expected element '", "' does not exist");
+                _handleVisitException(ErrorCode.MISSING_EXPECTED_ELEMENT, null, suppressAll, level, -1,
+                        "Expected element '", "' does not exist", "Not Exist");
                 return;
             }
 
@@ -369,9 +431,9 @@ public final class ElementVisitor {
 
                 if (expectedElementType != null && element != null) {
                     if (!expectedElementType.isAssignableFrom(element.getClass())) {
-                        _handleVisitException(ErrorCode.EXPECTED_ELEMENT_TYPE_MISMATCH, null, level, i,
+                        _handleVisitException(ErrorCode.EXPECTED_ELEMENT_TYPE_MISMATCH, null, suppressAll, level, i,
                                 "Expected element '", "' does not match the type you expected '" +
-                                        expectedElementType.getName() + "', it's " + element.getClass());
+                                        expectedElementType.getName() + "', it's " + element.getClass(), "Not " + expectedElementType.getSimpleName());
                         continue;
                     }
                 }
@@ -410,8 +472,8 @@ public final class ElementVisitor {
             // parent element
 
             if (elements.isEmpty()) {
-                _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, level, -1,
-                        "Parent element '", "' does not exist, can not get child or children from it");
+                _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, suppressAll, level, -1,
+                        "Parent element '", "' does not exist, can not get child or children from it", "Not Exist (Parent Collection is empty)");
                 return;
             }
 
@@ -420,13 +482,13 @@ public final class ElementVisitor {
                 i++;
 
                 if (element == null) {
-                    _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, level, i,
-                            "Parent element '", "' is null, can not get child or children from it");
+                    _handleVisitException(ErrorCode.MISSING_PARENT_ELEMENT, null, suppressAll, level, i,
+                            "Parent element '", "' is null, can not get child or children from it", "Null");
                     continue;
                 }
 
                 // visit next path
-                _visitNonRoot(element, level + 1, expectedElementType, elementHandler, replaceMode, deleteMode);
+                _visitNonRoot(element, level + 1, expectedElementType, elementHandler, replaceMode, deleteMode, suppressAll);
 
             }
 
@@ -438,16 +500,16 @@ public final class ElementVisitor {
         _visitRoot(expectedElementType, e -> {
             elementConsumer.accept(e);
             return e;
-        }, false, false);
+        }, false, false, false);
     }
 
     private void _forEach_replaceAs(Class expectedElementType, Function elementReplacer) {
         _checkElementReplacer(elementReplacer);
-        _visitRoot(expectedElementType, elementReplacer, true, false);
+        _visitRoot(expectedElementType, elementReplacer, true, false, false);
     }
 
     private void _forEach_delete() {
-        _visitRoot(null, e -> e, false, true);
+        _visitRoot(null, e -> e, false, true, true);
     }
 
     private List _getAllAs(Class expectedElementType) {
@@ -455,7 +517,7 @@ public final class ElementVisitor {
         _visitRoot(expectedElementType, e -> {
             result.add(e);
             return e;
-        }, false, false);
+        }, false, false, false);
         return result;
     }
 
@@ -464,7 +526,7 @@ public final class ElementVisitor {
         _visitRoot(expectedElementType, e -> {
             result.add(e);
             return e;
-        }, false, true);
+        }, false, true, false);
         return result;
     }
 
@@ -633,10 +695,9 @@ public final class ElementVisitor {
             }
 
             /**
-             * 删除所有你想获得的元素
-             * @throws ElementVisitException 元素访问异常, 如果异常被压制(忽略), 或者自定义ExceptionHandler中未抛出, 这里就不会抛出ElementVisitException了
+             * 删除所有你想获得的元素, 该方法不会抛出ElementVisitException
              */
-            public void delete() throws ElementVisitException {
+            public void delete() {
                 _forEach_delete();
             }
 
@@ -1202,7 +1263,7 @@ public final class ElementVisitor {
 
         /**
          * 数据无效:
-         * 路径中间的元素(parent_element)不是所需的Map或Collection类型.
+         * 路径中间元素(parent_element)不是所需的Map或Collection类型.
          * 你想访问的元素(expected_element)不是指定的类型(你需要的类型).
          */
         DATA_INVALID,
@@ -1227,7 +1288,7 @@ public final class ElementVisitor {
          */
         MISSING_ROOT_ELEMENT(ErrorCategory.DATA_MISSING),
         /**
-         * 路径中间的元素(parent_element)为空
+         * 路径中间元素(parent_element)为空
          */
         MISSING_PARENT_ELEMENT(ErrorCategory.DATA_MISSING),
         /**
@@ -1236,7 +1297,11 @@ public final class ElementVisitor {
         MISSING_EXPECTED_ELEMENT(ErrorCategory.DATA_MISSING),
 
         /**
-         * 路径中间的元素(parent_element)不是所需的Map或Collection类型.
+         * 根元素(root_element)不是所需的Map或Collection类型.
+         */
+        ROOT_ELEMENT_TYPE_MISMATCH(ErrorCategory.DATA_INVALID),
+        /**
+         * 路径中间元素(parent_element)不是所需的Map或Collection类型.
          */
         PARENT_ELEMENT_TYPE_MISMATCH(ErrorCategory.DATA_INVALID),
         /**
@@ -1283,6 +1348,7 @@ public final class ElementVisitor {
         private ErrorCode errorCode;
         private String pathErrorOccurred;
         private String pathYouExpected;
+        private String prettyErrorIndicator;
 
         public ElementVisitException() {
         }
@@ -1323,6 +1389,14 @@ public final class ElementVisitor {
             this.pathYouExpected = pathYouExpected;
         }
 
+        public String getPrettyErrorIndicator() {
+            return prettyErrorIndicator;
+        }
+
+        public void setPrettyErrorIndicator(String prettyErrorIndicator) {
+            this.prettyErrorIndicator = prettyErrorIndicator;
+        }
+        
     }
 
 }

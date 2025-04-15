@@ -48,10 +48,10 @@
 
 #### [Collections utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections)
 
-* [LambdaBuilder : Create Map/Set/Object/List with Lambda Expression](https://github.com/shepherdviolet/glacimon/blob/master/docs/collecions/guide.md)
-* [StreamingBuilder : Create Map/Set/Object/List in stream style](https://github.com/shepherdviolet/glacimon/blob/master/docs/collecions/guide.md)
-* [ElementVisitor : Get element from collections in easy way, collection multi-layer acquisition/traversal/replacement tool](https://github.com/shepherdviolet/glacimon/blob/master/docs/collecions/guide.md)
-* [MapKeyTranslator : Map to Map key mapping](https://github.com/shepherdviolet/glacimon/blob/master/docs/collecions/guide.md)
+* [LambdaBuilder : Create Map/Set/Object/List with Lambda Expression](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/guide.md)
+* [StreamingBuilder : Create Map/Set/Object/List in stream style](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/guide.md)
+* [ElementVisitor : Get element from collections in easy way, collection multi-layer acquisition/traversal/replacement tool](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/guide.md)
+* [MapKeyTranslator : Map to Map key mapping](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/guide.md)
 
 #### [Conversion utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/conversion)
 

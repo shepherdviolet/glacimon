@@ -825,7 +825,13 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         long passiveBlockDuration = request.passiveBlockDuration >= 0 ? request.passiveBlockDuration : settings.passiveBlockDuration;
         try {
             //同步请求
-            Response response = getOkHttpClient().newCall(okRequest).execute();
+            Call call;
+            try {
+                call = getOkHttpClient().newCall(okRequest);
+            } catch (Throwable t) {
+                throw new RequestBuildException("Error while building request", t);
+            }
+            Response response = call.execute();
             printResponseCodeLog(request, response);
             //Http拒绝
             if (!isSucceed(response)) {
@@ -845,10 +851,11 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                 }
             }
             if (t instanceof  IOException ||
-                    t instanceof HttpRejectException) {
+                    t instanceof HttpRejectException ||
+                    t instanceof RequestBuildException) {
                 throw t;
             } else {
-                throw new RequestBuildException("Error while request build ?", t);
+                throw new IOException("Error while requesting", t);
             }
         } finally {
             //反馈健康状态
@@ -984,7 +991,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                 }
             });
         } catch (Exception t) {
-            callback.onErrorBeforeSend(new RequestBuildException("Error while request build ?", t));
+            callback.onErrorBeforeSend(new RequestBuildException("Error while building request", t));
         }
     }
 

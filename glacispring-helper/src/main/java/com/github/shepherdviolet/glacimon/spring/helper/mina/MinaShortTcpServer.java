@@ -47,9 +47,25 @@ public class MinaShortTcpServer implements InitializingBean, DisposableBean, Aut
         this.corePoolSize = corePoolSize;
         this.maxPoolSize = maxPoolSize;
         this.processor = processor;
+
+        if (port < 1024 || port > 65535) {
+            throw new IllegalArgumentException("port must be between 1024 and 65535");
+        }
+        if (corePoolSize < 0 || corePoolSize > maxPoolSize) {
+            throw new IllegalArgumentException("corePoolSize must be >= 0 and <= maxPoolSize");
+        }
+        if (maxPoolSize < 1 || maxPoolSize > 4000) {
+            throw new IllegalArgumentException("maxPoolSize must be between 1 and 4000");
+        }
+        if (processor == null) {
+            throw new IllegalArgumentException("processor must not be null");
+        }
     }
 
     public void setGracefulShutdownTimeout(long gracefulShutdownTimeout) {
+        if (gracefulShutdownTimeout < 0) {
+            throw new IllegalArgumentException("gracefulShutdownTimeout must be >= 0");
+        }
         this.gracefulShutdownTimeout = gracefulShutdownTimeout;
     }
 

@@ -174,6 +174,10 @@ public class MinaShortTcpServer implements InitializingBean, DisposableBean, Aut
         logger.info("MinaShortTcpServer(" + port + "): Shutdown complete.");
     }
 
+    public int inflightRequests() {
+        return inFlightRequests.get();
+    }
+
     /**
      * 业务处理器接口：实现自己的业务流程
      */

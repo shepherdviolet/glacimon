@@ -84,7 +84,8 @@ public class MinaShortTcpServer implements InitializingBean, DisposableBean, Aut
                     acceptor.setHandler(new ByteArrayAdapter());
                     // 绑定端口开始监听
                     acceptor.bind(new InetSocketAddress(port));
-                    logger.info("MinaShortTcpServer started on port " + port);
+                    logger.info("MinaShortTcpServer started on port '" + port + "', corePoolSize '" + corePoolSize +
+                            "', maxPoolSize '" + maxPoolSize + "', gracefulShutdownTimeout '" + gracefulShutdownTimeout + "'");
                 }
             }
         }

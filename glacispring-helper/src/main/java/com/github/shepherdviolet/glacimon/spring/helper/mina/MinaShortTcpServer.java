@@ -12,16 +12,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 基于 Apache MINA 实现的高性能 TCP 双工短连接服务端
  */
-@Component
 public class MinaShortTcpServer implements InitializingBean, DisposableBean, AutoCloseable {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -101,7 +100,7 @@ public class MinaShortTcpServer implements InitializingBean, DisposableBean, Aut
                     try {
                         byte[] request = new byte[((IoBuffer) message).remaining()];
                         ((IoBuffer) message).get(request);
-                        byte[] response = processor.process(request);
+                        byte[] response = processor.process(request, session.getRemoteAddress());
                         WriteFuture writeFuture = session.write(IoBuffer.wrap(response));
                         writeFuture.addListener(f -> {
                             session.closeOnFlush();
@@ -200,7 +199,7 @@ public class MinaShortTcpServer implements InitializingBean, DisposableBean, Aut
      */
     public interface Processor {
 
-        byte[] process(byte[] request) throws Exception;
+        byte[] process(byte[] request, SocketAddress remoteAddr) throws Exception;
 
     }
 

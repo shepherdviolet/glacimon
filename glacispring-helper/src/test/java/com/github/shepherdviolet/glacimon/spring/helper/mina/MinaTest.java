@@ -1,12 +1,16 @@
 package com.github.shepherdviolet.glacimon.spring.helper.mina;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+
 public class MinaTest {
 
     public static void main(String[] args) throws Exception {
 
         MinaShortTcpServer server = new MinaShortTcpServer(1990, 0, 10, new MinaShortTcpServer.Processor() {
             @Override
-            public byte[] process(byte[] request) throws Exception {
+            public byte[] process(byte[] request, SocketAddress remoteAddr) throws Exception {
+                System.out.println("Downstream addr: " + ((InetSocketAddress) remoteAddr).getHostString());
                 System.out.println("Received: " + new String(request));
                 return "WORLD".getBytes();
             }

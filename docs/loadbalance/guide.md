@@ -3,6 +3,7 @@
 * [Source Code](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-httpclient/src/main/java/com/github/shepherdviolet/glacimon/spring/x/net/loadbalance)
 * 支持客户端负载均衡, 可配置多个后端地址, 平均分配流量 (Round-Robin)
 * 支持被动/主动方式探测后端是否可用, 优先请求可用的后端
+* 支持Apollo配置动态调整 (无需重启应用即可生效)
 
 # 设计思路
 

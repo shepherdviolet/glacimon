@@ -107,17 +107,17 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    //日志:实际请求的URL(不带参数)
+    //日志:实际请求URL(请求组装成功后打印)
     public static final int LOG_CONFIG_REAL_URL = 0x00000001;
     //日志:阻断日志
     public static final int LOG_CONFIG_BLOCK = 0x00000010;
-    //日志:请求报文体(最高可读性)
-    public static final int LOG_CONFIG_REQUEST_STRING_BODY = 0x00000100;
+    //日志:请求/响应报文体: 支持"byte[]/Bean/表单"请求, 支持"byte[]/Bean"响应, 不支持"RequestBody"请求, 不支持"InputStream/ResponsePackage"响应
+    public static final int LOG_CONFIG_PAYLOAD = 0x00000100;
     //日志:响应码
     public static final int LOG_CONFIG_RESPONSE_CODE = 0x00001000;
-    //日志:请求URL(带参数, 且参数未转码)
+    //日志:原始请求URL(请求组装失败时打印)
     public static final int LOG_CONFIG_RAW_URL = 0x00010000;
-    //日志:输入参数(默认关)
+    //日志:输入参数 (默认关)
     public static final int LOG_CONFIG_REQUEST_INPUTS = 0x00100000;
 
     //日志:全开
@@ -127,7 +127,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     //日志:默认
     public static final int LOG_CONFIG_DEFAULT = LOG_CONFIG_REAL_URL |
             LOG_CONFIG_BLOCK |
-            LOG_CONFIG_REQUEST_STRING_BODY |
+            LOG_CONFIG_PAYLOAD |
             LOG_CONFIG_RESPONSE_CODE |
             LOG_CONFIG_RAW_URL;
 
@@ -534,10 +534,10 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             NoRefTxTimer txTimer = client.txTimer;
             if (txTimer != null) {
                 try (TimerContext timerContext = txTimer.entry(TXTIMER_GROUP_SEND + client.settings.tag, urlSuffix)) {
-                    return client.responseToBytes(client.requestSend(this));
+                    return client.responseToBytes(client.requestSend(this), this);
                 }
             } else {
-                return client.responseToBytes(client.requestSend(this));
+                return client.responseToBytes(client.requestSend(this), this);
             }
         }
 
@@ -720,7 +720,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             }
             throw new RequestConvertException("No DataConverter set, you must set dataConverter before sendForBean()");
         }
-        byte[] responseData = responseToBytes(responsePackage);
+        byte[] responseData = responseToBytes(responsePackage, request);
+        printResponseBodyLog(request, responseData);
         try {
             return dataConverter.convert(responseData, type);
         } catch (Exception e) {
@@ -728,7 +729,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         }
     }
 
-    private byte[] responseToBytes(ResponsePackage responsePackage) throws NoHostException, RequestBuildException, IOException, HttpRejectException {
+    private byte[] responseToBytes(ResponsePackage responsePackage, Request request) throws NoHostException, RequestBuildException, IOException, HttpRejectException {
         //返回空
         if (responsePackage == null || responsePackage.body() == null) {
             return null;
@@ -739,7 +740,9 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                 throw new IOException("Response contentLength is out of limit, contentLength:" + responsePackage.body().contentLength() + ", limit:" + settings.maxReadLength);
             }
             //返回二进制数据
-            return responsePackage.body().bytes();
+            byte[] responseData = responsePackage.body().bytes();
+            printResponseBodyLog(request, responseData);
+            return responseData;
         } finally {
             //返回byte[]类型时自动关闭
             try {
@@ -771,22 +774,21 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         LoadBalancedHostManager.Host host = fetchHost();
 
         printPostInputsLog(request, host);
-        printUrlLog(request, host);
 
         //装配Request
         okhttp3.Request okRequest;
         try {
             okRequest = buildPostRequest(host.getUrl(), request, settings);
         } catch (Throwable t) {
+            printRawUrlLog(request, host);
             throw new RequestBuildException("Error while building request", t);
         }
         if (okRequest == null) {
+            printRawUrlLog(request, host);
             throw new RequestBuildException("Null request built");
         }
 
-        if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
-            logger.info(genLogPrefix(settings.tag, request) + "POST: real-url:" + okRequest.url());
-        }
+        printRealUrlLog(request, okRequest);
 
         //请求
         return syncCall(host, okRequest, request);
@@ -797,22 +799,21 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         LoadBalancedHostManager.Host host = fetchHost();
 
         printGetInputsLog(request, host);
-        printUrlLog(request, host);
 
         //装配Request
         okhttp3.Request okRequest;
         try {
             okRequest = buildGetRequest(host.getUrl(), request, settings);
         } catch (Throwable t) {
+            printRawUrlLog(request, host);
             throw new RequestBuildException("Error while building request", t);
         }
         if (okRequest == null) {
+            printRawUrlLog(request, host);
             throw new RequestBuildException("Null request built");
         }
 
-        if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
-            logger.info(genLogPrefix(settings.tag, request) + "GET: real-url:" + okRequest.url());
-        }
+        printRealUrlLog(request, okRequest);
 
         //请求
         return syncCall(host, okRequest, request);
@@ -880,22 +881,21 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             LoadBalancedHostManager.Host host = fetchHost();
 
             printPostInputsLog(request, host);
-            printUrlLog(request, host);
 
             //装配Request
             okhttp3.Request okRequest;
             try {
                 okRequest = buildPostRequest(host.getUrl(), request, settings);
             } catch (Throwable t) {
+                printRawUrlLog(request, host);
                 throw new RequestBuildException("Error while building request", t);
             }
             if (okRequest == null) {
+                printRawUrlLog(request, host);
                 throw new RequestBuildException("Null request built");
             }
 
-            if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
-                logger.info(genLogPrefix(settings.tag, request) + "POST: real-url:" + okRequest.url());
-            }
+            printRealUrlLog(request, okRequest);
 
             //请求
             asyncCall(host, okRequest, request, callback);
@@ -913,22 +913,21 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             LoadBalancedHostManager.Host host = fetchHost();
 
             printGetInputsLog(request, host);
-            printUrlLog(request, host);
 
             //装配Request
             okhttp3.Request okRequest;
             try {
                 okRequest = buildGetRequest(host.getUrl(), request, settings);
             } catch (Throwable t) {
+                printRawUrlLog(request, host);
                 throw new RequestBuildException("Error while building request", t);
             }
             if (okRequest == null) {
+                printRawUrlLog(request, host);
                 throw new RequestBuildException("Null request built");
             }
 
-            if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
-                logger.info(genLogPrefix(settings.tag, request) + "GET: real-url:" + okRequest.url());
-            }
+            printRealUrlLog(request, okRequest);
 
             //请求
             asyncCall(host, okRequest, request, callback);
@@ -1147,11 +1146,11 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         RequestBody requestBody;
         if (request.body != null) {
             //bytes
-            printPostStringBodyLog(request, null);
+            printPostRequestBodyLog(request, null);
             requestBody = RequestBody.create(getMediaType(request, settings, null), request.body);
         } else if (request.formBody != null) {
             //form
-            printPostStringBodyLog(request, null);
+            printPostRequestBodyLog(request, null);
             FormBody.Builder formBuilder = new FormBody.Builder();
             for (Map.Entry<String, Object> param : request.formBody.entrySet()) {
                 try {
@@ -1174,11 +1173,11 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             } catch (Exception e) {
                 throw new RequestConvertException("Error while convert bean to byte[]", e);
             }
-            printPostStringBodyLog(request, requestBodyBytes);
+            printPostRequestBodyLog(request, requestBodyBytes);
             requestBody = RequestBody.create(getMediaType(request, settings, null), requestBodyBytes);
         } else if (request.customBody != null) {
             //custom
-            printPostStringBodyLog(request, null);
+            printPostRequestBodyLog(request, null);
             requestBody = request.customBody;
         }else {
             //null
@@ -1317,53 +1316,27 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
         String bodyLog;
         if (request.body != null) {
-            bodyLog = ", body(hex):" + ByteUtils.bytesToHex(request.body);
+            bodyLog = ", body(hex): " + ByteUtils.bytesToHex(request.body);
         } else if (request.formBody != null) {
-            bodyLog = ", formBody:" + request.formBody;
+            bodyLog = ", formBody: " + request.formBody;
         } else if (request.beanBody != null) {
-            bodyLog = ", beanBody:" + request.beanBody;
+            bodyLog = ", beanBody: " + request.beanBody;
         } else if (request.customBody != null) {
-            bodyLog = ", customBody:" + request.customBody;
+            bodyLog = ", customBody: " + request.customBody;
         } else {
             bodyLog = ", body: null";
         }
-        logger.info(genLogPrefix(settings.tag, request) + "POST: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams + bodyLog);
-    }
-
-    private void printPostStringBodyLog(Request request, byte[] parsedData) {
-        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_STRING_BODY)){
-            return;
-        }
-
-        if (request.body != null) {
-            try {
-                logger.info(genLogPrefix(settings.tag, request) + "POST: string-body:" + new String(request.body, settings.encode));
-            } catch (Exception e) {
-                logger.warn(genLogPrefix(settings.tag, request) + "Error while printing string body", e);
-            }
-        } else if (request.formBody != null) {
-            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body(form):" + request.formBody);
-        } else if (request.beanBody != null && parsedData != null) {
-            try {
-                logger.info(genLogPrefix(settings.tag, request) + "POST: string-body(bean):" + new String(parsedData, settings.encode));
-            } catch (Exception e) {
-                logger.warn(genLogPrefix(settings.tag, request) + "Error while printing string body", e);
-            }
-        } else if (request.customBody != null) {
-            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body: multipart data can not be print");
-        } else {
-            logger.info(genLogPrefix(settings.tag, request) + "POST: string-body: null");
-        }
+        logger.info(genLogPrefix(settings.tag, request) + "POST: url: " + host.getUrl() + ", suffix: " + request.urlSuffix + ", urlParams: " + request.urlParams + bodyLog);
     }
 
     private void printGetInputsLog(Request request, LoadBalancedHostManager.Host host) {
         if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
             return;
         }
-        logger.info(genLogPrefix(settings.tag, request) + "GET: url:" + host.getUrl() + ", suffix:" + request.urlSuffix + ", urlParams:" + request.urlParams);
+        logger.info(genLogPrefix(settings.tag, request) + "GET: url: " + host.getUrl() + ", suffix: " + request.urlSuffix + ", urlParams: " + request.urlParams);
     }
 
-    private void printUrlLog(Request request, LoadBalancedHostManager.Host host) {
+    private void printRawUrlLog(Request request, LoadBalancedHostManager.Host host) {
         if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RAW_URL)) {
             return;
         }
@@ -1385,11 +1358,55 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         logger.info(genLogPrefix(settings.tag, request) + stringBuilder);
     }
 
+    private void printRealUrlLog(Request request, okhttp3.Request okRequest) {
+        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
+            return;
+        }
+        logger.info(genLogPrefix(settings.tag, request) + "real-url: " + okRequest.url());
+    }
+
+    private void printPostRequestBodyLog(Request request, byte[] parsedData) {
+        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_PAYLOAD)){
+            return;
+        }
+
+        if (request.body != null) {
+            try {
+                logger.info(genLogPrefix(settings.tag, request) + "Request: body: " + new String(request.body, settings.encode));
+            } catch (Exception e) {
+                logger.warn(genLogPrefix(settings.tag, request) + "Error while printing request body", e);
+            }
+        } else if (request.formBody != null) {
+            logger.info(genLogPrefix(settings.tag, request) + "Request: body(form): " + request.formBody);
+        } else if (request.beanBody != null && parsedData != null) {
+            try {
+                logger.info(genLogPrefix(settings.tag, request) + "Request: body(bean): " + new String(parsedData, settings.encode));
+            } catch (Exception e) {
+                logger.warn(genLogPrefix(settings.tag, request) + "Error while printing request body", e);
+            }
+        } else if (request.customBody != null) {
+            logger.info(genLogPrefix(settings.tag, request) + "Request: body: multipart data can not be print");
+        } else {
+            logger.info(genLogPrefix(settings.tag, request) + "Request: body: null");
+        }
+    }
+
     private void printResponseCodeLog(Request request, Response response) {
         if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RESPONSE_CODE)) {
             return;
         }
-        logger.info(genLogPrefix(settings.tag, request) + "Response: code:" + response.code() + ", message:" + response.message());
+        logger.info(genLogPrefix(settings.tag, request) + "Response: code: " + response.code() + ", message: " + response.message());
+    }
+
+    private void printResponseBodyLog(Request request, byte[] responseData) {
+        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_PAYLOAD)){
+            return;
+        }
+        try {
+            logger.info(genLogPrefix(settings.tag, request) + "Response: body: " + new String(responseData, settings.encode));
+        } catch (Exception e) {
+            logger.warn(genLogPrefix(settings.tag, request) + "Error while printing response body", e);
+        }
     }
 
     private String genLogPrefix(String tag, Request request){
@@ -1603,6 +1620,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
      */
     public static abstract class BytesCallback extends ResponsePackageCallback {
 
+        private Request request;
         private Settings settings;
 
         /**
@@ -1623,9 +1641,12 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                     }
                     //返回二进制数据
                     bytes = responsePackage.body().bytes();
+                    printResponseBodyLog(bytes);
                 }
             } catch (IOException e) {
-                onErrorAfterSend(e);
+                try {
+                    onErrorAfterSend(e);
+                } catch (Exception ignore) {}
                 return;
             } finally {
                 //byte[]类型返回时, 强制关闭(无论autoClose是什么配置)
@@ -1641,7 +1662,25 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
         @Override
         void setContext(Settings settings, Request request) {
+            this.request = request;
             this.settings = settings;
+        }
+
+        protected void printResponseBodyLog(byte[] responseData) {
+            if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_PAYLOAD)){
+                return;
+            }
+            String logPrefix;
+            if (request.requestId == Integer.MAX_VALUE) {
+                logPrefix = settings.tag;
+            } else {
+                logPrefix = settings.tag + request.requestId + " ";
+            }
+            try {
+                logger.info(logPrefix + "Response: body: " + new String(responseData, settings.encode));
+            } catch (Exception e) {
+                logger.warn(logPrefix + "Error while printing response body", e);
+            }
         }
 
     }
@@ -1717,31 +1756,40 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         @SuppressWarnings("unchecked")
         @Override
         public final void onSucceed(byte[] body) throws Exception {
-            DataConverter dataConverter = request.dataConverter != null ? request.dataConverter : settings.dataConverter;
-            if (dataConverter == null) {
-                throw new ResponseConvertException("No DataConverter set, you must set dataConverter before enqueue a beanBody");
+            T responseBean;
+            try {
+                DataConverter dataConverter = request.dataConverter != null ? request.dataConverter : settings.dataConverter;
+                if (dataConverter == null) {
+                    throw new ResponseConvertException("No DataConverter set, you must set dataConverter before enqueue a beanBody");
+                }
+                //当前类的父类(BeanCallback实现类的父类), 即GlaciHttpClient$BeanCallback
+                Type superType = getClass().getGenericSuperclass();
+                if (!(superType instanceof ParameterizedType)) {
+                    //GlaciHttpClient$BeanCallback有泛型, 因此这里的superType必然是ParameterizedType实例
+                    //P.S.泛型类的实现类getGenericSuperclass返回ParameterizedType实例
+                    //P.S.非泛型类的实现类getGenericSuperclass返回Class实例
+                    throw new IllegalStateException("FATAL: superType is not an instance of ParameterizedType!");
+                }
+                //获取第0个泛型类型, 即T的实际类型
+                Type generic0Type = ((ParameterizedType)superType).getActualTypeArguments()[0];
+                //P.S.在getActualTypeArguments返回的类型数组中, 泛型类是ParameterizedType实例, 非泛型类是Class实例
+                if (generic0Type instanceof ParameterizedType) {
+                    //如果第0个泛型类型(T的实际类型)是泛型类, 则generic0Type是ParameterizedType实例
+                    //使用getRawType方法取原始类型用于类型转换
+                    //例如T为Map<String, Object>时, 只取Map类型
+                    responseBean = dataConverter.convert(body, (Class<T>) ((ParameterizedType) generic0Type).getRawType());
+                } else {
+                    //如果第0个泛型类型(T的实际类型)不是泛型类, 则generic0Type是Class实例, 直接转为Class<T>即可
+                    //例如T类Map时, 直接类型转换为Class<Map>即可
+                    responseBean = dataConverter.convert(body, (Class<T>) generic0Type);
+                }
+            } catch (Exception e) {
+                try {
+                    onErrorAfterSend(e);
+                } catch (Throwable ignore) {}
+                return;
             }
-            //当前类的父类(BeanCallback实现类的父类), 即GlaciHttpClient$BeanCallback
-            Type superType = getClass().getGenericSuperclass();
-            if (!(superType instanceof ParameterizedType)) {
-                //GlaciHttpClient$BeanCallback有泛型, 因此这里的superType必然是ParameterizedType实例
-                //P.S.泛型类的实现类getGenericSuperclass返回ParameterizedType实例
-                //P.S.非泛型类的实现类getGenericSuperclass返回Class实例
-                throw new IllegalStateException("FATAL: superType is not an instance of ParameterizedType!");
-            }
-            //获取第0个泛型类型, 即T的实际类型
-            Type generic0Type = ((ParameterizedType)superType).getActualTypeArguments()[0];
-            //P.S.在getActualTypeArguments返回的类型数组中, 泛型类是ParameterizedType实例, 非泛型类是Class实例
-            if (generic0Type instanceof ParameterizedType) {
-                //如果第0个泛型类型(T的实际类型)是泛型类, 则generic0Type是ParameterizedType实例
-                //使用getRawType方法取原始类型用于类型转换
-                //例如T为Map<String, Object>时, 只取Map类型
-                onSucceed(dataConverter.convert(body, (Class<T>) ((ParameterizedType) generic0Type).getRawType()));
-            } else {
-                //如果第0个泛型类型(T的实际类型)不是泛型类, 则generic0Type是Class实例, 直接转为Class<T>即可
-                //例如T类Map时, 直接类型转换为Class<Map>即可
-                onSucceed(dataConverter.convert(body, (Class<T>) generic0Type));
-            }
+            onSucceed(responseBean);
         }
 
         @Override
@@ -2603,7 +2651,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
      * LOG_CONFIG_ALL:{@value LOG_CONFIG_ALL}<br>
      * LOG_CONFIG_REAL_URL:{@value LOG_CONFIG_REAL_URL}<br>
      * LOG_CONFIG_BLOCK:{@value LOG_CONFIG_BLOCK}<br>
-     * LOG_CONFIG_REQUEST_STRING_BODY:{@value LOG_CONFIG_REQUEST_STRING_BODY}<br>
+     * LOG_CONFIG_PAYLOAD:{@value LOG_CONFIG_PAYLOAD}<br>
      * LOG_CONFIG_RESPONSE_CODE:{@value LOG_CONFIG_RESPONSE_CODE}<br>
      * LOG_CONFIG_RAW_URL:{@value LOG_CONFIG_RAW_URL}<br>
      * LOG_CONFIG_REQUEST_INPUTS:{@value LOG_CONFIG_REQUEST_INPUTS}<br>

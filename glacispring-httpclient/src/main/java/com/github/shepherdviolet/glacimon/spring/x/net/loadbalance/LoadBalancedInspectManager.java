@@ -78,7 +78,10 @@ public class LoadBalancedInspectManager implements Closeable {
 
     private ExecutorService dispatchThreadPool = ThreadPoolExecutorUtils.createFixed(1,
             new GuavaThreadFactoryBuilder().setNameFormat("Glacispring-LBInspect-Dispatch-%s").setDaemon(true).build());
-    private ExecutorService inspectThreadPool = ThreadPoolExecutorUtils.createCached(0, Integer.MAX_VALUE, 60, "Glacispring-LBInspect-Inspect-%s");
+    private ExecutorService inspectThreadPool = ThreadPoolExecutorUtils.createCached(0,
+            Integer.MAX_VALUE, 60, "Glacispring-LBInspect-Inspect-%s");
+
+    private final Object intervalLock = new Object();
 
     /**
      * 自动开始探测(无需调用start()方法手动开启)
@@ -117,6 +120,7 @@ public class LoadBalancedInspectManager implements Closeable {
         if (!closed.compareAndSet(false, true)) {
             return;
         }
+        started.set(true);
         try {
             dispatchThreadPool.shutdownNow();
         } catch (Throwable ignore){
@@ -178,6 +182,7 @@ public class LoadBalancedInspectManager implements Closeable {
                 logger.info(tag + "Inspect: Inspection pause (inspectInterval is set to <= 0)");
             }
             pause = true;
+            inspectInterval = 600000L;
         } else {
             if (pause) {
                 logger.info(tag + "Inspect: Inspection resume (inspectInterval is set to > 0)");
@@ -185,8 +190,8 @@ public class LoadBalancedInspectManager implements Closeable {
             pause = false;
         }
         // 最小1000
-        if (inspectInterval < 1000){
-            inspectInterval = 1000;
+        if (inspectInterval < 1000L){
+            inspectInterval = 1000L;
         }
         //探测间隔
         this.inspectInterval = inspectInterval;
@@ -204,6 +209,11 @@ public class LoadBalancedInspectManager implements Closeable {
                 }
             }
         }
+
+        synchronized (intervalLock) {
+            intervalLock.notifyAll();
+        }
+
         return this;
     }
 
@@ -264,9 +274,10 @@ public class LoadBalancedInspectManager implements Closeable {
                 LoadBalancedHostManager.Host[] hostArray;
                 while (!closed.get()){
                     //间隔
-                    try {
-                        Thread.sleep(inspectInterval);
-                    } catch (InterruptedException ignored) {
+                    synchronized (intervalLock) {
+                        try {
+                            intervalLock.wait(inspectInterval);
+                        } catch (InterruptedException ignored) {}
                     }
                     //暂停主动探测
                     if (pause) {

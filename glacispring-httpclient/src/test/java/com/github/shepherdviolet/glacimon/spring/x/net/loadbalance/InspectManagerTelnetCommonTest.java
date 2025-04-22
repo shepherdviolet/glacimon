@@ -30,7 +30,7 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.Tel
  */
 public class InspectManagerTelnetCommonTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         LoadBalancedHostManager hostManager = new LoadBalancedHostManager();
         hostManager.setHostArray(new String[]{
@@ -43,6 +43,15 @@ public class InspectManagerTelnetCommonTest {
         inspectManager.setHostManager(hostManager);
         inspectManager.setInspectInterval(5000L);
         inspectManager.setInspector(new TelnetLoadBalanceInspector());
+
+        Thread.sleep(30000L);
+
+        inspectManager.setInspectInterval(0);
+
+        Thread.sleep(30000L);
+
+        inspectManager.setInspectInterval(5000L);
+
 
     }
 

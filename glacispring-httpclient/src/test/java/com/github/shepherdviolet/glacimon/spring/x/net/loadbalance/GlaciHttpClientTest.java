@@ -53,9 +53,11 @@ public class GlaciHttpClientTest {
                 .setDataConverter(new GsonDataConverter())
                 .setLogConfig(GlaciHttpClient.LOG_CONFIG_ALL);
 
+        byte[] response;
+
         // sync
 
-        byte[] response = client.get("/basic/get/json")
+        response = client.get("/basic/get/json")
                 .urlParam("name", "wang wang")
                 .urlParam("key", "321")
                 .sendForBytes();
@@ -73,7 +75,7 @@ public class GlaciHttpClientTest {
             System.out.println(stringBuilder.toString());
         }
 
-        try (GlaciHttpClient.ResponsePackage responsePackage = client.get("/")
+        try (GlaciHttpClient.ResponsePackage responsePackage = client.get("/basic")
                 .send()) {
             System.out.println(responsePackage.body().string());
         }

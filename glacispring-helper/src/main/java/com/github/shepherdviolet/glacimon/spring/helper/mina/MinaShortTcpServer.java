@@ -19,12 +19,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 基于 Apache MINA 实现的高性能 TCP 双工短连接服务端
+ * 基于 Apache MINA 实现的 TCP 短连接服务端
  */
 public class MinaShortTcpServer implements InitializingBean, DisposableBean, AutoCloseable {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final boolean isDuplex;
     private final int port;
     private final int corePoolSize;
     private final int maxPoolSize;
@@ -38,10 +39,14 @@ public class MinaShortTcpServer implements InitializingBean, DisposableBean, Aut
     private final Object shutdownLock = new Object();
 
     /**
-     * @param port      监听端口
-     * @param processor 处理器接口实现
+     * @param isDuplex true: 双工 false: 单工
+     * @param port 端口
+     * @param corePoolSize 核心线程数
+     * @param maxPoolSize 最大线程数
+     * @param processor 处理器
      */
-    public MinaShortTcpServer(int port, int corePoolSize, int maxPoolSize, Processor processor) {
+    public MinaShortTcpServer(boolean isDuplex, int port, int corePoolSize, int maxPoolSize, Processor processor) {
+        this.isDuplex = isDuplex;
         this.port = port;
         this.corePoolSize = corePoolSize;
         this.maxPoolSize = maxPoolSize;
@@ -83,8 +88,9 @@ public class MinaShortTcpServer implements InitializingBean, DisposableBean, Aut
                     acceptor.setHandler(new ByteArrayAdapter());
                     // 绑定端口开始监听
                     acceptor.bind(new InetSocketAddress(port));
-                    logger.info("MinaShortTcpServer started on port '" + port + "', corePoolSize '" + corePoolSize +
-                            "', maxPoolSize '" + maxPoolSize + "', gracefulShutdownTimeout '" + gracefulShutdownTimeout + "'");
+                    logger.info("MinaShortTcpServer started on port '" + port + "', duplex '" + isDuplex +
+                            "', corePoolSize '" + corePoolSize + "', maxPoolSize '" + maxPoolSize +
+                            "', gracefulShutdownTimeout '" + gracefulShutdownTimeout + "'");
                 }
             }
         }
@@ -100,12 +106,18 @@ public class MinaShortTcpServer implements InitializingBean, DisposableBean, Aut
                     try {
                         byte[] request = new byte[((IoBuffer) message).remaining()];
                         ((IoBuffer) message).get(request);
-                        byte[] response = processor.process(request, session.getRemoteAddress());
-                        WriteFuture writeFuture = session.write(IoBuffer.wrap(response));
-                        writeFuture.addListener(f -> {
-                            session.closeOnFlush();
+                        // 极端情况下(server关闭后立即创建一个同端口的server), remoteAddr为null, 创建一个0.0.0.0:0给processor
+                        SocketAddress remoteAddr = session.getRemoteAddress();
+                        byte[] response = processor.process(request, remoteAddr != null ? remoteAddr : new InetSocketAddress("0.0.0.0", 0));
+                        if (isDuplex) {
+                            WriteFuture writeFuture = session.write(IoBuffer.wrap(response));
+                            writeFuture.addListener(f -> {
+                                session.closeOnFlush();
+                                closeSession(session, null);
+                            });
+                        } else {
                             closeSession(session, null);
-                        });
+                        }
                     } catch (Throwable t) {
                         closeSession(session, t);
                     }

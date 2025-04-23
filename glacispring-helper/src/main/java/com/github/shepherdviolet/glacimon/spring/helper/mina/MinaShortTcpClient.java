@@ -18,7 +18,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 
 /**
- * 基于 Apache MINA 的 TCP 短连接客户端。
+ * 基于 Apache MINA 实现的 TCP 短连接客户端。
  */
 public class MinaShortTcpClient implements InitializingBean, DisposableBean, AutoCloseable {
 
@@ -62,22 +62,51 @@ public class MinaShortTcpClient implements InitializingBean, DisposableBean, Aut
     }
 
     /**
-     * 发送请求并接收响应（同步阻塞模式，短连接）
+     * 发送请求并接收响应（同步阻塞模式，双工短连接）
      *
      * @param data 要发送的数据字节数组
      * @return 服务端返回的字节数组
      * @throws ConnectException     连接失败(未开始发送数据)
      * @throws IOException          发生其他网络或IO错误
      */
-    public byte[] send(byte[] data) throws ConnectException, IOException {
+    public byte[] sendDuplex(byte[] data) throws ConnectException, IOException {
+        return send(data, true);
+    }
+
+    /**
+     * 发送请求（同步阻塞模式，单工短连接）
+     *
+     * @param data 要发送的数据字节数组
+     * @throws ConnectException     连接失败(未开始发送数据)
+     * @throws IOException          发生其他网络或IO错误
+     */
+    public void sendSimplex(byte[] data) throws ConnectException, IOException {
+        send(data, false);
+    }
+
+    private byte[] send(byte[] data, boolean isDuplex) throws ConnectException, IOException {
         try {
+            // 启动客户端 (第一次)
             start();
-            AsyncWaiter<byte[]> responseWaiter = new AsyncWaiter<>(readTimeout);
-            ConnectFuture connectFuture;
+
+            // 响应等待器
+            final AsyncWaiter<byte[]> responseWaiter;
+            if (isDuplex) {
+                // 双工
+                responseWaiter = new AsyncWaiter<>(readTimeout);
+            } else {
+                responseWaiter = null;
+            }
+
             // 连接
+            ConnectFuture connectFuture;
             try {
-                connectFuture = connector.connect(new InetSocketAddress(host, port), null,
-                        (session, f) -> session.setAttribute("ResponseWaiter", responseWaiter));
+                connectFuture = connector.connect(new InetSocketAddress(host, port), null, (session, f) -> {
+                    if (isDuplex) {
+                        // 双工
+                        session.setAttribute("ResponseWaiter", responseWaiter);
+                    }
+                });
                 connectFuture.awaitUninterruptibly();
                 // 检查连接是否成功
                 if (!connectFuture.isConnected()) {
@@ -97,20 +126,25 @@ public class MinaShortTcpClient implements InitializingBean, DisposableBean, Aut
                 }
             }
 
+            // 写 & 读
             IoSession session = connectFuture.getSession();
             try {
                 // 写入
                 WriteFuture writeFuture = session.write(data);
                 writeFuture.awaitUninterruptibly(writeTimeout);
                 // 等待读取
-                switch (responseWaiter.waitForResult()) {
-                    case SUCCESS:
-                        return responseWaiter.getValue();
-                    case TIMEOUT:
-                        throw new SocketTimeoutException("Read response timeout");
-                    case ERROR:
-                    default:
-                        throw responseWaiter.getException();
+                if (isDuplex) {
+                    switch (responseWaiter.waitForResult()) {
+                        case SUCCESS:
+                            return responseWaiter.getValue();
+                        case TIMEOUT:
+                            throw new SocketTimeoutException("Read response timeout");
+                        case ERROR:
+                        default:
+                            throw responseWaiter.getException();
+                    }
+                } else {
+                    return null;
                 }
             } finally {
                 session.closeNow(); // 关闭会话
@@ -168,12 +202,17 @@ public class MinaShortTcpClient implements InitializingBean, DisposableBean, Aut
         @Override
         public void messageReceived(IoSession session, Object message) {
             Object asyncWaiter = session.getAttribute("ResponseWaiter");
-            if (!(asyncWaiter instanceof AsyncWaiter)) {
-                // imposable
-                session.closeNow();
+            if (asyncWaiter == null) {
+                // 单工: 若收到回包, 直接抛弃, 这里不用关闭会话
                 return;
             }
-            ((AsyncWaiter<byte[]>) asyncWaiter).callback((byte[]) message);
+            if (asyncWaiter instanceof AsyncWaiter) {
+                // 双工回调
+                ((AsyncWaiter<byte[]>) asyncWaiter).callback((byte[]) message);
+                return;
+            }
+            // imposable
+            session.closeNow();
         }
 
         /**
@@ -182,12 +221,11 @@ public class MinaShortTcpClient implements InitializingBean, DisposableBean, Aut
         @Override
         public void exceptionCaught(IoSession session, Throwable cause) {
             Object asyncWaiter = session.getAttribute("ResponseWaiter");
-            if (!(asyncWaiter instanceof AsyncWaiter)) {
-                // imposable
-                session.closeNow();
-                return;
+            if (asyncWaiter instanceof AsyncWaiter) {
+                // 双工回调
+                ((AsyncWaiter<byte[]>) asyncWaiter).callback((Exception) cause);
             }
-            ((AsyncWaiter<byte[]>) asyncWaiter).callback((Exception) cause);
+            // 都要关闭会话
             session.closeNow();
         }
 

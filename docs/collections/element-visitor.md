@@ -649,10 +649,14 @@ e.getMessage()
 e.getErrorCategory()
 // 获取错误码, 可针对不同的错误码进行不同的处理
 e.geterrorCode()
-// 获取错误发生的路径 (JSONPath格式)
+// 发生错误时, 正在访问的元素的`访问路径`, JSONPath格式, 例如: $.Body.Orders[*]
 e.getPathErrorOccurred()
-// 获取完整的`访问路径`, 即你想访问的元素的路径
+// `你想访问的元素`的完整`访问路径`, JSONPath格式, 例如: $.Body.Orders[*].OrderName
 e.getPathYouExpected()
+// 发生错误时, 正在访问的元素的名称, 例如: Orders[*]
+e.getElementNameErrorOccurred()
+// `你想访问的元素`的名称, 例如: OrderName
+e.getElementNameYouExpected()
 ```
 
 <br>

@@ -29,8 +29,6 @@ import java.util.function.Supplier;
 /**
  * `便捷安全`的跨层级集合元素访问工具 ElementVisitor
  *
- * TODO 文档
- *
  * @author shepherdviolet
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -184,20 +182,26 @@ public final class ElementVisitor {
 
     private ElementVisitException _buildVisitException(ErrorCode errorCode, Throwable cause, 
                                                        int level, int collectionIndex, String messagePrefix, String messageSuffix, String indicateMessage) {
-        StringBuilder pathYouExpectedBuilder = new StringBuilder("root");
-        StringBuilder pathErrorOccurredBuilder = new StringBuilder("root");
+        StringBuilder pathYouExpectedBuilder = new StringBuilder("$");
+        StringBuilder pathErrorOccurredBuilder = new StringBuilder("$");
+        String elementNameYouExpected = "$";
+        String elementNameErrorOccurred = "$";
         if (CheckUtils.notEmpty(paths)) {
             for (int i = 0 ; i < paths.size() ; i++) {
                 Path p = paths.get(i);
                 if (p.parentType == ParentType.MAP) {
                     pathYouExpectedBuilder.append('.').append(p.key);
+                    elementNameYouExpected = p.key;
                     if (i <= level) {
                         pathErrorOccurredBuilder.append('.').append(p.key);
+                        elementNameErrorOccurred = p.key;
                     }
                 } else {
                     pathYouExpectedBuilder.append("[*]");
+                    elementNameYouExpected = elementNameYouExpected + "[*]";
                     if (i <= level) {
                         pathErrorOccurredBuilder.append("[").append(collectionIndex >= 0 ? collectionIndex + "" : "*").append("]");
+                        elementNameErrorOccurred = elementNameErrorOccurred + "[*]";
                     }
                 }
             }
@@ -264,6 +268,8 @@ public final class ElementVisitor {
         exception.setErrorCode(errorCode);
         exception.setPathErrorOccurred(pathErrorOccurredBuilder.toString());
         exception.setPathYouExpected(pathYouExpectedBuilder.toString());
+        exception.setElementNameErrorOccurred(elementNameErrorOccurred);
+        exception.setElementNameYouExpected(elementNameYouExpected);
         exception.setPrettyErrorIndicator(prettyErrorIndicatorBuilder.toString());
         return exception;
     }
@@ -1348,6 +1354,8 @@ public final class ElementVisitor {
         private ErrorCode errorCode;
         private String pathErrorOccurred;
         private String pathYouExpected;
+        private String elementNameErrorOccurred;
+        private String elementNameYouExpected;
         private String prettyErrorIndicator;
 
         public ElementVisitException() {
@@ -1361,6 +1369,9 @@ public final class ElementVisitor {
             super(message, cause);
         }
 
+        /**
+         * 错误码
+         */
         public ErrorCode getErrorCode() {
             return errorCode != null ? errorCode : ErrorCode.UNDEFINED_ERROR;
         }
@@ -1369,10 +1380,16 @@ public final class ElementVisitor {
             this.errorCode = errorCode;
         }
 
+        /**
+         * 错误类别
+         */
         public ErrorCategory getErrorCategory() {
             return getErrorCode().getErrorCategory();
         }
 
+        /**
+         * 发生错误时, 正在访问的元素的`访问路径`, JSONPath格式, 例如: $.Body.Orders[*]
+         */
         public String getPathErrorOccurred() {
             return pathErrorOccurred;
         }
@@ -1381,12 +1398,37 @@ public final class ElementVisitor {
             this.pathErrorOccurred = pathErrorOccurred;
         }
 
+        /**
+         * `你想访问的元素`的完整`访问路径`, JSONPath格式, 例如: $.Body.Orders[*].OrderName
+         */
         public String getPathYouExpected() {
             return pathYouExpected;
         }
 
         public void setPathYouExpected(String pathYouExpected) {
             this.pathYouExpected = pathYouExpected;
+        }
+
+        /**
+         * 发生错误时, 正在访问的元素的名称, 例如: Orders[*]
+         */
+        public String getElementNameErrorOccurred() {
+            return elementNameErrorOccurred;
+        }
+
+        public void setElementNameErrorOccurred(String elementNameErrorOccurred) {
+            this.elementNameErrorOccurred = elementNameErrorOccurred;
+        }
+
+        /**
+         * `你想访问的元素`的名称, 例如: OrderName
+         */
+        public String getElementNameYouExpected() {
+            return elementNameYouExpected;
+        }
+
+        public void setElementNameYouExpected(String elementNameYouExpected) {
+            this.elementNameYouExpected = elementNameYouExpected;
         }
 
         public String getPrettyErrorIndicator() {

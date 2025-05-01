@@ -100,37 +100,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class GlaciHttpClient implements Closeable, InitializingBean, DisposableBean {
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 日志相关常量
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    //日志:实际请求URL(请求组装成功后打印)
-    public static final int LOG_CONFIG_REAL_URL = 0x00000001;
-    //日志:阻断日志
-    public static final int LOG_CONFIG_BLOCK = 0x00000010;
-    //日志:请求/响应报文体: 支持"byte[]/Bean/表单"请求, 支持"byte[]/Bean"响应, 不支持"RequestBody"请求, 不支持"InputStream/ResponsePackage"响应
-    public static final int LOG_CONFIG_PAYLOAD = 0x00000100;
-    //日志:响应码
-    public static final int LOG_CONFIG_RESPONSE_CODE = 0x00001000;
-    //日志:原始请求URL(请求组装失败时打印)
-    public static final int LOG_CONFIG_RAW_URL = 0x00010000;
-    //日志:输入参数 (默认关)
-    public static final int LOG_CONFIG_REQUEST_INPUTS = 0x00100000;
-
-    //日志:全开
-    public static final int LOG_CONFIG_ALL = 0xFFFFFFFF;
-    //日志:全关
-    public static final int LOG_CONFIG_NONE = 0x00000000;
-    //日志:默认
-    public static final int LOG_CONFIG_DEFAULT = LOG_CONFIG_REAL_URL |
-            LOG_CONFIG_BLOCK |
-            LOG_CONFIG_PAYLOAD |
-            LOG_CONFIG_RESPONSE_CODE |
-            LOG_CONFIG_RAW_URL;
-
     private static final String LOG_PREFIX = "HttpClient | ";
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -845,7 +814,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             if (needBlock(t, settings)) {
                 //网络故障阻断后端
                 isOk = false;
-                if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_BLOCK)){
+                if (logger.isInfoEnabled() && settings.logPrintBlock){
                     logger.info(genLogPrefix(settings.tag, request) + "Bad host " + host.getUrl() + ", block for " + passiveBlockDuration +
                             " ms, recovery period (half-open) " + (passiveBlockDuration * settings.recoveryCoefficient) +
                             " ms. Passive block, recoveryCoefficient " + settings.recoveryCoefficient);
@@ -978,7 +947,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                         long passiveBlockDuration = request.passiveBlockDuration >= 0 ? request.passiveBlockDuration : settings.passiveBlockDuration;
                         //反馈异常
                         host.feedback(false, passiveBlockDuration, settings.recoveryCoefficient);
-                        if (logger.isInfoEnabled() && CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_BLOCK)) {
+                        if (logger.isInfoEnabled() && settings.logPrintBlock) {
                             logger.info(genLogPrefix(settings.tag, request) + "Bad host " + host.getUrl() + ", block for " + passiveBlockDuration +
                                     " ms, recovery period (half-open) " + (passiveBlockDuration * settings.recoveryCoefficient) +
                                     " ms. Passive block, recoveryCoefficient " + settings.recoveryCoefficient);
@@ -1310,7 +1279,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
 
     private void printPostInputsLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
+        if (!logger.isInfoEnabled() || !settings.logPrintInputs) {
             return;
         }
 
@@ -1330,14 +1299,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printGetInputsLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REQUEST_INPUTS)) {
+        if (!logger.isInfoEnabled() || !settings.logPrintInputs) {
             return;
         }
         logger.info(genLogPrefix(settings.tag, request) + "GET: url: " + host.getUrl() + ", suffix: " + request.urlSuffix + ", urlParams: " + request.urlParams);
     }
 
     private void printRawUrlLog(Request request, LoadBalancedHostManager.Host host) {
-        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RAW_URL)) {
+        if (!logger.isInfoEnabled() || !settings.logPrintUrl) {
             return;
         }
 
@@ -1359,14 +1328,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printRealUrlLog(Request request, okhttp3.Request okRequest) {
-        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_REAL_URL)) {
+        if (!logger.isInfoEnabled() || !settings.logPrintUrl) {
             return;
         }
         logger.info(genLogPrefix(settings.tag, request) + "real-url: " + okRequest.url());
     }
 
     private void printPostRequestBodyLog(Request request, byte[] parsedData) {
-        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_PAYLOAD)){
+        if (!logger.isInfoEnabled() || !settings.logPrintPayload){
             return;
         }
 
@@ -1392,14 +1361,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private void printResponseCodeLog(Request request, Response response) {
-        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_RESPONSE_CODE)) {
+        if (!logger.isInfoEnabled() || !settings.logPrintStatusCode) {
             return;
         }
         logger.info(genLogPrefix(settings.tag, request) + "Response: code: " + response.code() + ", message: " + response.message());
     }
 
     private void printResponseBodyLog(Request request, byte[] responseData) {
-        if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_PAYLOAD)){
+        if (!logger.isInfoEnabled() || !settings.logPrintPayload){
             return;
         }
         try {
@@ -1667,7 +1636,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         }
 
         protected void printResponseBodyLog(byte[] responseData) {
-            if (!logger.isInfoEnabled() || !CheckUtils.isFlagMatch(settings.logConfig, LOG_CONFIG_PAYLOAD)){
+            if (!logger.isInfoEnabled() || !settings.logPrintPayload){
                 return;
             }
             String logPrefix;
@@ -1815,12 +1784,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     public static class Settings {
 
         private long passiveBlockDuration = PASSIVE_BLOCK_DURATION;
-        private String mediaType = null;
-        private String encode = ENCODE;
-        private HttpHeaders headers;
-        private int logConfig = LOG_CONFIG_DEFAULT;
         private int recoveryCoefficient = 10;
-
         private int maxIdleConnections = 16;
         private int maxThreads = 256;
         private int maxThreadsPerHost = 256;
@@ -1828,27 +1792,37 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         private long writeTimeout = 10000L;
         private long readTimeout = 10000L;
         private long maxReadLength = 10L * 1024L * 1024L;
+        private HttpHeaders headers;
+        private String mediaType = null;
+        private String encode = ENCODE;
+
         private CookieJar cookieJar;
         private Proxy proxy;
         private Dns dns;
         private SslConfigSupplier sslConfigSupplier;
         private HostnameVerifier hostnameVerifier;
         private DataConverter dataConverter;
-        private String tag = LOG_PREFIX;
-        private String rawTag = "";
         private Set<Integer> httpCodeNeedBlock = new HashSet<>(8);
         private Set<Class<? extends Throwable>> throwableNeedBlock = new HashSet<>(8);
-
         private boolean requestTraceEnabled = false;
+
+        private String tag = LOG_PREFIX;
+        private String rawTag = "";
+
+        private boolean logPrintUrl = true; //日志:请求URL
+        private boolean logPrintBlock = true; //日志:阻断日志
+        private boolean logPrintPayload = false; //日志:请求/响应报文体: 支持"byte[]/Bean/表单"请求, 支持"byte[]/Bean"响应, 不支持"RequestBody"请求, 不支持"InputStream/ResponsePackage"响应
+        private boolean logPrintStatusCode = false; //日志:响应码
+        private boolean logPrintInputs = false; //日志:输入参数
 
         private Settings(){
         }
 
         @Override
         public String toString() {
-            return "passiveBlockDuration=" + passiveBlockDuration +
-                    ", recoveryCoefficient=" + recoveryCoefficient +
-                    ", maxIdleConnections=" + maxIdleConnections +
+            return "passiveBlockDur=" + passiveBlockDuration +
+                    ", recoveryCoef=" + recoveryCoefficient +
+                    ", maxIdleConn=" + maxIdleConnections +
                     ", maxThreads=" + maxThreads +
                     ", maxThreadsPerHost=" + maxThreadsPerHost +
                     ", connectTimeout=" + connectTimeout +
@@ -1858,15 +1832,20 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                     ", headers=" + headers +
                     ", mediaType='" + mediaType + '\'' +
                     ", encode='" + encode + '\'' +
-                    ", logConfig=" + logConfig +
                     ", cookieJar=" + cookieJar +
                     ", proxy=" + proxy +
                     ", dns=" + dns +
-                    ", sslConfigSupplier=" + sslConfigSupplier +
+                    ", sslConfSupplier=" + sslConfigSupplier +
                     ", hostnameVerifier=" + hostnameVerifier +
                     ", dataConverter=" + dataConverter +
                     ", httpCodeNeedBlock=" + httpCodeNeedBlock +
-                    ", throwableNeedBlock=" + throwableNeedBlock;
+                    ", throwableNeedBlock=" + throwableNeedBlock +
+                    ", requestTrace=" + requestTraceEnabled +
+                    ", logUrl=" + logPrintUrl +
+                    ", logBlock=" + logPrintBlock +
+                    ", logPayload=" + logPrintPayload +
+                    ", logStatus=" + logPrintStatusCode +
+                    ", logInputs=" + logPrintInputs;
         }
     }
 
@@ -2646,31 +2625,78 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
     /**
      * [可运行时修改]
-     * 日志打印细粒度配置, 默认{@value LOG_CONFIG_DEFAULT}<br>
-     *
-     * LOG_CONFIG_ALL:{@value LOG_CONFIG_ALL}<br>
-     * LOG_CONFIG_REAL_URL:{@value LOG_CONFIG_REAL_URL}<br>
-     * LOG_CONFIG_BLOCK:{@value LOG_CONFIG_BLOCK}<br>
-     * LOG_CONFIG_PAYLOAD:{@value LOG_CONFIG_PAYLOAD}<br>
-     * LOG_CONFIG_RESPONSE_CODE:{@value LOG_CONFIG_RESPONSE_CODE}<br>
-     * LOG_CONFIG_RAW_URL:{@value LOG_CONFIG_RAW_URL}<br>
-     * LOG_CONFIG_REQUEST_INPUTS:{@value LOG_CONFIG_REQUEST_INPUTS}<br>
-     *
-     * @param logConfig 详细配置
-     */
-    public GlaciHttpClient setLogConfig(int logConfig) {
-        settings.logConfig = logConfig;
-        return this;
-    }
-
-    /**
-     * [可运行时修改]
      * true: 开启简易的请求日志追踪(请求日志追加4位数追踪号), 默认false<br>
      *
      * @param requestTraceEnabled true: 开启简易的请求日志追踪(请求日志追加4位数追踪号), 默认false
      */
     public GlaciHttpClient setRequestTraceEnabled(boolean requestTraceEnabled) {
         settings.requestTraceEnabled = requestTraceEnabled;
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 老版本日志配置, 2025.3及以后版本弃用, 方法保留, 请改用setLogPrint...系列方法设置日志开关.
+     * @deprecated Use setLogPrintUrl/setLogPrintBlock/setLogPrintPayload... instead
+     */
+    @Deprecated
+    public GlaciHttpClient setLogConfig(int logConfig) {
+        //原 LOG_CONFIG_REAL_URL=0x00000001 / LOG_CONFIG_RAW_URL=0x00010000
+        settings.logPrintUrl = CheckUtils.isFlagMatch(logConfig, 0x00000001) || CheckUtils.isFlagMatch(logConfig, 0x00010000);
+        //原 LOG_CONFIG_BLOCK = 0x00000010;
+        settings.logPrintBlock = CheckUtils.isFlagMatch(logConfig, 0x00000010);
+        //原LOG_CONFIG_PAYLOAD = 0x00000100;
+        settings.logPrintPayload = CheckUtils.isFlagMatch(logConfig, 0x00000100);
+        //原LOG_CONFIG_RESPONSE_CODE = 0x00001000;
+        settings.logPrintStatusCode = CheckUtils.isFlagMatch(logConfig, 0x00001000);
+        //原LOG_CONFIG_REQUEST_INPUTS = 0x00100000;
+        settings.logPrintStatusCode = CheckUtils.isFlagMatch(logConfig, 0x00100000);
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 日志:请求URL, 默认true
+     */
+    public GlaciHttpClient setLogPrintUrl(boolean logPrintUrl) {
+        settings.logPrintUrl = logPrintUrl;
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 日志:阻断日志, 默认true
+     */
+    public GlaciHttpClient setLogPrintBlock(boolean logPrintBlock) {
+        settings.logPrintBlock = logPrintBlock;
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 日志:请求/响应报文体: 支持"byte[]/Bean/表单"请求, 支持"byte[]/Bean"响应, 不支持"RequestBody"请求, 不支持"InputStream/ResponsePackage"响应,
+     * 默认false. (2025.2及以前版本默认开启, 2025.3及以后版本默认关闭)
+     */
+    public GlaciHttpClient setLogPrintPayload(boolean logPrintPayload) {
+        settings.logPrintPayload = logPrintPayload;
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 日志:响应码, 默认false. (2025.2及以前版本默认开启, 2025.3及以后版本默认关闭)
+     */
+    public GlaciHttpClient setLogPrintStatusCode(boolean logPrintStatusCode) {
+        settings.logPrintStatusCode = logPrintStatusCode;
+        return this;
+    }
+
+    /**
+     * [可运行时修改]
+     * 日志:输入参数, 默认false;
+     */
+    public GlaciHttpClient setLogPrintInputs(boolean logPrintInputs) {
+        settings.logPrintInputs = logPrintInputs;
         return this;
     }
 

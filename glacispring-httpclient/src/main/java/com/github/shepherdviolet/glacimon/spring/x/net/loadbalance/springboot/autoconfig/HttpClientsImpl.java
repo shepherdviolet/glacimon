@@ -242,7 +242,11 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setCustomClientCertEncoded(settings.getCustomClientCertEncoded())
                 .setCustomClientCertsEncoded(settings.getCustomClientCertsEncoded())
                 .setCustomClientCertKeyEncoded(settings.getCustomClientCertKeyEncoded())
-                .setLogConfig(settings.logConfig);
+                .setLogPrintUrl(settings.isLogPrintUrl())
+                .setLogPrintBlock(settings.isLogPrintBlock())
+                .setLogPrintPayload(settings.isLogPrintPayload())
+                .setLogPrintStatusCode(settings.isLogPrintStatusCode())
+                .setLogPrintInputs(settings.isLogPrintInputs());
     }
 
     /**
@@ -632,14 +636,42 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
         });
 
         installUpdater(new SingleValueUpdater(
-                Arrays.asList("logConfig", "log-config")) {
+                Arrays.asList("logPrintUrl", "log-print-url")) {
             @Override
             public void applySetting(HttpClient client, String value) throws Exception {
-                if (value != null && value.length() == 10 && value.startsWith("0x")) {
-                    client.setLogConfig(Integer.parseInt(value.substring(2), 16));
-                } else {
-                    client.setLogConfig(Integer.parseInt(value));
-                }
+                client.setLogPrintUrl(Boolean.parseBoolean(value));
+            }
+        });
+
+        installUpdater(new SingleValueUpdater(
+                Arrays.asList("logPrintBlock", "log-print-block")) {
+            @Override
+            public void applySetting(HttpClient client, String value) throws Exception {
+                client.setLogPrintBlock(Boolean.parseBoolean(value));
+            }
+        });
+
+        installUpdater(new SingleValueUpdater(
+                Arrays.asList("logPrintPayload", "log-print-payload")) {
+            @Override
+            public void applySetting(HttpClient client, String value) throws Exception {
+                client.setLogPrintPayload(Boolean.parseBoolean(value));
+            }
+        });
+
+        installUpdater(new SingleValueUpdater(
+                Arrays.asList("logPrintStatusCode", "log-print-status-code")) {
+            @Override
+            public void applySetting(HttpClient client, String value) throws Exception {
+                client.setLogPrintStatusCode(Boolean.parseBoolean(value));
+            }
+        });
+
+        installUpdater(new SingleValueUpdater(
+                Arrays.asList("logPrintInputs", "log-print-inputs")) {
+            @Override
+            public void applySetting(HttpClient client, String value) throws Exception {
+                client.setLogPrintInputs(Boolean.parseBoolean(value));
             }
         });
 

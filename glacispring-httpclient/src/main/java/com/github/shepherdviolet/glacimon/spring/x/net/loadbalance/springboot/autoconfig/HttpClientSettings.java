@@ -246,20 +246,35 @@ public class HttpClientSettings {
     public String verifyServerCnByCustomHostname;
 
     /**
-     * [可运行时修改]
-     * 日志打印细粒度配置, 默认GlaciHttpClient.LOG_CONFIG_DEFAULT<br>
-     *
-     * LOG_CONFIG_ALL: GlaciHttpClient.LOG_CONFIG_ALL<br>
-     * LOG_CONFIG_REAL_URL: GlaciHttpClient.LOG_CONFIG_REAL_URL<br>
-     * LOG_CONFIG_BLOCK: GlaciHttpClient.LOG_CONFIG_BLOCK<br>
-     * LOG_CONFIG_REQUEST_STRING_BODY: GlaciHttpClient.LOG_CONFIG_REQUEST_STRING_BODY<br>
-     * LOG_CONFIG_RESPONSE_CODE: GlaciHttpClient.LOG_CONFIG_RESPONSE_CODE<br>
-     * LOG_CONFIG_RAW_URL: GlaciHttpClient.LOG_CONFIG_RAW_URL<br>
-     * LOG_CONFIG_REQUEST_INPUTS: GlaciHttpClient.LOG_CONFIG_REQUEST_INPUTS<br>
-     *
-     * @param logConfig 详细配置
+     * <p>[可运行时修改]</p>
+     * <p>日志:请求URL, 默认true</p>
      */
-    public int logConfig = GlaciHttpClient.LOG_CONFIG_DEFAULT;
+    private boolean logPrintUrl = true;
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>日志:阻断日志, 默认true</p>
+     */
+    private boolean logPrintBlock = true;
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>日志:请求/响应报文体: 支持"byte[]/Bean/表单"请求, 支持"byte[]/Bean"响应, 不支持"RequestBody"请求, 不支持"InputStream/ResponsePackage"响应,
+     * 默认false</p>
+     */
+    private boolean logPrintPayload = false;
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>日志:响应码, 默认false</p>
+     */
+    private boolean logPrintStatusCode = false;
+
+    /**
+     * <p>[可运行时修改]</p>
+     * <p>日志:输入参数, 默认false</p>
+     */
+    private boolean logPrintInputs = false;
 
     public String getHosts() {
         return hosts;
@@ -485,12 +500,44 @@ public class HttpClientSettings {
         this.verifyServerCnByCustomHostname = verifyServerCnByCustomHostname;
     }
 
-    public int getLogConfig() {
-        return logConfig;
+    public boolean isLogPrintUrl() {
+        return logPrintUrl;
     }
 
-    public void setLogConfig(int logConfig) {
-        this.logConfig = logConfig;
+    public void setLogPrintUrl(boolean logPrintUrl) {
+        this.logPrintUrl = logPrintUrl;
+    }
+
+    public boolean isLogPrintBlock() {
+        return logPrintBlock;
+    }
+
+    public void setLogPrintBlock(boolean logPrintBlock) {
+        this.logPrintBlock = logPrintBlock;
+    }
+
+    public boolean isLogPrintPayload() {
+        return logPrintPayload;
+    }
+
+    public void setLogPrintPayload(boolean logPrintPayload) {
+        this.logPrintPayload = logPrintPayload;
+    }
+
+    public boolean isLogPrintStatusCode() {
+        return logPrintStatusCode;
+    }
+
+    public void setLogPrintStatusCode(boolean logPrintStatusCode) {
+        this.logPrintStatusCode = logPrintStatusCode;
+    }
+
+    public boolean isLogPrintInputs() {
+        return logPrintInputs;
+    }
+
+    public void setLogPrintInputs(boolean logPrintInputs) {
+        this.logPrintInputs = logPrintInputs;
     }
 
     @Override
@@ -524,7 +571,12 @@ public class HttpClientSettings {
                 ", customClientCertKeyEncoded='" + customClientCertKeyEncoded + '\'' +
                 ", verifyServerDnByCustomDn='" + verifyServerDnByCustomDn + '\'' +
                 ", verifyServerCnByCustomHostname='" + verifyServerCnByCustomHostname + '\'' +
-                ", logConfig=" + logConfig +
+                ", logPrintUrl=" + logPrintUrl +
+                ", logPrintBlock=" + logPrintBlock +
+                ", logPrintPayload=" + logPrintPayload +
+                ", logPrintStatusCode=" + logPrintStatusCode +
+                ", logPrintInputs=" + logPrintInputs +
                 '}';
     }
+
 }

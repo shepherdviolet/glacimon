@@ -94,5 +94,5 @@
 * 日志内容: 请求/响应日志, Hosts变化日志, 主动探测日志, 被动阻断日志, SpringBoot自动配置日志, Apollo配置实时调整日志等
 * ----推荐日志级别: `INFO`
 * ----需要更详细的内容, 可以将级别调为`DEBUG`/`TRACE`
-* ----GlaciHttpClient还支持日志微调, 详见GlaciHttpClient源码中的logConfig配置
+* ----GlaciHttpClient还支持日志微调, 详见GlaciHttpClient源码中的setLogPrint...系列方法
 * ----`建议`将主动探测日志`com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager`输出到单独文件中 (设为`DEBUG`级别可以持续观察后端状态)

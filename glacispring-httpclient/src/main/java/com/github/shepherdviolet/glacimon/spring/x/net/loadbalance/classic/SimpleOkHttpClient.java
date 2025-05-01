@@ -19,13 +19,25 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic;
 
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager;
+
 /**
  * 兼容老版本, 保留SimpleOkHttpClient, 请使用GlaciHttpClient
  *
  * @author shepherdviolet
  * @deprecated Use GlaciHttpClient instead.
  */
+@SuppressWarnings({"DeprecatedIsStillUsed", "resource"})
 @Deprecated
 public class SimpleOkHttpClient extends GlaciHttpClient {
 
+    public SimpleOkHttpClient() {
+        setLogPrintPayload(true);
+    }
+
+    public SimpleOkHttpClient(LoadBalancedHostManager hostManager, LoadBalancedInspectManager inspectManager) {
+        super(hostManager, inspectManager);
+        setLogPrintPayload(true);
+    }
 }

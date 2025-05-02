@@ -1,4 +1,4 @@
-# Glacimon 2025.2.0
+# Glacimon 2025.3.0
 
 * Glacimon [ɡleɪsɪmən]: Comprehensive Java library, JDK8+
 * [Github Home](https://github.com/shepherdviolet/glacimon)
@@ -128,16 +128,6 @@
 * [Trace : Help to trace invocation across thread or process](https://github.com/shepherdviolet/glacimon/blob/master/docs/trace/guide.md)
 
 <br>
-
-### Module: glacijava-misc
-
-[![Depends](https://img.shields.io/badge/Depends-glacimon--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
-
-> Uncommonly or incomplete utils for JavaSE
-
-#### [Misc utils (uncommonly or incomplete)](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-misc/src/main/java/com/github/shepherdviolet/glacimon/java)
-
-<br>
 <br>
 
 ## Glacispring (Glacimon for Java Spring)
@@ -232,16 +222,6 @@
 * [TxTimer : Simple time-consuming statistic API](https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md)
 
 <br>
-
-### Module: glacispring-misc
-
-[![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
-
-> Uncommonly or incomplete utils for Java Spring and third-party libraries
-
-#### [Misc utils (uncommonly or incomplete)](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-misc/src/main/java/com/github/shepherdviolet/glacimon/spring)
-
-<br>
 <br>
 
 ## Import dependencies from maven repository
@@ -262,9 +242,8 @@ dependencies {
     compile 'com.github.shepherdviolet.glacimon:glacijava-trace:?'
     
     compile 'com.github.shepherdviolet.glacimon:glacispring-common:?'
-    compile 'com.github.shepherdviolet.glacimon:glacispring-txtimer:?'
     compile 'com.github.shepherdviolet.glacimon:glacispring-httpclient:?'
-    compile 'com.github.shepherdviolet.glacimon:glacispring-mapxbean:?'
+    compile 'com.github.shepherdviolet.glacimon:glacispring-txtimer:?'
     compile 'com.github.shepherdviolet.glacimon:glacispring-helper:?'
 }
 
@@ -300,17 +279,12 @@ dependencies {
     </dependency>
     <dependency>
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>glacispring-txtimer</artifactId>
-        <version>?</version>
-    </dependency>
-    <dependency>
-        <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>glacispring-httpclient</artifactId>
         <version>?</version>
     </dependency>
     <dependency>
         <groupId>com.github.shepherdviolet.glacimon</groupId>
-        <artifactId>glacispring-mapxbean</artifactId>
+        <artifactId>glacispring-txtimer</artifactId>
         <version>?</version>
     </dependency>
     <dependency>

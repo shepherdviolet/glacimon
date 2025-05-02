@@ -310,7 +310,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .child("Header")
                     .getAs(String.class);
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_MISSING/MISSING_ROOT_ELEMENT: The 'root' element is null\n" +
+            Assertions.assertEquals("DATA_MISSING/MISSING_ROOT_ELEMENT: The '$' element is null\n" +
                     "{    <-- Null\n" +
                     "  Header: <Expected>\n" +
                     "}", e.getMessage());
@@ -323,7 +323,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .child("Orders")
                     .getAs(String.class);
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_INVALID/PARENT_ELEMENT_TYPE_MISMATCH: Parent element 'root.Body.Customers' is not an instance of Map (it's java.util.ArrayList), unable to get child 'Orders' from it\n" +
+            Assertions.assertEquals("DATA_INVALID/PARENT_ELEMENT_TYPE_MISMATCH: Parent element '$.Body.Customers' is not an instance of Map (it's java.util.ArrayList), unable to get child 'Orders' from it\n" +
                     "{\n" +
                     "  Body: {\n" +
                     "    Customers: {    <-- Not Map\n" +
@@ -339,7 +339,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .createIfAbsent(() -> null)
                     .getAs(String.class);
         } catch (Exception e) {
-            Assertions.assertEquals("PROGRAMMING_ERROR/CREATE_EXPECTED_ELEMENT_FAILED: Failed to create expected element 'root.Comment' from 'Supplier'. The 'Supplier' was set via the createIfAbsent(Supplier) method\n" +
+            Assertions.assertEquals("PROGRAMMING_ERROR/CREATE_EXPECTED_ELEMENT_FAILED: Failed to create expected element '$.Comment' from 'Supplier'. The 'Supplier' was set via the createIfAbsent(Supplier) method\n" +
                     "{\n" +
                     "  Comment: <Expected>    <-- Create Failed\n" +
                     "}", e.getMessage());
@@ -350,7 +350,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .child("Comment")
                     .getAs(String.class);
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_MISSING/MISSING_EXPECTED_ELEMENT: Expected element 'root.Comment' does not exist\n" +
+            Assertions.assertEquals("DATA_MISSING/MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist\n" +
                     "{\n" +
                     "  Comment: <Expected>    <-- Not Exist\n" +
                     "}", e.getMessage());
@@ -361,7 +361,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .child("Header")
                     .getAs(String.class);
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_INVALID/EXPECTED_ELEMENT_TYPE_MISMATCH: Expected element 'root.Header' does not match the type you expected 'java.lang.String', it's java.util.HashMap\n" +
+            Assertions.assertEquals("DATA_INVALID/EXPECTED_ELEMENT_TYPE_MISMATCH: Expected element '$.Header' does not match the type you expected 'java.lang.String', it's java.util.HashMap\n" +
                     "{\n" +
                     "  Header: <Expected>    <-- Not String\n" +
                     "}", e.getMessage());
@@ -373,7 +373,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .child("Service")
                     .getAs(String.class);
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_MISSING/MISSING_PARENT_ELEMENT: Parent element 'root.Header2' does not exist, can not get child or children from it\n" +
+            Assertions.assertEquals("DATA_MISSING/MISSING_PARENT_ELEMENT: Parent element '$.Header2' does not exist, can not get child or children from it\n" +
                     "{\n" +
                     "  Header2: {    <-- Not Exist\n" +
                     "    Service: <Expected>\n" +
@@ -388,7 +388,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .child("Service")
                     .getAllAs(String.class);
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_INVALID/PARENT_ELEMENT_TYPE_MISMATCH: Parent element 'root.Header' is not an instance of Collection (it's java.util.HashMap), unable to get children from it\n" +
+            Assertions.assertEquals("DATA_INVALID/PARENT_ELEMENT_TYPE_MISMATCH: Parent element '$.Header' is not an instance of Collection (it's java.util.HashMap), unable to get children from it\n" +
                     "{\n" +
                     "  Header: [    <-- Not Collection\n" +
                     "    {\n" +
@@ -417,7 +417,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .children()
                     .getAllAsMap();
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_MISSING/MISSING_EXPECTED_ELEMENT: Expected element 'root.Body.Customers[*].Orders[*]' does not exist\n" +
+            Assertions.assertEquals("DATA_MISSING/MISSING_EXPECTED_ELEMENT: Expected element '$.Body.Customers[*].Orders[*]' does not exist\n" +
                     "{\n" +
                     "  Body: {\n" +
                     "    Customers: [\n" +
@@ -440,7 +440,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .children()
                     .getAllAs(String.class);
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_INVALID/EXPECTED_ELEMENT_TYPE_MISMATCH: Expected element 'root.Body.Customers[0].Orders[0]' does not match the type you expected 'java.lang.String', it's class java.util.HashMap\n" +
+            Assertions.assertEquals("DATA_INVALID/EXPECTED_ELEMENT_TYPE_MISMATCH: Expected element '$.Body.Customers[0].Orders[0]' does not match the type you expected 'java.lang.String', it's class java.util.HashMap\n" +
                     "{\n" +
                     "  Body: {\n" +
                     "    Customers: [\n" +
@@ -471,7 +471,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .children()
                     .getAllAsMap();
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_MISSING/MISSING_PARENT_ELEMENT: Parent element 'root.Body.Customers[*]' does not exist, can not get child or children from it\n" +
+            Assertions.assertEquals("DATA_MISSING/MISSING_PARENT_ELEMENT: Parent element '$.Body.Customers[*]' does not exist, can not get child or children from it\n" +
                     "{\n" +
                     "  Body: {\n" +
                     "    Customers: [\n" +
@@ -502,7 +502,7 @@ public class ElementVisitorTest implements LambdaBuildable, ElementVisitable {
                     .children()
                     .getAllAsMap();
         } catch (Exception e) {
-            Assertions.assertEquals("DATA_MISSING/MISSING_PARENT_ELEMENT: Parent element 'root.Body.Customers[0]' is null, can not get child or children from it\n" +
+            Assertions.assertEquals("DATA_MISSING/MISSING_PARENT_ELEMENT: Parent element '$.Body.Customers[0]' is null, can not get child or children from it\n" +
                     "{\n" +
                     "  Body: {\n" +
                     "    Customers: [\n" +

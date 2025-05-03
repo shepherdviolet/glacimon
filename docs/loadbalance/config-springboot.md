@@ -66,28 +66,6 @@ glacispring:
       host-list:
         - http://127.0.0.1:8083
         - http://127.0.0.1:8084
-      # 健康主动探测间隔, 单位ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
-      initiative-inspect-interval: 5000
-      # true: 当所有后端都被阻断时不发送请求(抛异常), false: 当所有后端都被阻断时随机发送请求
-      return-null-if-all-blocked: false
-      # 启用HTTP Get方式进行主动健康探测, URL为http://127.0.0.1:8083/health和http://127.0.0.1:8084/health, (设置+telnet+改回TELNET方式, 设置+disable+禁用主动探测)
-      http-get-inspector-url-suffix: /health
-      # 健康被动探测阻断时长, 单位ms
-      passive-block-duration: 30000
-      # mediaType
-      media-type: application/json;charset=utf-8
-      # 编码
-      encode: utf-8
-      # Http请求头, 键值对格式参考: https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md
-      headers: User-Agent=GlacispringHttpClient,Referer=http://github.com
-      # 阻断后的恢复期系数, 恢复期时长 = blockDuration * recoveryCoefficient, 设置1则无恢复期
-      recovery-coefficient: 10
-      # 最大闲置连接数. 客户端会保持与服务端的连接, 保持数量由此设置决定, 直到闲置超过5分钟. 默认16
-      max-idle-connections: 16
-      # 异步方式最大线程数, 配置仅在异步方式有效, 同步无限制
-      max-threads: 256
-      # 异步方式每个后端最大线程数, 配置仅在异步方式有效, 同步无限制
-      max-threads-per-host: 256
       # 连接超时时间, 单位ms
       connect-timeout: 3000
       # 写超时时间, 单位ms
@@ -96,14 +74,32 @@ glacispring:
       read-timeout: 10000
       # 数据最大读取长度, 单位字节
       max-read-length: 10485760
+      # 编码
+      encode: utf-8
+      # mediaType
+      media-type: application/json;charset=utf-8
+      # Http请求头, 键值对格式参考: https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md
+      headers: User-Agent=GlacispringHttpClient,Referer=http://github.com
+      # 健康主动探测间隔, 单位ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
+      initiative-inspect-interval: 5000
+      # 启用HTTP Get方式进行主动健康探测, URL为http://127.0.0.1:8083/health和http://127.0.0.1:8084/health, (设置+telnet+改回TELNET方式, 设置+disable+禁用主动探测)
+      http-get-inspector-url-suffix: /health
+      # 健康被动探测阻断时长, 单位ms
+      passive-block-duration: 30000
+      # 阻断后的恢复期系数, 恢复期时长 = blockDuration * recoveryCoefficient, 设置1则无恢复期
+      recovery-coefficient: 10
+      # true: 当所有后端都被阻断时不发送请求(抛异常), false: 当所有后端都被阻断时随机发送请求
+      return-null-if-all-blocked: false
       # 当后端HTTP返回码为400或500时阻断后端
       http-code-need-block: 400,500
       # 当异常为指定类型时, 阻断后端 (这里配的两个异常仅作为演示, 无需设置它们, 因为它们已经包含在默认清单里了, 见源码GlaciHttpClient#needBlock)
       throwable-need-block: java.net.SocketException,java.net.SocketTimeoutException
-      # true启用TxTimer对请求耗时的统计(目前只支持同步方式), 详见https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md
-      tx-timer-enabled: false
-      # true: 开启简易的请求日志追踪(请求日志追加4位数追踪号), 默认false
-      request-trace-enabled: false
+      # 最大闲置连接数. 客户端会保持与服务端的连接, 保持数量由此设置决定, 直到闲置超过5分钟. 默认16
+      max-idle-connections: 16
+      # 异步方式最大线程数, 配置仅在异步方式有效, 同步无限制
+      max-threads: 256
+      # 异步方式每个后端最大线程数, 配置仅在异步方式有效, 同步无限制
+      max-threads-per-host: 256
       # 添加服务端证书的受信颁发者, 用于验证自签名的服务器(设置一个, 优先级高). 如果设置为"UNSAFE-TRUST-ALL-ISSUERS"则不校验服务端证书链, 信任一切服务端证书, 不安全!!!
       custom-server-issuer-encoded: '自签名的服务端根证书X509-Base64字符串'
       # 添加服务端证书的受信颁发者, 用于验证自签名的服务器(设置多个, 优先级低). 在properties中: glacispring.httpclients.custom-server-issuers-encoded[0]=...
@@ -133,6 +129,10 @@ glacispring:
       log-print-status-code: false
       # 日志开关: 输入参数, 默认false
       log-print-inputs: false
+      # true: 开启简易的请求日志追踪(请求日志追加4位数追踪号), 默认false
+      request-trace-enabled: false
+      # true启用TxTimer对请求耗时的统计(目前只支持同步方式), 详见https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md
+      tx-timer-enabled: false
 ```
 <br>
 <br>

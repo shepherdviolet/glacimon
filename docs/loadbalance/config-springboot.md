@@ -123,10 +123,17 @@ glacispring:
       verify-server-dn-by-custom-dn: 'CN=baidu.com,O=Beijing Baidu Netcom Science Technology Co.\, Ltd,OU=service operation department,L=beijing,ST=beijing,C=CN'
       # 使用指定的域名验证服务端证书的CN(方式二, 优先级低). 如果设置为"UNSAFE-TRUST-ALL-CN"则不校验CN, 所有合法证书都通过, 不安全!!!
       verify-server-cn-by-custom-hostname: 'www.baidu.com'
-      # 微调输出的日志内容(详见源码GlaciHttpClient). 例如: 不打印报文体 0x00011011
-      log-config: 0x00011111
+      # 日志开关: 请求URL, 默认true
+      log-print-url: true
+      # 日志开关: 阻断日志, 默认true
+      log-print-block: true
+      # 日志开关: 请求/响应报文体: 支持"byte[]/Bean/表单"请求, 支持"byte[]/Bean"响应, 默认false
+      log-print-payload: false
+      # 日志开关: 响应码, 默认false
+      log-print-status-code: false
+      # 日志开关: 输入参数, 默认false
+      log-print-inputs: false
 ```
-
 <br>
 <br>
 <br>

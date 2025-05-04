@@ -69,10 +69,6 @@
 * [MethodCaller : Get caller information of a method](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/MethodCaller.java)
 * [ClassPrinter : Print all information for a class / object](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/ClassPrinter.java)
 * [BeanInfoUtils : Get property information of Java Bean](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/BeanInfoUtils.java)
-* 
-#### [IO utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/io)
-
-* [HttpHeaders : HTTP header tools](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/net/HttpHeaders.java)
 
 #### [Data structure](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc)
 
@@ -82,6 +78,10 @@
 * [Bitmap / Bloom filter](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc/bitmap)
 
 #### [Network utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/net)
+
+* [HttpHeaders : HTTP header tools](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/net/HttpHeaders.java)
+
+#### [IO utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/io)
 
 #### [Math utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/math)
 

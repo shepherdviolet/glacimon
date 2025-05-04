@@ -72,7 +72,7 @@
 * 
 #### [IO utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/io)
 
-* [HttpHeaders : HTTP header tools](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/io/HttpHeaders.java)
+* [HttpHeaders : HTTP header tools](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/net/HttpHeaders.java)
 
 #### [Data structure](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc)
 

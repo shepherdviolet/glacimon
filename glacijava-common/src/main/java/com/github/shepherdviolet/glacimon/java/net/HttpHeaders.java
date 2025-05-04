@@ -39,7 +39,7 @@ import java.util.function.BiConsumer;
  * <p>连值'JoinedValue'系列方法:</p>
  * <p>'JoinedValue'系列方法利用'|'分隔符在一个String中储存多个value, 实现了在单值 Map &lt;String, String&gt; 中储存多值.</p>
  * <p>格式为:</p>
- * <p>Key=Value|Key=Value</p>
+ * <p>Key=Value|Value</p>
  * <p>转义符:</p>
  * <p>\|  ->  |</p>
  * <p>\\  ->  \</p>
@@ -99,7 +99,7 @@ public class HttpHeaders {
      * [特殊] 根据连值 Map &lt;String, String&gt; 创建
      * <p>与ofSingleValueMap不同的是, 这个方法支持读取连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
      * <p>格式为:</p>
-     * <p>Key=Value|Key=Value</p>
+     * <p>Key=Value|Value</p>
      * <p>转义符:</p>
      * <p>\|  ->  |</p>
      * <p>\\  ->  \</p>
@@ -192,7 +192,7 @@ public class HttpHeaders {
      *
      * <p>与add不同的是, 这个方法支持读取连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
      * <p>格式为:</p>
-     * <p>Key=Value|Key=Value</p>
+     * <p>Key=Value|Value</p>
      * <p>转义符:</p>
      * <p>\|  ->  |</p>
      * <p>\\  ->  \</p>
@@ -276,7 +276,7 @@ public class HttpHeaders {
      *
      * <p>与set不同的是, 这个方法支持读取连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
      * <p>格式为:</p>
-     * <p>Key=Value|Key=Value</p>
+     * <p>Key=Value|Value</p>
      * <p>转义符:</p>
      * <p>\|  ->  |</p>
      * <p>\\  ->  \</p>
@@ -343,7 +343,7 @@ public class HttpHeaders {
      *
      * <p>与getSingleValue和getMultiValue不同的是, 这个方法返回连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
      * <p>格式为:</p>
-     * <p>Key=Value|Key=Value</p>
+     * <p>Key=Value|Value</p>
      * <p>转义符:</p>
      * <p>\|  ->  |</p>
      * <p>\\  ->  \</p>
@@ -417,7 +417,7 @@ public class HttpHeaders {
      *
      * <p>与toSingleValueMap和toMultiValueMap不同的是, 这个方法返回连值(JoinedValue), 连值是指利用'|'分隔符在一个String中储存多个value</p>
      * <p>格式为:</p>
-     * <p>Key=Value|Key=Value</p>
+     * <p>Key=Value|Value</p>
      * <p>转义符:</p>
      * <p>\|  ->  |</p>
      * <p>\\  ->  \</p>

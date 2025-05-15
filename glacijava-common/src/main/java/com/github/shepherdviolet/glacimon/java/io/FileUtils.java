@@ -34,6 +34,33 @@ import java.util.List;
  */
 public class FileUtils {
 
+    public static void writeInputStream(File file, InputStream inputStream, boolean append, boolean closeInputStream) throws IOException {
+        if (inputStream == null) {
+            throw new IOException("InputStream is null");
+        }
+        try {
+            File dirFile = file.getParentFile();
+            if (dirFile != null && !dirFile.exists()) {
+                if (!dirFile.mkdirs()) {
+                    throw new IOException("Can not make directory before write InputStream to file, path:" + dirFile.getAbsolutePath());
+                }
+            }
+            // About suppressed warnings: FileOutputStream will be closed by BufferedWriter
+            try (OutputStream outputStream = new FileOutputStream(file, append)) {
+                byte[] buff = new byte[8192];
+                int length;
+                while ((length = inputStream.read(buff)) >= 0) {
+                    outputStream.write(buff, 0, length);
+                }
+                outputStream.flush();
+            }
+        } finally {
+            if (closeInputStream) {
+                CloseableUtils.closeQuiet(inputStream);
+            }
+        }
+    }
+
     /**
      * 向文件写入字节数据(仅限少量数据)
      * @param file 目标文件

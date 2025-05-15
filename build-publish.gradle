@@ -1,5 +1,5 @@
 /*
- * MAVEN上传(中心库/私有库/本地库)
+ * MAVEN上传(中心库/私有库/本地库) (旧的OSSRH协议)
  *
  * 必须:在C:\Users\<user>\.gradle\gradle.properties中配置如下信息
  * signing.keyId=XXXXXXXX(gpg -K 查看私钥ID)

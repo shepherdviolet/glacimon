@@ -69,7 +69,7 @@ allprojects {
 apply from: 'build-common.gradle'
 
 // Maven仓库上传配置
-apply from: 'build-upload.gradle'
+apply from: 'build-publish.gradle'
 
 // OWASP依赖漏洞(版本)检查
 apply from: 'build-owasp.gradle'

@@ -35,6 +35,13 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
+    // 忽略编译日志中的警告信息
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += [
+                '-Xlint:-options',     // 忽略关于过时选项的警告
+        ]
+    }
+
     // 可选: 测试案例随机并发跑(对大工程有益)
 //    tasks.withType(Test) {
 //        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
@@ -82,6 +89,13 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-s
 
         //Gradle9:Junit5必须显式依赖junit-platform-launcher:https://docs.gradle.org/8.8/userguide/upgrading_version_8.html#test_framework_implementation_dependencies
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    // 忽略编译日志中的警告信息
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += [
+                '-Xlint:-options',     // 忽略关于过时选项的警告
+        ]
     }
 
     // 可选: 测试案例随机并发跑(对大工程有益)

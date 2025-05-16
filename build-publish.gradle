@@ -128,13 +128,13 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
     if (upload_target != 'local') {
 
         // 编译时产生源代码jar
-        task sourcesJar(type: Jar) {
+        tasks.register('sourcesJar', Jar) {
             from sourceSets.main.allJava
             archiveClassifier.set 'sources'
         }
 
         // 编译时产生JAVADOC
-        task javadocJar(type: Jar) {
+        tasks.register('javadocJar', Jar) {
             from javadoc
             archiveClassifier.set 'javadoc'
         }

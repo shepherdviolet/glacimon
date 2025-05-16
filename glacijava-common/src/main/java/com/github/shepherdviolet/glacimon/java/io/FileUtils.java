@@ -22,7 +22,6 @@ package com.github.shepherdviolet.glacimon.java.io;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -291,22 +290,6 @@ public class FileUtils {
         boolean isContinue = consumer.consume(lineData.toByteArray(), outOfLimit);
         lineData.reset();
         return isContinue;
-    }
-
-    /**
-     * 判断当前运行环境是否能手动回收MappedByteBuffer, 无法手动回收的运行时建议不要随便使用MappedByteBuffer, 改用传统的IO.
-     * @return true:支持手动回收MappedByteBuffer
-     */
-    public static boolean isMappedByteBufferCanClean(){
-        return CloseableUtils.isMappedByteBufferCanClean();
-    }
-
-    /**
-     * 手动回收MappedByteBuffer.
-     * @return true:回收成功
-     */
-    public static boolean cleanMappedByteBuffer(ByteBuffer byteBuffer) {
-        return CloseableUtils.cleanMappedByteBuffer(byteBuffer);
     }
 
     /**

@@ -19,10 +19,10 @@
 
 package com.github.shepherdviolet.glacimon.java.datastruc.bitmap;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.DigestCipher;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 import java.util.UUID;
@@ -33,7 +33,6 @@ public class BitmapTest {
     @Test
     public void test(){
         test0(new HeapBitmap(1024));
-        test0(new DirectBitmap(1024));
         test0(new ConcurrentHeapBitmap(1024));
         test0(new SyncHeapBitmap(1024));
     }
@@ -101,7 +100,6 @@ public class BitmapTest {
         }
 //        System.out.println(ByteUtils.bytesToHex(expected));
         computeTest0(new HeapBitmap(data1), new HeapBitmap(data2), expected);
-        computeTest0(new DirectBitmap(data1), new DirectBitmap(data2), expected);
         computeTest0(new SyncHeapBitmap(data1), new SyncHeapBitmap(data2), expected);
         computeTest0(new ConcurrentHeapBitmap(data1), new ConcurrentHeapBitmap(data2), expected);
     }
@@ -214,11 +212,6 @@ public class BitmapTest {
         byte[] data3 = consistencyAsync(new SyncHeapBitmap(1000000));
         String hash3 = ByteUtils.bytesToHex(DigestCipher.digest(data3, DigestCipher.TYPE_SHA1));
         System.out.println("必须相同" + hash3);
-
-        // 单线程给DirectBitmap赋值
-        byte[] data4 = consistencySync(new DirectBitmap(1000000));
-        String hash4 = ByteUtils.bytesToHex(DigestCipher.digest(data4, DigestCipher.TYPE_SHA1));
-        System.out.println("必须相同" + hash4);
     }
 
     private static byte[] consistencySync(final BloomBitmap bitmap){

@@ -20,16 +20,12 @@
 package com.github.shepherdviolet.glacimon.java.crypto.base;
 
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
-import com.github.shepherdviolet.glacimon.java.misc.JavaPlatformUtils;
-import com.github.shepherdviolet.glacimon.java.io.FileUtils;
 
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.interfaces.RSAPrivateKey;
@@ -450,7 +446,7 @@ public class BaseCipher {
     }
 
     /**
-     * <p>用私钥对信息生成数字签名, 根据运行时环境选择使用NIO或IO方式</p>
+     * <p>用私钥对信息生成数字签名</p>
      *
      * @param file 需要签名的文件
      * @param privateKey 私钥
@@ -459,75 +455,6 @@ public class BaseCipher {
      * @return 数字签名
      */
     public static byte[] sign(File file, PrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        if (JavaPlatformUtils.PLATFORM == JavaPlatformUtils.Platform.DALVIK){
-            //安卓API11以上使用NIO, API10以下会很慢
-            if (JavaPlatformUtils.ANDROID_VERSION < CryptoConstants.ANDROID_API11){
-                return signIo(file, privateKey, signAlgorithm);
-            } else {
-                return signNio(file, privateKey, signAlgorithm);
-            }
-        }
-        //能手动回收MappedByteBuffer则使用NIO
-        if (FileUtils.isMappedByteBufferCanClean()){
-            return signNio(file, privateKey, signAlgorithm);
-        } else {
-            return signIo(file, privateKey, signAlgorithm);
-        }
-    }
-
-    /**
-     * <p>用私钥对信息生成数字签名(NIO)</p>
-     *
-     * 注意:非安卓平台使用该方法前, 请使用FileUtils.isMappedByteBufferCanClean()判断MappedByteBuffer是否能被手动回收,
-     * 如果isMappedByteBufferCanClean返回false, 建议使用signIo, 否则操作后, 文件将在一段时间内无法被读写删除<br/>
-     *
-     * 注意:安卓平台API11以上使用, API10以下会很慢<br/>
-     *
-     * @param file 需要签名的文件
-     * @param privateKey 私钥
-     * @param signAlgorithm 签名逻辑
-     *
-     * @return 数字签名
-     */
-    public static byte[] signNio(File file, PrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        FileInputStream inputStream = null;
-        FileChannel channel = null;
-        MappedByteBuffer byteBuffer = null;
-        try {
-            inputStream = new FileInputStream(file);
-            channel = inputStream.getChannel();
-            byteBuffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
-            Signature signature = generateSignatureInstance(privateKey, signAlgorithm);
-            signature.update(byteBuffer);
-            return signature.sign();
-        } finally {
-            if (inputStream != null){
-                try {
-                    inputStream.close();
-                } catch (IOException ignored) {
-                }
-            }
-            if (channel != null){
-                try {
-                    channel.close();
-                } catch (IOException ignored) {
-                }
-            }
-            //尝试将MappedByteBuffer回收, 解决后续文件无法被读写删除的问题
-            FileUtils.cleanMappedByteBuffer(byteBuffer);
-        }
-    }
-
-    /**
-     * <p>用私钥对信息生成数字签名(IO)</p>
-     *
-     * @param file 需要签名的文件
-     * @param privateKey 私钥
-     * @param signAlgorithm 签名逻辑
-     *
-     * @return 数字签名
-     */
-    public static byte[] signIo(File file, PrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
         FileInputStream inputStream = null;
         try {
             inputStream = new FileInputStream(file);
@@ -569,7 +496,7 @@ public class BaseCipher {
     }
 
     /**
-     * <p>用公钥验证数字签名, 根据运行时环境选择使用NIO或IO方式</p>
+     * <p>用公钥验证数字签名</p>
      *
      * @param file 被签名的文件
      * @param sign 数字签名
@@ -579,77 +506,6 @@ public class BaseCipher {
      * @return true:数字签名有效
      */
     public static boolean verify(File file, byte[] sign, PublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        if (JavaPlatformUtils.PLATFORM == JavaPlatformUtils.Platform.DALVIK){
-            //安卓API11以上使用NIO, API10以下会很慢
-            if (JavaPlatformUtils.ANDROID_VERSION < CryptoConstants.ANDROID_API11){
-                return verifyIo(file, sign, publicKey, signAlgorithm);
-            } else {
-                return verifyNio(file, sign, publicKey, signAlgorithm);
-            }
-        }
-        //能手动回收MappedByteBuffer则使用NIO
-        if (FileUtils.isMappedByteBufferCanClean()){
-            return verifyNio(file, sign, publicKey, signAlgorithm);
-        } else {
-            return verifyIo(file, sign, publicKey, signAlgorithm);
-        }
-    }
-
-    /**
-     * <p>用公钥验证数字签名(NIO)</p>
-     *
-     * 注意:非安卓平台使用该方法前, 请使用FileUtils.isMappedByteBufferCanClean()判断MappedByteBuffer是否能被手动回收,
-     * 如果isMappedByteBufferCanClean返回false, 建议使用verifyIo, 否则操作后, 文件将在一段时间内无法被读写删除<br/>
-     *
-     * 注意:安卓平台API11以上使用, API10以下会很慢<br/>
-     *
-     * @param file 被签名的文件
-     * @param sign 数字签名
-     * @param publicKey 公钥
-     * @param signAlgorithm 签名逻辑
-     *
-     * @return true:数字签名有效
-     */
-    public static boolean verifyNio(File file, byte[] sign, PublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        FileInputStream inputStream = null;
-        FileChannel channel = null;
-        MappedByteBuffer byteBuffer = null;
-        try {
-            inputStream = new FileInputStream(file);
-            channel = inputStream.getChannel();
-            byteBuffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
-            Signature signature = generateSignatureInstance(publicKey, signAlgorithm);
-            signature.update(byteBuffer);
-            return signature.verify(sign);
-        } finally {
-            if (inputStream != null){
-                try {
-                    inputStream.close();
-                } catch (IOException ignored) {
-                }
-            }
-            if (channel != null){
-                try {
-                    channel.close();
-                } catch (IOException ignored) {
-                }
-            }
-            //尝试将MappedByteBuffer回收, 解决后续文件无法被读写删除的问题
-            FileUtils.cleanMappedByteBuffer(byteBuffer);
-        }
-    }
-
-    /**
-     * <p>用公钥验证数字签名(IO)</p>
-     *
-     * @param file 被签名的文件
-     * @param sign 数字签名
-     * @param publicKey 公钥
-     * @param signAlgorithm 签名逻辑: RSACipher.SIGN_ALGORITHM_RSA_MD5 / RSACipher.SIGN_ALGORITHM_RSA_SHA1
-     *
-     * @return true:数字签名有效
-     */
-    public static boolean verifyIo(File file, byte[] sign, PublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
         FileInputStream inputStream = null;
         try {
             inputStream = new FileInputStream(file);

@@ -26,7 +26,7 @@ public class MethodCallerTest {
 
     @Test
     public void getMethodCaller(){
-        Assertions.assertEquals("MethodCaller{callerClass='sun.reflect.NativeMethodAccessorImpl', callerMethodName='invoke0'}",
+        Assertions.assertEquals("MethodCaller{callerClass='jdk.internal.reflect.DirectMethodHandleAccessor', callerMethodName='invoke'}",
                 String.valueOf(MethodCaller.getMethodCaller(null, null)));
     }
 

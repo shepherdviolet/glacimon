@@ -124,40 +124,13 @@ public class DigestCipher {
     }
 
     /**
-     * 摘要文件, 根据运行时环境选择使用NIO或IO方式
+     * 摘要文件
      * @param file 文件
      * @param type 摘要算法
      * @return 摘要bytes
      */
     public static byte[] digestFile(File file, String type) throws IOException {
         return BaseDigestCipher.digestFile(file, type);
-    }
-
-    /**
-     * 摘要文件NIO方式, 较快<br/>
-     *
-     * 注意:非安卓平台使用该方法前, 请使用FileUtils.isMappedByteBufferCanClean()判断MappedByteBuffer是否能被手动回收,
-     * 如果isMappedByteBufferCanClean返回false, 建议使用digestFileIo, 否则操作后, 文件将在一段时间内无法被读写删除<br/>
-     *
-     * 注意:安卓平台API11以上使用, API10以下会很慢<br/>
-     *
-     * @param file 文件
-     * @param type 摘要算法
-     * @return 摘要bytes
-     */
-    public static byte[] digestFileNio(File file, String type) throws IOException {
-        return BaseDigestCipher.digestFileNio(file, type);
-    }
-
-    /**
-     * 摘要文件普通方式, 阻塞较慢
-     *
-     * @param file 文件
-     * @param type 摘要算法
-     * @return 摘要bytes
-     */
-    public static byte[] digestFileIo(File file, String type) throws IOException {
-        return BaseDigestCipher.digestFileIo(file, type);
     }
 
 }

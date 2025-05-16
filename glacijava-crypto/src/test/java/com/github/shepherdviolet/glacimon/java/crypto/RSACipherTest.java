@@ -19,11 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.java.crypto;
 
-import com.github.shepherdviolet.glacimon.java.crypto.RSACipher;
-import com.github.shepherdviolet.glacimon.java.crypto.RSAKeyGenerator;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -64,30 +62,16 @@ public class RSACipherTest {
     }
 
     @Test
-    public void fileIoSignVerify() throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
+    public void fileSignVerify() throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
 
         RSAPrivateKey privateKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(PRIVATE));
         RSAPublicKey publicKey = RSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(PUBLIC));
 
-        byte[] sign = RSACipher.signIo(new File(TEST_FILE), privateKey, RSACipher.SIGN_ALGORITHM_RSA_MD5);
+        byte[] sign = RSACipher.sign(new File(TEST_FILE), privateKey, RSACipher.SIGN_ALGORITHM_RSA_MD5);
 
 //        System.out.println(ByteUtils.bytesToHex(sign));
 
-        Assertions.assertEquals(true, RSACipher.verifyIo(new File(TEST_FILE), sign, publicKey, RSACipher.SIGN_ALGORITHM_RSA_MD5));
-
-    }
-
-    @Test
-    public void fileNioSignVerify() throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
-
-        RSAPrivateKey privateKey = RSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(PRIVATE));
-        RSAPublicKey publicKey = RSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(PUBLIC));
-
-        byte[] sign = RSACipher.signNio(new File(TEST_FILE), privateKey, RSACipher.SIGN_ALGORITHM_RSA_SHA256);
-
-//        System.out.println(ByteUtils.bytesToHex(sign));
-
-        Assertions.assertEquals(true, RSACipher.verifyNio(new File(TEST_FILE), sign, publicKey, RSACipher.SIGN_ALGORITHM_RSA_SHA256));
+        Assertions.assertEquals(true, RSACipher.verify(new File(TEST_FILE), sign, publicKey, RSACipher.SIGN_ALGORITHM_RSA_MD5));
 
     }
 

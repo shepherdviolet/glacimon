@@ -19,11 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.java.crypto;
 
-import com.github.shepherdviolet.glacimon.java.crypto.ECDSACipher;
-import com.github.shepherdviolet.glacimon.java.crypto.ECDSAKeyGenerator;
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,30 +59,16 @@ public class ECDSACipherTest {
     }
 
     @Test
-    public void fileIoSignVerify() throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
+    public void fileSignVerify() throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
 
         ECPrivateKey privateKey = ECDSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(PRIVATE));
         ECPublicKey publicKey = ECDSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(PUBLIC));
 
-        byte[] sign = ECDSACipher.signIo(new File(TEST_FILE), privateKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256);
+        byte[] sign = ECDSACipher.sign(new File(TEST_FILE), privateKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256);
 
 //        System.out.println(ByteUtils.bytesToHex(sign));
 
-        Assertions.assertEquals(true, ECDSACipher.verifyIo(new File(TEST_FILE), sign, publicKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
-
-    }
-
-    @Test
-    public void fileNioSignVerify() throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
-
-        ECPrivateKey privateKey = ECDSAKeyGenerator.generatePrivateKeyByPKCS8(Base64Utils.decode(PRIVATE));
-        ECPublicKey publicKey = ECDSAKeyGenerator.generatePublicKeyByX509(Base64Utils.decode(PUBLIC));
-
-        byte[] sign = ECDSACipher.signNio(new File(TEST_FILE), privateKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256);
-
-//        System.out.println(ByteUtils.bytesToHex(sign));
-
-        Assertions.assertEquals(true, ECDSACipher.verifyNio(new File(TEST_FILE), sign, publicKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
+        Assertions.assertEquals(true, ECDSACipher.verify(new File(TEST_FILE), sign, publicKey, ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256));
 
     }
 

@@ -96,7 +96,7 @@ public class ECDSACipher {
     }
 
     /**
-     * <p>用私钥对信息生成数字签名, 根据运行时环境选择使用NIO或IO方式</p>
+     * <p>用私钥对信息生成数字签名</p>
      *
      * @param file 需要签名的文件
      * @param privateKey 私钥(ECDSA)
@@ -109,43 +109,6 @@ public class ECDSACipher {
      */
     public static byte[] sign(File file, PrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
         return BaseCipher.sign(file, privateKey, signAlgorithm);
-    }
-
-    /**
-     * <p>用私钥对信息生成数字签名(NIO)</p>
-     *
-     * 注意:非安卓平台使用该方法前, 请使用FileUtils.isMappedByteBufferCanClean()判断MappedByteBuffer是否能被手动回收,
-     * 如果isMappedByteBufferCanClean返回false, 建议使用signIo, 否则操作后, 文件将在一段时间内无法被读写删除<br/>
-     *
-     * 注意:安卓平台API11以上使用, API10以下会很慢<br/>
-     *
-     * @param file 需要签名的文件
-     * @param privateKey 私钥
-     * @param signAlgorithm 签名逻辑: ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256
-     *
-     * @return 数字签名
-     * @throws NoSuchAlgorithmException 无效的signAlgorithm
-     * @throws InvalidKeyException 无效的私钥
-     * @throws SignatureException 签名异常
-     */
-    public static byte[] signNio(File file, PrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        return BaseCipher.signNio(file, privateKey, signAlgorithm);
-    }
-
-    /**
-     * <p>用私钥对信息生成数字签名(IO)</p>
-     *
-     * @param file 需要签名的文件
-     * @param privateKey 私钥
-     * @param signAlgorithm 签名逻辑: ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256
-     *
-     * @return 数字签名
-     * @throws NoSuchAlgorithmException 无效的signAlgorithm
-     * @throws InvalidKeyException 无效的私钥
-     * @throws SignatureException 签名异常
-     */
-    public static byte[] signIo(File file, PrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        return BaseCipher.signIo(file, privateKey, signAlgorithm);
     }
 
     /**
@@ -167,7 +130,7 @@ public class ECDSACipher {
     }
 
     /**
-     * <p>用公钥验证数字签名, 根据运行时环境选择使用NIO或IO方式</p>
+     * <p>用公钥验证数字签名</p>
      *
      * @param file 被签名的文件
      * @param sign 数字签名
@@ -181,47 +144,6 @@ public class ECDSACipher {
      */
     public static boolean verify(File file, byte[] sign, PublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
         return BaseCipher.verify(file, sign, publicKey, signAlgorithm);
-    }
-
-    /**
-     * <p>用公钥验证数字签名(NIO)</p>
-     *
-     * 注意:非安卓平台使用该方法前, 请使用FileUtils.isMappedByteBufferCanClean()判断MappedByteBuffer是否能被手动回收,
-     * 如果isMappedByteBufferCanClean返回false, 建议使用signIo, 否则操作后, 文件将在一段时间内无法被读写删除<br/>
-     *
-     * 注意:安卓平台API11以上使用, API10以下会很慢<br/>
-     *
-     * @param file 被签名的文件
-     * @param sign 数字签名
-     * @param publicKey 公钥
-     * @param signAlgorithm 签名逻辑: ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256
-     *
-     * @return true:数字签名有效
-     * @throws NoSuchAlgorithmException 无效的signAlgorithm
-     * @throws InvalidKeyException 无效的私钥
-     * @throws SignatureException 签名异常
-     *
-     */
-    public static boolean verifyNio(File file, byte[] sign, PublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        return BaseCipher.verifyNio(file, sign, publicKey, signAlgorithm);
-    }
-
-    /**
-     * <p>用公钥验证数字签名(IO)</p>
-     *
-     * @param file 被签名的文件
-     * @param sign 数字签名
-     * @param publicKey 公钥
-     * @param signAlgorithm 签名逻辑: ECDSACipher.SIGN_ALGORITHM_ECDSA_SHA256
-     *
-     * @return true:数字签名有效
-     * @throws NoSuchAlgorithmException 无效的signAlgorithm
-     * @throws InvalidKeyException 无效的私钥
-     * @throws SignatureException 签名异常
-     *
-     */
-    public static boolean verifyIo(File file, byte[] sign, PublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-        return BaseCipher.verifyIo(file, sign, publicKey, signAlgorithm);
     }
 
 }

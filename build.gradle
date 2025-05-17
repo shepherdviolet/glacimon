@@ -39,6 +39,7 @@ buildscript {
     // 构建脚本用的依赖(插件)
     dependencies {
         classpath localGroovy() // [Gradle Advanced Modularity] Depends on groovy, avoid importing groovy package errors
+        classpath "tech.yanand.maven-central-publish:tech.yanand.maven-central-publish.gradle.plugin:$version_yanan" // [Central Portal|第三方发布插件] https://github.com/yananhub/flying-gradle-plugin
         classpath "org.owasp:dependency-check-gradle:$version_owasp"
 //        classpath "org.springframework.boot:spring-boot-gradle-plugin:$version_spring_boot"
     }

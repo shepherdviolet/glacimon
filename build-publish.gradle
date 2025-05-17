@@ -1,26 +1,31 @@
 /*
- * MAVEN上传(中心库/私有库/本地库) (旧的OSSRH协议)
+ * MAVEN上传(中心库/私有库/本地库)
  *
- * 必须:在C:\Users\<user>\.gradle\gradle.properties中配置如下信息
- * signing.keyId=XXXXXXXX(gpg -K 查看私钥ID)
- * signing.password=XXXXXXXX(私钥保存的秘钥)
+ * (1) 必要配置文件: C:\Users\<user>\.gradle\gradle.properties
+ * # 必要:中心库配置
+ * signing.keyId=<私钥ID> (gpg -K 查看)
+ * signing.password=<私钥文件的密码>
  * signing.secretKeyRingFile=C:/Users/<user>/AppData/Roaming/gnupg/secring.gpg
- * sonatype_user=sonatype用户名
- * sonatype_password=sonatype密码
+ * sonatype_user=<中心库UserToken用户名>
+ * sonatype_password=<中心库UserToken密码>
+ * # 可选:私有库配置
+ * private_release_url=<私有库RELEASE地址>
+ * private_snapshot_url=<私有库SNAPSHOT地址>
+ * private_user=<私有库用户名>
+ * private_password=<私有库密码>
  *
- * 可选:私有库配置
- * private_release_url=私有库RELEASE地址
- * private_snapshot_url=私有库SNAPSHOT地址
- * private_user=私有库用户名
- * private_password=私有库密码
+ * (2) 在gradle-local.properties中选择上传到中心库/私有库/本地库
  *
- * 在gradle-local.properties中选择上传到中心库还是本地库
+ * (3) 发布
+ * [发布到中心库] 选择 'upload_target=maven', 刷新Gradle, 执行 'gradlew publishToMavenCentralPortal'
+ * [发布到私有库] 选择 'upload_target=private', 刷新Gradle, 执行 'gradlew publish'
+ * [发布到~/.m2库] 选择 'upload_target=local', 刷新Gradle, 执行 'gradlew publishToMavenLocal'
  *
- * 发布到指定库: gradlew publish
- * 发布到~/.m2库: gradlew publishToMavenLocal
- *
- * 参考文档:https://docs.gradle.org/current/userguide/publishing_maven.html
- * 参考文档:https://docs.gradle.org/current/userguide/signing_plugin.html#signing_plugin
+ * maven-publish文档:https://docs.gradle.org/current/userguide/publishing_maven.html
+ * signing文档:https://docs.gradle.org/current/userguide/signing_plugin.html#signing_plugin
+ * 老协议OSSRH迁移到CentralPortal文档: https://central.sonatype.org/faq/what-is-different-between-central-portal-and-legacy-ossrh/#process-to-migrate
+ * 第三方发布插件: https://github.com/yananhub/flying-gradle-plugin
+ * 关于中央库UserToken: sonatype_user和sonatype_password不是中心库账户, 是UserToken, 在https://central.sonatype.com/account产生
  */
 
 // 库模块/BOM模块
@@ -28,6 +33,23 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
 
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
+
+    // [Central Portal|第三方发布插件] https://github.com/yananhub/flying-gradle-plugin (此插件要求JDK版本17+)
+    // 老协议OSSRH迁移到CentralPortal的临时解决方案, 利用maven-publish构建/生成文档/签名, 发布到本地repository_publishTempPath
+    // 这个第三方发布插件将本地repository_publishTempPath中的文件打包上传到中心库
+    if (upload_target == 'maven') {
+
+        apply plugin: 'tech.yanand.maven-central-publish'
+
+        mavenCentral {
+            // "用户名:密码".getBytes() 然后转为BASE64, 注意用户名密码不是中心库账户, 是UserToken, 在https://central.sonatype.com/account产生
+            authToken = (sonatype_user + ':' + sonatype_password).bytes.encodeBase64().toString()
+            // USER_MANAGED:只上传不自动发布, AUTOMATIC:自动发布
+            publishingType = 'USER_MANAGED'
+            // 每次上传等待服务端处理完成的时间, 秒
+            maxWait = 600
+        }
+    }
 
     // 发布配置
     publishing {
@@ -69,14 +91,18 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'public-spri
             // 配置: 此处可配置仓库地址
             maven {
                 if (upload_target == 'maven') {
-                    // 中央库
-                    def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-                    def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
-                    url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-                    credentials {
-                        username = sonatype_user
-                        password = sonatype_password
-                    }
+                    // 中心库
+                    // 先用maven-publish构建/生成文档/签名, 发布到本地repository_publishTempPath
+                    // 第三方发布插件将本地repository_publishTempPath中的文件打包上传到中心库
+                    url = repository_publishTempPath
+                    // 原OSSRH协议的中心库发布配置 (废弃)
+//                    def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+//                    def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+//                    url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+//                    credentials {
+//                        username = sonatype_user
+//                        password = sonatype_password
+//                    }
                 } else if (upload_target == 'private') {
                     // 私有库, 例如: http://localhost:8081/nexus/content/repositories/reponame/
                     def releasesRepoUrl = private_release_url

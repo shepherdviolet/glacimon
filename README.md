@@ -1,4 +1,4 @@
-# Glacimon 2025.3.0
+# Glacimon 2025.4.0
 
 * Glacimon [ɡleɪsɪmən]: Comprehensive Java library, JDK8+
 * [Github Home](https://github.com/shepherdviolet/glacimon)

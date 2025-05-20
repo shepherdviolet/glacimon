@@ -131,7 +131,7 @@ glacispring:
       log-print-inputs: false
       # true: 开启简易的请求日志追踪(请求日志追加4位数追踪号), 默认false
       request-trace-enabled: false
-      # true启用TxTimer对请求耗时的统计(目前只支持同步方式), 详见https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md
+      # true启用TxTimer统计请求耗时(只支持同步方式), 需手动依赖glacispring-txtimer, 详见https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md
       tx-timer-enabled: false
 ```
 <br>

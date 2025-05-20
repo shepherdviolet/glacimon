@@ -161,7 +161,7 @@ public class HttpClientSettings {
 
     /**
      * [可运行时修改]
-     * 启用/禁用TxTimer统计请求耗时(暂时只支持同步方式), 默认禁用
+     * 启用/禁用TxTimer统计请求耗时(只支持同步方式), 默认禁用, 需手动依赖glacispring-txtimer
      */
     private boolean txTimerEnabled = false;
 

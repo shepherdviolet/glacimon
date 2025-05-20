@@ -181,7 +181,6 @@
 ### Module: glacispring-httpclient
 
 [![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
-[![Depends](https://img.shields.io/badge/Depends-glacispring--txtimer-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-okhttp-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:com.squareup.okhttp3%20a:okhttp)
 
 > Provides a solution for http client

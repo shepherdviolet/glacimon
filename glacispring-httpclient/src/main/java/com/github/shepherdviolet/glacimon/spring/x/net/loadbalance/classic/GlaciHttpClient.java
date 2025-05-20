@@ -24,13 +24,11 @@ import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.net.HttpHeaders;
-import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.TimerContext;
-import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimer;
-import com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.noref.NoRefTxTimerFactory;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.ssl.*;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.statistics.NoDepTxTimerProxy;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.EmptyLoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.HttpGetLoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
@@ -133,8 +131,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     private volatile Exception clientCreateException;
     private AtomicBoolean settingsLock = new AtomicBoolean(false);
     private SettingsSpinLock settingsSpinLock = new SettingsSpinLock();
-
-    private NoRefTxTimer txTimer;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,14 +471,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             if (client == null) {
                 throw new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)");
             }
-            NoRefTxTimer txTimer = client.txTimer;
-            if (txTimer != null) {
-                try (TimerContext timerContext = txTimer.entry(TXTIMER_GROUP_SEND + client.settings.tag, urlSuffix)) {
-                    return client.responseToBean(client.requestSend(this), type, this);
-                }
-            } else {
-                return client.responseToBean(client.requestSend(this), type, this);
-            }
+            return client.responseToBean(client.requestSend(this), type, this);
         }
 
         /**
@@ -500,14 +489,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             if (client == null) {
                 throw new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)");
             }
-            NoRefTxTimer txTimer = client.txTimer;
-            if (txTimer != null) {
-                try (TimerContext timerContext = txTimer.entry(TXTIMER_GROUP_SEND + client.settings.tag, urlSuffix)) {
-                    return client.responseToBytes(client.requestSend(this), this);
-                }
-            } else {
-                return client.responseToBytes(client.requestSend(this), this);
-            }
+            return client.responseToBytes(client.requestSend(this), this);
         }
 
         /**
@@ -525,14 +507,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             if (client == null) {
                 throw new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)");
             }
-            NoRefTxTimer txTimer = client.txTimer;
-            if (txTimer != null) {
-                try (TimerContext timerContext = txTimer.entry(TXTIMER_GROUP_SEND + client.settings.tag, urlSuffix)) {
-                    return client.responseToInputStream(client.requestSend(this));
-                }
-            } else {
-                return client.responseToInputStream(client.requestSend(this));
-            }
+            return client.responseToInputStream(client.requestSend(this));
         }
 
         /**
@@ -550,14 +525,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             if (client == null) {
                 throw new RequestBuildException("Missing GlaciHttpClient instance, has been destroyed (cleaned by gc)");
             }
-            NoRefTxTimer txTimer = client.txTimer;
-            if (txTimer != null) {
-                try (TimerContext timerContext = txTimer.entry(TXTIMER_GROUP_CONNECT + client.settings.tag, urlSuffix)) {
-                    return client.requestSend(this);
-                }
-            } else {
-                return client.requestSend(this);
-            }
+            return client.requestSend(this);
         }
 
         /**
@@ -651,10 +619,23 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         }
         request.isSend = true;
 
-        if (request.isPost) {
-            return syncPost(request);
+        if (settings.txTimerEnabled) {
+            Object timerContext = NoDepTxTimerProxy.entry(TXTIMER_GROUP_SEND + settings.tag, request.urlSuffix);
+            try {
+                if (request.isPost) {
+                    return syncPost(request);
+                } else {
+                    return syncGet(request);
+                }
+            } finally {
+                NoDepTxTimerProxy.exit(timerContext);
+            }
         } else {
-            return syncGet(request);
+            if (request.isPost) {
+                return syncPost(request);
+            } else {
+                return syncGet(request);
+            }
         }
     }
 
@@ -1815,6 +1796,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         private boolean logPrintStatusCode = false; //日志:响应码
         private boolean logPrintInputs = false; //日志:输入参数
 
+        private boolean txTimerEnabled = false;
+
         private Settings(){
         }
 
@@ -1845,7 +1828,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                     ", logBlock=" + logPrintBlock +
                     ", logPayload=" + logPrintPayload +
                     ", logStatus=" + logPrintStatusCode +
-                    ", logInputs=" + logPrintInputs;
+                    ", logInputs=" + logPrintInputs +
+                    ", txTimerEnabled=" + txTimerEnabled;
         }
     }
 
@@ -2612,14 +2596,10 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
     /**
      * [可运行时修改]
-     * 启用/禁用TxTimer统计请求耗时(暂时只支持同步方式), 默认禁用
+     * 启用/禁用TxTimer统计请求耗时(只支持同步方式), 默认禁用, 需手动依赖glacispring-txtimer
      */
     public GlaciHttpClient setTxTimerEnabled(boolean enabled){
-        if (enabled && txTimer == null) {
-            txTimer = NoRefTxTimerFactory.newInstance();
-        } else if (!enabled){
-            txTimer = null;
-        }
+        settings.txTimerEnabled = enabled;
         return this;
     }
 

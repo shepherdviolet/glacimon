@@ -250,6 +250,77 @@ public class BeanInfoUtils {
             return writeMethod;
         }
 
+        /**
+         * 获取属性值
+         * @param bean Bean对象
+         * @param throwOnFailure 属性获取失败时, 是否抛出异常, true:抛出异常, false:返回null
+         * @throws RuntimeException 属性获取失败 (throwOnFailure=true时)
+         */
+        @SuppressWarnings("unchecked")
+        public <T> T get(Object bean, boolean throwOnFailure) {
+            if (bean == null) {
+                if (throwOnFailure) {
+                    throw new RuntimeException("Bean is null");
+                } else {
+                    return null;
+                }
+            }
+            if (readMethod == null) {
+                if (throwOnFailure) {
+                    throw new RuntimeException("Property '" + propertyName +
+                            "' has no read method, bean: " + bean.getClass().getName());
+                } else {
+                    return null;
+                }
+            }
+            try {
+                return (T) readMethod.invoke(bean);
+            } catch (Throwable t) {
+                if (throwOnFailure) {
+                    throw new RuntimeException("Failed to get property '" + propertyName +
+                            "' from bean '" + bean.getClass().getName() + "'", t);
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        public void set(Object bean, Object value, boolean throwOnFailure) {
+            if (bean == null) {
+                if (throwOnFailure) {
+                    throw new RuntimeException("Bean is null");
+                } else {
+                    return;
+                }
+            }
+            if (value != null && !propertyClass.isAssignableFrom(value.getClass())) {
+                if (throwOnFailure) {
+                    throw new RuntimeException("Property '" + propertyName + "' in bean '" + bean.getClass().getName() +
+                            "' is of type '" + propertyClass.getName() + "', but '" + value.getClass() + "' was provided");
+                } else {
+                    return;
+                }
+            }
+            if (writeMethod == null) {
+                if (throwOnFailure) {
+                    throw new RuntimeException("Property '" + propertyName +
+                            "' has no write method, bean: " + bean.getClass().getName());
+                } else {
+                    return;
+                }
+            }
+            try {
+                writeMethod.invoke(bean, value);
+            } catch (Throwable t) {
+                if (throwOnFailure) {
+                    throw new RuntimeException("Failed to set property '" + propertyName +
+                            "' to bean '" + bean.getClass().getName() + "'", t);
+                } else {
+                    return;
+                }
+            }
+        }
+
         @Override
         public String toString() {
             return "PropertyInfo{" +

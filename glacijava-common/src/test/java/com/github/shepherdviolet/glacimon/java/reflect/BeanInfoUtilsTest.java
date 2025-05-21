@@ -47,6 +47,45 @@ public class BeanInfoUtilsTest {
 //        System.out.println(stringBuilder.toString());
     }
 
+    @Test
+    public void setAndGet() throws IntrospectionException {
+        Bean2<String> bean2 = new Bean2<>();
+        Assertions.assertEquals("Bean2{a=null, " +
+                        "b=null, " +
+                        "c=null, " +
+                        "d=null, " +
+                        "e=null, " +
+                        "f=0, " +
+                        "string='null', " +
+                        "string2='null', " +
+                        "string3='null', " +
+                        "string4='null', " +
+                        "list=null, " +
+                        "int=0}",
+                bean2.toString());
+
+        Map<String, BeanInfoUtils.PropertyInfo> propertyInfos = new TreeMap<>(BeanInfoUtils.getPropertyInfos(Bean2.class));
+        propertyInfos.get("string").set(bean2, "i am string", false);
+        propertyInfos.get("string2").set(null, "bean is null", false);
+        propertyInfos.get("string3").set(bean2, "type not match".getBytes(), false);
+        propertyInfos.get("e").set(bean2, "no write method", false);
+        Assertions.assertEquals("Bean2{a=null, " +
+                        "b=null, " +
+                        "c=null, " +
+                        "d=null, " +
+                        "e=null, " +
+                        "f=0, " +
+                        "string='i am string', " +
+                        "string2='null', " +
+                        "string3='null', " +
+                        "string4='null', " +
+                        "list=null, " +
+                        "int=0}",
+                bean2.toString());
+
+        Assertions.assertEquals("i am string", propertyInfos.get("string").get(bean2, false));
+    }
+
 //    public static void main(String[] args) throws IntrospectionException {
 //        Map<String, BeanInfoUtils.PropertyInfo> propertyInfos = null;
 //        long time = System.currentTimeMillis();
@@ -59,42 +98,84 @@ public class BeanInfoUtilsTest {
 
     public static class Bean0 <A, B, C, D, E> {
 
+        protected A a;
+        protected B b;
+        protected C c;
+        protected D d;
+        protected E e;
+        protected String string;
+        protected String string2;
+        protected String string3;
+        protected String string4;
+        protected List<String> list;
+        protected int i;
+
         public A getA(){
             return null;
         }
 
         public void setA(A i) {
+            this.a = i;
         }
 
         public B getB(){
-            return null;
+            return this.b;
         }
 
         public void setC(C i) {
+            this.c = i;
         }
 
         public void setD(D i) {
+            this.d = i;
         }
 
         public E getE(){
-            return null;
+            return this.e;
         }
 
         public String getString(){
-            return null;
+            return this.string;
         }
 
         public void setString(String i) {
+            this.string = i;
+        }
+
+        public String getString2(){
+            return this.string2;
+        }
+
+        public void setString2(String i) {
+            this.string2 = i;
+        }
+
+        public String getString3(){
+            return this.string3;
+        }
+
+        public void setString3(String i) {
+            this.string3= i;
+        }
+
+        public String getString4(){
+            return this.string4;
+        }
+
+        public void setString4(String i) {
+            this.string4 = i;
         }
 
         public List<String> getList(){
-            return null;
+            return this.list;
         }
 
         public void setList(List<String> i) {
+            this.list = i;
         }
 
         public void setInt(long i) {
+            this.i = (int) i;
         }
 
     }
@@ -103,33 +184,59 @@ public class BeanInfoUtilsTest {
 
         @Override
         public Map<String, AA[]>[] getA() {
-            return null;
+            return a;
         }
 
         public void setB(Collection<Long> i){
+            b = i;
         }
 
         public void setString(byte[] i) {
+            string = new String(i);
         }
 
-        public int getInt(){
-            return 0;
+        public int getInt() {
+            return i;
         }
 
     }
 
     public static class Bean2 <AAA> extends Bean1<Set<Runnable>, AAA> {
 
-        private String noMethodProp;
+        public String noMethodProp;
+
+        private String protectedProp;
+        private int f;
+
+        protected String getProtectedProp() {
+            return protectedProp;
+        }
 
         public Integer getF() {
-            return null;
+            return f;
         }
 
         public void setF(String f) {
-
+            this.f = Integer.parseInt(f);
         }
 
+        @Override
+        public String toString() {
+            return "Bean2{" +
+                    "a=" + a +
+                    ", b=" + b +
+                    ", c=" + c +
+                    ", d=" + d +
+                    ", e=" + e +
+                    ", f=" + f +
+                    ", string='" + string + '\'' +
+                    ", string2='" + string2 + '\'' +
+                    ", string3='" + string3 + '\'' +
+                    ", string4='" + string4 + '\'' +
+                    ", list=" + list +
+                    ", int=" + i +
+                    '}';
+        }
     }
 
 }

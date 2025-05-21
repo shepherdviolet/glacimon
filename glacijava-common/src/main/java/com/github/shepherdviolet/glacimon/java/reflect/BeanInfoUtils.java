@@ -19,6 +19,8 @@
 
 package com.github.shepherdviolet.glacimon.java.reflect;
 
+import com.github.shepherdviolet.glacimon.java.conversion.PrimitiveUtils;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -209,6 +211,16 @@ public class BeanInfoUtils {
             this.propertyType = propertyType;
             this.readMethod = readMethod;
             this.writeMethod = writeMethod;
+
+            try {
+                if (readMethod != null) {
+                    readMethod.setAccessible(true);
+                }
+                if (writeMethod != null) {
+                    writeMethod.setAccessible(true);
+                }
+            } catch (Throwable ignore) {
+            }
         }
 
         /**
@@ -293,7 +305,7 @@ public class BeanInfoUtils {
                     return;
                 }
             }
-            if (value != null && !propertyClass.isAssignableFrom(value.getClass())) {
+            if (value != null && !PrimitiveUtils.toWrapperType(propertyClass).isAssignableFrom(value.getClass())) {
                 if (throwOnFailure) {
                     throw new RuntimeException("Property '" + propertyName + "' in bean '" + bean.getClass().getName() +
                             "' is of type '" + propertyClass.getName() + "', but '" + value.getClass() + "' was provided");

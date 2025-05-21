@@ -39,6 +39,7 @@ public class BeanInfoUtilsTest {
                         "PropertyInfo{propertyName='c', propertyClass=interface java.util.Map, propertyType=java.util.Map<java.lang.String, java.util.List<java.lang.String>>, readMethod=null, writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.setC(java.lang.Object)}\n" +
                         "PropertyInfo{propertyName='d', propertyClass=interface java.util.Set, propertyType=java.util.Set<java.lang.Runnable>, readMethod=null, writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.setD(java.lang.Object)}\n" +
                         "PropertyInfo{propertyName='e', propertyClass=class java.lang.Object, propertyType=class java.lang.Object, readMethod=public java.lang.Object com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.getE(), writeMethod=null}\n" +
+                        "PropertyInfo{propertyName='f', propertyClass=class java.lang.Integer, propertyType=class java.lang.Integer, readMethod=public java.lang.Integer com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean2.getF(), writeMethod=null}\n" +
                         "PropertyInfo{propertyName='int', propertyClass=int, propertyType=int, readMethod=public int com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean1.getInt(), writeMethod=null}\n" +
                         "PropertyInfo{propertyName='list', propertyClass=interface java.util.List, propertyType=java.util.List<java.lang.String>, readMethod=public java.util.List com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.getList(), writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.setList(java.util.List)}\n" +
                         "PropertyInfo{propertyName='string', propertyClass=class java.lang.String, propertyType=class java.lang.String, readMethod=public java.lang.String com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.getString(), writeMethod=public void com.github.shepherdviolet.glacimon.java.reflect.BeanInfoUtilsTest$Bean0.setString(java.lang.String)}\n",
@@ -118,6 +119,16 @@ public class BeanInfoUtilsTest {
     }
 
     public static class Bean2 <AAA> extends Bean1<Set<Runnable>, AAA> {
+
+        private String noMethodProp;
+
+        public Integer getF() {
+            return null;
+        }
+
+        public void setF(String f) {
+
+        }
 
     }
 

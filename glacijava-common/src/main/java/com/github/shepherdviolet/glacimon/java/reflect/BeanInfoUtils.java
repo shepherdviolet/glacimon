@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Bean info utils
+ * JavaBean信息获取工具
  *
  * @author shepherdviolet
  */
@@ -39,9 +39,9 @@ public class BeanInfoUtils {
     private static final Map<Class<?>, Object> CACHE = new ConcurrentHashMap<>(128);
 
     /**
-     * Get property info of Java Bean, With cache
+     * 获取JavaBean信息, 带缓存
      *
-     * @param beanClass Bean class
+     * @param beanClass JavaBean类
      * @throws IntrospectionException Inspect error
      */
     public static Map<String, PropertyInfo> getPropertyInfos(Class<?> beanClass) throws IntrospectionException {
@@ -49,10 +49,10 @@ public class BeanInfoUtils {
     }
 
     /**
-     * Get property info of Java Bean
+     * 获取JavaBean信息
      *
-     * @param beanClass Bean class
-     * @param cacheEnabled Is cache enabled
+     * @param beanClass JavaBean类
+     * @param cacheEnabled true:带缓存, false:不带缓存
      * @throws IntrospectionException Inspect error
      */
     @SuppressWarnings("unchecked")
@@ -192,6 +192,9 @@ public class BeanInfoUtils {
         return componentType;
     }
 
+    /**
+     * JavaBean属性信息
+     */
     public static class PropertyInfo {
 
         private final String propertyName;
@@ -209,39 +212,39 @@ public class BeanInfoUtils {
         }
 
         /**
-         * Bean property name, Not null
+         * 属性名称, 非空.
          */
         public String getPropertyName() {
             return propertyName;
         }
 
         /**
-         * Class of property, Not null
+         * 属性类型, 非空.
+         * 如果只有读方法, 属性类型以读方法返回类型为准.
+         * 如果只有读方法, 属性类型以写方法入参类型为准.
+         * 如果同时存在读写方法, 属性类型以读方法返回类型为准, 如果此时写方法入参类型不同, 则该写方法无效 (PropertyInfo#getWriteMethod返回null).
          */
         public Class<?> getPropertyClass() {
             return propertyClass;
         }
 
         /**
-         * Generic type of property, Not null, instance of Class / ParameterizedType / GenericArrayType
+         * 属性原始类型(Type), 非空, 可能为: Class (普通类) / ParameterizedType (带泛型参数的类) / GenericArrayType (带泛型数组的类).
          */
         public Type getPropertyType() {
             return propertyType;
         }
 
         /**
-         * Read method, Nullable, But one of the two methods must not be null.
+         * 读(get/is)方法, 可能为空, 但读/写方法必有一个非空.
          */
         public Method getReadMethod() {
             return readMethod;
         }
 
         /**
-         * Write method, Nullable, But one of the two methods must not be null.
-         *
-         * The input parameter type of the write method must be consistent with the property type.
-         * Because if there is a setter method whose input parameter type is different from the property type,
-         * it is not considered a write method here.
+         * 写(set)方法, 可能为空, 但读/写方法必有一个非空.
+         * 如果同时存在读写方法, 属性类型以读方法返回类型为准, 如果此时写方法入参类型不同, 则该写方法无效 (PropertyInfo#getWriteMethod返回null).
          */
         public Method getWriteMethod() {
             return writeMethod;

@@ -25,7 +25,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Key忽略大小写的HashMap
+ * <p>Key大小写不敏感的HashMap</p>
+ *
+ * 注意: key不支持null (存取无效, 但不会报错)
  *
  * @author shepherdviolet
  */

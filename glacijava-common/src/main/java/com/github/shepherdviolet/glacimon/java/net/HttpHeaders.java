@@ -119,7 +119,7 @@ public class HttpHeaders {
 
 
 
-    private final IgnoreCaseHashMap<String, List<String>> headers = new IgnoreCaseHashMap<>(IgnoreCaseHashMap.KeyStyle.CAMEL);
+    private final IgnoreCaseHashMap<List<String>> headers = new IgnoreCaseHashMap<>();
 
 
     /**
@@ -371,7 +371,7 @@ public class HttpHeaders {
      * 转单值Map &lt;String, String&gt;, 注意HTTP请求头允许一个name对应多个value, 本方法返回的Map每个name只会有第一个value.
      */
     public Map<String, String> toSingleValueMap() {
-        Map<String, String> result = new IgnoreCaseHashMap<>(IgnoreCaseHashMap.KeyStyle.CAMEL);
+        Map<String, String> result = new IgnoreCaseHashMap<>();
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 result.put(entry.getKey(), entry.getValue().get(0));
@@ -384,7 +384,7 @@ public class HttpHeaders {
      * 转多值Map &lt;String, List&lt;String&gt&gt, 注意HTTP请求头允许一个name对应多个value, 本方法返回的Map每个name保留多个value.
      */
     public Map<String, List<String>> toMultiValueMap() {
-        Map<String, List<String>> result = new IgnoreCaseHashMap<>(IgnoreCaseHashMap.KeyStyle.CAMEL);
+        Map<String, List<String>> result = new IgnoreCaseHashMap<>();
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 result.put(entry.getKey(), new ArrayList<>(entry.getValue()));
@@ -423,7 +423,7 @@ public class HttpHeaders {
      * <p>\\  ->  \</p>
      */
     public Map<String, String> toJoinedValueMap() {
-        Map<String, String> result = new IgnoreCaseHashMap<>(IgnoreCaseHashMap.KeyStyle.CAMEL);
+        Map<String, String> result = new IgnoreCaseHashMap<>();
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             String joinedValue = multiValueToJoinedValue(entry.getValue());
             if (joinedValue != null) {

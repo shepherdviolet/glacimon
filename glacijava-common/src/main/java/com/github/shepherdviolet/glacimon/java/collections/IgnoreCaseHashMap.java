@@ -19,9 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.java.collections;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiFunction;
+import java.io.Serializable;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -30,177 +30,393 @@ import java.util.function.Function;
  * @author shepherdviolet
  */
 @SuppressWarnings("unchecked")
-public class IgnoreCaseHashMap<K, V> extends HashMap<K, V> {
+public class IgnoreCaseHashMap<V> implements Map<String, V>, Serializable, Cloneable {
 
     private static final long serialVersionUID = -4802227422917361191L;
 
-    private final KeyStyle keyStyle;
+    private final LinkedHashMap<String, V> dataMap;
+    private final HashMap<String, String> keyMap;
 
-    /**
-     * @param keyStyle 实际储存的key的格式
-     */
-    public IgnoreCaseHashMap(KeyStyle keyStyle) {
-        if (keyStyle == null) {
-            throw new NullPointerException("keyStyle is null");
-        }
-        this.keyStyle = keyStyle;
+    private transient volatile Set<String> keySet;
+    private transient volatile Collection<V> values;
+    private transient volatile Set<Entry<String, V>> entrySet;
+
+    public IgnoreCaseHashMap() {
+        this(16);
     }
 
-    /**
-     * @param keyStyle 实际储存的key的格式
-     */
-    public IgnoreCaseHashMap(KeyStyle keyStyle, int initialCapacity) {
-        super(initialCapacity);
-        if (keyStyle == null) {
-            throw new NullPointerException("keyStyle is null");
-        }
-        this.keyStyle = keyStyle;
-    }
-
-    /**
-     * @param keyStyle 实际储存的key的格式
-     */
-    public IgnoreCaseHashMap(KeyStyle keyStyle, int initialCapacity, float loadFactor) {
-        super(initialCapacity, loadFactor);
-        if (keyStyle == null) {
-            throw new NullPointerException("keyStyle is null");
-        }
-        this.keyStyle = keyStyle;
-    }
-
-    @Override
-    public V put(K key, V value) {
-        return super.put((K) formatKey(key), value);
-    }
-
-    @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
-        if (m != null && !m.isEmpty()) {
-            for (Entry<? extends K, ? extends V> entry : m.entrySet()) {
-                put((K) formatKey(entry.getKey()), entry.getValue());
+    public IgnoreCaseHashMap(int initialCapacity) {
+        this.dataMap = new LinkedHashMap<String, V>(initialCapacity) {
+            private static final long serialVersionUID = 6876543546873546876L;
+            @Override
+            public boolean containsKey(Object key) {
+                return IgnoreCaseHashMap.this.containsKey(key);
             }
-        }
+        };
+        this.keyMap = new HashMap<>(initialCapacity);
+    }
+
+    private IgnoreCaseHashMap(IgnoreCaseHashMap<V> other) {
+        this.dataMap = (LinkedHashMap<String, V>) other.dataMap.clone();
+        this.keyMap = (HashMap<String, String>) other.keyMap.clone();
     }
 
     @Override
-    public V putIfAbsent(K key, V value) {
-        return super.putIfAbsent((K) formatKey(key), value);
+    public int size() {
+        return this.dataMap.size();
     }
 
     @Override
-    public V get(Object key) {
-        return super.get(formatKey(key));
-    }
-
-    @Override
-    public V getOrDefault(Object key, V defaultValue) {
-        return super.getOrDefault(formatKey(key), defaultValue);
+    public boolean isEmpty() {
+        return this.dataMap.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return super.containsKey(formatKey(key));
+        return (key instanceof String && this.keyMap.containsKey(convertKey((String) key)));
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return this.dataMap.containsValue(value);
+    }
+
+    @Override
+    public V get(Object key) {
+        if (key instanceof String) {
+            String k = this.keyMap.get(convertKey((String) key));
+            if (k != null) {
+                return this.dataMap.get(k);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public V getOrDefault(Object key, V defaultValue) {
+        if (key instanceof String) {
+            String k = this.keyMap.get(convertKey((String) key));
+            if (k != null) {
+                return this.dataMap.get(k);
+            }
+        }
+        return defaultValue;
+    }
+
+    @Override
+    public V put(String key, V value) {
+        String oldKey = this.keyMap.put(convertKey(key), key);
+        V oldKeyValue = null;
+        if (oldKey != null && !oldKey.equals(key)) {
+            oldKeyValue = this.dataMap.remove(oldKey);
+        }
+        V oldValue = this.dataMap.put(key, value);
+        return (oldKeyValue != null ? oldKeyValue : oldValue);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends V> map) {
+        if (map.isEmpty()) {
+            return;
+        }
+        map.forEach(this::put);
+    }
+
+    @Override
+    public V putIfAbsent(String key, V value) {
+        String oldKey = this.keyMap.putIfAbsent(convertKey(key), key);
+        if (oldKey != null) {
+            V oldKeyValue = this.dataMap.get(oldKey);
+            if (oldKeyValue != null) {
+                return oldKeyValue;
+            } else {
+                key = oldKey;
+            }
+        }
+        return this.dataMap.putIfAbsent(key, value);
+    }
+
+    @Override
+    public V computeIfAbsent(String key, Function<? super String, ? extends V> mappingFunction) {
+        String oldKey = this.keyMap.putIfAbsent(convertKey(key), key);
+        if (oldKey != null) {
+            V oldKeyValue = this.dataMap.get(oldKey);
+            if (oldKeyValue != null) {
+                return oldKeyValue;
+            } else {
+                key = oldKey;
+            }
+        }
+        return this.dataMap.computeIfAbsent(key, mappingFunction);
     }
 
     @Override
     public V remove(Object key) {
-        return super.remove(formatKey(key));
-    }
-
-    @Override
-    public boolean remove(Object key, Object value) {
-        return super.remove(formatKey(key), value);
-    }
-
-    @Override
-    public boolean replace(K key, V oldValue, V newValue) {
-        return super.replace((K) formatKey(key), oldValue, newValue);
-    }
-
-    @Override
-    public V replace(K key, V value) {
-        return super.replace((K) formatKey(key), value);
-    }
-
-    @Override
-    public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
-        return super.compute((K) formatKey(key), remappingFunction);
-    }
-
-    @Override
-    public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
-        return super.computeIfAbsent((K) formatKey(key), mappingFunction);
-    }
-
-    @Override
-    public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
-        return super.computeIfPresent((K) formatKey(key), remappingFunction);
-    }
-
-    @Override
-    public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
-        return super.merge((K) formatKey(key), value, remappingFunction);
-    }
-
-    private Object formatKey(Object key) {
-        if (key == null || !key.getClass().equals(String.class)) {
-            return key;
-        }
-        switch (keyStyle) {
-            case LOWER_CASE:
-                return ((String) key).toLowerCase();
-            case UPPER_CASE:
-                return ((String) key).toUpperCase();
-            case CAMEL:
-                return toCamel((String) key);
-            default:
-                return key;
-        }
-    }
-
-    private String toCamel(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-        StringBuilder result = new StringBuilder();
-        boolean isNewPart = true;
-
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-            if (c == '-' || c == '_' || c == ' ') {
-                result.append(c);
-                isNewPart = true;
-            } else {
-                if (isNewPart) {
-                    result.append(Character.toUpperCase(c));
-                    isNewPart = false;
-                } else {
-                    result.append(Character.toLowerCase(c));
-                }
+        if (key instanceof String) {
+            String k = removeKeyMapping((String) key);
+            if (k != null) {
+                return this.dataMap.remove(k);
             }
         }
-        return result.toString();
+        return null;
     }
 
-    /**
-     * 实际储存的key的格式
-     */
-    public enum KeyStyle {
+    @Override
+    public void clear() {
+        this.keyMap.clear();
+        this.dataMap.clear();
+    }
 
-        /**
-         * aaa-bbb_ccc ddd
-         */
-        LOWER_CASE,
+    @Override
+    public Set<String> keySet() {
+        Set<String> keySet = this.keySet;
+        if (keySet == null) {
+            keySet = new KeySet(this.dataMap.keySet());
+            this.keySet = keySet;
+        }
+        return keySet;
+    }
 
-        /**
-         * AAA-BBB_CCC DDD
-         */
-        UPPER_CASE,
+    @Override
+    public Collection<V> values() {
+        Collection<V> values = this.values;
+        if (values == null) {
+            values = new Values(this.dataMap.values());
+            this.values = values;
+        }
+        return values;
+    }
 
-        /**
-         * Aaa-Bbb_Ccc Ddd
-         */
-        CAMEL
+    @Override
+    public Set<Entry<String, V>> entrySet() {
+        Set<Entry<String, V>> entrySet = this.entrySet;
+        if (entrySet == null) {
+            entrySet = new EntrySet(this.dataMap.entrySet());
+            this.entrySet = entrySet;
+        }
+        return entrySet;
+    }
+
+    @Override
+    public IgnoreCaseHashMap<V> clone() {
+        return new IgnoreCaseHashMap<>(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return (this == other || this.dataMap.equals(other));
+    }
+
+    @Override
+    public int hashCode() {
+        return this.dataMap.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.dataMap.toString();
+    }
+
+    protected String convertKey(String key) {
+        return key != null ? key.toLowerCase() : null;
+    }
+
+    private String removeKeyMapping(String key) {
+        return this.keyMap.remove(convertKey(key));
+    }
+
+    private class KeySet extends AbstractSet<String> {
+
+        private final Set<String> delegate;
+
+        KeySet(Set<String> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public int size() {
+            return this.delegate.size();
+        }
+
+        @Override
+        public boolean contains(Object key) {
+            return this.delegate.contains(key);
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return new KeySetIterator();
+        }
+
+        @Override
+        public boolean remove(Object key) {
+            return IgnoreCaseHashMap.this.remove(key) != null;
+        }
+
+        @Override
+        public void clear() {
+            IgnoreCaseHashMap.this.clear();
+        }
+
+        @Override
+        public Spliterator<String> spliterator() {
+            return this.delegate.spliterator();
+        }
+
+        @Override
+        public void forEach(Consumer<? super String> action) {
+            this.delegate.forEach(action);
+        }
+
+    }
+
+    private class Values extends AbstractCollection<V> {
+
+        private final Collection<V> delegate;
+
+        Values(Collection<V> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public int size() {
+            return this.delegate.size();
+        }
+
+        @Override
+        public boolean contains(Object key) {
+            return this.delegate.contains(key);
+        }
+
+        @Override
+        public Iterator<V> iterator() {
+            return new ValuesIterator();
+        }
+
+        @Override
+        public void clear() {
+            IgnoreCaseHashMap.this.clear();
+        }
+
+        @Override
+        public Spliterator<V> spliterator() {
+            return this.delegate.spliterator();
+        }
+
+        @Override
+        public void forEach(Consumer<? super V> action) {
+            this.delegate.forEach(action);
+        }
+
+    }
+
+    private class EntrySet extends AbstractSet<Entry<String, V>> {
+
+        private final Set<Entry<String, V>> delegate;
+
+        public EntrySet(Set<Entry<String, V>> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public int size() {
+            return this.delegate.size();
+        }
+
+        @Override
+        public boolean contains(Object key) {
+            return this.delegate.contains(key);
+        }
+
+        @Override
+        public Iterator<Entry<String, V>> iterator() {
+            return new EntrySetIterator();
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public boolean remove(Object key) {
+            if (this.delegate.remove(key)) {
+                removeKeyMapping(((Map.Entry<String, V>) key).getKey());
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void clear() {
+            this.delegate.clear();
+            keyMap.clear();
+        }
+
+        @Override
+        public Spliterator<Entry<String, V>> spliterator() {
+            return this.delegate.spliterator();
+        }
+
+        @Override
+        public void forEach(Consumer<? super Entry<String, V>> action) {
+            this.delegate.forEach(action);
+        }
+
+    }
+
+    private abstract class EntryIterator<T> implements Iterator<T> {
+
+        private final Iterator<Entry<String, V>> delegate;
+
+        private Entry<String, V> last;
+
+        public EntryIterator() {
+            this.delegate = dataMap.entrySet().iterator();
+        }
+
+        protected Entry<String, V> nextEntry() {
+            Entry<String, V> entry = this.delegate.next();
+            this.last = entry;
+            return entry;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.delegate.hasNext();
+        }
+
+        @Override
+        public void remove() {
+            this.delegate.remove();
+            if (this.last != null) {
+                removeKeyMapping(this.last.getKey());
+                this.last = null;
+            }
+        }
+
+    }
+
+    private class KeySetIterator extends EntryIterator<String> {
+
+        @Override
+        public String next() {
+            return nextEntry().getKey();
+        }
+
+    }
+
+    private class ValuesIterator extends EntryIterator<V> {
+
+        @Override
+        public V next() {
+            return nextEntry().getValue();
+        }
+
+    }
+
+    private class EntrySetIterator extends EntryIterator<Entry<String, V>> {
+
+        @Override
+        public Entry<String, V> next() {
+            return nextEntry();
+        }
 
     }
 

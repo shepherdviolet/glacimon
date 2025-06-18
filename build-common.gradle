@@ -29,6 +29,11 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-java', 'private-jav
         [
                 "org.springframework.boot:spring-boot-starter-test:$version_spring_boot", // NOTICE: All subprojects configured with 'useJUnitPlatform()' must depend on Junit5! (Avoid error "Cannot create Launcher without at least one TestEngine")
                 "ch.qos.logback:logback-classic:$version_logback",
+                "org.springframework:spring-core:$version_spring", //Fix security issue
+                "org.springframework:spring-context:$version_spring", //Fix security issue
+                "org.springframework:spring-test:$version_spring", //Fix security issue
+                "org.yaml:snakeyaml:$version_snakeyaml", //Fix security issue
+                "net.minidev:json-smart:$version_jsonsmart", //Fix security issue
         ].forEach{ testImplementation it }
 
         //Gradle9:Junit5必须显式依赖junit-platform-launcher:https://docs.gradle.org/8.8/userguide/upgrading_version_8.html#test_framework_implementation_dependencies
@@ -85,6 +90,11 @@ configure(subprojects.findAll { it.PROJECT_GROUP in ['public-spring', 'private-s
         [
                 "org.springframework.boot:spring-boot-starter-test:$version_spring_boot", // NOTICE: All subprojects configured with 'useJUnitPlatform()' must depend on Junit5! (Avoid error "Cannot create Launcher without at least one TestEngine")
                 "ch.qos.logback:logback-classic:$version_logback",
+                "org.springframework:spring-core:$version_spring", //Fix security issue
+                "org.springframework:spring-context:$version_spring", //Fix security issue
+                "org.springframework:spring-test:$version_spring", //Fix security issue
+                "org.yaml:snakeyaml:$version_snakeyaml", //Fix security issue
+                "net.minidev:json-smart:$version_jsonsmart", //Fix security issue
         ].forEach{ testImplementation it }
 
         //Gradle9:Junit5必须显式依赖junit-platform-launcher:https://docs.gradle.org/8.8/userguide/upgrading_version_8.html#test_framework_implementation_dependencies

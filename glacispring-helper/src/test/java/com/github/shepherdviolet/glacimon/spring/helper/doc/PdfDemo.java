@@ -44,8 +44,8 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
  * PDF转换/编辑示例
  *
  * 依赖:
- *             "org.apache.poi:poi-ooxml:5.2.3",
- *             "org.apache.poi:poi-ooxml-full:5.2.3",
+ *             "org.apache.poi:poi-ooxml:5.4.1",
+ *             "org.apache.poi:poi-ooxml-full:5.4.1",
  *             "fr.opensagres.xdocreport:xdocreport:2.0.4",
  *             "com.itextpdf:html2pdf:5.0.1", //not for commercial use
  */

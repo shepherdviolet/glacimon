@@ -21,7 +21,10 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.a
 
 import com.ctrip.framework.apollo.Config;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.springboot.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -31,22 +34,34 @@ import java.util.Set;
  */
 public class HttpClientsApolloOverrideSettings implements HttpClients.OverrideSettings {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private Config config;
 
     public HttpClientsApolloOverrideSettings(Config config) {
         //持有Apollo配置
         this.config = config;
+
+        if (config == null) {
+            logger.warn("Apollo config is disabled (so glacispring-httpclient configuration automatic update is disabled)");
+        }
     }
 
     @Override
     public Set<String> getKeys() {
         //获取所有配置key
+        if (config == null) {
+            return Collections.emptySet();
+        }
         return config.getPropertyNames();
     }
 
     @Override
     public String getValue(String key) {
         //根据key返回配置value, 不存在返回null
+        if (config == null) {
+            return null;
+        }
         return config.getProperty(key, null);
     }
 

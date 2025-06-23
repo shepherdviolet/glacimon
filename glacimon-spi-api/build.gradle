@@ -16,6 +16,12 @@ dependencies {
 //
 //    ].forEach{ api (it) { version { strictly it.version } } }
 
+    //required, disable transitive
+//    [
+//            "org.dom4j:dom4j:$version_dom4j", //Exclude all dependencies (xpp3 conflict with logback)
+//
+//    ].forEach{ api (it) { transitive = false } }
+
     //compile only
     [
 

@@ -99,6 +99,15 @@
         System.out.printf("Order names: %s\n", orderNames);
 ```
 
+* 你可以配置错误信息前缀, ElementVisitException错误信息前面会添加你指定的内容, 便于排查问题
+
+```
+        List<String> orderNames = ElementVisitor.of(root)
+                ......
+                .exceptionMessagePrefix("Response message format is incorrect.\n") // 添加错误信息前缀
+                .getAllAs(String.class);
+```
+
 * 你可以配置异常处理器(exceptionHandler)处理异常. (ElementVisitException错误信息中已包含元素访问路径, 便于故障定位)
 
 ```
@@ -630,7 +639,7 @@
 | PROGRAMMING_ERROR   | CREATE_EXPECTED_ELEMENT_FAILED | 创建你`想访问的元素`失败 (由createIfAbsent方法传入的表达式创建)                                  |
 | PROGRAMMING_ERROR   | UNDEFINED_ERROR                | 未定义的错误, 实际访问中不会抛出此异常                                                       |
 
-* 默认情况下: get.../remove.../consume.../replace...方法一定会返回元素, 不为null, 不为空List. 以下情况会抛出ElementVisitException, 请参考`异常处理`章节妥善处理异常, 本章节不做示范
+* 默认情况下: get.../remove.../consume.../replace...方法一定会返回元素, 不为null, 不为空List. 以下情况会抛出`ElementVisitException`, 请参考`异常处理`章节妥善处理异常, 本章节不做示范
 * * `访问路径`中的元素(根元素/路径中间元素/你想访问的元素)不存在时
 * * `根元素`/`路径中间元素`的类型与`访问路径`期望的不符 (不为Map或不为Collection)
 * * `你想访问的元素`的类型与期望的不符 (由getAs/removeAs/consumeAs/replaceAs访问方法指定)
@@ -658,6 +667,46 @@ e.getElementNameErrorOccurred()
 // `你想访问的元素`的名称, 例如: OrderName
 e.getElementNameYouExpected()
 ```
+
+<br>
+
+## 设置错误信息前缀
+
+```
+        List<String> orderNames = ElementVisitor.of(root)
+                ......
+                .exceptionMessagePrefix("Response message format is incorrect.\n") // 设置错误信息前缀
+                .getAllAs(String.class);
+```
+
+* 添加前缀前, `ElementVisitException`错误信息格式如下:
+
+```
+PARENT_ELEMENT_TYPE_MISMATCH: Parent element '$.Body.Customers' is not an instance of Map (it's java.util.ArrayList), unable to get child 'Orders' from it
+{
+  Body: {
+    Customers: {    <-- Not Map
+      Orders: <Expected>
+    }
+  }
+}"
+```
+
+* 添加前缀后:
+
+```
+Response message format is incorrect.
+PARENT_ELEMENT_TYPE_MISMATCH: Parent element '$.Body.Customers' is not an instance of Map (it's java.util.ArrayList), unable to get child 'Orders' from it
+{
+  Body: {
+    Customers: {    <-- Not Map
+      Orders: <Expected>
+    }
+  }
+}"
+```
+
+* 添加前缀有助于问题排查
 
 <br>
 

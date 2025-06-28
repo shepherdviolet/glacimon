@@ -152,16 +152,16 @@ public final class ElementVisitor {
     }
 
     /**
-     * <p>设置异常信息前缀</p>
-     * <p>默认异常信息的格式如下:</p>
+     * <p>设置错误信息前缀</p>
+     * <p>默认错误信息的格式如下:</p>
      * <pre>
      * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
      * {
      *   Comment: <Expected>    <-- Not Exist
      * }
      * </pre>
-     * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
-     * <p>异常信息会变成这样:</p>
+     * <p>如果设置了错误信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+     * <p>错误信息会变成这样:</p>
      * <pre>
      * Response message format is incorrect.
      * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
@@ -170,7 +170,7 @@ public final class ElementVisitor {
      * }
      * </pre>
      *
-     * @param exceptionMessagePrefix 异常信息前缀
+     * @param exceptionMessagePrefix 错误信息前缀
      */
     public ElementVisitor exceptionMessagePrefix(String exceptionMessagePrefix) {
         this.exceptionMessagePrefix = exceptionMessagePrefix;
@@ -638,16 +638,16 @@ public final class ElementVisitor {
         }
 
         /**
-         * <p>设置异常信息前缀</p>
-         * <p>默认异常信息的格式如下:</p>
+         * <p>设置错误信息前缀</p>
+         * <p>默认错误信息的格式如下:</p>
          * <pre>
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
          * {
          *   Comment: <Expected>    <-- Not Exist
          * }
          * </pre>
-         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
-         * <p>异常信息会变成这样:</p>
+         * <p>如果设置了错误信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>错误信息会变成这样:</p>
          * <pre>
          * Response message format is incorrect.
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
@@ -656,7 +656,7 @@ public final class ElementVisitor {
          * }
          * </pre>
          *
-         * @param exceptionMessagePrefix 异常信息前缀
+         * @param exceptionMessagePrefix 错误信息前缀
          */
         public BasicVisitor exceptionMessagePrefix(String exceptionMessagePrefix) {
             ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
@@ -833,16 +833,16 @@ public final class ElementVisitor {
         }
 
         /**
-         * <p>设置异常信息前缀</p>
-         * <p>默认异常信息的格式如下:</p>
+         * <p>设置错误信息前缀</p>
+         * <p>默认错误信息的格式如下:</p>
          * <pre>
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
          * {
          *   Comment: <Expected>    <-- Not Exist
          * }
          * </pre>
-         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
-         * <p>异常信息会变成这样:</p>
+         * <p>如果设置了错误信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>错误信息会变成这样:</p>
          * <pre>
          * Response message format is incorrect.
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
@@ -851,7 +851,7 @@ public final class ElementVisitor {
          * }
          * </pre>
          *
-         * @param exceptionMessagePrefix 异常信息前缀
+         * @param exceptionMessagePrefix 错误信息前缀
          */
         public OnewayVisitor exceptionMessagePrefix(String exceptionMessagePrefix) {
             ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
@@ -1062,16 +1062,16 @@ public final class ElementVisitor {
         }
 
         /**
-         * <p>设置异常信息前缀</p>
-         * <p>默认异常信息的格式如下:</p>
+         * <p>设置错误信息前缀</p>
+         * <p>默认错误信息的格式如下:</p>
          * <pre>
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
          * {
          *   Comment: <Expected>    <-- Not Exist
          * }
          * </pre>
-         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
-         * <p>异常信息会变成这样:</p>
+         * <p>如果设置了错误信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>错误信息会变成这样:</p>
          * <pre>
          * Response message format is incorrect.
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
@@ -1080,7 +1080,7 @@ public final class ElementVisitor {
          * }
          * </pre>
          *
-         * @param exceptionMessagePrefix 异常信息前缀
+         * @param exceptionMessagePrefix 错误信息前缀
          */
         public OnewayPathPlanner exceptionMessagePrefix(String exceptionMessagePrefix) {
             ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
@@ -1157,16 +1157,16 @@ public final class ElementVisitor {
         }
 
         /**
-         * <p>设置异常信息前缀</p>
-         * <p>默认异常信息的格式如下:</p>
+         * <p>设置错误信息前缀</p>
+         * <p>默认错误信息的格式如下:</p>
          * <pre>
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
          * {
          *   Comment: <Expected>    <-- Not Exist
          * }
          * </pre>
-         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
-         * <p>异常信息会变成这样:</p>
+         * <p>如果设置了错误信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>错误信息会变成这样:</p>
          * <pre>
          * Response message format is incorrect.
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
@@ -1175,7 +1175,7 @@ public final class ElementVisitor {
          * }
          * </pre>
          *
-         * @param exceptionMessagePrefix 异常信息前缀
+         * @param exceptionMessagePrefix 错误信息前缀
          */
         public MultiwayVisitor exceptionMessagePrefix(String exceptionMessagePrefix) {
             ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
@@ -1361,16 +1361,16 @@ public final class ElementVisitor {
         }
 
         /**
-         * <p>设置异常信息前缀</p>
-         * <p>默认异常信息的格式如下:</p>
+         * <p>设置错误信息前缀</p>
+         * <p>默认错误信息的格式如下:</p>
          * <pre>
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
          * {
          *   Comment: <Expected>    <-- Not Exist
          * }
          * </pre>
-         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
-         * <p>异常信息会变成这样:</p>
+         * <p>如果设置了错误信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>错误信息会变成这样:</p>
          * <pre>
          * Response message format is incorrect.
          * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
@@ -1379,7 +1379,7 @@ public final class ElementVisitor {
          * }
          * </pre>
          *
-         * @param exceptionMessagePrefix 异常信息前缀
+         * @param exceptionMessagePrefix 错误信息前缀
          */
         public MultiwayPathPlanner exceptionMessagePrefix(String exceptionMessagePrefix) {
             ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;

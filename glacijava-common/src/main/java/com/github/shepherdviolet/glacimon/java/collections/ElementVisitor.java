@@ -59,6 +59,7 @@ public final class ElementVisitor {
     private Set<ErrorCategory> suppressedErrorCategories = Collections.emptySet();
     private Set<ErrorCode> suppressedErrorCodes = Collections.emptySet();
     private Consumer<ElementVisitException> exceptionHandler = e -> {throw e;};
+    private String exceptionMessagePrefix;
     private Supplier<Object> supplyIfElementAbsent;
 
     private final BasicVisitor basicVisitor = new BasicVisitor();
@@ -147,6 +148,32 @@ public final class ElementVisitor {
     public ElementVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
         _checkExceptionHandler(exceptionHandler);
         this.exceptionHandler = exceptionHandler;
+        return this;
+    }
+
+    /**
+     * <p>设置异常信息前缀</p>
+     * <p>默认异常信息的格式如下:</p>
+     * <pre>
+     * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+     * {
+     *   Comment: <Expected>    <-- Not Exist
+     * }
+     * </pre>
+     * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+     * <p>异常信息会变成这样:</p>
+     * <pre>
+     * Response message format is incorrect.
+     * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+     * {
+     *   Comment: <Expected>    <-- Not Exist
+     * }
+     * </pre>
+     *
+     * @param exceptionMessagePrefix 异常信息前缀
+     */
+    public ElementVisitor exceptionMessagePrefix(String exceptionMessagePrefix) {
+        this.exceptionMessagePrefix = exceptionMessagePrefix;
         return this;
     }
 
@@ -256,7 +283,8 @@ public final class ElementVisitor {
             prettyErrorIndicatorBuilder.append(prettyErrorIndicatorSuffix.get(i));
         }
 
-        StringBuilder errorMessageBuildler = new StringBuilder(errorCode.toString())
+        StringBuilder errorMessageBuildler = new StringBuilder(exceptionMessagePrefix != null ? exceptionMessagePrefix : "")
+                .append(errorCode.toString())
                 .append(": ")
                 .append(messagePrefix != null ? messagePrefix : "")
                 .append(pathErrorOccurredBuilder)
@@ -610,6 +638,32 @@ public final class ElementVisitor {
         }
 
         /**
+         * <p>设置异常信息前缀</p>
+         * <p>默认异常信息的格式如下:</p>
+         * <pre>
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>异常信息会变成这样:</p>
+         * <pre>
+         * Response message format is incorrect.
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         *
+         * @param exceptionMessagePrefix 异常信息前缀
+         */
+        public BasicVisitor exceptionMessagePrefix(String exceptionMessagePrefix) {
+            ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
+            return basicVisitor;
+        }
+
+        /**
          * 遍历所有你想访问的元素, 使用Lambda表达式处理它们
          */
         public ForEachVisitor forEach() {
@@ -775,6 +829,32 @@ public final class ElementVisitor {
         public OnewayVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
             _checkExceptionHandler(exceptionHandler);
             ElementVisitor.this.exceptionHandler = exceptionHandler;
+            return onewayVisitor;
+        }
+
+        /**
+         * <p>设置异常信息前缀</p>
+         * <p>默认异常信息的格式如下:</p>
+         * <pre>
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>异常信息会变成这样:</p>
+         * <pre>
+         * Response message format is incorrect.
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         *
+         * @param exceptionMessagePrefix 异常信息前缀
+         */
+        public OnewayVisitor exceptionMessagePrefix(String exceptionMessagePrefix) {
+            ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
             return onewayVisitor;
         }
 
@@ -981,6 +1061,32 @@ public final class ElementVisitor {
             return onewayPathPlanner;
         }
 
+        /**
+         * <p>设置异常信息前缀</p>
+         * <p>默认异常信息的格式如下:</p>
+         * <pre>
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>异常信息会变成这样:</p>
+         * <pre>
+         * Response message format is incorrect.
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         *
+         * @param exceptionMessagePrefix 异常信息前缀
+         */
+        public OnewayPathPlanner exceptionMessagePrefix(String exceptionMessagePrefix) {
+            ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
+            return onewayPathPlanner;
+        }
+
     }
 
     public class MultiwayVisitor extends BasicVisitor {
@@ -1047,6 +1153,32 @@ public final class ElementVisitor {
         public MultiwayVisitor exceptionHandler(Consumer<ElementVisitException> exceptionHandler) throws IllegalArgumentException {
             _checkExceptionHandler(exceptionHandler);
             ElementVisitor.this.exceptionHandler = exceptionHandler;
+            return multiwayVisitor;
+        }
+
+        /**
+         * <p>设置异常信息前缀</p>
+         * <p>默认异常信息的格式如下:</p>
+         * <pre>
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>异常信息会变成这样:</p>
+         * <pre>
+         * Response message format is incorrect.
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         *
+         * @param exceptionMessagePrefix 异常信息前缀
+         */
+        public MultiwayVisitor exceptionMessagePrefix(String exceptionMessagePrefix) {
+            ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
             return multiwayVisitor;
         }
 
@@ -1228,6 +1360,32 @@ public final class ElementVisitor {
             return multiwayPathPlanner;
         }
 
+        /**
+         * <p>设置异常信息前缀</p>
+         * <p>默认异常信息的格式如下:</p>
+         * <pre>
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         * <p>如果设置了异常信息前缀: .exceptionMessagePrefix("Response message format is incorrect.\n")</p>
+         * <p>异常信息会变成这样:</p>
+         * <pre>
+         * Response message format is incorrect.
+         * MISSING_EXPECTED_ELEMENT: Expected element '$.Comment' does not exist
+         * {
+         *   Comment: <Expected>    <-- Not Exist
+         * }
+         * </pre>
+         *
+         * @param exceptionMessagePrefix 异常信息前缀
+         */
+        public MultiwayPathPlanner exceptionMessagePrefix(String exceptionMessagePrefix) {
+            ElementVisitor.this.exceptionMessagePrefix = exceptionMessagePrefix;
+            return multiwayPathPlanner;
+        }
+
     }
 
 
@@ -1331,11 +1489,6 @@ public final class ElementVisitor {
 
         ErrorCode(ErrorCategory errorCategory) {
             this.errorCategory = errorCategory;
-        }
-
-        @Override
-        public String toString() {
-            return errorCategory.toString() + '/' + super.toString();
         }
 
         public ErrorCategory getErrorCategory() {

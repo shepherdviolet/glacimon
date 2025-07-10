@@ -30,6 +30,7 @@ dependencies {
             "com.google.code.gson:gson:$version_gson",
             "org.springframework.boot:spring-boot-autoconfigure:$version_spring_boot",
             "com.ctrip.framework.apollo:apollo-client:$version_apollo",
+            "dnsjava:dnsjava:$version_dnsjava",
 
     ].forEach{ compileOnly it; testImplementation it }
 

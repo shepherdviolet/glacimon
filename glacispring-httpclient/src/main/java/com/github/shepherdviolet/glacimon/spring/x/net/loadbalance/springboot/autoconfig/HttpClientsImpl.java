@@ -242,6 +242,7 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
                 .setCustomClientCertEncoded(settings.getCustomClientCertEncoded())
                 .setCustomClientCertsEncoded(settings.getCustomClientCertsEncoded())
                 .setCustomClientCertKeyEncoded(settings.getCustomClientCertKeyEncoded())
+                .setDns(settings.getDnsDescription())
                 .setLogPrintUrl(settings.isLogPrintUrl())
                 .setLogPrintBlock(settings.isLogPrintBlock())
                 .setLogPrintPayload(settings.isLogPrintPayload())
@@ -632,6 +633,14 @@ class HttpClientsImpl implements HttpClients, Closeable, InitializingBean, Dispo
             @Override
             public void applyReset(HttpClient client) throws Exception {
                 client.setHostnameVerifier(null);
+            }
+        });
+
+        installUpdater(new SingleValueUpdater(
+                Arrays.asList("dnsDescription", "dns-description")) {
+            @Override
+            public void applySetting(HttpClient client, String value) throws Exception {
+                client.setDns(value);
             }
         });
 

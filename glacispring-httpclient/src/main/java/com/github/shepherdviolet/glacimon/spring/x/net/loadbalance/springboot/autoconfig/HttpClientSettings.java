@@ -246,6 +246,23 @@ public class HttpClientSettings {
     public String verifyServerCnByCustomHostname;
 
     /**
+     * [可运行时修改]
+     * </p>配置Dns</p>
+     * <p>参数采用SimpleKeyValueEncoder格式, 详见: https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md</p>
+     * <p>参数说明:</p>
+     * <p>ip: DNS服务地址, 必输</p>
+     * <p>resolveTimeoutSeconds: 域名解析超时时间(秒), 可选, 默认10s</p>
+     * <p>ipv6Enabled: 是否允许ipv6, 可选, 默认true</p>
+     * <p>maxTtlSeconds: 最大TTL(秒), 实际TTL为min(服务器返回TTL, 该参数值), 可选, 默认300</p>
+     * <p>参数格式:</p>
+     * <p>参数示例: ip=8.8.8.8</p>
+     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10</p>
+     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true</p>
+     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true,maxTtlSeconds=300</p>
+     */
+    public String dnsDescription;
+
+    /**
      * <p>[可运行时修改]</p>
      * <p>日志:请求URL, 默认true</p>
      */
@@ -500,6 +517,14 @@ public class HttpClientSettings {
         this.verifyServerCnByCustomHostname = verifyServerCnByCustomHostname;
     }
 
+    public String getDnsDescription() {
+        return dnsDescription;
+    }
+
+    public void setDnsDescription(String dnsDescription) {
+        this.dnsDescription = dnsDescription;
+    }
+
     public boolean isLogPrintUrl() {
         return logPrintUrl;
     }
@@ -571,6 +596,7 @@ public class HttpClientSettings {
                 ", customClientCertKeyEncoded='" + customClientCertKeyEncoded + '\'' +
                 ", verifyServerDnByCustomDn='" + verifyServerDnByCustomDn + '\'' +
                 ", verifyServerCnByCustomHostname='" + verifyServerCnByCustomHostname + '\'' +
+                ", dnsDescription='" + dnsDescription + '\'' +
                 ", logPrintUrl=" + logPrintUrl +
                 ", logPrintBlock=" + logPrintBlock +
                 ", logPrintPayload=" + logPrintPayload +

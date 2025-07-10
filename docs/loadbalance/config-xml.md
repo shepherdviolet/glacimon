@@ -15,12 +15,13 @@
 ```text
     <bean id="glaciHttpClient" class="com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient">
         <property name="hosts" value="http://127.0.0.1:8081,http://127.0.0.1:8082"/>
-        <property name="initiativeInspectInterval" value="5000"/><!-- 健康主动探测间隔为5000ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+) -->
-        <property name="passiveBlockDuration" value="30000"/><!-- 健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近 -->
         <property name="connectTimeout" value="3000"/><!-- 连接超时时间, 单位ms -->
         <property name="writeTimeout" value="10000"/><!-- 写超时时间, 单位ms -->
         <property name="readTimeout" value="10000"/><!-- 读超时时间, 单位ms -->
         <property name="maxReadLength" value="10485760"/><!-- 数据最大读取长度, 单位字节 -->
+        <property name="maxIdleConnections" value="0"/><!-- 最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求. -->
+        <property name="initiativeInspectInterval" value="5000"/><!-- 健康主动探测间隔为5000ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+) -->
+        <property name="passiveBlockDuration" value="30000"/><!-- 健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近 -->
         <property name="dataConverter" ref="dataConverter"/><!-- 设置数据转换器, 详见'关于数据转换器`dataConverter`(可选)'章节 -->
         <!--<property name="logPrintPayload" value="true"/> 日志打印请求/响应报文体: 支持"byte[]/Bean/表单"请求, 支持"byte[]/Bean"响应-->
         <!--<property name="httpGetInspector" ref="/health"/> 启用HTTP Get方式进行主动健康探测, URL为http://127.0.0.1:8083/health和http://127.0.0.1:8084/health, (设置+telnet+改回TELNET方式, 设置+disable+禁用主动探测)-->

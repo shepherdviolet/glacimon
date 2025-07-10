@@ -24,15 +24,11 @@ import com.github.shepherdviolet.glacimon.java.conversion.SimpleKeyValueEncoder;
 import com.github.shepherdviolet.glacimon.java.misc.CheckUtils;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.net.HttpHeaders;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.dns.DnsImpl;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.ssl.*;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.statistics.NoDepTxTimerProxy;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.EmptyLoadBalanceInspector;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.HttpGetLoadBalanceInspector;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
 import okhttp3.*;
 import okio.BufferedSink;
 import org.slf4j.Logger;
@@ -141,12 +137,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
     public GlaciHttpClient() {
         hostManager = new LoadBalancedHostManager();
-        inspectManager = new LoadBalancedInspectManager(false).setHostManager(hostManager);
-    }
-
-    public GlaciHttpClient(LoadBalancedHostManager hostManager, LoadBalancedInspectManager inspectManager) {
-        this.hostManager = hostManager;
-        this.inspectManager = inspectManager;
+        inspectManager = new LoadBalancedInspectManager(hostManager, settings);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1767,7 +1758,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
         private long passiveBlockDuration = PASSIVE_BLOCK_DURATION;
         private int recoveryCoefficient = 10;
-        private int maxIdleConnections = 16;
+        private int maxIdleConnections = 0;
         private int maxThreads = 256;
         private int maxThreadsPerHost = 256;
         private long connectTimeout = 3000L;
@@ -1800,6 +1791,30 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         private boolean txTimerEnabled = false;
 
         private Settings(){
+        }
+
+        public int getMaxIdleConnections() {
+            return maxIdleConnections;
+        }
+
+        public CookieJar getCookieJar() {
+            return cookieJar;
+        }
+
+        public Proxy getProxy() {
+            return proxy;
+        }
+
+        public Dns getDns() {
+            return dns;
+        }
+
+        public SslConfigSupplier getSslConfigSupplier() {
+            return sslConfigSupplier;
+        }
+
+        public HostnameVerifier getHostnameVerifier() {
+            return hostnameVerifier;
         }
 
         @Override
@@ -1886,41 +1901,22 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
+     * [可运行时修改]
+     * 将主动探测器从TELNET型修改为HTTP-GET型
+     * @param urlSuffix 探测页面URL(例如:http://127.0.0.1:8080/health, 则在此处设置/health), 设置为'+telnet+'使用默认的TELNET型, 设置为'+disable+'禁用主动探测
+     */
+    public GlaciHttpClient setHttpGetInspector(String urlSuffix) {
+        inspectManager.setInspectMode(urlSuffix);
+        return this;
+    }
+
+    /**
      * [线程安全/异步生效/可运行时修改]
      * 设置主动探测间隔 (主动探测器)
      * @param initiativeInspectInterval 检测间隔ms, > 0 , 建议 > 5000
      */
     public GlaciHttpClient setInitiativeInspectInterval(long initiativeInspectInterval) {
         inspectManager.setInspectInterval(initiativeInspectInterval);
-        return this;
-    }
-
-    /**
-     * [可运行时修改]
-     * 将主动探测器从TELNET型修改为HTTP-GET型
-     * @param urlSuffix 探测页面URL(例如:http://127.0.0.1:8080/health, 则在此处设置/health), 设置为'+telnet+'使用默认的TELNET型, 设置为'+disable+'禁用主动探测
-     */
-    public GlaciHttpClient setHttpGetInspector(String urlSuffix) {
-        if ("+disable+".equals(urlSuffix)) {
-            inspectManager.setInspector(new EmptyLoadBalanceInspector());
-        } else if ("+telnet+".equals(urlSuffix)) {
-            inspectManager.setInspector(new TelnetLoadBalanceInspector());
-        } else {
-            inspectManager.setInspector(new HttpGetLoadBalanceInspector(urlSuffix, inspectManager.getInspectTimeout()));
-        }
-        return this;
-    }
-
-    /**
-     * [可运行时修改]
-     * 设置自定义的主动探测器, 这个方法与setHttpGetInspector方法只能选择一个设置
-     * @param inspector 自定义主动探测器, 默认为TELNET方式
-     */
-    public GlaciHttpClient setInspector(LoadBalanceInspector inspector) {
-        if (inspector == null) {
-            inspector = new TelnetLoadBalanceInspector();
-        }
-        inspectManager.setInspector(inspector);
         return this;
     }
 
@@ -2019,8 +2015,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
 
     /**
      * [可运行时修改]
-     * 最大闲置连接数. 客户端会保持与服务端的连接, 保持数量由此设置决定, 直到闲置超过5分钟. 默认16
-     * @param maxIdleConnections 最大闲置连接数, 默认16
+     * 最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求.
+     * @param maxIdleConnections 最大闲置连接数, 默认0
      */
     public GlaciHttpClient setMaxIdleConnections(int maxIdleConnections) {
         if (maxIdleConnections < 0) {
@@ -2032,6 +2028,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2150,6 +2148,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2183,6 +2183,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2198,6 +2200,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2261,6 +2265,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2286,6 +2292,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2311,6 +2319,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2335,6 +2345,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2359,6 +2371,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2383,6 +2397,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2406,6 +2422,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2429,6 +2447,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2452,6 +2472,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2475,6 +2497,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2498,6 +2522,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2521,6 +2547,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 
@@ -2543,6 +2571,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         } finally {
             settingsSpinLock.unlock();
         }
+        // HTTP GET 探测器也需要刷新这个参数
+        inspectManager.refreshSettings();
         return this;
     }
 

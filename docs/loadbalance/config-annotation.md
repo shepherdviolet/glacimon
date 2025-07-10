@@ -26,12 +26,13 @@ public class MyConfiguration {
     public GlaciHttpClient glaciHttpClient() {
         return new GlaciHttpClient()
                 .setHosts(hosts)//配置后端列表
-                .setInitiativeInspectInterval(5000L)//健康主动探测间隔为5000ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
-                .setPassiveBlockDuration(30000L)//健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近
                 .setConnectTimeout(3000L)//连接超时时间, 单位ms
                 .setWriteTimeout(10000L)//写超时时间, 单位ms
                 .setReadTimeout(10000L)//读超时时间, 单位ms
                 .setMaxReadLength(10L * 1024L * 1024L)//数据最大读取长度, 单位字节
+                .setMaxIdleConnections(0)//最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求.
+                .setInitiativeInspectInterval(5000L)//健康主动探测间隔为5000ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
+                .setPassiveBlockDuration(30000L)//健康被动探测阻断时长为30000ms, 被动阻断时间建议与所有超时时间加起来接近
                 .setDataConverter(new GsonDataConverter())//设置数据转换器, 详见'关于数据转换器`dataConverter`(可选)'章节
                 //.setLogPrintPayload(true)//日志打印请求/响应报文体: 支持"byte[]/Bean/表单"请求, 支持"byte[]/Bean"响应
                 //.setHttpGetInspector("/health")//启用HTTP Get方式进行主动健康探测, URL为http://127.0.0.1:8083/health和http://127.0.0.1:8084/health, (设置+telnet+改回TELNET方式)

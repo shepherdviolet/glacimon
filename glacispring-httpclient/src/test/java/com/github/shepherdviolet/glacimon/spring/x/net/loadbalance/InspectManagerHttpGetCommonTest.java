@@ -19,7 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance;
 
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.HttpGetLoadBalanceInspector;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient;
 
 /**
  * 主动探测器--HTTP GET方式测试案例
@@ -39,14 +39,9 @@ public class InspectManagerHttpGetCommonTest {
                 "http://127.0.0.1:8081"
         });
 
-        HttpGetLoadBalanceInspector inspector = new HttpGetLoadBalanceInspector();
-        inspector.setUrlSuffix("/get");
-        inspector.setTimeout(1000);
-
-        LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager();
-        inspectManager.setHostManager(hostManager);
+        LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager(hostManager);
         inspectManager.setInspectInterval(5000L);
-        inspectManager.setInspector(inspector);
+        inspectManager.setInspectMode("/get");
 
     }
 

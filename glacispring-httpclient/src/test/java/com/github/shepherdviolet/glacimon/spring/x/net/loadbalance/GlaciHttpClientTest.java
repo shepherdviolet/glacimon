@@ -45,7 +45,7 @@ public class GlaciHttpClientTest {
                         "http://127.0.0.1:8000"
                 })
                 .setInitiativeInspectInterval(5000L)
-                .setInspector(new TelnetLoadBalanceInspector())
+                .setHttpGetInspector("+telnet+'")
                 .setPassiveBlockDuration(3000L)
                 .setConnectTimeout(3000L)
                 .setWriteTimeout(10000L)

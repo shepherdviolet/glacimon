@@ -19,14 +19,17 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector;
 
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceInspector;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.ssl.SslConfig;
+import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -35,33 +38,28 @@ import java.util.concurrent.TimeUnit;
  *
  * @author shepherdviolet
  */
-public class HttpGetLoadBalanceInspector implements FixedTimeoutLoadBalanceInspector, Closeable {
+public class HttpGetLoadBalanceInspector implements LoadBalanceInspector {
 
     private static final int HTTP_SUCCESS = 200;
     private static final long DEFAULT_TIMEOUT = 2000L;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private volatile OkHttpClient client;
-    private String urlSuffix;
+    private final GlaciHttpClient.Settings settings;
+    private volatile long timeout = DEFAULT_TIMEOUT;
+    private volatile String urlSuffix = "";
 
+    private volatile OkHttpClient okHttpClient;
+    private volatile boolean refreshSettings = false;
+    private volatile Exception clientCreateException;
     private volatile boolean closed = false;
 
-    public HttpGetLoadBalanceInspector() {
-        this("", DEFAULT_TIMEOUT);
-    }
-
-    /**
-     * @param urlSuffix 探测URL的后缀
-     * @param timeout 探测超时时间
-     */
-    public HttpGetLoadBalanceInspector(String urlSuffix, long timeout) {
-        this.urlSuffix = urlSuffix;
-        setTimeout(timeout);
+    public HttpGetLoadBalanceInspector(GlaciHttpClient.Settings settings) {
+        this.settings = settings;
     }
 
     @Override
-    public boolean inspect(String url, long timeout) {
+    public boolean inspect(String url) {
         if (closed) {
             //被销毁的探测器始终返回探测成功
             return true;
@@ -83,7 +81,7 @@ public class HttpGetLoadBalanceInspector implements FixedTimeoutLoadBalanceInspe
         }
         //GET请求
         try {
-            response = client.newCall(request).execute();
+            response = getOkHttpClient().newCall(request).execute();
             if (response.code() == HTTP_SUCCESS){
                 return true;
             }
@@ -104,18 +102,9 @@ public class HttpGetLoadBalanceInspector implements FixedTimeoutLoadBalanceInspe
     }
 
     @Override
-    public void close() throws IOException {
+    public synchronized void close() throws IOException {
         closed = true;
-        closeClient(client);
-    }
-
-    private void closeClient(OkHttpClient client) {
-        try {
-            client.dispatcher().executorService().shutdown();
-            client.connectionPool().evictAll();
-            client.cache().close();
-        } catch (Exception ignore) {
-        }
+        closeClient(okHttpClient);
     }
 
     /**
@@ -124,18 +113,35 @@ public class HttpGetLoadBalanceInspector implements FixedTimeoutLoadBalanceInspe
      */
     @Override
     public void setTimeout(long timeout){
+        if (closed) {
+            return;
+        }
         //除以2, 因为网络超时包括连接/写入/读取超时, 避免过长
         timeout = timeout >> 1;
         if (timeout <= 0){
             throw new IllegalArgumentException("timeout must > 1 (usually > 1000)");
         }
-        OkHttpClient previous = client;
-        client = new OkHttpClient.Builder()
-                .connectTimeout(timeout, TimeUnit.MILLISECONDS)
-                .readTimeout(timeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(timeout, TimeUnit.MILLISECONDS)
-                .build();
-        closeClient(previous);
+
+        synchronized (this) {
+            this.timeout = timeout;
+            //标记为需要更新
+            refreshSettings = true;
+            //清除异常
+            clientCreateException = null;
+        }
+    }
+
+    @Override
+    public void refreshSettings() {
+        if (closed) {
+            return;
+        }
+        synchronized (this) {
+            //标记为需要更新
+            refreshSettings = true;
+            //清除异常
+            clientCreateException = null;
+        }
     }
 
     /**
@@ -145,6 +151,99 @@ public class HttpGetLoadBalanceInspector implements FixedTimeoutLoadBalanceInspe
      */
     public void setUrlSuffix(String urlSuffix) {
         this.urlSuffix = urlSuffix;
+    }
+
+    private OkHttpClient getOkHttpClient(){
+        //客户端创建错误后, 不再重试
+        if (clientCreateException != null) {
+            throw new IllegalStateException("Client create error", clientCreateException);
+        }
+        //一次检查
+        if (okHttpClient == null || refreshSettings) {
+            //自旋锁
+            OkHttpClient previous = null;
+            synchronized (this) {
+                try {
+                    //二次检查e
+                    if (okHttpClient == null || refreshSettings) {
+                        previous = okHttpClient;
+                        okHttpClient = createOkHttpClient();
+                        refreshSettings = false;
+                    }
+                } catch (Exception e) {
+                    clientCreateException = e;
+                    throw e;
+                }
+            }
+            closeClient(previous);
+        }
+        return okHttpClient;
+    }
+
+    /**
+     * 初始化OkHttpClient实例(复写本方法实现自定义的逻辑)
+     * @return OkHttpClient实例
+     */
+    @SuppressWarnings("deprecation")
+    protected OkHttpClient createOkHttpClient(){
+
+        if (settings == null) {
+            ConnectionPool connectionPool = new ConnectionPool(0, 5, TimeUnit.MINUTES);
+            return new OkHttpClient.Builder()
+                    .connectTimeout(timeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(timeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(timeout, TimeUnit.MILLISECONDS)
+                    .connectionPool(connectionPool)
+                    .build();
+        }
+
+        ConnectionPool connectionPool = new ConnectionPool(settings.getMaxIdleConnections(), 5, TimeUnit.MINUTES);
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(timeout, TimeUnit.MILLISECONDS)
+                .writeTimeout(timeout, TimeUnit.MILLISECONDS)
+                .readTimeout(timeout, TimeUnit.MILLISECONDS)
+                .connectionPool(connectionPool);
+
+        if (settings.getCookieJar() != null) {
+            builder.cookieJar(settings.getCookieJar());
+        }
+        if (settings.getProxy() != null) {
+            builder.proxy(settings.getProxy());
+        }
+        if (settings.getDns() != null) {
+            builder.dns(settings.getDns());
+        }
+
+        if (settings.getSslConfigSupplier() != null){
+            SslConfig sslConfig = settings.getSslConfigSupplier().getSslConfig();
+            if (sslConfig != null && sslConfig.getSslSocketFactory() != null) {
+                if (sslConfig.getTrustManager() != null) {
+                    // 最好两个都有, 不然OkHttp3会用反射的方式清理证书链
+                    builder.sslSocketFactory(sslConfig.getSslSocketFactory(), sslConfig.getTrustManager());
+                } else {
+                    builder.sslSocketFactory(sslConfig.getSslSocketFactory());
+                }
+            }
+        }
+
+        if (settings.getHostnameVerifier() != null) {
+            builder.hostnameVerifier(settings.getHostnameVerifier());
+        }
+
+        return builder.build();
+    }
+
+    private void closeClient(OkHttpClient client) {
+        if (client == null) {
+            return;
+        }
+        try {
+            client.dispatcher().executorService().shutdown();
+            client.connectionPool().evictAll();
+            client.cache().close();
+        } catch (Exception ignore) {
+        }
     }
 
     @Override

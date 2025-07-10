@@ -20,10 +20,13 @@
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector;
 
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceInspector;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient;
+import okhttp3.Dns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.shepherdviolet.glacimon.java.net.NetworkUtils;
 
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -34,11 +37,19 @@ import java.net.URI;
 public class TelnetLoadBalanceInspector implements LoadBalanceInspector {
 
     private static final String HTTPS_SCHEME = "https";
+    private static final long DEFAULT_TIMEOUT = 2000L;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final GlaciHttpClient.Settings settings;
+    private long timeout = DEFAULT_TIMEOUT;
+
+    public TelnetLoadBalanceInspector(GlaciHttpClient.Settings settings) {
+        this.settings = settings;
+    }
+
     @Override
-    public boolean inspect(String url, long timeout) {
+    public boolean inspect(String url) {
         try {
             //解析url
             URI uri = URI.create(url);
@@ -63,6 +74,26 @@ public class TelnetLoadBalanceInspector implements LoadBalanceInspector {
 
     protected boolean inspectByTelnet(String hostname, int ip, long timeout){
         return NetworkUtils.telnet(hostname, ip, timeout > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) timeout);
+    }
+
+    protected Dns getDns() {
+        if (settings == null) {
+            return null;
+        }
+        return settings.getDns();
+    }
+
+    @Override
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+
+    @Override
+    public void refreshSettings() {
+    }
+
+    @Override
+    public void close() throws IOException {
     }
 
     @Override

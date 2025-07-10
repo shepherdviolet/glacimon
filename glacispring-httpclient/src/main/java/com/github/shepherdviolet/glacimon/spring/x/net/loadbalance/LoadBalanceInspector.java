@@ -19,11 +19,13 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance;
 
+import java.io.Closeable;
+
 /**
  * 负载均衡--网络状态探测器
  * @author shepherdviolet
  */
-public interface LoadBalanceInspector {
+public interface LoadBalanceInspector extends Closeable {
 
     /**
      * <p>实现探测逻辑</p>
@@ -31,9 +33,12 @@ public interface LoadBalanceInspector {
      * <p>注意:尽量处理掉所有异常, 如果抛出异常, 视为探测失败, 程序将阻断远端</p>
      *
      * @param url 远端url
-     * @param timeout 限定的探测时间(ms), 探测器必须在该时间内探测完毕, 不要过久的占用线程. 多个探测器时, 应保证总时间不超过设定值.
      * @return true:网络正常 false:网络异常
      */
-    boolean inspect(String url, long timeout);
+    boolean inspect(String url);
+
+    void setTimeout(long timeout);
+
+    void refreshSettings();
 
 }

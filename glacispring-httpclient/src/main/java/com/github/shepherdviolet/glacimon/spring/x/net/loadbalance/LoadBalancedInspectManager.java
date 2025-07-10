@@ -19,17 +19,17 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance;
 
+import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
+import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.EmptyLoadBalanceInspector;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.HttpGetLoadBalanceInspector;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.FixedTimeoutLoadBalanceInspector;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector.TelnetLoadBalanceInspector;
-import com.github.shepherdviolet.glacimon.java.concurrent.GuavaThreadFactoryBuilder;
-import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
-import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
 import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -40,13 +40,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * <pre>{@code
  *      //实例化
- *      LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager()
- *              //设置要探测的远端管理器(必须)
- *              .setHostManager(hostManager)
+ *      LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager(loadBalanceInspector)
  *              //探测间隔(阻断时长为该值的两倍, 探测超时为该值的1/2)
  *              .setInspectInterval(5000L)
  *              //设置探测器
- *              .setInspector(new TelnetLoadBalanceInspector());
+ *              .setInspectMode("+telnet+");
  * }</pre>
  *
  * <pre>{@code
@@ -65,13 +63,16 @@ public class LoadBalancedInspectManager implements Closeable {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private String tag = LOG_PREFIX;
 
-    private LoadBalancedHostManager hostManager;
-    private volatile List<LoadBalanceInspector> inspectors = new ArrayList<>(1);
+    private final LoadBalancedHostManager hostManager;
+    private final EmptyLoadBalanceInspector emptyInspector;
+    private final TelnetLoadBalanceInspector telnetInspector;
+    private final HttpGetLoadBalanceInspector httpGetInspector;
 
     private AtomicBoolean started = new AtomicBoolean(false);
     private AtomicBoolean closed = new AtomicBoolean(false);
     private volatile boolean pause = false;
 
+    private String inspectMode = "+telnet+";
     private long inspectInterval = DEFAULT_INSPECT_INTERVAL;
     private long inspectTimeout = DEFAULT_INSPECT_INTERVAL / 2;
     private long blockDuration = DEFAULT_INSPECT_INTERVAL * 2;
@@ -83,23 +84,16 @@ public class LoadBalancedInspectManager implements Closeable {
 
     private final Object intervalLock = new Object();
 
-    /**
-     * 自动开始探测(无需调用start()方法手动开启)
-     */
-    public LoadBalancedInspectManager() {
-        this(true);
+    public LoadBalancedInspectManager(LoadBalancedHostManager hostManager) {
+        this(hostManager, null);
     }
 
-    /**
-     * @param autoStart true:自动开始探测(无需调用start()方法手动开启) false:不自动开始探测(需要调用start()方法手动开启)
-     */
-    public LoadBalancedInspectManager(boolean autoStart) {
+    public LoadBalancedInspectManager(LoadBalancedHostManager hostManager, GlaciHttpClient.Settings clientSettings) {
         //默认telnet探测器
-        inspectors.add(new TelnetLoadBalanceInspector());
-        //自动开始
-        if (autoStart) {
-            start();
-        }
+        this.hostManager = hostManager;
+        this.emptyInspector = new EmptyLoadBalanceInspector();
+        this.telnetInspector = new TelnetLoadBalanceInspector(clientSettings);
+        this.httpGetInspector = new HttpGetLoadBalanceInspector(clientSettings);
     }
 
     /**
@@ -129,43 +123,27 @@ public class LoadBalancedInspectManager implements Closeable {
             inspectThreadPool.shutdownNow();
         } catch (Throwable ignore){
         }
-    }
-
-    /**
-     * 设置远端管理器(必须)
-     * @param hostManager 远端管理器
-     */
-    public LoadBalancedInspectManager setHostManager(LoadBalancedHostManager hostManager) {
-        this.hostManager = hostManager;
-        return this;
+        CloseableUtils.closeQuiet(emptyInspector);
+        CloseableUtils.closeQuiet(telnetInspector);
+        CloseableUtils.closeQuiet(httpGetInspector);
     }
 
     /**
      * [可运行时修改]
-     * 设置网络状态探测器, 如果不设置默认为telnet探测器
-     * @param inspector 探测器
+     * 设置主动探测模式.
+     * 设置为'+telnet+'使用默认的TELNET探测.
+     * 设置为'+disable+'禁用主动探测.
+     * 设置为URL, 使用HTTP GET探测. 例如探测:http://127.0.0.1:8080/health, 则在此处设置/health
+     * @param inspectMode 主动探测模式
      */
-    public LoadBalancedInspectManager setInspector(LoadBalanceInspector inspector){
-        List<LoadBalanceInspector> newInspectors = new ArrayList<>(1);
-        newInspectors.add(inspector);
-        List<LoadBalanceInspector> oldInspectors = this.inspectors;
-        this.inspectors = newInspectors;
-        for (LoadBalanceInspector oldInspector : oldInspectors) {
-            CloseableUtils.closeIfCloseable(oldInspector);
-        }
-        return this;
-    }
-
-    /**
-     * [可运行时修改]
-     * 设置网络状态探测器, 如果不设置默认为telnet探测器
-     * @param inspectors 探测器
-     */
-    public LoadBalancedInspectManager setInspectors(List<LoadBalanceInspector> inspectors) {
-        List<LoadBalanceInspector> oldInspectors = this.inspectors;
-        this.inspectors = inspectors;
-        for (LoadBalanceInspector oldInspector : oldInspectors) {
-            CloseableUtils.closeIfCloseable(oldInspector);
+    public LoadBalancedInspectManager setInspectMode(String inspectMode) {
+        this.inspectMode = inspectMode;
+        if ("+disable+".equals(inspectMode)) {
+            httpGetInspector.setUrlSuffix("");
+        } else if ("+telnet+".equals(inspectMode)) {
+            httpGetInspector.setUrlSuffix("");
+        } else {
+            httpGetInspector.setUrlSuffix(inspectMode);
         }
         return this;
     }
@@ -201,20 +179,24 @@ public class LoadBalancedInspectManager implements Closeable {
         this.blockDuration = inspectInterval * 2;
 
         //更新探测器的超时时间
-        List<LoadBalanceInspector> inspectors = LoadBalancedInspectManager.this.inspectors;
-        if (inspectors != null) {
-            for (LoadBalanceInspector inspector : inspectors) {
-                if (inspector instanceof FixedTimeoutLoadBalanceInspector) {
-                    ((FixedTimeoutLoadBalanceInspector) inspector).setTimeout(inspectTimeout);
-                }
-            }
-        }
+        emptyInspector.setTimeout(inspectTimeout);
+        telnetInspector.setTimeout(inspectTimeout);
+        httpGetInspector.setTimeout(inspectTimeout);
 
         synchronized (intervalLock) {
             intervalLock.notifyAll();
         }
 
         return this;
+    }
+
+    /**
+     * 除了timeout以外, 其他参数也需要在调整后刷新, 直接让GlaciHttpClient调用这个, 新建client的时候再从settings里拿参数即可
+     */
+    public void refreshSettings() {
+        emptyInspector.refreshSettings();
+        telnetInspector.refreshSettings();
+        httpGetInspector.refreshSettings();
     }
 
     /**
@@ -228,7 +210,7 @@ public class LoadBalancedInspectManager implements Closeable {
 
     @Override
     public String toString() {
-        return "inspectors=" + inspectors +
+        return "inspectMode=" + inspectMode +
                 ", inspectInterval=" + inspectInterval +
                 ", inspectTimeout=" + inspectTimeout +
                 ", blockDuration=" + blockDuration +
@@ -279,8 +261,8 @@ public class LoadBalancedInspectManager implements Closeable {
                             intervalLock.wait(inspectInterval);
                         } catch (InterruptedException ignored) {}
                     }
-                    //暂停主动探测
-                    if (pause) {
+                    // 暂停(间隔<=0) 或 禁用 时不继续执行
+                    if (pause || "+disable+".equals(inspectMode)) {
                         continue;
                     }
                     //持有当前的hostManager
@@ -329,33 +311,30 @@ public class LoadBalancedInspectManager implements Closeable {
                     logger.trace(tag + "Inspect: inspecting " + host.getUrl());
                 }
                 //持有探测器
-                List<LoadBalanceInspector> inspectors = LoadBalancedInspectManager.this.inspectors;
-                if (inspectors == null){
-                    if (logger.isTraceEnabled()) {
-                        logger.trace(tag + "Inspect: no inspectors, skip inspect");
-                    }
-                    return;
+                LoadBalanceInspector inspector;
+                if ("+disable+".equals(inspectMode)) {
+                    inspector = emptyInspector;
+                } else if ("+telnet+".equals(inspectMode)) {
+                    inspector = telnetInspector;
+                } else {
+                    inspector = httpGetInspector;
                 }
-                //只要有一个探测器返回false, 就阻断远端
+                /*
+                 * 探测
+                 * 注意:探测器必须在指定的timeout时间内探测完毕, 不要过久的占用线程,
+                 * 尽量处理掉所有异常, 如果抛出异常, 视为探测失败, 阻断远端
+                 */
                 boolean block = false;
-                for (LoadBalanceInspector inspector : inspectors){
-                    /*
-                     * 注意:探测器必须在指定的timeout时间内探测完毕, 不要过久的占用线程,
-                     * 尽量处理掉所有异常, 如果抛出异常, 视为探测失败, 阻断远端
-                     */
-                    try {
-                        if (!inspector.inspect(host.getUrl(), inspectTimeout)) {
-                            block = true;
-                            break;
-                        }
-                    } catch (Throwable t) {
-                        if (logger.isErrorEnabled()){
-                            logger.error(tag + "Inspect: Un-captured error occurred while inspecting, url " + host.getUrl() + ", in " + inspector.getClass(), t);
-                        }
-                        if (isBlockIfInspectorError()) {
-                            block = true;
-                            break;
-                        }
+                try {
+                    if (!inspector.inspect(host.getUrl())) {
+                        block = true;
+                    }
+                } catch (Throwable t) {
+                    if (logger.isErrorEnabled()) {
+                        logger.error(tag + "Inspect: Un-captured error occurred while inspecting, url " + host.getUrl() + ", in " + inspector.getClass(), t);
+                    }
+                    if (isBlockIfInspectorError()) {
+                        block = true;
                     }
                 }
                 //阻断(无恢复期)

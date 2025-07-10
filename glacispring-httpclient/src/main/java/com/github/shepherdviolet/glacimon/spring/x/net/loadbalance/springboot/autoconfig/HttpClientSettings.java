@@ -105,9 +105,9 @@ public class HttpClientSettings {
 
     /**
      * [可运行时修改]
-     * 最大闲置连接数. 客户端会保持与服务端的连接, 保持数量由此设置决定, 直到闲置超过5分钟. 默认16
+     * 最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求.
      */
-    private int maxIdleConnections = 16;
+    private int maxIdleConnections = 0;
 
     /**
      * [可运行时修改]

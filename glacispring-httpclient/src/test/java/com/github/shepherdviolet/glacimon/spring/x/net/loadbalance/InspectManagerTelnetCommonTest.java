@@ -39,10 +39,9 @@ public class InspectManagerTelnetCommonTest {
                 "http://127.0.0.1:8081"
         });
 
-        LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager();
-        inspectManager.setHostManager(hostManager);
+        LoadBalancedInspectManager inspectManager = new LoadBalancedInspectManager(hostManager);
         inspectManager.setInspectInterval(5000L);
-        inspectManager.setInspector(new TelnetLoadBalanceInspector());
+        inspectManager.setInspectMode("+telnet+");
 
         Thread.sleep(30000L);
 

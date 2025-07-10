@@ -23,6 +23,8 @@ glacispring:
       write-timeout: 10000
       read-timeout: 10000
       max-read-length: 10485760
+      # 最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求.
+      max-idle-connections: 0
     client2:
       # 方式二, 优先级低. 在properties中: glacispring.httpclients.client2.host-list[0]=http://127.0.0.1:8083
       host-list:
@@ -34,6 +36,8 @@ glacispring:
       write-timeout: 10000
       read-timeout: 10000
       max-read-length: 10485760
+      # 最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求.
+      max-idle-connections: 0
 ```
 
 * 以上文为例, 启用并配置了client1和client2两个HTTP请求客户端
@@ -74,10 +78,12 @@ glacispring:
       read-timeout: 10000
       # 数据最大读取长度, 单位字节
       max-read-length: 10485760
-      # 编码
-      encode: utf-8
+      # 最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求.
+      max-idle-connections: 0
       # mediaType
       media-type: application/json;charset=utf-8
+      # 编码
+      encode: utf-8
       # Http请求头, 键值对格式参考: https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md
       headers: User-Agent=GlacispringHttpClient,Referer=http://github.com
       # 健康主动探测间隔, 单位ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
@@ -94,8 +100,6 @@ glacispring:
       http-code-need-block: 400,500
       # 当异常为指定类型时, 阻断后端 (这里配的两个异常仅作为演示, 无需设置它们, 因为它们已经包含在默认清单里了, 见源码GlaciHttpClient#needBlock)
       throwable-need-block: java.net.SocketException,java.net.SocketTimeoutException
-      # 最大闲置连接数. 客户端会保持与服务端的连接, 保持数量由此设置决定, 直到闲置超过5分钟. 默认16
-      max-idle-connections: 16
       # 异步方式最大线程数, 配置仅在异步方式有效, 同步无限制
       max-threads: 256
       # 异步方式每个后端最大线程数, 配置仅在异步方式有效, 同步无限制

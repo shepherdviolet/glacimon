@@ -21,6 +21,8 @@ package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector;
 
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceInspector;
 
+import java.io.IOException;
+
 /**
  * 负载均衡--不探测网络状况(默认返回健康)
  *
@@ -29,9 +31,24 @@ import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceIn
 public class EmptyLoadBalanceInspector implements LoadBalanceInspector {
 
     @Override
-    public boolean inspect(String url, long timeout) {
+    public boolean inspect(String url) {
         // Do nothing
         return true;
+    }
+
+    @Override
+    public void setTimeout(long timeout) {
+        // Do nothing
+    }
+
+    @Override
+    public void refreshSettings() {
+        // Do nothing
+    }
+
+    @Override
+    public void close() throws IOException {
+        // Do nothing
     }
 
     @Override

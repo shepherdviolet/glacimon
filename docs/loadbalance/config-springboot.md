@@ -123,8 +123,8 @@ glacispring:
       verify-server-dn-by-custom-dn: 'CN=baidu.com,O=Beijing Baidu Netcom Science Technology Co.\, Ltd,OU=service operation department,L=beijing,ST=beijing,C=CN'
       # 使用指定的域名验证服务端证书的CN(方式二, 优先级低). 如果设置为"UNSAFE-TRUST-ALL-CN"则不校验CN, 所有合法证书都通过, 不安全!!!
       verify-server-cn-by-custom-hostname: 'www.baidu.com'
-      # 配置自定义Dns (设置为空使用系统默认DNS), 需手动依赖dnsjava:dnsjava:3.6.3, 参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true,maxTtlSeconds=300
-      dns-description: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true,maxTtlSeconds=300
+      # 配置自定义Dns (设置为空使用系统默认DNS), 需手动依赖dnsjava:dnsjava:3.6.3, 参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,preferIpv6=false,maxTtlSeconds=300
+      dns-description: ip=8.8.8.8,resolveTimeoutSeconds=10,preferIPv6=false,maxTtlSeconds=300
       # 日志开关: 请求URL, 默认true
       log-print-url: true
       # 日志开关: 阻断日志, 默认true

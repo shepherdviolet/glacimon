@@ -119,8 +119,8 @@ public class TelnetLoadBalanceInspector implements LoadBalanceInspector {
 
     private boolean isIpAddress(String host) {
         return host.matches("^(\\d{1,3}\\.){3}\\d{1,3}$") || // IPv4
-                host.matches("^\\[[0-9a-fA-F:]+\\]$") ||      // IPv6 (RFC 2732)
-                host.matches("^[0-9a-fA-F:]+$");              // IPv6 (raw, no brackets)
+                host.matches("^\\[[0-9a-fA-F:]+\\]$") ||      // Ipv6 (RFC 2732)
+                host.matches("^[0-9a-fA-F:]+$");              // Ipv6 (raw, no brackets)
     }
 
     @Override

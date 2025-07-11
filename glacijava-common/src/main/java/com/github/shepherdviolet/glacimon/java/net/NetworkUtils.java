@@ -88,7 +88,7 @@ public class NetworkUtils {
      * 判断当前环境是否支持ipv6
      * @return true: 支持
      */
-    public static boolean isIPv6Available() {
+    public static boolean isIpv6Available() {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {

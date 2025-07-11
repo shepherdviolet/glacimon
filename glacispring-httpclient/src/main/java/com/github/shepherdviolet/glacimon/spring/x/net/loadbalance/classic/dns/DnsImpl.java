@@ -39,25 +39,25 @@ public class DnsImpl implements Dns {
     private final String ip;
     private final long resolveTimeoutSeconds;
     private final long maxTtlSeconds;
-    private final boolean ipv6Enabled;
-    private final boolean isIPv6Available;
+    private final boolean preferIpv6;
+    private final boolean isIpv6Available;
 
     private final Resolver resolver;
 
     private final ConcurrentHashMap<String, CacheEntry> cache = new ConcurrentHashMap<>();
 
-    public DnsImpl(String ip, long resolveTimeoutSeconds, boolean ipv6Enabled) throws Exception {
-        this(ip, resolveTimeoutSeconds, ipv6Enabled, 300);
+    public DnsImpl(String ip, long resolveTimeoutSeconds, boolean preferIpv6) throws Exception {
+        this(ip, resolveTimeoutSeconds, preferIpv6, 300);
     }
 
-    public DnsImpl(String ip, long resolveTimeoutSeconds, boolean ipv6Enabled, long maxTtlSeconds) throws Exception {
+    public DnsImpl(String ip, long resolveTimeoutSeconds, boolean preferIpv6, long maxTtlSeconds) throws Exception {
         this.resolver = new SimpleResolver(ip);
         this.resolver.setTimeout(Duration.ofSeconds(resolveTimeoutSeconds));
         this.ip = ip;
         this.resolveTimeoutSeconds = resolveTimeoutSeconds;
-        this.ipv6Enabled = ipv6Enabled;
+        this.preferIpv6 = preferIpv6;
         this.maxTtlSeconds = maxTtlSeconds;
-        this.isIPv6Available = NetworkUtils.isIPv6Available();
+        this.isIpv6Available = NetworkUtils.isIpv6Available();
     }
 
     @Override
@@ -78,11 +78,10 @@ public class DnsImpl implements Dns {
             List<InetAddress> addresses = new ArrayList<>();
             long minTtl = Long.MAX_VALUE;
 
-            if (ipv6Enabled && isIPv6Available) {
+            if (isIpv6Available && preferIpv6) {
                 Lookup lookupAAAA = new Lookup(hostname, Type.AAAA);
                 lookupAAAA.setResolver(resolver);
                 lookupAAAA.setCache(null);
-
                 org.xbill.DNS.Record[] recordsAAAA = lookupAAAA.run();
                 if (recordsAAAA != null && lookupAAAA.getResult() == Lookup.SUCCESSFUL) {
                     for (org.xbill.DNS.Record record : recordsAAAA) {
@@ -99,7 +98,6 @@ public class DnsImpl implements Dns {
             Lookup lookupA = new Lookup(hostname, Type.A);
             lookupA.setResolver(resolver);
             lookupA.setCache(null);
-
             org.xbill.DNS.Record[] recordsA = lookupA.run();
             if (recordsA != null && lookupA.getResult() == Lookup.SUCCESSFUL) {
                 for (org.xbill.DNS.Record record : recordsA) {
@@ -107,6 +105,22 @@ public class DnsImpl implements Dns {
                         ARecord a = (ARecord) record;
                         addresses.add(a.getAddress());
                         minTtl = Math.min(minTtl, a.getTTL());
+                    }
+                }
+            }
+
+            if (isIpv6Available && !preferIpv6) {
+                Lookup lookupAAAA = new Lookup(hostname, Type.AAAA);
+                lookupAAAA.setResolver(resolver);
+                lookupAAAA.setCache(null);
+                org.xbill.DNS.Record[] recordsAAAA = lookupAAAA.run();
+                if (recordsAAAA != null && lookupAAAA.getResult() == Lookup.SUCCESSFUL) {
+                    for (org.xbill.DNS.Record record : recordsAAAA) {
+                        if (record instanceof AAAARecord) {
+                            AAAARecord aaaa = (AAAARecord) record;
+                            addresses.add(aaaa.getAddress());
+                            minTtl = Math.min(minTtl, aaaa.getTTL());
+                        }
                     }
                 }
             }
@@ -147,8 +161,8 @@ public class DnsImpl implements Dns {
         return "DnsImpl{" +
                 "ip='" + ip + '\'' +
                 ", resolveTimeoutSeconds=" + resolveTimeoutSeconds +
-                ", ipv6Enabled=" + ipv6Enabled +
-                ", isIPv6Available=" + isIPv6Available +
+                ", preferIpv6=" + preferIpv6 +
+                ", isIpv6Available=" + isIpv6Available +
                 ", maxTtlSeconds=" + maxTtlSeconds +
                 '}';
     }

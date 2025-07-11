@@ -252,13 +252,13 @@ public class HttpClientSettings {
      * <p>参数说明:</p>
      * <p>ip: DNS服务地址, 必输</p>
      * <p>resolveTimeoutSeconds: 域名解析超时时间(秒), 可选, 默认10s</p>
-     * <p>ipv6Enabled: 是否允许ipv6, 可选, 默认true</p>
+     * <p>preferIpv6: Ipv6优先(否则Ipv4优先), 可选, 默认false(Ipv4优先)</p>
      * <p>maxTtlSeconds: 最大TTL(秒), 实际TTL为min(服务器返回TTL, 该参数值), 可选, 默认300</p>
      * <p>参数格式:</p>
      * <p>参数示例: ip=8.8.8.8</p>
      * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10</p>
-     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true</p>
-     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true,maxTtlSeconds=300</p>
+     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,preferIpv6=false</p>
+     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,preferIpv6=false,maxTtlSeconds=300</p>
      */
     public String dnsDescription;
 

@@ -2212,14 +2212,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
      * <p>参数说明:</p>
      * <p>ip: DNS服务地址, 必输</p>
      * <p>resolveTimeoutSeconds: 域名解析超时时间(秒), 可选, 默认10s</p>
-     * <p>ipv6Enabled: 是否允许ipv6, 可选, 默认true</p>
+     * <p>preferIpv6: Ipv6优先(否则Ipv4优先), 可选, 默认false(Ipv4优先)</p>
      * <p>maxTtlSeconds: 最大TTL(秒), 实际TTL为min(服务器返回TTL, 该参数值), 可选, 默认300</p>
      * <p>参数格式:</p>
      * <p>参数示例: ip=8.8.8.8</p>
      * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10</p>
-     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true</p>
-     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true,maxTtlSeconds=300</p>
-     * @param dnsDescription Dns服务器信息 (设置为空使用系统默认DNS), 参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,ipv6Enabled=true,maxTtlSeconds=300
+     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,preferIpv6=false</p>
+     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,preferIpv6=false,maxTtlSeconds=300</p>
+     * @param dnsDescription Dns服务器信息 (设置为空使用系统默认DNS), 参数示例: ip=8.8.8.8,resolveTimeoutSeconds=10,preferIpv6=false,maxTtlSeconds=300
      */
     public GlaciHttpClient setDns(String dnsDescription) {
         try {
@@ -2241,7 +2241,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             Map<String, String> params = SimpleKeyValueEncoder.decode(dnsDescription);
             String ip = params.get("ip");
             String resolveTimeoutSeconds = params.get("resolveTimeoutSeconds");
-            String ipv6Enabled = params.get("ipv6Enabled");
+            String preferIpv6 = params.get("preferIpv6");
             String maxTtlSeconds = params.get("maxTtlSeconds");
             if (CheckUtils.isEmpty(ip)) {
                 throw new IllegalArgumentException("ip is required");
@@ -2249,15 +2249,15 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             if (CheckUtils.isEmpty(resolveTimeoutSeconds)) {
                 resolveTimeoutSeconds = "10";
             }
-            if (CheckUtils.isEmpty(ipv6Enabled)) {
-                ipv6Enabled = "true";
+            if (CheckUtils.isEmpty(preferIpv6)) {
+                preferIpv6 = "false";
             }
             if (CheckUtils.isEmpty(maxTtlSeconds)) {
                 maxTtlSeconds = "300";
             }
-            settings.dns = new DnsImpl(ip, Long.parseLong(resolveTimeoutSeconds), Boolean.parseBoolean(ipv6Enabled), Long.parseLong(maxTtlSeconds));
+            settings.dns = new DnsImpl(ip, Long.parseLong(resolveTimeoutSeconds), Boolean.parseBoolean(preferIpv6), Long.parseLong(maxTtlSeconds));
             logger.info(settings.tag + "Set dns, ip: " + ip + ", resolveTimeoutSeconds: " + resolveTimeoutSeconds +
-                    ", ipv6Enabled: " + ipv6Enabled + ", maxTtlSeconds: " + maxTtlSeconds);
+                    ", preferIpv6: " + preferIpv6 + ", maxTtlSeconds: " + maxTtlSeconds);
         } catch (IllegalStateException e) {
             throw e;
         } catch (Exception e) {

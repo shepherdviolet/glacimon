@@ -19,6 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.dns;
 
+import com.github.shepherdviolet.glacimon.java.net.NetworkUtils;
 import okhttp3.Dns;
 import org.xbill.DNS.*;
 
@@ -39,6 +40,7 @@ public class DnsImpl implements Dns {
     private final long resolveTimeoutSeconds;
     private final long maxTtlSeconds;
     private final boolean ipv6Enabled;
+    private final boolean isIPv6Available;
 
     private final Resolver resolver;
 
@@ -55,6 +57,7 @@ public class DnsImpl implements Dns {
         this.resolveTimeoutSeconds = resolveTimeoutSeconds;
         this.ipv6Enabled = ipv6Enabled;
         this.maxTtlSeconds = maxTtlSeconds;
+        this.isIPv6Available = NetworkUtils.isIPv6Available();
     }
 
     @Override
@@ -75,7 +78,7 @@ public class DnsImpl implements Dns {
             List<InetAddress> addresses = new ArrayList<>();
             long minTtl = Long.MAX_VALUE;
 
-            if (ipv6Enabled) {
+            if (ipv6Enabled && isIPv6Available) {
                 Lookup lookupAAAA = new Lookup(hostname, Type.AAAA);
                 lookupAAAA.setResolver(resolver);
                 lookupAAAA.setCache(null);
@@ -145,6 +148,7 @@ public class DnsImpl implements Dns {
                 "ip='" + ip + '\'' +
                 ", resolveTimeoutSeconds=" + resolveTimeoutSeconds +
                 ", ipv6Enabled=" + ipv6Enabled +
+                ", isIPv6Available=" + isIPv6Available +
                 ", maxTtlSeconds=" + maxTtlSeconds +
                 '}';
     }

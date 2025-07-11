@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class HttpGetLoadBalanceInspector implements LoadBalanceInspector {
 
     private static final int HTTP_SUCCESS = 200;
-    private static final long DEFAULT_TIMEOUT = 2000L;
+    private static final long DEFAULT_TIMEOUT = 2500L;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -190,8 +190,8 @@ public class HttpGetLoadBalanceInspector implements LoadBalanceInspector {
         if (settings == null) {
             ConnectionPool connectionPool = new ConnectionPool(0, 5, TimeUnit.MINUTES);
             return new OkHttpClient.Builder()
-                    .connectTimeout(timeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(timeout, TimeUnit.MILLISECONDS)
+                    .connectTimeout(timeout / 2, TimeUnit.MILLISECONDS)
+                    .writeTimeout(timeout / 2, TimeUnit.MILLISECONDS)
                     .readTimeout(timeout, TimeUnit.MILLISECONDS)
                     .connectionPool(connectionPool)
                     .build();
@@ -200,8 +200,8 @@ public class HttpGetLoadBalanceInspector implements LoadBalanceInspector {
         ConnectionPool connectionPool = new ConnectionPool(settings.getMaxIdleConnections(), 5, TimeUnit.MINUTES);
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(timeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(timeout, TimeUnit.MILLISECONDS)
+                .connectTimeout(timeout / 2, TimeUnit.MILLISECONDS)
+                .writeTimeout(timeout / 2, TimeUnit.MILLISECONDS)
                 .readTimeout(timeout, TimeUnit.MILLISECONDS)
                 .connectionPool(connectionPool);
 

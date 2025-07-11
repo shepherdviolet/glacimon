@@ -19,15 +19,18 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.inspector;
 
+import com.github.shepherdviolet.glacimon.java.net.NetworkUtils;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalanceInspector;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.GlaciHttpClient;
 import okhttp3.Dns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.shepherdviolet.glacimon.java.net.NetworkUtils;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * 负载均衡--模拟TELNET方式探测网络状况
@@ -37,7 +40,7 @@ import java.net.URI;
 public class TelnetLoadBalanceInspector implements LoadBalanceInspector {
 
     private static final String HTTPS_SCHEME = "https";
-    private static final long DEFAULT_TIMEOUT = 2000L;
+    private static final long DEFAULT_TIMEOUT = 2500L;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -53,27 +56,58 @@ public class TelnetLoadBalanceInspector implements LoadBalanceInspector {
         try {
             //解析url
             URI uri = URI.create(url);
-            //处理端口
+            if (uri.getScheme() == null || uri.getHost() == null) {
+                throw new IllegalArgumentException("scheme or host is missing");
+            }
+            //ip/域名
+            String host = uri.getHost();
+            //端口
             int port = uri.getPort();
-            if (port < 0){
-                if (HTTPS_SCHEME.equals(uri.getScheme())){
-                    port = 443;
-                } else {
-                    port = 80;
+            if (port < 0) {
+                port = HTTPS_SCHEME.equalsIgnoreCase(uri.getScheme()) ? 443 : 80;
+            }
+            // 判断是否是域名，如果是则用 Dns 解析
+            Dns dns = getDns();
+            boolean isTraceEnabled = logger.isTraceEnabled();
+            if (dns != null && !isIpAddress(host)) {
+                try {
+                    List<InetAddress> addresses = dns.lookup(host);
+                    if (addresses.isEmpty()) {
+                        if (isTraceEnabled) {
+                            logger.trace("Inspect: DNS resolved no IPs for host " + host);
+                        }
+                        return false;
+                    }
+                    int to = (int) timeout / addresses.size();
+                    int count = 0;
+                    for (InetAddress address : addresses) {
+                        count++;
+                        if (NetworkUtils.telnet(address, port, to)) {
+                            if (isTraceEnabled) {
+                                logger.trace("Inspect: Address " + address.getHostAddress() + " is available, after " + count + " attempts.");
+                            }
+                            return true;
+                        }
+                    }
+                    if (isTraceEnabled) {
+                        logger.trace("Inspect: Host " + host + " is not available, after " + count + " attempts.");
+                    }
+                    return false;
+                } catch (UnknownHostException e) {
+                    if (isTraceEnabled) {
+                        logger.trace("Inspect: DNS resolve failed for host " + host, e);
+                    }
+                    return false;
                 }
             }
             //telnet
-            return inspectByTelnet(uri.getHost(), port, timeout);
+            return NetworkUtils.telnet(host, port, (int) timeout);
         } catch (Exception e) {
-            if (logger.isErrorEnabled()){
-                logger.error("Inspect: invalid url " + url, e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Inspect: Invalid url " + url, e);
             }
         }
         return false;
-    }
-
-    protected boolean inspectByTelnet(String hostname, int ip, long timeout){
-        return NetworkUtils.telnet(hostname, ip, timeout > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) timeout);
     }
 
     protected Dns getDns() {
@@ -81,6 +115,12 @@ public class TelnetLoadBalanceInspector implements LoadBalanceInspector {
             return null;
         }
         return settings.getDns();
+    }
+
+    private boolean isIpAddress(String host) {
+        return host.matches("^(\\d{1,3}\\.){3}\\d{1,3}$") || // IPv4
+                host.matches("^\\[[0-9a-fA-F:]+\\]$") ||      // IPv6 (RFC 2732)
+                host.matches("^[0-9a-fA-F:]+$");              // IPv6 (raw, no brackets)
     }
 
     @Override

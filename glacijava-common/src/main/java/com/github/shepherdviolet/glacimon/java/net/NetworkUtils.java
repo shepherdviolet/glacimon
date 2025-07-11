@@ -59,6 +59,58 @@ public class NetworkUtils {
     }
 
     /**
+     * 模拟TELNET
+     * @param host InetAddress
+     * @param port 端口
+     * @param timeout 探测超时ms
+     * @return true:成功 false:失败
+     */
+    public static boolean telnet(InetAddress host, int port, int timeout) {
+        Socket socket = null;
+        try {
+            socket = new Socket();
+            InetSocketAddress address = new InetSocketAddress(host, port);
+            socket.connect(address, timeout);
+            return true;
+        } catch (Throwable ignore) {
+            return false;
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+    }
+
+    /**
+     * 判断当前环境是否支持ipv6
+     * @return true: 支持
+     */
+    public static boolean isIPv6Available() {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface nif = interfaces.nextElement();
+                if (!nif.isUp() || nif.isLoopback() || nif.isVirtual()) {
+                    continue;
+                }
+                Enumeration<InetAddress> addresses = nif.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    if (addr instanceof Inet6Address && !addr.isLoopbackAddress()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception ignore) {
+            return false;
+        }
+        return false;
+    }
+
+    /**
      * 获取第一个本地IP
      *
      * @return 第一个本地IP

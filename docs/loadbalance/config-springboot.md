@@ -17,27 +17,31 @@ glacispring:
   httpclients:
     client1:
       hosts: http://127.0.0.1:8081,http://127.0.0.1:8082
-      initiative-inspect-interval: 5000
-      passive-block-duration: 30000
       connect-timeout: 3000
       write-timeout: 10000
       read-timeout: 10000
       max-read-length: 10485760
       # 最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求.
       max-idle-connections: 0
+      # 健康主动探测间隔, 单位ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
+      initiative-inspect-interval: 5000
+      # 健康被动探测阻断时长, 单位ms
+      passive-block-duration: 30000
     client2:
       # 方式二, 优先级低. 在properties中: glacispring.httpclients.client2.host-list[0]=http://127.0.0.1:8083
       host-list:
         - http://127.0.0.1:8083
         - http://127.0.0.1:8084
-      initiative-inspect-interval: 5000
-      passive-block-duration: 30000
       connect-timeout: 3000
       write-timeout: 10000
       read-timeout: 10000
       max-read-length: 10485760
       # 最大闲置连接数. 若设置为0(默认), 每次重新解析域名+重新建立连接, 性能差, 但支持动态域名解析. 若设置为正整数(例如16), 会复用连接池中的连接, 性能强, 但若DNS域名解析记录更新, 可能会向原IP发送请求.
       max-idle-connections: 0
+      # 健康主动探测间隔, 单位ms; 若设置成<=0, 则暂停主动探测(暂停特性:2025.0.1+)
+      initiative-inspect-interval: 5000
+      # 健康被动探测阻断时长, 单位ms
+      passive-block-duration: 30000
 ```
 
 * 以上文为例, 启用并配置了client1和client2两个HTTP请求客户端

@@ -30,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -81,6 +83,7 @@ public class LoadBalancedInspectManager implements Closeable {
             new GuavaThreadFactoryBuilder().setNameFormat("Glacispring-LBInspect-Dispatch-%s").setDaemon(true).build());
     private ExecutorService inspectThreadPool = ThreadPoolExecutorUtils.createCached(0,
             Integer.MAX_VALUE, 60, "Glacispring-LBInspect-Inspect-%s");
+    private Map<String, AtomicBoolean> inspectionFlags = new ConcurrentHashMap<>();
 
     private final Object intervalLock = new Object();
 
@@ -304,9 +307,22 @@ public class LoadBalancedInspectManager implements Closeable {
      * 开始异步探测
      */
     private void inspect(final LoadBalancedHostManager.Host host) {
+        // 同一个url同时只能有一个线程做探测
+        AtomicBoolean inspectionFlag = inspectionFlags.computeIfAbsent(host.getUrl(), k -> new AtomicBoolean(false));
+        if (!inspectionFlag.compareAndSet(false, true)){
+            return;
+        }
         inspectThreadPool.execute(new Runnable() {
             @Override
             public void run() {
+                try {
+                    doInspect();
+                } finally {
+                    inspectionFlags.computeIfAbsent(host.getUrl(), k -> new AtomicBoolean(false)).set(false);
+                }
+            }
+
+            private void doInspect() {
                 if (logger.isTraceEnabled()) {
                     logger.trace(tag + "Inspect: inspecting " + host.getUrl());
                 }

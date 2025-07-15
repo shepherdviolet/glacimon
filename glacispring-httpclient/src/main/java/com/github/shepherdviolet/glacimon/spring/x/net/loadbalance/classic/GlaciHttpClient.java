@@ -26,7 +26,8 @@ import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.net.HttpHeaders;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedHostManager;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.LoadBalancedInspectManager;
-import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.dns.DnsImpl;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.dns.BackgroundUpdatingDns;
+import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.dns.DnsBackgroundUpdater;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.ssl.*;
 import com.github.shepherdviolet.glacimon.spring.x.net.loadbalance.classic.statistics.NoDepTxTimerProxy;
 import okhttp3.*;
@@ -122,12 +123,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     private volatile OkHttpClient okHttpClient;
     private final LoadBalancedHostManager hostManager;
     private final LoadBalancedInspectManager inspectManager;
+    private final DnsBackgroundUpdater dnsBackgroundUpdater;
 
     private Settings settings = new Settings();
     private volatile boolean refreshSettings = false;
     private volatile Exception clientCreateException;
     private AtomicBoolean settingsLock = new AtomicBoolean(false);
     private SettingsSpinLock settingsSpinLock = new SettingsSpinLock();
+    private AtomicBoolean start = new AtomicBoolean(false);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,6 +141,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     public GlaciHttpClient() {
         hostManager = new LoadBalancedHostManager();
         inspectManager = new LoadBalancedInspectManager(hostManager, settings);
+        dnsBackgroundUpdater = new DnsBackgroundUpdater();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,12 +161,16 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
      * <p>若GlaciHttpClient没有被注册为Bean(直接new出来的), 则需要调用此方法开始主动探测器. </p>
      */
     public void start() {
-        inspectManager.start();
+        if (start.compareAndSet(false, true)) {
+            inspectManager.start();
+            dnsBackgroundUpdater.start();
+        }
     }
 
     @Override
     public void close() {
         CloseableUtils.closeQuiet(inspectManager);
+        CloseableUtils.closeQuiet(dnsBackgroundUpdater);
     }
 
     /**
@@ -953,6 +961,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
     }
 
     private OkHttpClient getOkHttpClient(){
+        //自动启动
+        start();
         //客户端创建错误后, 不再重试
         if (clientCreateException != null) {
             throw new IllegalStateException("Client create error", clientCreateException);
@@ -2197,6 +2207,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         try {
             settingsSpinLock.lock();
             settings.dns = dns;
+            dnsBackgroundUpdater.setDns(dns); // dns更新器设置新的DNS实例
         } finally {
             settingsSpinLock.unlock();
         }
@@ -2213,13 +2224,14 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
      * <p>ip: DNS服务地址, 必输</p>
      * <p>resolveTimeoutSeconds: 域名解析超时时间(秒), 可选, 默认5s</p>
      * <p>preferIpv6: Ipv6优先(否则Ipv4优先), 可选, 默认false(Ipv4优先)</p>
+     * <p>minTtlSeconds: 最小TTL(秒), 实际TTL为max(服务器返回TTL, 该参数值), 可选, 默认30</p>
      * <p>maxTtlSeconds: 最大TTL(秒), 实际TTL为min(服务器返回TTL, 该参数值), 可选, 默认300</p>
      * <p>参数格式:</p>
      * <p>参数示例: ip=8.8.8.8</p>
      * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5</p>
      * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false</p>
-     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,maxTtlSeconds=300</p>
-     * @param dnsDescription Dns服务器信息 (设置为空使用系统默认DNS), 参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,maxTtlSeconds=300
+     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,minTtlSeconds=30,maxTtlSeconds=300</p>
+     * @param dnsDescription Dns服务器信息 (设置为空使用系统默认DNS), 参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,minTtlSeconds=30,maxTtlSeconds=300
      */
     public GlaciHttpClient setDns(String dnsDescription) {
         try {
@@ -2227,6 +2239,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             // unset
             if (CheckUtils.isEmptyOrBlank(dnsDescription)) {
                 settings.dns = null;
+                dnsBackgroundUpdater.setDns(null); // dns更新器设置新的DNS实例
                 logger.info(settings.tag + "Set dns to system default");
                 return this;
             }
@@ -2237,27 +2250,10 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
                 throw new IllegalStateException(settings.tag + "To use a custom DNS by GlaciHttpClient.setDns(String dnsDescription), " +
                         "you must manually add the dependency: dnsjava:dnsjava:3.6.3", e);
             }
-            // kv encode
-            Map<String, String> params = SimpleKeyValueEncoder.decode(dnsDescription);
-            String ip = params.get("ip");
-            String resolveTimeoutSeconds = params.get("resolveTimeoutSeconds");
-            String preferIpv6 = params.get("preferIpv6");
-            String maxTtlSeconds = params.get("maxTtlSeconds");
-            if (CheckUtils.isEmpty(ip)) {
-                throw new IllegalArgumentException("ip is required");
-            }
-            if (CheckUtils.isEmpty(resolveTimeoutSeconds)) {
-                resolveTimeoutSeconds = "5";
-            }
-            if (CheckUtils.isEmpty(preferIpv6)) {
-                preferIpv6 = "false";
-            }
-            if (CheckUtils.isEmpty(maxTtlSeconds)) {
-                maxTtlSeconds = "300";
-            }
-            settings.dns = new DnsImpl(ip, Long.parseLong(resolveTimeoutSeconds), Boolean.parseBoolean(preferIpv6), Long.parseLong(maxTtlSeconds));
-            logger.info(settings.tag + "Set dns, ip: " + ip + ", resolveTimeoutSeconds: " + resolveTimeoutSeconds +
-                    ", preferIpv6: " + preferIpv6 + ", maxTtlSeconds: " + maxTtlSeconds);
+            Dns dns = new BackgroundUpdatingDns(dnsDescription);
+            settings.dns = dns;
+            dnsBackgroundUpdater.setDns(dns); // dns更新器设置新的DNS实例
+            logger.info(settings.tag + "Set dns: " + dns);
         } catch (IllegalStateException e) {
             throw e;
         } catch (Exception e) {
@@ -2787,6 +2783,7 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
         settings.rawTag = tag;
         hostManager.setTag(tag);
         inspectManager.setTag(tag);
+        dnsBackgroundUpdater.setTag(tag);
         return this;
     }
 

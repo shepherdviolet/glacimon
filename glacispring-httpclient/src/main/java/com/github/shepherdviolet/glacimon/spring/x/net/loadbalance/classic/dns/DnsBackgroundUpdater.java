@@ -39,6 +39,7 @@ public class DnsBackgroundUpdater implements Closeable {
 
     private static final String LOG_PREFIX = "LoadBalance | ";
     private static final long DEFAULT_INTERVAL_SEC = 3600L;
+    private static final long LATCH_WAIT_TIME = 3600000L;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private String tag = LOG_PREFIX;
@@ -51,7 +52,7 @@ public class DnsBackgroundUpdater implements Closeable {
             new GuavaThreadFactoryBuilder().setNameFormat("Glacispring-LBDNS-Dispatch-%s").setDaemon(true).build());
     private final ExecutorService updateThreadPool = ThreadPoolExecutorUtils.createCached(0,
             Integer.MAX_VALUE, 60, "Glacispring-LBDNS-Update-%s");
-    private final Object updateWaitLock = new Object();
+    private final BackgroundUpdateWaitLock updateWaitLock = new BackgroundUpdateWaitLock();
 
     private final AtomicBoolean started = new AtomicBoolean(false);
     private final AtomicBoolean closed = new AtomicBoolean(false);
@@ -69,9 +70,7 @@ public class DnsBackgroundUpdater implements Closeable {
             return;
         }
         started.set(true);
-        synchronized (updateWaitLock) {
-            updateWaitLock.notifyAll();
-        }
+        updateWaitLock.signalAll();
         try {
             dispatchThreadPool.shutdownNow();
         } catch (Throwable ignore){
@@ -92,9 +91,7 @@ public class DnsBackgroundUpdater implements Closeable {
         if (dns instanceof BackgroundUpdatingDns) {
             ((BackgroundUpdatingDns) dns).setBackgroundUpdateWaitLock(updateWaitLock);
         }
-        synchronized (updateWaitLock) {
-            updateWaitLock.notifyAll();
-        }
+        updateWaitLock.signalAll();
     }
 
     /**
@@ -111,28 +108,23 @@ public class DnsBackgroundUpdater implements Closeable {
             @Override
             public void run() {
                 if (logger.isInfoEnabled()) {
-                    logger.info(tag + "CustomDNS: Start");
+                    logger.info(tag + "DNS: Background Updater Start");
                 }
                 while (!closed.get()){
                     try {
                         //间隔
                         long waitDuration = Math.max(getNextUpdateTime() - System.currentTimeMillis(), 1);
                         if (logger.isTraceEnabled()) {
-                            logger.trace(tag + "CustomDNS: The next update will be in " + waitDuration + " milliseconds");
+                            logger.trace(tag + "DNS: The next update will be in " + waitDuration + " milliseconds");
                         }
-                        synchronized (updateWaitLock) {
-                            try {
-                                updateWaitLock.wait(waitDuration);
-                            } catch (InterruptedException ignored) {
-                            }
-                        }
+                        updateWaitLock.await(waitDuration);
                         if (closed.get()) {
                             break;
                         }
                         BackgroundUpdatingDns dns = getBackgroundUpdatingDns();
                         if (dns == null) {
                             if (logger.isTraceEnabled()) {
-                                logger.trace(tag + "CustomDNS: No BackgroundUpdatingDns instance to be updated");
+                                logger.trace(tag + "DNS: No BackgroundUpdatingDns instance to be updated");
                             }
                             continue;
                         }
@@ -140,7 +132,7 @@ public class DnsBackgroundUpdater implements Closeable {
                             continue;
                         }
                         if (logger.isTraceEnabled()) {
-                            logger.trace(tag + "CustomDNS: Update start");
+                            logger.trace(tag + "DNS: Update start");
                         }
 
                         // 执行
@@ -148,26 +140,26 @@ public class DnsBackgroundUpdater implements Closeable {
 
                         // 等待更新完毕
                         try {
-                            latch.await(DEFAULT_INTERVAL_SEC, TimeUnit.MILLISECONDS);
-                        } catch (InterruptedException ignore) {
+                            latch.await(LATCH_WAIT_TIME, TimeUnit.MILLISECONDS);
+                        } catch (InterruptedException e) {
                             if (logger.isTraceEnabled()) {
-                                logger.warn(tag + "CustomDNS: Latch await interrupted");
+                                logger.warn(tag + "DNS: Latch await interrupted", e);
                             }
                         }
                         // 打印dns报告
                         dns = getBackgroundUpdatingDns();
                         if (dns != null && logger.isInfoEnabled() && System.currentTimeMillis() - lastDnsReportTime > dns.getReportIntervalSec() * 1000L) {
-                            logger.info(tag + "CustomDNS: \n==== HttpClient DNS Report ==================================\n" + dns.printCacheRecords());
+                            logger.info(tag + "DNS: Custom DNS Resolver Report (Every " + dns.getReportIntervalSec() + "s)\n" + dns.printCacheRecords());
                             lastDnsReportTime = System.currentTimeMillis();
                         }
                     } catch (Throwable t) {
                         if (logger.isTraceEnabled()) {
-                            logger.trace("CustomDNS: unexpected error", t);
+                            logger.trace(tag + "DNS: dispatchStart: unexpected error", t);
                         }
                     }
                 }
                 if (logger.isInfoEnabled()) {
-                    logger.info(tag + "CustomDNS: Closed");
+                    logger.info(tag + "DNS: Background Updater Closed");
                 }
             }
         });
@@ -186,9 +178,17 @@ public class DnsBackgroundUpdater implements Closeable {
         if (dns == null || !dns.isBackgroundUpdate()) {
             return now + DEFAULT_INTERVAL_SEC * 1000L;
         }
+        long nextUpdateTime = dns.getNextUpdateTime();
         long maxUpdateTime = now + dns.getUpdMaxIntervalSec() * 1000L;
         long minUpdateTime = now + dns.getUpdMinIntervalSec() * 1000L;
-        long nextUpdateTime = dns.getNextUpdateTime();
+        if (nextUpdateTime == Long.MAX_VALUE) {
+            // MAX_VALUE表示没有记录需要更新, 进入IDLE状态
+            if (logger.isTraceEnabled()) {
+                logger.trace(tag + "DNS: Background Updater Enter Idle");
+            }
+            updateWaitLock.enterIdle();
+            return maxUpdateTime;
+        }
         if (nextUpdateTime < minUpdateTime) {
             return minUpdateTime;
         }

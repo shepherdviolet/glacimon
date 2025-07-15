@@ -58,31 +58,63 @@ public class BackgroundUpdatingDns implements Dns {
     private final long updMaxIntervalSec;
     private final boolean isBackgroundUpdate;
     private final long reportIntervalSec;
+    private final long stopUpdAftFails;
+    private final long stopUpdAftIdleSec;
 
     private final List<String> ips;
     private final List<Resolver> resolvers;
     private final boolean isIpv6Available;
     private final ConcurrentHashMap<String, CacheRecord> cache = new ConcurrentHashMap<>();
 
-    private volatile Object backgroundUpdateWaitLock = new Object();
+    private volatile BackgroundUpdateWaitLock backgroundUpdateWaitLock = BackgroundUpdateWaitLock.DUMMY;
 
     // Constructor ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * [可运行时修改]
+     * </p>配置自定义Dns</p>
+     * <p>参数采用SimpleKeyValueEncoder格式, 详见: https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md</p>
+     * <p></p>
+     * <p>参数说明:</p>
+     * <p>ip: DNS服务地址, 必输; 多个地址使用'|'分割, 例如: ip=8.8.8.8|114.114.114.114</p>
+     * <p>resolveTimeoutSeconds: 域名解析超时时间(秒), 可选, 默认5s</p>
+     * <p>preferIpv6: true:Ipv6优先, false:Ipv4优先, 可选, 默认false</p>
+     * <p>minTtlSeconds: 最小TTL(秒), 实际TTL为max(服务器返回TTL, 该参数值), 可选, 默认20</p>
+     * <p>maxTtlSeconds: 最大TTL(秒), 实际TTL为min(服务器返回TTL, 该参数值), 可选, 默认300</p>
+     * <p>errorTtlSeconds: 域名解析错误时的TTL(秒), 可选, 默认0</p>
+     * <p>updMinIntervalSec: 后台自动更新最小间隔(秒), 可选, 默认5; 程序会在TTL到期前自动更新域名解析记录, 这是更新线程最小间隔.</p>
+     * <p>updMaxIntervalSec: 后台自动更新最大间隔(秒), 可选, 默认3600; 程序会在TTL到期前自动更新域名解析记录, 这是更新线程最大间隔.</p>
+     * <p>isBackgroundUpdate: true:启用后台自动更新, false:关闭后台自动更新, 可选, 默认true</p>
+     * <p>reportIntervalSec: DNS解析报告打印间隔(秒), 可选, 默认3600; 程序会在日志中打印DNS解析相关统计信息</p>
+     * <p>stopUpdAftFails: 域名解析失败指定次数后, 停止自动更新, 可选, 默认5; 仅影响自动更新, 不影响同步解析</p>
+     * <p>stopUpdAftIdleSec: 域名未使用指定时间(秒)后, 停止自动更新, 可选, 默认1200; 仅影响自动更新, 不影响同步解析</p>
+     * <p></p>
+     * <p>参数格式: key1=value1,key2=value2</p>
+     * <p></p>
+     * <p>示例(设置一个DNS): ip=8.8.8.8</p>
+     * <p>示例(设置多个DNS): ip=8.8.8.8|114.114.114.114</p>
+     * <p>示例(设置解析超时时间): ip=8.8.8.8,resolveTimeoutSeconds=5</p>
+     * <p>示例(设置ipv6是否优先): ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false</p>
+     * <p>示例(设置最大最小TTL): ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,minTtlSeconds=30,maxTtlSeconds=300</p>
+     * <p>示例(设置是否后台自动更新): ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,isBackgroundUpdate=true</p>
+     */
     public BackgroundUpdatingDns(String dnsDescription) {
         try {
             Map<String, String> params = SimpleKeyValueEncoder.decode(dnsDescription);
-            String ip = parseStringOrThrow(params, "key");
+            String ip = parseStringOrThrow(params, "ip");
             this.resolveTimeoutSeconds = parseLongOrDefault(params, "resolveTimeoutSeconds", 5, 1);
             this.preferIpv6 = parseBooleanOrDefault(params, "preferIpv6", false);
-            this.minTtlSeconds = parseLongOrDefault(params, "minTtlSeconds", 30, 0);
+            this.minTtlSeconds = parseLongOrDefault(params, "minTtlSeconds", 20, 0);
             this.maxTtlSeconds = parseLongOrDefault(params, "maxTtlSeconds", 300, minTtlSeconds);
             this.errorTtlSeconds = parseLongOrDefault(params, "errorTtlSeconds", 0, 0);
             this.updMinIntervalSec = parseLongOrDefault(params, "updMinIntervalSec", 5, 0);
             this.updMaxIntervalSec = parseLongOrDefault(params, "updMaxIntervalSec", 3600, updMinIntervalSec);
             this.isBackgroundUpdate = parseBooleanOrDefault(params, "isBackgroundUpdate", true);
             this.reportIntervalSec = parseLongOrDefault(params, "reportIntervalSec", 3600, 60);
+            this.stopUpdAftFails = parseLongOrDefault(params, "stopUpdAftFails", 5, 1);
+            this.stopUpdAftIdleSec = parseLongOrDefault(params, "stopUpdAftIdleSec", 1200, 60);
             if (!params.isEmpty()) {
-                logger.warn("LoadBalance | CustomDNS: Invalid dnsDescription parameters: " + params);
+                logger.warn("LoadBalance | DNS: Invalid dnsDescription parameters: " + params + ", check your config glacispring.httpclients.*.dns-description");
             }
 
             String[] ipArray = ip.split("\\|");
@@ -134,9 +166,9 @@ public class BackgroundUpdatingDns implements Dns {
         return Boolean.parseBoolean(value);
     }
 
-    public void setBackgroundUpdateWaitLock(Object waitLock) {
+    public void setBackgroundUpdateWaitLock(BackgroundUpdateWaitLock waitLock) {
         if (waitLock == null) {
-            waitLock = new Object();
+            waitLock = BackgroundUpdateWaitLock.DUMMY;
         }
         this.backgroundUpdateWaitLock = waitLock;
     }
@@ -153,7 +185,13 @@ public class BackgroundUpdatingDns implements Dns {
         }
         CacheRecord cacheRecord = getCacheRecord(hostname);
         long now = System.currentTimeMillis();
+        cacheRecord.updateLastLookupTime(now);
         if (now < cacheRecord.getExpireAt()) {
+            /*
+             * 成功从缓存拿到记录, 通知更新器退出IDLE状态
+             * 适用于所有记录都长时间没用, 导致更新器进入IDLE状态, 哪怕从缓存成功得到记录, 也退出IDLE
+             */
+            backgroundUpdateWaitLock.exitIdle();
             cacheRecord.countCacheHits();
             UnknownHostException e = cacheRecord.getException();
             List<InetAddress> addresses = cacheRecord.getAddresses();
@@ -299,12 +337,16 @@ public class BackgroundUpdatingDns implements Dns {
 
         // 筛选需要更新的记录
         for (Map.Entry<String, CacheRecord> entry : cache.entrySet()) {
-            long updateAt = entry.getValue().getUpdateAt();
+            CacheRecord cacheRecord = entry.getValue();
+            long updateAt = cacheRecord.getUpdateAt();
             if (updateAt == Long.MAX_VALUE) {
                 continue;
             }
+            if (cacheRecord.isUpdateStopped(now, stopUpdAftFails, stopUpdAftIdleSec)) {
+                continue;
+            }
             if (updateAt <= now) {
-                recordsToUpdate.put(entry.getKey(), entry.getValue());
+                recordsToUpdate.put(entry.getKey(), cacheRecord);
             }
         }
 
@@ -319,7 +361,7 @@ public class BackgroundUpdatingDns implements Dns {
                     public void run() {
                         try {
                             if (logger.isTraceEnabled()) {
-                                logger.trace("LoadBalance | CustomDNS: doBackgroundUpdate: hostname " + hostname + " starts to update");
+                                logger.trace("LoadBalance | DNS: doBackgroundUpdate: Hostname " + hostname + " starts to update");
                             }
                             LookupResult result = null;
                             UnknownHostException exception = null;
@@ -351,7 +393,7 @@ public class BackgroundUpdatingDns implements Dns {
                             updateCacheRecord(hostname, exception);
                         } catch (Throwable t) {
                             if (logger.isTraceEnabled()) {
-                                logger.trace("LoadBalance | CustomDNS: doBackgroundUpdate: lookup failed", t);
+                                logger.trace("LoadBalance | DNS: doBackgroundUpdate: Lookup failed", t);
                             }
                         } finally {
                             countDownLatch.countDown();
@@ -361,7 +403,7 @@ public class BackgroundUpdatingDns implements Dns {
             } catch (Throwable t) {
                 countDownLatch.countDown();
                 if (logger.isTraceEnabled()) {
-                    logger.trace("LoadBalance | CustomDNS: doBackgroundUpdate: unexpected error", t);
+                    logger.trace("LoadBalance | DNS: doBackgroundUpdate: Unexpected error", t);
                 }
             }
         }
@@ -374,10 +416,14 @@ public class BackgroundUpdatingDns implements Dns {
      */
     public long getNextUpdateTime() {
         // 先找到最近到期时间
+        long now = System.currentTimeMillis();
         long nextUpdateTime = Long.MAX_VALUE;
         for (CacheRecord record : cache.values()) {
             long updateAt = record.getUpdateAt();
             if (updateAt == Long.MAX_VALUE) {
+                continue;
+            }
+            if (record.isUpdateStopped(now, stopUpdAftFails, stopUpdAftIdleSec)) {
                 continue;
             }
             nextUpdateTime = Math.min(updateAt, nextUpdateTime);
@@ -387,39 +433,55 @@ public class BackgroundUpdatingDns implements Dns {
 
     private void updateCacheRecord(String hostname, List<InetAddress> addresses, long ttl) {
         CacheRecord record = getCacheRecord(hostname);
-        record.countSuccessfulLookups();
 
         String recordString = null;
         if (logger.isTraceEnabled()) {
             recordString = record.toString();
         }
+
         ttl = Math.min(maxTtlSeconds, ttl);
         ttl = Math.max(minTtlSeconds, ttl);
         record.setAddresses(addresses, ttl);
+        record.countSuccessfulLookups();
+        record.resetConsecFails();
+
         if (logger.isTraceEnabled()) {
-            logger.trace("LoadBalance | CustomDNS: updateCacheRecord " + recordString + " ---> " + record);
+            logger.trace("LoadBalance | DNS: Record Updated: " + recordString + " ---> " + record);
         }
 
         if (record.isFirstLookup()) {
-            synchronized (backgroundUpdateWaitLock) {
-                backgroundUpdateWaitLock.notifyAll();
-            }
+            backgroundUpdateWaitLock.signalAll();
+        } else {
+            /*
+             * 成功lookup到地址, 通知更新器退出IDLE状态
+             * 适用于所有记录都解析失败超过限值, 导致更新器进入IDLE状态, 当一条记录手动解析成功后, 退出IDLE
+             */
+            backgroundUpdateWaitLock.exitIdle();
         }
     }
 
     private void updateCacheRecord(String hostname, UnknownHostException exception) {
         CacheRecord record = getCacheRecord(hostname);
-        record.countFailedLookups();
+
+        String recordString = null;
+        if (logger.isTraceEnabled()) {
+            recordString = record.toString();
+        }
 
         // 之前就失败了 或者 地址已过期了 才去记录错误, 否则有地址用就先用
         if (record.getException() != null || System.currentTimeMillis() >= record.getExpireAt()) {
             record.setException(exception, errorTtlSeconds);
         }
 
+        record.countFailedLookups();
+        record.countConsecFails();
+
+        if (logger.isTraceEnabled()) {
+            logger.trace("LoadBalance | DNS: Record Updated: " + recordString + " ---> " + record);
+        }
+
         if (record.isFirstLookup()) {
-            synchronized (backgroundUpdateWaitLock) {
-                backgroundUpdateWaitLock.notifyAll();
-            }
+            backgroundUpdateWaitLock.signalAll();
         }
     }
 
@@ -456,13 +518,15 @@ public class BackgroundUpdatingDns implements Dns {
                 ", updMaxIntervalSec=" + updMaxIntervalSec +
                 ", isBackgroundUpdate=" + isBackgroundUpdate +
                 ", reportIntervalSec=" + reportIntervalSec +
+                ", stopUpdAftFails=" + stopUpdAftFails +
+                ", stopUpdAftIdleSec=" + stopUpdAftIdleSec +
                 ", isIpv6Available=" + isIpv6Available +
                 '}';
     }
 
     public String printCacheRecords() {
-        StringBuilder stringBuilder = new StringBuilder("---- Resolver Info ------------------\n")
-                .append(this).append('\n').append("---- Cache Info ---------------------\n");
+        StringBuilder stringBuilder = new StringBuilder("---- Custom DNS Resolver Info ------------------------------------\n")
+                .append(this).append('\n').append("---- Hostname Record Info ----------------------------------------\n");
         for (Map.Entry<String, CacheRecord> record : cache.entrySet()) {
             stringBuilder.append(record.getKey()).append(record.getValue().toString()).append('\n');
         }
@@ -475,14 +539,37 @@ public class BackgroundUpdatingDns implements Dns {
         private volatile long ttl = -1; // 秒
         private volatile long expireAt = -1; // 毫秒(时间戳)
         private volatile UnknownHostException exception;
+
         private final AtomicLong cacheHits = new AtomicLong(0);
         private final AtomicLong cacheMisses = new AtomicLong(0);
         private final AtomicLong successfulLookups = new AtomicLong(0);
         private final AtomicLong failedLookups = new AtomicLong(0);
+
         private final AtomicBoolean firstLookup = new AtomicBoolean(true);
+        private final AtomicLong consecFails = new AtomicLong(0);
+        private final AtomicLong lastLookupTime = new AtomicLong(System.currentTimeMillis());
 
         private boolean isFirstLookup() {
             return firstLookup.compareAndSet(true, false);
+        }
+
+        private boolean isUpdateStopped(long now, long stopUpdAftFails, long stopUpdAftIdleSec) {
+            if (consecFails.get() >= stopUpdAftFails) {
+                return true;
+            }
+            return now - lastLookupTime.get() > stopUpdAftIdleSec * 1000L;
+        }
+
+        private void countConsecFails() {
+            consecFails.getAndIncrement();
+        }
+
+        private void resetConsecFails() {
+            consecFails.set(0);
+        }
+
+        private void updateLastLookupTime(long now) {
+            lastLookupTime.set(now);
         }
 
         private void setAddresses(List<InetAddress> addresses, long ttl) {
@@ -500,19 +587,19 @@ public class BackgroundUpdatingDns implements Dns {
         }
 
         private void countCacheHits() {
-            cacheHits.incrementAndGet();
+            cacheHits.getAndIncrement();
         }
 
         private void countCacheMisses() {
-            cacheMisses.incrementAndGet();
+            cacheMisses.getAndIncrement();
         }
 
         private void countSuccessfulLookups() {
-            successfulLookups.incrementAndGet();
+            successfulLookups.getAndIncrement();
         }
 
         private void countFailedLookups() {
-            failedLookups.incrementAndGet();
+            failedLookups.getAndIncrement();
         }
 
         private List<InetAddress> getAddresses() {
@@ -542,10 +629,12 @@ public class BackgroundUpdatingDns implements Dns {
         public String toString() {
             Exception e =  exception;
             return "{" +
-                    "cacheHits=" + cacheHits +
-                    ", cacheMisses=" + cacheMisses +
-                    ", succLookups=" + successfulLookups +
-                    ", failLookups=" + failedLookups +
+                    "cacheHit=" + cacheHits +
+                    ", cacheMiss=" + cacheMisses +
+                    ", succLookup=" + successfulLookups +
+                    ", failLookup=" + failedLookups +
+                    ", consecFail=" + consecFails +
+                    ", lastLookup=" + lastLookupTime +
                     ", ttl=" + ttl +
                     ", addr=" + addresses +
                     ", err=" + (e == null ? "" : e.getMessage()) +

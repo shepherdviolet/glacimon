@@ -247,19 +247,31 @@ public class HttpClientSettings {
 
     /**
      * [可运行时修改]
-     * </p>配置Dns</p>
+     * </p>配置自定义Dns</p>
      * <p>参数采用SimpleKeyValueEncoder格式, 详见: https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md</p>
+     * <p></p>
      * <p>参数说明:</p>
-     * <p>ip: DNS服务地址, 必输</p>
+     * <p>ip: DNS服务地址, 必输; 多个地址使用'|'分割, 例如: ip=8.8.8.8|114.114.114.114</p>
      * <p>resolveTimeoutSeconds: 域名解析超时时间(秒), 可选, 默认5s</p>
-     * <p>preferIpv6: Ipv6优先(否则Ipv4优先), 可选, 默认false(Ipv4优先)</p>
-     * <p>minTtlSeconds: 最小TTL(秒), 实际TTL为max(服务器返回TTL, 该参数值), 可选, 默认30</p>
+     * <p>preferIpv6: true:Ipv6优先, false:Ipv4优先, 可选, 默认false</p>
+     * <p>minTtlSeconds: 最小TTL(秒), 实际TTL为max(服务器返回TTL, 该参数值), 可选, 默认20</p>
      * <p>maxTtlSeconds: 最大TTL(秒), 实际TTL为min(服务器返回TTL, 该参数值), 可选, 默认300</p>
-     * <p>参数格式:</p>
-     * <p>参数示例: ip=8.8.8.8</p>
-     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5</p>
-     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false</p>
-     * <p>参数示例: ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,minTtlSeconds=30,maxTtlSeconds=300</p>
+     * <p>errorTtlSeconds: 域名解析错误时的TTL(秒), 可选, 默认0</p>
+     * <p>updMinIntervalSec: 后台自动更新最小间隔(秒), 可选, 默认5; 程序会在TTL到期前自动更新域名解析记录, 这是更新线程最小间隔.</p>
+     * <p>updMaxIntervalSec: 后台自动更新最大间隔(秒), 可选, 默认3600; 程序会在TTL到期前自动更新域名解析记录, 这是更新线程最大间隔.</p>
+     * <p>isBackgroundUpdate: true:启用后台自动更新, false:关闭后台自动更新, 可选, 默认true</p>
+     * <p>reportIntervalSec: DNS解析报告打印间隔(秒), 可选, 默认3600; 程序会在日志中打印DNS解析相关统计信息</p>
+     * <p>stopUpdAftFails: 域名解析失败指定次数后, 停止自动更新, 可选, 默认5; 仅影响自动更新, 不影响同步解析</p>
+     * <p>stopUpdAftIdleSec: 域名未使用指定时间(秒)后, 停止自动更新, 可选, 默认1200; 仅影响自动更新, 不影响同步解析</p>
+     * <p></p>
+     * <p>参数格式: key1=value1,key2=value2</p>
+     * <p></p>
+     * <p>示例(设置一个DNS): ip=8.8.8.8</p>
+     * <p>示例(设置多个DNS): ip=8.8.8.8|114.114.114.114</p>
+     * <p>示例(设置解析超时时间): ip=8.8.8.8,resolveTimeoutSeconds=5</p>
+     * <p>示例(设置ipv6是否优先): ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false</p>
+     * <p>示例(设置最大最小TTL): ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,minTtlSeconds=30,maxTtlSeconds=300</p>
+     * <p>示例(设置是否后台自动更新): ip=8.8.8.8,resolveTimeoutSeconds=5,preferIpv6=false,isBackgroundUpdate=true</p>
      */
     public String dnsDescription;
 

@@ -47,11 +47,11 @@ EzSentinel的EzSentinelConfiguration中监听了spring.cloud.sentinel.enabled参
 
 ```text
 //Sentinel官方依赖
-compile "com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel:$version_sentinel_starter"
+implementation "com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel:$version_sentinel_starter"
 //EzSentinel依赖 (glacispring-helper)
-compile "com.github.shepherdviolet.glacimon:glacispring-helper:$version_glacimon"
+implementation "com.github.shepherdviolet.glacimon:glacispring-helper:$version_glacimon"
 //默认的JsonEzSentinelRuleConfigurer使用GSON解析JSON, 你也可以不要GSON, 自行实现AbstractEzSentinelRuleConfigurer
-compile "com.google.code.gson:gson:$version_gson"
+implementation "com.google.code.gson:gson:$version_gson"
 ```
 
 * <重要>修改RT(耗时)最大值, 默认为4900ms, 根据实际情况来
@@ -210,13 +210,13 @@ API方式
 
 ```text
 //Sentinel官方依赖
-compile "com.alibaba.csp:sentinel-core:$version_sentinel"
-compile "com.alibaba.csp:sentinel-annotation-aspectj:$version_sentinel"
-compile "com.alibaba.csp:sentinel-transport-simple-http:$version_sentinel"
+implementation "com.alibaba.csp:sentinel-core:$version_sentinel"
+implementation "com.alibaba.csp:sentinel-annotation-aspectj:$version_sentinel"
+implementation "com.alibaba.csp:sentinel-transport-simple-http:$version_sentinel"
 //EzSentinel依赖 (glacispring-helper)
-compile "com.github.shepherdviolet.glacimon:glacispring-helper:$version_glacimon"
+implementation "com.github.shepherdviolet.glacimon:glacispring-helper:$version_glacimon"
 //默认的JsonEzSentinelRuleConfigurer使用GSON解析JSON, 你也可以不要GSON, 自行实现AbstractEzSentinelRuleConfigurer
-compile "com.google.code.gson:gson:$version_gson"
+implementation "com.google.code.gson:gson:$version_gson"
 ```
 
 * 添加启动参数(后续某版本可以配置在classpath:sentinel.properties中)

@@ -868,7 +868,7 @@ PARENT_ELEMENT_TYPE_MISMATCH: Parent element '$.Body.Customers' is not an instan
 ```text
 //version替换为具体版本(2025.1.0以上)
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacijava-common:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacijava-common:?'
 }
 ```
 

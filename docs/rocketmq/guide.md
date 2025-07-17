@@ -209,8 +209,8 @@ glacispring.helper.rocketmq.default-charset=UTF-8
 
 ```gradle
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacispring-helper:?'
-    compile 'org.apache.rocketmq:rocketmq-client:4.4.0'
+    implementation 'com.github.shepherdviolet.glacimon:glacispring-helper:?'
+    implementation 'org.apache.rocketmq:rocketmq-client:4.4.0'
 }
 
 ```

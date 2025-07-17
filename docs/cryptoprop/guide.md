@@ -31,7 +31,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacispring-common:2024.1.5'
+    implementation 'com.github.shepherdviolet.glacimon:glacispring-common:2024.1.5'
 }
 
 ```

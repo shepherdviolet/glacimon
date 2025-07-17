@@ -33,7 +33,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacimon-spi-core:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacimon-spi-core:?'
 }
 ```
 

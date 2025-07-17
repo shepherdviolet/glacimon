@@ -268,7 +268,7 @@ public @interface EnableMyFunction {
 ```text
 //version替换为具体版本
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacispring-common:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacispring-common:?'
 }
 ```
 

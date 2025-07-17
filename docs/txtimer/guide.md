@@ -171,7 +171,7 @@
 ```text
 //version替换为具体版本
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacispring-txtimer:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacispring-txtimer:?'
 }
 ```
 

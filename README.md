@@ -205,16 +205,16 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile 'com.github.shepherdviolet.glacimon:glacimon-spi-core:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacimon-spi-core:?'
     
-    compile 'com.github.shepherdviolet.glacimon:glacijava-common:?'
-    compile 'com.github.shepherdviolet.glacimon:glacijava-crypto:?'
-    compile 'com.github.shepherdviolet.glacimon:glacijava-trace:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacijava-common:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacijava-crypto:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacijava-trace:?'
     
-    compile 'com.github.shepherdviolet.glacimon:glacispring-common:?'
-    compile 'com.github.shepherdviolet.glacimon:glacispring-httpclient:?'
-    compile 'com.github.shepherdviolet.glacimon:glacispring-txtimer:?'
-    compile 'com.github.shepherdviolet.glacimon:glacispring-helper:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacispring-common:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacispring-httpclient:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacispring-txtimer:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacispring-helper:?'
 }
 
 ```

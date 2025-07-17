@@ -216,9 +216,9 @@ repositories {
 }
 dependencies {
     //Common crypto utils
-    compile 'com.github.shepherdviolet.glacimon:glacijava-common:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacijava-common:?'
     //Advanced crypto utils
-    compile 'com.github.shepherdviolet.glacimon:glacijava-crypto:?'
+    implementation 'com.github.shepherdviolet.glacimon:glacijava-crypto:?'
 }
 
 ```

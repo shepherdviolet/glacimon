@@ -2225,8 +2225,8 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
      * <p>ip: DNS服务地址, 必输; 多个地址使用'|'分割, 例如: ip=8.8.8.8|114.114.114.114</p>
      * <p>resolveTimeoutSeconds: 域名解析超时时间(秒), 可选, 默认5s</p>
      * <p>preferIpv6: true:Ipv6优先, false:Ipv4优先, 可选, 默认false</p>
-     * <p>minTtlSeconds: 最小TTL(秒), 实际TTL为max(服务器返回TTL, 该参数值), 可选, 默认20</p>
-     * <p>maxTtlSeconds: 最大TTL(秒), 实际TTL为min(服务器返回TTL, 该参数值), 可选, 默认300</p>
+     * <p>minTtlSeconds: 最小TTL(秒), 可选, 默认20; 实际TTL为max(服务器返回TTL, 该参数值)</p>
+     * <p>maxTtlSeconds: 最大TTL(秒), 可选, 默认300; 实际TTL为min(服务器返回TTL, 该参数值)</p>
      * <p>errorTtlSeconds: 域名解析错误时的TTL(秒), 可选, 默认0</p>
      * <p>updMinIntervalSec: 后台自动更新最小间隔(秒), 可选, 默认5; 程序会在TTL到期前自动更新域名解析记录, 这是更新线程最小间隔.</p>
      * <p>updMaxIntervalSec: 后台自动更新最大间隔(秒), 可选, 默认3600; 程序会在TTL到期前自动更新域名解析记录, 这是更新线程最大间隔.</p>

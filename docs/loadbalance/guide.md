@@ -78,7 +78,7 @@
 * [Spring 注解手动配置](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/config-annotation.md)
 * [Spring XML手动配置](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/config-xml.md)
 
-# 调用客户端
+# 调用客户端(发送请求)
 
 * [同步发送请求](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/invoke-sync.md)
 * [异步发送请求](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/invoke-async.md)
@@ -86,6 +86,7 @@
 # 其他
 
 * [SSL相关配置(自定义SSL验证逻辑/访问自签名的服务端/改变域名验证)](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/ssl.md)
+* [自定义DNS解析](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/dns.md)
 
 # 关于日志
 

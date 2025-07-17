@@ -77,7 +77,7 @@ public class LoadBalancedInspectManager implements Closeable {
     private String inspectMode = "+telnet+";
     private long inspectInterval = DEFAULT_INSPECT_INTERVAL;
     private long inspectTimeout = DEFAULT_INSPECT_INTERVAL / 2;
-    private long blockDuration = DEFAULT_INSPECT_INTERVAL * 2;
+    private long blockDuration = DEFAULT_INSPECT_INTERVAL * 4;
 
     private ExecutorService dispatchThreadPool = ThreadPoolExecutorUtils.createFixed(1,
             new GuavaThreadFactoryBuilder().setNameFormat("Glacispring-LBInspect-Dispatch-%s").setDaemon(true).build());
@@ -179,7 +179,7 @@ public class LoadBalancedInspectManager implements Closeable {
         //探测超时
         this.inspectTimeout = inspectInterval / 2;
         //故障时远端被阻断的时间
-        this.blockDuration = inspectInterval * 2;
+        this.blockDuration = inspectInterval * 4;
 
         //更新探测器的超时时间
         emptyInspector.setTimeout(inspectTimeout);

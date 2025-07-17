@@ -13,54 +13,49 @@
 
 <br>
 
-### Module: glacimon-spi-core
+### Module: `glacimon-spi-core`
 
 > GlacimonSpi is an implementation of service provider interface feature. It can make your library expandable.
-
-#### SPI utils
 
 * GlacimonSpi [(English Documents)](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md) [(中文文档)](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)
 
 <br>
 
-### Module: glacimon-bom
+### Module: `glacimon-bom`
 
 > BOM for maven
 
 <br>
 <br>
 
-## Glacijava (Glacimon for JavaSE)
+## Glacijava (Glacimon for Java)
 
 <br>
 
-### Module: glacijava-common
+### Module: `glacijava-common`
 
-> Common utils for JavaSE
+> Common utils for Java
 
-#### [Misc utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/misc)
+#### [Misc utils (check/time/closeable/props...)](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/misc)
 
 * Check / Time / Closeable / Properties ... utils
 
-#### [Crypto basic utils](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
+#### [Crypto basic utils (RSA/ECDSA/AES/DES/SHA/MD5/PEM/P12...)](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
 
-* RSA / ECDSA / AES / DES / SHA / MD5 / PEM / P12 ... utils
-
-#### [Collections utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections)
+#### [Collection utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections)
 
 * [LambdaBuilder : Create Map/Set/Object/List with Lambda Expression](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/guide.md)
 * [StreamingBuilder : Create Map/Set/Object/List in stream style](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/guide.md)
 * [ElementVisitor : Get element from collections in easy way, collection multi-layer acquisition/traversal/replacement tool](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/guide.md)
 * [MapKeyTranslator : Map to Map key mapping](https://github.com/shepherdviolet/glacimon/blob/master/docs/collections/guide.md)
+* [IgnoreCaseHashMap](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/collections/IgnoreCaseHashMap.java)
 
-#### [Conversion utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/conversion)
+#### [Conversion utils (String/Base64/Bytes/Hash/Primitive...)](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/conversion)
 
-* String / Base64 / Bytes / Hash / Primitive ... utils
 * [SimpleKeyValueEncoder : Convert between simple Key-Value and String](https://github.com/shepherdviolet/glacimon/blob/master/docs/kvencoder/guide.md)
 
-#### [Concurrent utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/concurrent)
+#### [Concurrent utils (Thread/Lock/Snapshot)](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/concurrent)
 
-* Lock / Waiter / Snapshot ...
 * [ThreadPoolExecutorUtils / GuavaThreadFactoryBuilder : Create thread pool](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/concurrent/ThreadPoolExecutorUtils.java)
 
 #### [Reflect utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect)
@@ -70,11 +65,8 @@
 * [ClassPrinter : Print all information for a class / object](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/ClassPrinter.java)
 * [BeanInfoUtils : Get property information of Java Bean](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/reflect/BeanInfoUtils.java)
 
-#### [Data structure](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc)
+#### [Data structure (queue / pool / cache)](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc)
 
-* Array / Collection ... utils
-* Cache / Pool ...
-* IgnoreCaseHashMap ...
 * [Bitmap / Bloom filter](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/datastruc/bitmap)
 
 #### [Network utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/net)
@@ -91,8 +83,6 @@
 
 * [Captcha utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/graph/captcha/ImageCaptchaUtils.java)
 
-#### [Test utils](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/test)
-
 #### [Protocols](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/protocol)
 
 * [URL protocol installer](https://github.com/shepherdviolet/glacimon/tree/master/glacijava-common/src/main/java/com/github/shepherdviolet/glacimon/java/protocol/url)
@@ -103,27 +93,23 @@
 
 <br>
 
-### Module: glacijava-crypto
+### Module: `glacijava-crypto`
 
 [![Depends](https://img.shields.io/badge/Depends-glacijava--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
-[![Depends](https://img.shields.io/badge/Depends-bcpkix--jdk15on-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.bouncycastle%20a:bcpkix-jdk15on)
+[![Depends](https://img.shields.io/badge/Depends-bcpkix--jdk18on-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.bouncycastle%20a:bcpkix-jdk15on)
 
 > More crypto features (depends on bouncy-castle)
 
-#### [Crypto advanced utils](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
-
-* SM2 / SM3 / SM4 ... utils
+* [Crypto advanced utils (SM2/SM3/SM4...)](https://github.com/shepherdviolet/glacimon/blob/master/docs/crypto/guide.md)
 
 <br>
 
-### Module: glacijava-trace
+### Module: `glacijava-trace`
 
 [![Depends](https://img.shields.io/badge/Depends-glacijava--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
-> Tracing utils
-
-#### [Tracing utils]((https://github.com/shepherdviolet/glacimon/blob/master/docs/trace/guide.md))
+> Log tracing utils
 
 * [Trace : Help to trace invocation across thread or process](https://github.com/shepherdviolet/glacimon/blob/master/docs/trace/guide.md)
 
@@ -134,17 +120,13 @@
 
 <br>
 
-### Module: glacispring-common
+### Module: `glacispring-common`
 
 [![Depends](https://img.shields.io/badge/Depends-glacijava--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-spring--context-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.springframework%20a:spring-context)
 [![Depends](https://img.shields.io/badge/Depends-slf4j--api-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:org.slf4j%20a:slf4j-api)
 
 > Common utils for Java Spring and third-party libraries
-
-| Springboot Auto Configurations                                                                                                                                                                                                   |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [GlacispringCommonAutoConfiguration](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/basic/autoconfig/GlacispringCommonAutoConfiguration.java) |
 
 #### [Spring config components](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/x/config)
 
@@ -155,22 +137,15 @@
 
 * [CryptoProp : Spring property encryption (2024.1+)](https://github.com/shepherdviolet/glacimon/blob/master/docs/cryptoprop/guide.md)
 
-#### [Spring config utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/config)
+#### [Spring config utils (FactoryBean/BeanPostProcessor...)](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/config)
 
-* FactoryBean / BeanPostProcessor ...
 * [YamlPropertySourceFactory : Load YAML by @PropertySource](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/config/property)
 
-#### [Conversion utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/conversion)
+#### [Proxy utils (AOP/CGLib...)](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/proxy)
 
-* SequenceFormatter / StringPlaceHolderUtils ...
+#### [Conversion utils (Sequence...)](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/conversion)
 
-#### [Proxy utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/proxy)
-
-* AOP / CGLib ...
-
-#### [Misc utils](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/misc)
-
-* ServletRequestUtils ...
+#### [Misc utils (Startup/ServletRequest...)](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/misc)
 
 #### [Helpers](https://github.com/shepherdviolet/glacimon/tree/master/glacispring-common/src/main/java/com/github/shepherdviolet/glacimon/spring/helper)
 
@@ -178,20 +153,18 @@
 
 <br>
 
-### Module: glacispring-httpclient
+### Module: `glacispring-httpclient`
 
 [![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-okhttp-dc143c.svg?style=flat)](https://search.maven.org/search?q=g:com.squareup.okhttp3%20a:okhttp)
 
-> Provides a solution for http client
-
-#### Http client components
+> HTTP client supporting load-balancing / backend health-checking / circuit-breaking / custom-dns
 
 * [GlaciHttpClient : HTTP client supporting load-balancing / backend health-checking / circuit-breaking](https://github.com/shepherdviolet/glacimon/blob/master/docs/loadbalance/guide.md)
 
 <br>
 
-### Module: glacispring-helper
+### Module: `glacispring-helper`
 
 [![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 ![Depends](https://img.shields.io/badge/Depends-...-dc143c.svg?style=flat)
@@ -209,14 +182,12 @@
 
 <br>
 
-### Module: glacispring-txtimer
+### Module: `glacispring-txtimer`
 
 [![Depends](https://img.shields.io/badge/Depends-glacispring--common-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 [![Depends](https://img.shields.io/badge/Depends-glacimon--spi--core-6a5acd.svg?style=flat)](https://github.com/shepherdviolet/glacimon)
 
 > Simple time-consuming statistics
-
-#### Statistic components
 
 * [TxTimer : Simple time-consuming statistic API](https://github.com/shepherdviolet/glacimon/blob/master/docs/txtimer/guide.md)
 

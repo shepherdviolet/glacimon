@@ -199,6 +199,13 @@ public class ApolloConfigChangeService {
 //version替换为具体版本, 另外需要依赖spring库
 dependencies {
     compile 'com.github.shepherdviolet.glacimon:glacispring-httpclient:?'
+    
+    // [可选] 启用GSON数据转换器(支持sendForBean)需要添加此依赖
+    //compile 'com.google.code.gson:gson:2.10'
+    // [可选] 自定义DNS解析(dns-description)需要添加此依赖
+    //compile 'dnsjava:dnsjava:3.6.3'
+    // [可选] 启用TxTimer统计请求耗时(tx-timer-enabled)需要添加此依赖
+    //compile 'com.github.shepherdviolet.glacimon:glacispring-txtimer:?'
 }
 ```
 

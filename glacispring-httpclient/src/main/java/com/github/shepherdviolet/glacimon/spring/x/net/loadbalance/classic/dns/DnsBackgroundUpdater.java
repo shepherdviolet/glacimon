@@ -58,10 +58,7 @@ public class DnsBackgroundUpdater implements Closeable {
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
     public void start() {
-        if (started.compareAndSet(false, true)) {
-            //开始探测
-            dispatchStart();
-        }
+        // do nothing
     }
 
     @Override
@@ -81,17 +78,26 @@ public class DnsBackgroundUpdater implements Closeable {
         }
     }
 
-    public synchronized void setDns(Dns dns) {
-        // 清理旧实例
-        if (this.dns instanceof BackgroundUpdatingDns) {
-            ((BackgroundUpdatingDns) this.dns).setBackgroundUpdateWaitLock(null);
+    public void setDns(Dns dns) {
+        // 设置dns
+        synchronized (this) {
+            // 清理旧实例
+            if (this.dns instanceof BackgroundUpdatingDns) {
+                ((BackgroundUpdatingDns) this.dns).setBackgroundUpdateWaitLock(null);
+            }
+            // 设置新实例
+            this.dns = dns;
+            if (dns instanceof BackgroundUpdatingDns) {
+                ((BackgroundUpdatingDns) dns).setBackgroundUpdateWaitLock(updateWaitLock);
+            }
         }
-        // 设置新实例
-        this.dns = dns;
-        if (dns instanceof BackgroundUpdatingDns) {
-            ((BackgroundUpdatingDns) dns).setBackgroundUpdateWaitLock(updateWaitLock);
+        if (dns != null && started.compareAndSet(false, true)) {
+            // 第一次setDns时启动调度线程
+            dispatchStart();
+        } else {
+            //唤醒调度线程
+            updateWaitLock.signalAll();
         }
-        updateWaitLock.signalAll();
     }
 
     /**

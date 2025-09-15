@@ -4,7 +4,6 @@
 * [Github Home](https://github.com/shepherdviolet/glacimon)
 * [Search in Maven Central](https://search.maven.org/search?q=g:com.github.shepherdviolet.glacimon)
 * [PGP Key](https://keyserver.ubuntu.com/pks/lookup?search=0x90998B78AABD6E96&fingerprint=on&op=index)
-* [Special thanks to JetBrains for the free open source license, it is very helpful for our project!](https://www.jetbrains.com/?from=glacimon)
 
 <br>
 <br>

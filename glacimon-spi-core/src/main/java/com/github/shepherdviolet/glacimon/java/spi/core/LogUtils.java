@@ -23,6 +23,11 @@ import com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger;
 
 class LogUtils {
 
+    //memory logger
+
+    private static final String MEM_LOGGER = "com.github.shepherdviolet.glacimon.java.spi.core.MemLogger";
+    private static final String LOGGING_DEPENDENCY_FLAG = "com.github.shepherdviolet.glacimon.java.spi.core.LoggingDependencyMarker";
+
     //system logger
 
     private static final String SYSTEM_LOGGER = "com.github.shepherdviolet.glacimon.java.spi.core.SystemLogger";
@@ -35,11 +40,19 @@ class LogUtils {
     private static final SpiLogger LOGGER;
 
     static {
-        String loggerClassName = SYSTEM_LOGGER;
-        //check slf4j
-        if (ClassUtils.loadClassSafety(SLF4J_FLAG, ClassUtils.getCurrentClassLoader()) != null) {
-            loggerClassName = SLF4J_LOGGER;
+        // default to memlogger
+        String loggerClassName = MEM_LOGGER;
+
+        // check if glacimon-spi-logging exists
+        if (ClassUtils.loadClassSafety(LOGGING_DEPENDENCY_FLAG, ClassUtils.getCurrentClassLoader()) != null) {
+            //check if slf4j exists
+            if (ClassUtils.loadClassSafety(SLF4J_FLAG, ClassUtils.getCurrentClassLoader()) != null) {
+                loggerClassName = SLF4J_LOGGER;
+            } else {
+                loggerClassName = SYSTEM_LOGGER;
+            }
         }
+
         //load logger
         LOGGER = ClassUtils.loadInternalComponent(Constants.VMOPT_CUSTOM_LOGGER, SpiLogger.class, loggerClassName);
     }

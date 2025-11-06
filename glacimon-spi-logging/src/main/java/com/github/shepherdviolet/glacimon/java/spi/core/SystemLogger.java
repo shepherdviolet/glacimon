@@ -41,8 +41,8 @@ class SystemLogger implements SpiLogger {
     private static final int ERROR = 1;
     private static final int OFF = 0;
 
-    private final String timeFormat;
     private final int logLevel;
+    private final String timeFormat;
     private final ThreadLocal<SimpleDateFormat> formats = new ThreadLocal<>();
 
     SystemLogger() {

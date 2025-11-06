@@ -121,20 +121,47 @@ the interface, and provide a backward compatible approach.
 
 ## About log
 
-* When SLF4J exists in the classpath, the log is output with SLF4J by default.
-* When SLF4J does not exist in the classpath, the log is output with System.out by default .
+* Basic Mode (only depends on `glacimon-spi-core`, not on `glacimon-spi-logging`)
+* * Basic mode does not output logs externally, only records them in memory. See `In-Memory Logs`
+* Logging Mode (depends on `glacimon-spi-logging`)
+* * When SLF4J exists in the classpath, logs are output via SLF4J. See `SLF4J Logs`
+* * When SLF4J does not exist in the classpath, logs are output via System.out. See `System.out Logs`
+* Custom Mode (implement SpiLogger by yourself)
+* * See `Custom Log Printer`
 
-### SLF4J Logger
+### In-Memory Logs
 
-* Logger Package `com.github.shepherdviolet.glacimon.java.spi`
-* Recommended level `INFO`
-* If you need to troubleshoot, adjust the log level to `DEBUG` or `TRACE`
+* When only `glacimon-spi-core` is depended on and `glacimon-spi-logging` is not, logs are recorded in memory.
+* Suitable for general scenarios. Most people do not need to view SPI logs, so logs are saved in memory (facilitating temporary troubleshooting).
+* Methods to extract logs from memory:
+* * 1. HeapDump: jmap -dump:format=b,file=filename.hprof <pid>
+* * 2. Open the hprof file with a tool (such as MAT)
+* * 3. Search for and view the member variable `MEM_LOGS` of the `com.github.shepherdviolet.glacimon.java.spi.core.MemLogger` object (MAT tool supports copying log values)
 
-### System.out Logger
+* The default log level is `DEBUG`, which can be adjusted via startup parameters:
 
+```text
+-Dglacimonspi.conf.mem.loglevel=OFF
+-Dglacimonspi.conf.mem.loglevel=ERROR
+-Dglacimonspi.conf.mem.loglevel=WARN
+-Dglacimonspi.conf.mem.loglevel=INFO
+-Dglacimonspi.conf.mem.loglevel=DEBUG
+-Dglacimonspi.conf.mem.loglevel=TRACE
+```
+
+### SLF4J Logs
+
+* When `glacimon-spi-logging` and `org.slf4j:slf4j-api` are depended on, logs are output via SLF4J.
+* Log package path: `com.github.shepherdviolet.glacimon.java.spi`
+* Recommended level: `INFO`
+* If problems are encountered, adjust the log level to `DEBUG` or `TRACE`
+
+### System.out Logs
+
+* When `glacimon-spi-logging` is depended on but `org.slf4j:slf4j-api` is not, logs are output via System.out.
 * The default log level is `OFF`
-* If you need to troubleshoot, adjust the log level to `DEBUG` or `TRACE`
-* Adjust the log level by VM option
+* If problems are encountered, adjust the log level to `DEBUG` or `TRACE`
+* Adjust the log level via startup parameters:
 
 ```text
 -Dglacimonspi.conf.system.loglevel=ERROR
@@ -144,20 +171,16 @@ the interface, and provide a backward compatible approach.
 -Dglacimonspi.conf.system.loglevel=TRACE
 ```
 
-* Adjust the date format by VM option
+* Adjust the date format via startup parameters:
 
 ```text
 -Dglacimonspi.conf.system.logtime=yyyyMMdd-HHmmss
 ```
 
-### Custom logger
+### Custom Log Printer
 
-* Implement the interface:com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger
-* Add VM option:-Dglacimonspi.conf.custom.logger=`classname-of-custom-logger`
+* Implement the interface: com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger
+* Add the startup parameter: -Dglacimonspi.conf.custom.logger=`class name of the custom log printer`
+* (The custom method does not require dependency on `glacimon-spi-logging`)
 
-### What should I do if I want to troubleshoot the problem without the log?
 
-* 1.HeapDump: jmap -dump:format=b,file=filename.hprof pid
-* 2.Use tool to open the hprof file
-* 3.View the member variables of `com.github.shepherdviolet.glacimon.java.spi.core.ServiceContext` class
-* 4.If the `preload` enabled, you can see `PRELOAD_REPORTS`; you can see `SINGLE_SERVICE_LOADERS` and `MULTIPLE_SERVICE_LOADERS` also

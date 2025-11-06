@@ -67,7 +67,7 @@ GlacimonSpi.preload();
 
 ### How to use CheckSum
 
-* You can see it in the log
+* You can see it in the log (Please refer to the [Homepage](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index.md) to enable logging.)
 
 ```text
 11:40:57.470 [main] INFO com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi - ? | Preload | CheckSum 1851083996, classloader:sun.misc.Launcher$AppClassLoader@18b4aac2

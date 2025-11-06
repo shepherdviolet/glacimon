@@ -112,17 +112,43 @@ dependencies {
 
 ## 日志相关
 
-* 当类路径中存在SLF4J时, 默认用SLF4J输出日志
-* 当类路径中不存在SLF4J时, 默认用System.out输出日志
+* 基础模式 (仅依赖`glacimon-spi-core`, 不依赖`glacimon-spi-logging`)
+* * 基础模式不向外输出日志, 仅记录在内存中, 见`内存日志`
+* 日志模式 (依赖`glacimon-spi-logging`)
+* * 当类路径中存在SLF4J时, 用SLF4J输出日志, 见`SLF4J日志`
+* * 当类路径中不存在SLF4J时, 用System.out输出日志, 见`System.out日志`
+* 自定义模式 (自行实现SpiLogger)
+* * 见`自定义日志打印器`
+
+### 内存日志
+
+* 仅依赖`glacimon-spi-core`不依赖`glacimon-spi-logging`时, 日志记录在内存中
+* 适用于一般场景, 大多数人不需要看SPI日志, 因此在内存中保存了日志 (便于临时排查问题)
+* 从内存中提取日志的方法:
+* * 1.HeapDump: jmap -dump:format=b,file=filename.hprof <pid>
+* * 2.使用工具打开hprof文件 (MAT等)
+* * 3.搜索并查看`com.github.shepherdviolet.glacimon.java.spi.core.MemLogger`对象的成员变量`MEM_LOGS` (MAT工具支持将日志value复制出来)
+* 默认日志级别为`DEBUG`, 可以通过启动参数调整:
+
+```text
+-Dglacimonspi.conf.mem.loglevel=OFF
+-Dglacimonspi.conf.mem.loglevel=ERROR
+-Dglacimonspi.conf.mem.loglevel=WARN
+-Dglacimonspi.conf.mem.loglevel=INFO
+-Dglacimonspi.conf.mem.loglevel=DEBUG
+-Dglacimonspi.conf.mem.loglevel=TRACE
+```
 
 ### SLF4J日志
 
+* 依赖`glacimon-spi-logging`且依赖`org.slf4j:slf4j-api`时, 通过SLF4J输出日志
 * 日志包路径`com.github.shepherdviolet.glacimon.java.spi`
 * 推荐级别`INFO`
 * 如果遇到问题, 请将日志级别调至`DEBUG`或`TRACE`
 
 ### System.out日志
 
+* 依赖`glacimon-spi-logging`但不依赖`org.slf4j:slf4j-api`时, 通过System.out输出日志
 * 默认日志级别为`OFF`
 * 如果遇到问题, 请将日志级别调至`DEBUG`或`TRACE`
 * 通过启动参数调整日志级别
@@ -145,10 +171,6 @@ dependencies {
 
 * 实现接口:com.github.shepherdviolet.glacimon.java.spi.api.interfaces.SpiLogger
 * 添加启动参数:-Dglacimonspi.conf.custom.logger=`自定义日志打印器的类名`
+* (自定义方式无需依赖`glacimon-spi-logging`)
 
-### 没开日志又想排查问题怎么办?
 
-* 1.HeapDump: jmap -dump:format=b,file=filename.hprof pid
-* 2.使用工具打开hprof文件
-* 3.查看`com.github.shepherdviolet.glacimon.java.spi.core.ServiceContext`类的成员变量
-* 4.如果开了`预加载(preload)`, 可以看`PRELOAD_REPORTS`; 如果没有开预加载, 就看`SINGLE_SERVICE_LOADERS`和`MULTIPLE_SERVICE_LOADERS`

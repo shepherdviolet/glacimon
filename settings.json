@@ -2,6 +2,7 @@
   "public-java": {
     "glacimon-spi-api": "glacimon-spi-api",
     "glacimon-spi-core": "glacimon-spi-core",
+    "glacimon-spi-logging": "glacimon-spi-logging",
     "glacijava-common": "glacijava-common",
     "glacijava-misc": "glacijava-misc",
     "glacijava-crypto": "glacijava-crypto",

@@ -42,6 +42,7 @@ class Constants {
     static final String VMOPT_DEFAULT_CLASSLOADER_FROMCONTEXT = "glacimonspi.conf.defcl.fromctx";
     static final boolean FLAG_DEFAULT_CLASSLOADER_FROMCONTEXT = "true".equals(System.getProperty(VMOPT_DEFAULT_CLASSLOADER_FROMCONTEXT, "true"));
 
+    static final String VMOPT_MEM_LOGLEVEL = "glacimonspi.conf.mem.loglevel";
     static final String VMOPT_SYSTEM_LOGLEVEL = "glacimonspi.conf.system.loglevel";
     static final String VMOPT_SYSTEM_LOGTIME = "glacimonspi.conf.system.logtime";
     static final String VMOPT_CUSTOM_LOGGER = "glacimonspi.conf.custom.logger";

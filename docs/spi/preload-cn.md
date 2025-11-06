@@ -60,7 +60,7 @@ GlacimonSpi.preload();
 
 ### 如何使用CheckSum值
 
-* 在日志中可以看到CheckSum值
+* 在日志中可以看到CheckSum值 (请参考[首页](https://github.com/shepherdviolet/glacimon/blob/master/docs/spi/index-cn.md)启用日志)
 
 ```text
 11:40:57.470 [main] INFO com.github.shepherdviolet.glacimon.java.spi.GlacimonSpi - ? | Preload | CheckSum 1851083996, classloader:sun.misc.Launcher$AppClassLoader@18b4aac2

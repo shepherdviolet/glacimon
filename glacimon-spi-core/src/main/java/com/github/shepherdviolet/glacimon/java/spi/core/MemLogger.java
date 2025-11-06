@@ -119,8 +119,10 @@ class MemLogger implements SpiLogger {
         if (msg == null) {
             return;
         }
+        int len = timeFormat.length() + msg.length();
         // 限制最大长度
-        if (logLength.addAndGet(timeFormat.length() + msg.length()) > LOG_MAX_LENGTH) {
+        if (logLength.addAndGet(len) > LOG_MAX_LENGTH) {
+            logLength.getAndAdd(-len);
             return;
         }
         MEM_LOGS.add(getTimeString() + msg);

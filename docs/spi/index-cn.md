@@ -25,7 +25,7 @@ GlacimonSpi是一种SPI机制的实现. 能为你的类库提供扩展能力.
 
 <br>
 
-## Maven依赖
+## Maven依赖: 普通模式, 不输出日志 `(常用)`
 
 ```gradle
 repositories {
@@ -41,6 +41,26 @@ dependencies {
     <dependency>    
         <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>glacimon-spi-core</artifactId>
+        <version>?</version> 
+    </dependency>
+```
+
+## Maven依赖: 日志模式, 输出SLF4J或System.out日志
+
+```gradle
+repositories {
+    //In mavenCentral
+    mavenCentral()
+}
+dependencies {
+    implementation 'com.github.shepherdviolet.glacimon:glacimon-spi-logging:?'
+}
+```
+
+```maven
+    <dependency>    
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacimon-spi-logging</artifactId>
         <version>?</version> 
     </dependency>
 ```
@@ -120,7 +140,7 @@ dependencies {
 * 自定义模式 (自行实现SpiLogger)
 * * 见`自定义日志打印器`
 
-### 内存日志
+### 内存日志 (2026.0.0+)
 
 * 仅依赖`glacimon-spi-core`不依赖`glacimon-spi-logging`时, 日志记录在内存中
 * 适用于一般场景, 大多数人不需要看SPI日志, 因此在内存中保存了日志 (便于临时排查问题)

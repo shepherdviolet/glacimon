@@ -25,7 +25,7 @@ GlacimonSpi is an implementation of service provider interface feature. It can m
 
 <br>
 
-## Import dependencies from maven repository
+## Maven dependencies: Basic mode, does not output logs `(Commonly used)`
 
 ```gradle
 repositories {
@@ -41,6 +41,26 @@ dependencies {
     <dependency>    
         <groupId>com.github.shepherdviolet.glacimon</groupId>
         <artifactId>glacimon-spi-core</artifactId>
+        <version>?</version> 
+    </dependency>
+```
+
+## Maven dependencies: Logging Mode, logs are output via SLF4J / System.out
+
+```gradle
+repositories {
+    //In mavenCentral
+    mavenCentral()
+}
+dependencies {
+    implementation 'com.github.shepherdviolet.glacimon:glacimon-spi-logging:?'
+}
+```
+
+```maven
+    <dependency>    
+        <groupId>com.github.shepherdviolet.glacimon</groupId>
+        <artifactId>glacimon-spi-logging</artifactId>
         <version>?</version> 
     </dependency>
 ```
@@ -129,7 +149,7 @@ the interface, and provide a backward compatible approach.
 * Custom Mode (implement SpiLogger by yourself)
 * * See `Custom Log Printer`
 
-### In-Memory Logs
+### In-Memory Logs (2026.0.0+)
 
 * When only `glacimon-spi-core` is depended on and `glacimon-spi-logging` is not, logs are recorded in memory.
 * Suitable for general scenarios. Most people do not need to view SPI logs, so logs are saved in memory (facilitating temporary troubleshooting).

@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import javax.annotation.Nullable;
 import javax.net.ssl.HostnameVerifier;
 import java.io.Closeable;
 import java.io.IOException;
@@ -1428,7 +1427,6 @@ public class GlaciHttpClient implements Closeable, InitializingBean, DisposableB
             return provider.isOneShot();
         }
 
-        @Nullable
         @Override
         public MediaType contentType() {
             if (mediaType != null) {

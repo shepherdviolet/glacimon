@@ -32,7 +32,8 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @EnableConfigurationProperties
 @Import({
-        GlacispringServletContextListenerConfig.class
+        GlacispringServletContextListenerConfig.class,
+        GlacispringJakartaServletContextListenerConfig.class,
 })
 public class GlacispringCommonAutoConfiguration {
 

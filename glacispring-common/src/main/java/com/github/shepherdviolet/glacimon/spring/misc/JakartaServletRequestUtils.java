@@ -21,7 +21,7 @@ package com.github.shepherdviolet.glacimon.spring.misc;
 
 import com.github.shepherdviolet.glacimon.java.net.HttpHeaders;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +30,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * [Spring5] ServletRequest Utils.
- *
- * Using JakartaServletRequestUtils in Spring 6.
+ * [Spring6] ServletRequest Utils
  *
  * @author shepherdviolet
  */
-public class ServletRequestUtils {
+public class JakartaServletRequestUtils {
 
     /**
      * get http uri

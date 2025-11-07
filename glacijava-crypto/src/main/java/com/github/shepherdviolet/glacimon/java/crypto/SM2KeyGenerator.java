@@ -73,9 +73,8 @@ public class SM2KeyGenerator {
     }
 
     /**
-     * 将PKCS8私钥数据解析为私钥实例(与JDK的密钥实例不同)
+     * 将PKCS8私钥数据解析为私钥实例(与JDK的密钥实例不同), 实际项目中很少使用PKCS8格式的SM2私钥
      * @param pkcs8 PKCS8私钥数据
-     * @deprecated 实际项目中很少使用PKCS8格式的SM2私钥
      */
     public static ECPrivateKeyParameters generatePrivateKeyParamsByPKCS8(byte[] pkcs8) throws InvalidKeySpecException {
         return BaseBCAsymKeyGenerator.ecPrivateKeyToEcPrivateKeyParams(
@@ -85,9 +84,8 @@ public class SM2KeyGenerator {
     }
 
     /**
-     * 将X509公钥数据解析为公钥实例(与JDK的密钥实例不同)
+     * 将X509公钥数据解析为公钥实例(与JDK的密钥实例不同), 实际项目中很少使用X509格式的SM2公钥
      * @param x509 X509公钥数据
-     * @deprecated 实际项目中很少使用X509格式的SM2公钥
      */
     public static ECPublicKeyParameters generatePublicKeyParamsByX509(byte[] x509) throws InvalidKeySpecException {
         return BaseBCAsymKeyGenerator.ecPublicKeyToEcPublicKeyParams(
@@ -463,14 +461,14 @@ public class SM2KeyGenerator {
         }
 
         /**
-         * @deprecated 实际项目中很少使用X509格式的SM2公钥
+         * 实际项目中很少使用X509格式的SM2公钥
          */
         public byte[] getX509EncodedPublicKey() {
             return encodePublicKeyParamsToX509(publicKeyParams);
         }
 
         /**
-         * @deprecated 实际项目中很少使用PKCS8的SM2私钥
+         * 实际项目中很少使用PKCS8的SM2私钥
          */
         public byte[] getPKCS8EncodedPrivateKey() {
             return encodePrivateKeyParamsToPKCS8(privateKeyParams, publicKeyParams);

@@ -27,7 +27,8 @@ dependencies {
 
     //compile only
     [
-            "javax.servlet:javax.servlet-api:$version_servlet",
+            "javax.servlet:javax.servlet-api:$version_javax_servlet",
+            "jakarta.servlet:jakarta.servlet-api:$version_jakarta_servlet",
             "org.springframework:spring-jdbc:$version_spring",
             "org.springframework.boot:spring-boot-autoconfigure:$version_spring_boot",
 

@@ -19,9 +19,9 @@
 
 package com.github.shepherdviolet.glacimon.spring.x.monitor.txtimer.def;
 
+import com.github.shepherdviolet.glacimon.java.conversion.Base64Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Base64Utils;
 import com.github.shepherdviolet.glacimon.java.concurrent.SnapshotUtils;
 import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 import com.github.shepherdviolet.glacimon.java.crypto.SecureRandomUtils;

@@ -20,27 +20,26 @@
 package com.github.shepherdviolet.glacimon.spring.basic.autoconfig;
 
 
+import com.github.shepherdviolet.glacimon.spring.basic.servlet.GlacispringJakartaServletContextListener;
+import jakarta.servlet.ServletContextListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.github.shepherdviolet.glacimon.spring.basic.servlet.GlacispringServletContextListener;
-
-import javax.servlet.ServletContextListener;
 
 /**
- * [Spring5] 通用上下文监听器
+ * [Spring6] 通用上下文监听器
  *
  * @author shepherdviolet
  */
 @Configuration
 @ConditionalOnExpression("${glacispring.common.servlet-context-listener-enabled:true}")
-@ConditionalOnClass(javax.servlet.ServletContextListener.class)
-public class GlacispringServletContextListenerConfig {
+@ConditionalOnClass(jakarta.servlet.ServletContextListener.class)
+public class GlacispringJakartaServletContextListenerConfig {
 
-    @Bean("glacispring.common.glacispringServletContextListener")
-    public ServletContextListener glacispringServletContextListener() {
-        return new GlacispringServletContextListener();
+    @Bean("glacispring.common.glacispringJakartaServletContextListener")
+    public ServletContextListener glacispringJakartaServletContextListener() {
+        return new GlacispringJakartaServletContextListener();
     }
 
 }

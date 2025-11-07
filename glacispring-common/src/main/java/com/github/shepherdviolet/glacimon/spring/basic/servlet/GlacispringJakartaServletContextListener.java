@@ -19,17 +19,15 @@
 
 package com.github.shepherdviolet.glacimon.spring.basic.servlet;
 
+import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.shepherdviolet.glacimon.java.concurrent.ThreadPoolExecutorUtils;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 /**
- * <p>[Spring5][ServletContextListener]</p>
- *
- * <p>Using GlacispringJakartaServletContextListener in Spring 6</p>
+ * <p>[Spring6][ServletContextListener]</p>
  *
  * <p>
  *     Glacispring库统一Servlet监听器<br>
@@ -43,7 +41,7 @@ import javax.servlet.ServletContextListener;
  * <pre>{@code
  *  <web-app ......>
  *      <listener>
- *          <listener-class>com.github.shepherdviolet.glacispring.spring.basic.servlet.GlacispringServletContextListener</listener-class>
+ *          <listener-class>com.github.shepherdviolet.glacispring.spring.basic.servlet.GlacispringJakartaServletContextListener</listener-class>
  *      </listener>
  *      <listener>
  *          ......
@@ -58,8 +56,8 @@ import javax.servlet.ServletContextListener;
  *  <code>@Configuration</code>
  *  public class AppConf {
  *      <code>@Bean</code>
- *      public ServletContextListener glacispringServletContextListener() {
- *          return new GlacispringServletContextListener();
+ *      public ServletContextListener glacispringJakartaServletContextListener() {
+ *          return new GlacispringJakartaServletContextListener();
  *      }
  *      ......
  *  }
@@ -68,18 +66,18 @@ import javax.servlet.ServletContextListener;
  * @author shepherdviolet
  *
  */
-public class GlacispringServletContextListener implements ServletContextListener {
+public class GlacispringJakartaServletContextListener implements ServletContextListener {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        logger.info("GlacispringServletContextListener init");
+        logger.info("GlacispringJakartaServletContextListener init");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        logger.info("GlacispringServletContextListener destroy");
+        logger.info("GlacispringJakartaServletContextListener destroy");
         ThreadPoolExecutorUtils.shutdownNowAll();
     }
 

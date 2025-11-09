@@ -19,6 +19,7 @@
 
 package com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.manager;
 
+import com.github.shepherdviolet.glacimon.spring.helper.rocketmq.compat.RocketMqCompatUtils;
 import com.github.shepherdviolet.glacimon.spring.helper.rocketmq.consumer.*;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.MQPushConsumer;
@@ -27,7 +28,6 @@ import org.apache.rocketmq.client.consumer.listener.*;
 import org.apache.rocketmq.common.ServiceState;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -158,7 +158,7 @@ public class RmqConsumerManagerImpl implements RmqConsumerManager, ApplicationCo
             consumer.subscribe(annotation.topic(), annotation.subExpression());
         }
         if (annotation.isBroadcast()) {
-            consumer.setMessageModel(MessageModel.BROADCASTING);
+            RocketMqCompatUtils.DefaultMQPushConsumerCompat.setMessageModelToBroadcasting(consumer);
         }
         consumer.setConsumeFromWhere(parseConsumeFromWhere(annotation.consumeFromWhere()));
         consumer.setConsumeThreadMin(annotation.threadMin());

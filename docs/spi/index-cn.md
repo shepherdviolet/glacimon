@@ -148,7 +148,7 @@ dependencies {
 * * 1.HeapDump: jmap -dump:format=b,file=filename.hprof <pid>
 * * 2.使用工具打开hprof文件 (MAT等)
 * * 3.搜索并查看`com.github.shepherdviolet.glacimon.java.spi.core.MemLogger`对象的成员变量`MEM_LOGS` (MAT工具支持将日志value复制出来)
-* 默认日志级别为`DEBUG`, 可以通过启动参数调整:
+* 默认日志级别为`INFO`, 可以通过启动参数调整:
 
 ```text
 -Dglacimonspi.conf.mem.loglevel=OFF

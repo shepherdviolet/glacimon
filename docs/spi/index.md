@@ -158,7 +158,7 @@ the interface, and provide a backward compatible approach.
 * * 2. Open the hprof file with a tool (such as MAT)
 * * 3. Search for and view the member variable `MEM_LOGS` of the `com.github.shepherdviolet.glacimon.java.spi.core.MemLogger` object (MAT tool supports copying log values)
 
-* The default log level is `DEBUG`, which can be adjusted via startup parameters:
+* The default log level is `INFO`, which can be adjusted via startup parameters:
 
 ```text
 -Dglacimonspi.conf.mem.loglevel=OFF

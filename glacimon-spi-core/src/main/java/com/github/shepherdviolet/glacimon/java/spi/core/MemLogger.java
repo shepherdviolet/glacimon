@@ -53,7 +53,7 @@ class MemLogger implements SpiLogger {
     private final ThreadLocal<SimpleDateFormat> formats = new ThreadLocal<>();
 
     MemLogger() {
-        String logLevelStr = System.getProperty(Constants.VMOPT_MEM_LOGLEVEL, "DEBUG").toUpperCase();
+        String logLevelStr = System.getProperty(Constants.VMOPT_MEM_LOGLEVEL, "INFO").toUpperCase();
         switch (logLevelStr) {
             case "TRACE":
                 logLevel = TRACE;

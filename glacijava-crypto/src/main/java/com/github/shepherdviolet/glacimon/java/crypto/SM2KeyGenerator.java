@@ -155,6 +155,7 @@ public class SM2KeyGenerator {
 
     /**
      * 根据已知的坐标(ASN.1编码数据)生成SM2公钥实例(sm2p256v1),
+     * ASN.1编码的公钥其实就是"0x04+X值+Y值"拼接而成, 0x04是未压缩标记, 
      * 某些工具生成的SM2公钥不符合ASN1标准, 长度只有64字节, 直接是X和Y的二进制数据拼接而成, 请在前面增加一个字节: 0x04
      *
      * @param asn1Hex 公钥坐标点, ASN.1编码十六进制字符串(HEX)
@@ -166,6 +167,7 @@ public class SM2KeyGenerator {
 
     /**
      * 根据已知的坐标(ASN.1编码数据)生成SM2公钥实例(sm2p256v1),
+     * ASN.1编码的公钥其实就是"0x04+X值+Y值"拼接而成, 0x04是未压缩标记, 
      * 某些工具生成的SM2公钥不符合ASN1标准, 长度只有64字节, 直接是X和Y的二进制数据拼接而成, 请在前面增加一个字节: 0x04
      *
      * @param asn1Encoding 公钥坐标点, ASN.1编码数据
@@ -177,6 +179,8 @@ public class SM2KeyGenerator {
 
     /**
      * <p>根据已知的坐标(X/Y)生成SM2公钥实例(sm2p256v1)</p><br>
+     *
+     * <p>如果公钥是一个0x04开头的65字节数据(或者非0x04开头64字节), 请用generatePublicKeyParamsByASN1方法解析.</p>
      *
      * <p>D值 / Q值(X/Y) 获取方法 + 各种格式转换: </p>
      * <p>获取D值: ecPrivateKeyParameters.getD() </p>
@@ -200,6 +204,8 @@ public class SM2KeyGenerator {
 
     /**
      * <p>根据已知的坐标(X/Y)生成SM2公钥实例(sm2p256v1)</p><br>
+     *
+     * <p>如果公钥是一个0x04开头的65字节数据(或者非0x04开头64字节), 请用generatePublicKeyParamsByASN1方法解析.</p>
      *
      * <p>D值 / Q值(X/Y) 获取方法 + 各种格式转换: </p>
      * <p>获取D值: ecPrivateKeyParameters.getD() </p>
@@ -374,7 +380,7 @@ public class SM2KeyGenerator {
 
         /**
          * 获取公钥坐标点的ASN.1编码数据(非压缩).
-         * 未压缩格式开头有个0x04, 有些加解密工具没0x04.
+         * ASN.1编码的公钥其实就是"0x04+X值+Y值"拼接而成, 0x04是未压缩标记, 有些加解密工具的公钥没0x04.
          */
         public byte[] getPublicASN1Encoding(){
             return publicKeyParams.getQ().getEncoded(false);
@@ -382,7 +388,7 @@ public class SM2KeyGenerator {
 
         /**
          * 获取公钥坐标点的ASN.1编码十六进制字符串(非压缩).
-         * 未压缩格式开头有个0x04, 有些加解密工具没0x04.
+         * ASN.1编码的公钥其实就是"0x04+X值+Y值"拼接而成, 0x04是未压缩标记, 有些加解密工具的公钥没0x04.
          */
         public String getPublicASN1EncodingHex(){
             return ByteUtils.bytesToHex(publicKeyParams.getQ().getEncoded(false));

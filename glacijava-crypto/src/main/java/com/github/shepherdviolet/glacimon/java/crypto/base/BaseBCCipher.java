@@ -31,6 +31,11 @@ import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.SM2Signer;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
+import org.bouncycastle.jcajce.SecretKeyWithEncapsulation;
+import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPublicKey;
+import org.bouncycastle.jcajce.spec.KEMExtractSpec;
+import org.bouncycastle.jcajce.spec.KEMGenerateSpec;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -470,7 +475,7 @@ public class BaseBCCipher {
     }
 
     /********************************************************************************************************************************
-     * Conversion
+     * SM2 Conversion
      ********************************************************************************************************************************/
 
     /**
@@ -654,6 +659,42 @@ public class BaseBCCipher {
         encodableVector.add(new ASN1Integer(r));
         encodableVector.add(new ASN1Integer(s));
         return new DERSequence(encodableVector).getEncoded(ASN1Encoding.DER);
+    }
+
+
+    /***********************************************************************************************
+     * PQC后量子加密 ML-KEM
+     ***********************************************************************************************/
+
+
+    /**
+     * [PQC后量子加密 ML-KEM密钥交换算法]
+     * 密钥封装: 随机生成32字节通讯密钥并使用公钥加密.
+     * ML_KEM算法仅用于交换通讯密钥(对称), 且密钥明文不允许指定, 必须随机生成.
+     *
+     * @param publicKey 接收方的公钥
+     * @param cryptoAlgorithm 算法名称, ML-KEM-512, ML-KEM-768, ML-KEM-1024
+     * @return 生成的32字节通讯密钥明文 = secEnc.getEncoded(); 生成的768/1088/1568字节通讯密钥密文:  secEnc.getEncapsulation();
+     */
+    public static SecretKeyWithEncapsulation mlKemEncapsulate(BCMLKEMPublicKey publicKey, String cryptoAlgorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        KeyGenerator keyGen = KeyGenerator.getInstance(cryptoAlgorithm, "BC");
+        keyGen.init(new KEMGenerateSpec(publicKey, "Raw"), new SecureRandom());
+        return (SecretKeyWithEncapsulation) keyGen.generateKey();
+    }
+
+    /**
+     * [PQC后量子加密 ML-KEM密钥交换算法]
+     * 密钥解封装: 接收方使用自己的私钥，从768/1088/1568字节密文中恢复出 32 字节的通讯密钥。
+     *
+     * @param encryptedKey  768/1088/1568字节通讯密钥密文
+     * @param privateKey    接收方的私钥
+     * @param cryptoAlgorithm  算法名称, ML-KEM-512, ML-KEM-768, ML-KEM-1024
+     * @return 32字节通讯密钥明文
+     */
+    public static byte[] mlKemDecapsulate(byte[] encryptedKey, BCMLKEMPrivateKey privateKey, String cryptoAlgorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        KeyGenerator keyGen = KeyGenerator.getInstance(cryptoAlgorithm, "BC");
+        keyGen.init(new KEMExtractSpec(privateKey, encryptedKey, "Raw"), new SecureRandom());
+        return keyGen.generateKey().getEncoded();
     }
 
 }

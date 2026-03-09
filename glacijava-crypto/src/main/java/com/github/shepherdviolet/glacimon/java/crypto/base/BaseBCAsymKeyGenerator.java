@@ -34,8 +34,11 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util;
 import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
+import org.bouncycastle.jcajce.spec.MLKEMParameterSpec;
 import org.bouncycastle.jce.interfaces.ECPublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
@@ -66,6 +69,10 @@ public class BaseBCAsymKeyGenerator {
     static {
         BouncyCastleProviderUtils.installProvider();
     }
+
+    /***********************************************************************************************
+     * ECC/SM2
+     ***********************************************************************************************/
 
     /**
      * 随机生成ECC/SM2密钥对, domainParameters是椭圆曲线参数, 需要:椭圆曲线/G点/N(order)/H(cofactor)
@@ -371,6 +378,88 @@ public class BaseBCAsymKeyGenerator {
                 BigInteger.valueOf(ecParameterSpec.getCofactor()),
                 ecParameterSpec.getCurve().getSeed());
         return new X962Parameters(x9ECParameters);
+    }
+
+
+    /***********************************************************************************************
+     * PQC后量子加密 ML-KEM
+     ***********************************************************************************************/
+
+
+    /**
+     * [PQC后量子加密 ML-KEM密钥交换算法]
+     * 生成密钥对.
+     *
+     * 密钥类型:
+     * 私钥: BCMLKEMPrivateKey privateKey = keyPair.getPrivate();
+     * 公钥: BCMLKEMPublicKey publicKey = keyPair.getPublic();
+     *
+     * 密钥长度:
+     * ML-KEM-512:  私钥PKCS8编码byte[] 1730字节 公钥X509编码byte[] 822字节
+     * ML-KEM-768:  私钥PKCS8编码byte[] 2498字节 公钥X509编码byte[] 1206字节
+     * ML-KEM-1024: 私钥PKCS8编码byte[] 3266字节 公钥X509编码byte[] 1590字节
+     *
+     * 通常转成BASE64储存/发送:
+     * String privateKey = Base64Utils.encodeToString(keyPair.getPrivate().getEncoded());
+     * String publicKey = Base64Utils.encodeToString(keyPair.getPublic().getEncoded());
+     *
+     * @param keyAlgorithm 算法名称, ML-KEM-512, ML-KEM-768, ML-KEM-1024
+     * @return 私钥PKCS8 = keyPair.getPrivate().getEncoded(); 公钥X509 = keyPair.getPublic().getEncoded();
+     */
+    public static KeyPair generateMlKemKeyPair(String keyAlgorithm) {
+        try {
+            KeyPairGenerator generator = KeyPairGenerator.getInstance(keyAlgorithm, "BC");
+            generator.initialize(MLKEMParameterSpec.fromName(keyAlgorithm), new SecureRandom());
+            return generator.generateKeyPair();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * [PQC后量子加密 ML-KEM密钥交换算法]
+     * PKCS8编码的私钥解析为BCMLKEMPrivateKey实例
+     *
+     * 密钥长度:
+     * ML-KEM-512:  私钥PKCS8编码byte[] 1730字节 公钥X509编码byte[] 822字节
+     * ML-KEM-768:  私钥PKCS8编码byte[] 2498字节 公钥X509编码byte[] 1206字节
+     * ML-KEM-1024: 私钥PKCS8编码byte[] 3266字节 公钥X509编码byte[] 1590字节
+     *
+     * @param pkcs8 PKCS8编码的私钥
+     */
+    public static BCMLKEMPrivateKey parseMlKemPrivateKeyByPKCS8(byte[] pkcs8) throws InvalidKeySpecException {
+        try {
+            // MK-KEM自动判断密钥长度
+            return (BCMLKEMPrivateKey) KeyFactory.getInstance("ML-KEM", "BC")
+                    .generatePrivate(new PKCS8EncodedKeySpec(pkcs8));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * [PQC后量子加密 ML-KEM密钥交换算法]
+     * X509编码的公钥解析为BCMLKEMPublicKey实例
+     *
+     * 密钥长度:
+     * ML-KEM-512:  私钥PKCS8编码byte[] 1730字节 公钥X509编码byte[] 822字节
+     * ML-KEM-768:  私钥PKCS8编码byte[] 2498字节 公钥X509编码byte[] 1206字节
+     * ML-KEM-1024: 私钥PKCS8编码byte[] 3266字节 公钥X509编码byte[] 1590字节
+     *
+     * @param x509 X509编码的公钥
+     */
+    public static BCMLKEMPublicKey parseMlKemPublicKeyByX509(byte[] x509) throws InvalidKeySpecException {
+        try {
+            // MK-KEM自动判断密钥长度
+            return (BCMLKEMPublicKey) KeyFactory.getInstance("ML-KEM", "BC")
+                    .generatePublic(new X509EncodedKeySpec(x509));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
 }

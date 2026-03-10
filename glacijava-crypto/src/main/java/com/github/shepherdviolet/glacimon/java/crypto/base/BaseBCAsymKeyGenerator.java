@@ -34,10 +34,13 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.mldsa.BCMLDSAPrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.mldsa.BCMLDSAPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util;
 import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
+import org.bouncycastle.jcajce.spec.MLDSAParameterSpec;
 import org.bouncycastle.jcajce.spec.MLKEMParameterSpec;
 import org.bouncycastle.jce.interfaces.ECPublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -382,7 +385,7 @@ public class BaseBCAsymKeyGenerator {
 
 
     /***********************************************************************************************
-     * PQC后量子加密 ML-KEM
+     * PQC后量子加密 ML-KEM ML-DSA
      ***********************************************************************************************/
 
 
@@ -454,6 +457,82 @@ public class BaseBCAsymKeyGenerator {
         try {
             // MK-KEM自动判断密钥长度
             return (BCMLKEMPublicKey) KeyFactory.getInstance("ML-KEM", "BC")
+                    .generatePublic(new X509EncodedKeySpec(x509));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * [PQC后量子加密 ML-DSA签名算法]
+     * 生成密钥对.
+     *
+     * 密钥类型:
+     * 私钥: BCMLDSAPrivateKey privateKey = keyPair.getPrivate();
+     * 公钥: BCMLDSAPublicKey publicKey = keyPair.getPublic();
+     *
+     * 密钥长度:
+     * ML-DSA-44:  私钥PKCS8编码byte[] 2626字节 公钥X509编码byte[] 1334字节
+     * ML-DSA-65:  私钥PKCS8编码byte[] 4098字节 公钥X509编码byte[] 1974字节
+     * ML-DSA-87: 私钥PKCS8编码byte[] 4962字节 公钥X509编码byte[] 2614字节
+     *
+     * 通常转成BASE64储存/发送:
+     * String privateKey = Base64Utils.encodeToString(keyPair.getPrivate().getEncoded());
+     * String publicKey = Base64Utils.encodeToString(keyPair.getPublic().getEncoded());
+     *
+     * @param keyAlgorithm 算法名称, ML-DSA-44, ML-DSA-65, ML-DSA-87
+     * @return 私钥PKCS8 = keyPair.getPrivate().getEncoded(); 公钥X509 = keyPair.getPublic().getEncoded();
+     */
+    public static KeyPair generateMlDsaKeyPair(String keyAlgorithm) {
+        try {
+            KeyPairGenerator generator = KeyPairGenerator.getInstance(keyAlgorithm, "BC");
+            generator.initialize(MLDSAParameterSpec.fromName(keyAlgorithm), new SecureRandom());
+            return generator.generateKeyPair();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * [PQC后量子加密 ML-DSA签名算法]
+     * PKCS8编码的私钥解析为BCMLDSAPrivateKey实例
+     *
+     * 密钥长度:
+     * ML-DSA-44:  私钥PKCS8编码byte[] 2626字节 公钥X509编码byte[] 1334字节
+     * ML-DSA-65:  私钥PKCS8编码byte[] 4098字节 公钥X509编码byte[] 1974字节
+     * ML-DSA-87: 私钥PKCS8编码byte[] 4962字节 公钥X509编码byte[] 2614字节
+     *
+     * @param pkcs8 PKCS8编码的私钥
+     */
+    public static BCMLDSAPrivateKey parseMlDsaPrivateKeyByPKCS8(byte[] pkcs8) throws InvalidKeySpecException {
+        try {
+            // MK-DSA自动判断密钥长度
+            return (BCMLDSAPrivateKey) KeyFactory.getInstance("ML-DSA", "BC")
+                    .generatePrivate(new PKCS8EncodedKeySpec(pkcs8));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * [PQC后量子加密 ML-DSA签名算法]
+     * X509编码的公钥解析为BCMLDSAPublicKey实例
+     *
+     * 密钥长度:
+     * ML-DSA-44:  私钥PKCS8编码byte[] 2626字节 公钥X509编码byte[] 1334字节
+     * ML-DSA-65:  私钥PKCS8编码byte[] 4098字节 公钥X509编码byte[] 1974字节
+     * ML-DSA-87: 私钥PKCS8编码byte[] 4962字节 公钥X509编码byte[] 2614字节
+     *
+     * @param x509 X509编码的公钥
+     */
+    public static BCMLDSAPublicKey parseMlDsaPublicKeyByX509(byte[] x509) throws InvalidKeySpecException {
+        try {
+            // MK-DSA自动判断密钥长度
+            return (BCMLDSAPublicKey) KeyFactory.getInstance("ML-DSA", "BC")
                     .generatePublic(new X509EncodedKeySpec(x509));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e.getMessage(), e);

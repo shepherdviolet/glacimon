@@ -47,8 +47,8 @@ public class MlKemCipherTest {
 //        System.out.println(keyPair1024);
 
         // 解析公私钥
-        BCMLKEMPrivateKey privateKey = MlKemKeyGenerator.generatePrivateKeyParamsByPKCS8(keyPair768.getPKCS8EncodedPrivateKey());
-        BCMLKEMPublicKey publicKey = MlKemKeyGenerator.generatePublicKeyParamsByX509(keyPair768.getX509EncodedPublicKey());
+        BCMLKEMPrivateKey privateKey = MlKemKeyGenerator.generatePrivateKeyByPKCS8(keyPair768.getPKCS8EncodedPrivateKey());
+        BCMLKEMPublicKey publicKey = MlKemKeyGenerator.generatePublicKeyByX509(keyPair768.getX509EncodedPublicKey());
 //        System.out.println(privateKey);
 //        System.out.println(publicKey);
 

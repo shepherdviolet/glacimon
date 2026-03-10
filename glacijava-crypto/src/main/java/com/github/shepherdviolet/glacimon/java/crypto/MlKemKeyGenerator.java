@@ -90,7 +90,7 @@ public class MlKemKeyGenerator {
      *
      * @param pkcs8PrivateKey PKCS8私钥数据
      */
-    public static BCMLKEMPrivateKey generatePrivateKeyParamsByPKCS8(byte[] pkcs8PrivateKey) throws InvalidKeySpecException {
+    public static BCMLKEMPrivateKey generatePrivateKeyByPKCS8(byte[] pkcs8PrivateKey) throws InvalidKeySpecException {
         return BaseBCAsymKeyGenerator.parseMlKemPrivateKeyByPKCS8(pkcs8PrivateKey);
     }
 
@@ -99,7 +99,7 @@ public class MlKemKeyGenerator {
      *
      * @param x509PublicKey X509公钥数据
      */
-    public static BCMLKEMPublicKey generatePublicKeyParamsByX509(byte[] x509PublicKey) throws InvalidKeySpecException {
+    public static BCMLKEMPublicKey generatePublicKeyByX509(byte[] x509PublicKey) throws InvalidKeySpecException {
         return BaseBCAsymKeyGenerator.parseMlKemPublicKeyByX509(x509PublicKey);
     }
 

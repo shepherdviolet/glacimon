@@ -32,6 +32,8 @@ import org.bouncycastle.crypto.signers.SM2Signer;
 import com.github.shepherdviolet.glacimon.java.misc.CloseableUtils;
 import com.github.shepherdviolet.glacimon.java.conversion.ByteUtils;
 import org.bouncycastle.jcajce.SecretKeyWithEncapsulation;
+import org.bouncycastle.jcajce.provider.asymmetric.mldsa.BCMLDSAPrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.mldsa.BCMLDSAPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPublicKey;
 import org.bouncycastle.jcajce.spec.KEMExtractSpec;
@@ -40,9 +42,7 @@ import org.bouncycastle.jcajce.spec.KEMGenerateSpec;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
 
@@ -663,7 +663,7 @@ public class BaseBCCipher {
 
 
     /***********************************************************************************************
-     * PQC后量子加密 ML-KEM
+     * PQC后量子加密 ML-KEM ML-DSA
      ***********************************************************************************************/
 
 
@@ -695,6 +695,115 @@ public class BaseBCCipher {
         KeyGenerator keyGen = KeyGenerator.getInstance(cryptoAlgorithm, "BC");
         keyGen.init(new KEMExtractSpec(privateKey, encryptedKey, "Raw"), new SecureRandom());
         return keyGen.generateKey().getEncoded();
+    }
+
+    /**
+     * [PQC后量子加密 ML-DSA签名算法]
+     * <p>用私钥对信息生成数字签名</p>
+     *
+     * 签名长度:
+     * ML-DSA-44 2420字节
+     * ML-DSA-65 3309字节
+     * ML-DSA-87 4627字节
+     *
+     * @param data 需要签名的数据
+     * @param privateKey 私钥
+     * @param signAlgorithm 签名逻辑, ML-DSA-44, ML-DSA-65, ML-DSA-87
+     *
+     * @return 数字签名
+     */
+    public static byte[] mlDsaSign(byte[] data, BCMLDSAPrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException {
+        if (data == null){
+            return null;
+        }
+        Signature signature = Signature.getInstance(signAlgorithm, "BC");
+        signature.initSign(privateKey);
+        signature.update(data);
+        return signature.sign();
+    }
+
+    /**
+     * [PQC后量子加密 ML-DSA签名算法]
+     * <p>用私钥对信息生成数字签名</p>
+     *
+     * 签名长度:
+     * ML-DSA-44 2420字节
+     * ML-DSA-65 3309字节
+     * ML-DSA-87 4627字节
+     *
+     * @param inputStream 待签名数据的输入流, 执行完毕后会被关闭
+     * @param privateKey 私钥
+     * @param signAlgorithm 签名逻辑, ML-DSA-44, ML-DSA-65, ML-DSA-87
+     *
+     * @return 数字签名
+     */
+    public static byte[] mlDsaSign(InputStream inputStream, BCMLDSAPrivateKey privateKey, String signAlgorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException, IOException {
+        if (inputStream == null) {
+            return null;
+        }
+        try {
+            Signature signature = Signature.getInstance(signAlgorithm, "BC");
+            signature.initSign(privateKey);
+            byte[] buff = new byte[CryptoConstants.BUFFER_SIZE];
+            int size;
+            while((size = inputStream.read(buff)) != -1){
+                signature.update(buff, 0, size);
+            }
+            return signature.sign();
+        } finally {
+            CloseableUtils.closeQuiet(inputStream);
+        }
+    }
+
+    /**
+     * [PQC后量子加密 ML-DSA签名算法]
+     * <p>用公钥验证数字签名</p>
+     *
+     * @param data 被签名的数据
+     * @param sign 数字签名
+     * @param publicKey 公钥
+     * @param signAlgorithm 签名逻辑, ML-DSA-44, ML-DSA-65, ML-DSA-87
+     *
+     * @return true:数字签名有效
+     *
+     */
+    public static boolean mlDsaVerify(byte[] data, byte[] sign, BCMLDSAPublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException {
+        if (data == null){
+            return false;
+        }
+        Signature signature = Signature.getInstance(signAlgorithm, "BC");
+        signature.initVerify(publicKey);
+        signature.update(data);
+        return signature.verify(sign);
+    }
+
+    /**
+     * [PQC后量子加密 ML-DSA签名算法]
+     * <p>用公钥验证数字签名</p>
+     *
+     * @param inputStream 待签名数据的输入流, 执行完毕后会被关闭
+     * @param sign 数字签名
+     * @param publicKey 公钥
+     * @param signAlgorithm 签名逻辑, ML-DSA-44, ML-DSA-65, ML-DSA-87
+     *
+     * @return true:数字签名有效
+     */
+    public static boolean mlDsaVerify(InputStream inputStream, byte[] sign, BCMLDSAPublicKey publicKey, String signAlgorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException, IOException {
+        if (inputStream == null) {
+            return false;
+        }
+        try {
+            Signature signature = Signature.getInstance(signAlgorithm, "BC");
+            signature.initVerify(publicKey);
+            byte[] buff = new byte[CryptoConstants.BUFFER_SIZE];
+            int size;
+            while((size = inputStream.read(buff)) != -1){
+                signature.update(buff, 0, size);
+            }
+            return signature.verify(sign);
+        } finally {
+            CloseableUtils.closeQuiet(inputStream);
+        }
     }
 
 }

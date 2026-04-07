@@ -50,6 +50,7 @@ dependencies {
             "io.netty:netty-all:$version_netty", //Fix security issue
             "org.yaml:snakeyaml:$version_snakeyaml", //Fix security issue
             "org.json:json:$version_orgjson", //Fix security issue
+            "org.apache.commons:commons-lang3:$version_commons_lang", //Fix security issue
 
     ].forEach{ compileOnly (it) { version { strictly it.version } }; testImplementation (it) { version { strictly it.version } } }
 

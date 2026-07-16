@@ -25,6 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * [CTF用] 基于CtfAsn1Utils的一键式 公私钥证书 高容忍度读取器
+ *
+ * 直接调用guess
+ */
 public class CtfAsn1Guesser {
 
     public static void guess(File file) {

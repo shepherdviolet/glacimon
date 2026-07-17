@@ -17,7 +17,7 @@
  * (2) 在gradle-local.properties中选择上传到中心库/私有库/本地库
  *
  * (3) 发布
- * [发布到中心库] 选择 'upload_target=maven', 刷新Gradle, 执行 'gradlew publishToMavenCentralPortal'
+ * [发布到中心库] 选择 'upload_target=maven', 刷新Gradle, 执行 'gradlew publishToMavenCentralPortal' (IDEA在central publish分类里, 不在publishing里)
  * [发布到私有库] 选择 'upload_target=private', 刷新Gradle, 执行 'gradlew publish'
  * [发布到~/.m2库] 选择 'upload_target=local', 刷新Gradle, 执行 'gradlew publishToMavenLocal'
  *

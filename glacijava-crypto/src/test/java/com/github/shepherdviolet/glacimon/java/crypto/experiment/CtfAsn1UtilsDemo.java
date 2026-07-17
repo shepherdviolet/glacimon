@@ -76,27 +76,28 @@ public class CtfAsn1UtilsDemo {
 
         Map<String, Object> result;
 
+//        System.out.println("\n\n====从文件读取公私钥证书 -> 原始数据==================================================================\n\n");
 //        result = CtfAsn1Utils.parse(new File("D:\\\\__Download\\\\虚机中转\\\\cert.pem"));
 //        System.out.println(result);
 
-        System.out.println("\n\n======================================================================\n\n");
-        result = CtfAsn1Utils.parse(BROKEN_PRIVATE_KEY);
+        System.out.println("\n\n====从文本解析公私钥证书 -> 原始数据==================================================================\n\n");
+        result = CtfAsn1Utils.parse(BROKEN_PRIVATE_KEY); // 损坏的非JAVA格式
         System.out.println(result);
 
-        System.out.println("\n\n======================================================================\n\n");
-        result = CtfAsn1Utils.parse(newPrivateKeyPem);
+        System.out.println("\n\n====从文本解析公私钥证书 -> 原始数据==================================================================\n\n");
+        result = CtfAsn1Utils.parse(newPrivateKeyPem); // 正常的JAVA格式
         System.out.println(result);
 
-        System.out.println("\n\n======================================================================\n\n");
+        System.out.println("\n\n====一键解析公私钥证书 -> 自动推测==================================================================\n\n");
         CtfAsn1Guesser.guess(BROKEN_PRIVATE_KEY);
 
-        System.out.println("\n\n======================================================================\n\n");
+        System.out.println("\n\n====一键解析公私钥证书 -> 自动推测==================================================================\n\n");
         CtfAsn1Guesser.guess(newPrivateKeyPem);
 
-        System.out.println("\n\n======================================================================\n\n");
+        System.out.println("\n\n====一键解析公私钥证书 -> 自动推测==================================================================\n\n");
         CtfAsn1Guesser.guess(newPublicKeyPem);
 
-        System.out.println("\n\n======================================================================\n\n");
+        System.out.println("\n\n====一键解析公私钥证书 -> 自动推测==================================================================\n\n");
         CtfAsn1Guesser.guess(certPem);
 
     }
